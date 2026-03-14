@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/plan_limits.dart';
+import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/ai_usage_model.dart';
 
@@ -18,7 +19,7 @@ class PlanEnforcementService {
   /// Returns null if allowed, or an error message if blocked.
   Future<String?> checkClientCap(String gymId, PlanTier tier) async {
     final count = await _client
-        .from('clients')
+        .from(AppConstants.clientsTable)
         .select()
         .eq('gym_id', gymId)
         .count(CountOption.exact);
@@ -34,7 +35,7 @@ class PlanEnforcementService {
   /// Check if a gym can add one more trainer.
   Future<String?> checkTrainerCap(String gymId, PlanTier tier) async {
     final count = await _client
-        .from('gym_members')
+        .from(AppConstants.gymMembersTable)
         .select()
         .eq('gym_id', gymId)
         .eq('role', 'trainer')
@@ -76,7 +77,7 @@ class PlanEnforcementService {
     final periodStart = DateTime(now.year, now.month, 1);
 
     final data = await _client
-        .from('ai_usage')
+        .from(AppConstants.aiUsageTable)
         .select()
         .eq('gym_id', gymId)
         .gte('period_start', periodStart.toIso8601String())
@@ -131,10 +132,10 @@ class PlanEnforcementService {
         updates['haiku_calls_used'] = existing.haikuCallsUsed + 1;
       }
 
-      await _client.from('ai_usage').update(updates).eq('id', existing.id);
+      await _client.from(AppConstants.aiUsageTable).update(updates).eq('id', existing.id);
     } else {
       // Create new period record
-      await _client.from('ai_usage').insert({
+      await _client.from(AppConstants.aiUsageTable).insert({
         'gym_id': gymId,
         'period_start': periodStart.toIso8601String(),
         'period_end': periodEnd.toIso8601String(),

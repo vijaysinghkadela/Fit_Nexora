@@ -1,0 +1,30 @@
+{
+  "settings": "सेटिंग्स",
+  "account": "खाते",
+  "changePassword": "पासवर्ड बदला",
+  "updateLoginCredentials": "तुमचे लॉगिन तपशील अपडेट करा",
+  "role": "भूमिका",
+
+  "gymProfile": "जिम प्रोफाइल",
+  "gymNameLocation": "जिमचे नाव, लोगो, स्थान",
+  "operatingHours": "कामाचे तास",
+  "setWorkingHours": "जिमचे कामाचे तास सेट करा",
+  "language": "भाषा",
+
+  "subscriptionBilling": "सबस्क्रिप्शन आणि बिलिंग",
+  "currentPlan": "सध्याचा प्लॅन",
+  "manageSubscription": "तुमचे सबस्क्रिप्शन व्यवस्थापित करा",
+  "invoices": "इनव्हॉइस",
+  "viewInvoices": "GST इनव्हॉइस आणि पेमेंट इतिहास पहा",
+  "paymentMethod": "पेमेंट पद्धत",
+
+  "gstSettings": "GST सेटिंग्स",
+  "gstDescription": "GSTIN, पुरवठा स्थान, HSN कोड",
+
+  "dangerZone": "डेंजर झोन",
+  "signOut": "साइन आउट",
+  "logoutAccount": "तुमच्या खात्यातून लॉग आउट करा",
+
+  "deleteAccount": "खाते हटवा",
+  "deleteAccountWarning": "तुमचे खाते आणि सर्व डेटा कायमचा हटवला जाईल"
+}

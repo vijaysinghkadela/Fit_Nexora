@@ -1,0 +1,30 @@
+{
+  "settings": "அமைப்புகள்",
+  "account": "கணக்கு",
+  "changePassword": "கடவுச்சொல்லை மாற்று",
+  "updateLoginCredentials": "உங்கள் உள்நுழைவு விவரங்களை புதுப்பிக்கவும்",
+  "role": "பங்கு",
+
+  "gymProfile": "ஜிம் சுயவிவரம்",
+  "gymNameLocation": "ஜிம் பெயர், லோகோ, இடம்",
+  "operatingHours": "செயல்பாட்டு நேரம்",
+  "setWorkingHours": "உங்கள் ஜிம் வேலை நேரத்தை அமைக்கவும்",
+  "language": "மொழி",
+
+  "subscriptionBilling": "சந்தா & பில்லிங்",
+  "currentPlan": "தற்போதைய திட்டம்",
+  "manageSubscription": "உங்கள் சந்தாவை நிர்வகிக்கவும்",
+  "invoices": "பில்லுகள்",
+  "viewInvoices": "GST பில்ல்கள் மற்றும் கட்டண வரலாறு பார்க்கவும்",
+  "paymentMethod": "கட்டண முறை",
+
+  "gstSettings": "GST அமைப்புகள்",
+  "gstDescription": "GSTIN, வழங்கும் இடம், HSN குறியீடு",
+
+  "dangerZone": "ஆபத்து பகுதி",
+  "signOut": "வெளியேறு",
+  "logoutAccount": "உங்கள் கணக்கிலிருந்து வெளியேறு",
+
+  "deleteAccount": "கணக்கை நீக்கு",
+  "deleteAccountWarning": "உங்கள் கணக்கு மற்றும் அனைத்து தரவுகளும் நிரந்தரமாக நீக்கப்படும்"
+}

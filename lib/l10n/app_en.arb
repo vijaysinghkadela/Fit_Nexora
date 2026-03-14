@@ -1,0 +1,30 @@
+{
+  "settings": "Settings",
+  "account": "Account",
+  "changePassword": "Change Password",
+  "updateLoginCredentials": "Update your login credentials",
+  "role": "Role",
+
+  "gymProfile": "Gym Profile",
+  "gymNameLocation": "Gym name, logo, location",
+  "operatingHours": "Operating Hours",
+  "setWorkingHours": "Set your gym's working hours",
+  "language": "Language",
+
+  "subscriptionBilling": "Subscription & Billing",
+  "currentPlan": "Current Plan",
+  "manageSubscription": "Manage your subscription",
+  "invoices": "Invoices",
+  "viewInvoices": "View GST invoices & payment history",
+  "paymentMethod": "Payment Method",
+
+  "gstSettings": "GST Settings",
+  "gstDescription": "GSTIN, place of supply, HSN code",
+
+  "dangerZone": "Danger Zone",
+  "signOut": "Sign Out",
+  "logoutAccount": "Log out of your account",
+
+  "deleteAccount": "Delete Account",
+  "deleteAccountWarning": "Permanently delete your account and all data"
+}

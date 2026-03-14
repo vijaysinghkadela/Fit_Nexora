@@ -1,0 +1,30 @@
+{
+  "settings": "সেটিংস",
+  "account": "অ্যাকাউন্ট",
+  "changePassword": "পাসওয়ার্ড পরিবর্তন",
+  "updateLoginCredentials": "আপনার লগইন তথ্য আপডেট করুন",
+  "role": "ভূমিকা",
+
+  "gymProfile": "জিম প্রোফাইল",
+  "gymNameLocation": "জিমের নাম, লোগো, অবস্থান",
+  "operatingHours": "কার্য সময়",
+  "setWorkingHours": "আপনার জিমের কাজের সময় নির্ধারণ করুন",
+  "language": "ভাষা",
+
+  "subscriptionBilling": "সাবস্ক্রিপশন ও বিলিং",
+  "currentPlan": "বর্তমান প্ল্যান",
+  "manageSubscription": "আপনার সাবস্ক্রিপশন পরিচালনা করুন",
+  "invoices": "ইনভয়েস",
+  "viewInvoices": "GST ইনভয়েস ও পেমেন্ট ইতিহাস দেখুন",
+  "paymentMethod": "পেমেন্ট পদ্ধতি",
+
+  "gstSettings": "GST সেটিংস",
+  "gstDescription": "GSTIN, সরবরাহ স্থান, HSN কোড",
+
+  "dangerZone": "ডেঞ্জার জোন",
+  "signOut": "সাইন আউট",
+  "logoutAccount": "আপনার অ্যাকাউন্ট থেকে লগ আউট করুন",
+
+  "deleteAccount": "অ্যাকাউন্ট মুছুন",
+  "deleteAccountWarning": "আপনার অ্যাকাউন্ট এবং সব ডেটা স্থায়ীভাবে মুছে যাবে"
+}

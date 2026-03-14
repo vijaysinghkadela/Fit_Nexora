@@ -16,6 +16,7 @@ class AppConstants {
   static const String clientsTable = 'clients';
   static const String membershipsTable = 'memberships';
   static const String subscriptionsTable = 'subscriptions';
+  static const String aiUsageTable = 'ai_usage';
 
   // Storage Buckets
   static const String avatarsBucket = 'avatars';

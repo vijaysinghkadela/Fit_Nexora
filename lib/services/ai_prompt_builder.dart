@@ -7,10 +7,15 @@ class AiPromptBuilder {
   static String? _cachedSystemPrompt;
 
   /// Load the master system prompt from assets.
-  /// Call once at app startup, then use [buildPrompt] for each API call.
+  /// Falls back to empty string if the asset file is missing.
   static Future<String> loadSystemPrompt() async {
-    _cachedSystemPrompt ??=
-        await rootBundle.loadString('lib/config/ai_system_prompt.txt');
+    if (_cachedSystemPrompt != null) return _cachedSystemPrompt!;
+    try {
+      _cachedSystemPrompt =
+          await rootBundle.loadString('lib/config/ai_system_prompt.txt');
+    } catch (_) {
+      _cachedSystemPrompt = '';
+    }
     return _cachedSystemPrompt!;
   }
 

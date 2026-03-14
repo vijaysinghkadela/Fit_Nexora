@@ -12,14 +12,6 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: true,
-    redirect: (context, state) {
-      if (state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register' ||
-          state.matchedLocation == '/') {
-        return '/dashboard';
-      }
-      return null;
-    },
     routes: [
       GoRoute(
         path: '/',

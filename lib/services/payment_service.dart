@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
 import '../config/plan_limits.dart';
+import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/subscription_model.dart';
 
@@ -19,7 +20,7 @@ class PaymentService {
   /// Get the current subscription for a gym.
   Future<Subscription?> getCurrentSubscription(String gymId) async {
     final data = await _client
-        .from('subscriptions')
+        .from(AppConstants.subscriptionsTable)
         .select()
         .eq('gym_id', gymId)
         .order('created_at', ascending: false)
@@ -85,11 +86,11 @@ class PaymentService {
     };
 
     final data =
-        await _client.from('subscriptions').insert(subData).select().single();
+        await _client.from(AppConstants.subscriptionsTable).insert(subData).select().single();
 
     // Update gym's plan_tier
     await _client
-        .from('gyms')
+        .from(AppConstants.gymsTable)
         .update({'plan_tier': plan.value}).eq('id', gymId);
 
     return Subscription.fromJson(data);
@@ -121,7 +122,7 @@ class PaymentService {
     };
 
     final data = await _client
-        .from('subscriptions')
+        .from(AppConstants.subscriptionsTable)
         .update(updateData)
         .eq('id', current.id)
         .select()
@@ -129,7 +130,7 @@ class PaymentService {
 
     // Update gym's plan_tier
     await _client
-        .from('gyms')
+        .from(AppConstants.gymsTable)
         .update({'plan_tier': newPlan.value}).eq('id', gymId);
 
     return Subscription.fromJson(data);
@@ -140,13 +141,13 @@ class PaymentService {
     final current = await getCurrentSubscription(gymId);
     if (current == null) return;
 
-    await _client.from('subscriptions').update({
+    await _client.from(AppConstants.subscriptionsTable).update({
       'status': 'cancelled',
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', current.id);
 
     // Downgrade gym to basic
-    await _client.from('gyms').update({'plan_tier': 'basic'}).eq('id', gymId);
+    await _client.from(AppConstants.gymsTable).update({'plan_tier': 'basic'}).eq('id', gymId);
   }
 
   // ─── TRIAL MANAGEMENT ──────────────────────────────────────────────
@@ -189,7 +190,7 @@ class PaymentService {
         : DateTime(now.year, now.month + 1, now.day);
 
     final data = await _client
-        .from('subscriptions')
+        .from(AppConstants.subscriptionsTable)
         .update({
           'status': 'active',
           'billing_interval': interval.value,
@@ -215,7 +216,7 @@ class PaymentService {
 
     final newTotal = (current.overageCharges ?? 0) + amount;
 
-    await _client.from('subscriptions').update({
+    await _client.from(AppConstants.subscriptionsTable).update({
       'overage_charges': newTotal,
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', current.id);

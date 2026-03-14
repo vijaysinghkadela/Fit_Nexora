@@ -11,14 +11,19 @@ import 'ai_prompt_builder.dart';
 String? _masterSystemPrompt;
 
 /// Load the master system prompt. Call once at app startup.
+/// Falls back to empty string if the asset file is missing.
 Future<void> loadMasterPrompt() async {
-  _masterSystemPrompt ??=
-      await rootBundle.loadString('lib/config/ai_system_prompt.txt');
+  if (_masterSystemPrompt != null) return;
+  try {
+    _masterSystemPrompt =
+        await rootBundle.loadString('lib/config/ai_system_prompt.txt');
+  } catch (_) {
+    _masterSystemPrompt = '';
+  }
 }
 
 /// The cached master prompt.
-// ignore: non_constant_identifier_names
-String get MASTER_SYSTEM_PROMPT => _masterSystemPrompt ?? '';
+String get masterSystemPrompt => _masterSystemPrompt ?? '';
 
 // ─── MODEL ROUTING (Quota-Aware) ─────────────────────────────────────────────
 
@@ -68,7 +73,7 @@ Future<String> gymOSAI({
     body: jsonEncode({
       'model': model,
       'max_tokens': 4096,
-      'system': MASTER_SYSTEM_PROMPT,
+      'system': masterSystemPrompt,
       'messages': [
         ...conversationHistory,
         {

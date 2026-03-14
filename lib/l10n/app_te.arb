@@ -1,0 +1,30 @@
+{
+  "settings": "సెట్టింగ్స్",
+  "account": "ఖాతా",
+  "changePassword": "పాస్‌వర్డ్ మార్చండి",
+  "updateLoginCredentials": "మీ లాగిన్ వివరాలను నవీకరించండి",
+  "role": "పాత్ర",
+
+  "gymProfile": "జిమ్ ప్రొఫైల్",
+  "gymNameLocation": "జిమ్ పేరు, లోగో, స్థానం",
+  "operatingHours": "పని గంటలు",
+  "setWorkingHours": "మీ జిమ్ పని సమయాన్ని సెట్ చేయండి",
+  "language": "భాష",
+
+  "subscriptionBilling": "సబ్‌స్క్రిప్షన్ & బిల్లింగ్",
+  "currentPlan": "ప్రస్తుత ప్లాన్",
+  "manageSubscription": "మీ సబ్‌స్క్రిప్షన్‌ను నిర్వహించండి",
+  "invoices": "ఇన్వాయిసులు",
+  "viewInvoices": "GST ఇన్వాయిసులు మరియు చెల్లింపు చరిత్రను చూడండి",
+  "paymentMethod": "చెల్లింపు విధానం",
+
+  "gstSettings": "GST సెట్టింగ్స్",
+  "gstDescription": "GSTIN, సరఫరా స్థలం, HSN కోడ్",
+
+  "dangerZone": "ప్రమాద ప్రాంతం",
+  "signOut": "సైన్ అవుట్",
+  "logoutAccount": "మీ ఖాతా నుండి లాగ్ అవుట్ చేయండి",
+
+  "deleteAccount": "ఖాతాను తొలగించండి",
+  "deleteAccountWarning": "మీ ఖాతా మరియు అన్ని డేటా శాశ్వతంగా తొలగించబడుతుంది"
+}

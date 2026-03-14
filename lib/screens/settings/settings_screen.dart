@@ -2,11 +2,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import '../../core/constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/locale_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Settings screen — gym profile, plan management, GST, account.
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -17,18 +19,23 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     final currentUser = ref.watch(currentUserProvider);
     final gym = ref.watch(selectedGymProvider);
 
     return CustomScrollView(
       slivers: [
+
+        /// APP BAR
         SliverAppBar(
           floating: true,
           backgroundColor: AppColors.bgDark,
           title: Text(
-            'Settings',
+            t.settings,
             style: GoogleFonts.inter(
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -37,13 +44,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
-        // ─── Account Section ──────────────────────────────────
+        /// ACCOUNT
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
           sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('Account'),
+            child: _buildSectionHeader(t.account),
           ),
         ),
+
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           sliver: SliverToBoxAdapter(
@@ -52,41 +60,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
+
                     _buildSettingTile(
                       icon: Icons.person_rounded,
                       title: currentUser.value?.fullName ?? 'User',
                       subtitle: currentUser.value?.email ?? '',
-                      trailing: const Text('Edit',
-                          style: TextStyle(color: AppColors.primary)),
+                      trailing: const Text(
+                        'Edit',
+                        style: TextStyle(color: AppColors.primary),
+                      ),
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.security_rounded,
-                      title: 'Change Password',
-                      subtitle: 'Update your login credentials',
+                      title: t.changePassword,
+                      subtitle: t.updateLoginCredentials,
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.badge_rounded,
-                      title: 'Role',
+                      title: t.role,
                       subtitle: currentUser.value?.globalRole.label ?? 'Client',
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          currentUser.value?.globalRole.label.toUpperCase() ??
-                              'CLIENT',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -95,13 +93,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
-        // ─── Gym Profile ──────────────────────────────────────
+        /// GYM PROFILE
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
           sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('Gym Profile'),
+            child: _buildSectionHeader(t.gymProfile),
           ),
         ),
+
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           sliver: SliverToBoxAdapter(
@@ -110,26 +109,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
+
                     _buildSettingTile(
                       icon: Icons.store_rounded,
                       title: gym?.name ?? 'Your Gym',
-                      subtitle: 'Gym name, logo, location',
-                      trailing: const Text('Edit',
-                          style: TextStyle(color: AppColors.primary)),
+                      subtitle: t.gymNameLocation,
+                      trailing: const Text(
+                        'Edit',
+                        style: TextStyle(color: AppColors.primary),
+                      ),
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.schedule_rounded,
-                      title: 'Operating Hours',
-                      subtitle: 'Set your gym\'s working hours',
+                      title: t.operatingHours,
+                      subtitle: t.setWorkingHours,
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
+                    /// LANGUAGE
                     _buildSettingTile(
                       icon: Icons.language_rounded,
-                      title: 'Language',
-                      subtitle: 'English',
-                      trailing: const Icon(Icons.chevron_right_rounded,
-                          color: AppColors.textMuted, size: 20),
+                      title: t.language,
+                      subtitle: _getCurrentLanguageName(),
+                      onTap: () => _showLanguagePicker(context),
                     ),
                   ],
                 ),
@@ -138,13 +144,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
-        // ─── Subscription & Billing ──────────────────────────
+        /// BILLING
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
           sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('Subscription & Billing'),
+            child: _buildSectionHeader(t.subscriptionBilling),
           ),
         ),
+
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           sliver: SliverToBoxAdapter(
@@ -153,44 +160,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
+
                     _buildSettingTile(
                       icon: Icons.workspace_premium_rounded,
-                      title: 'Current Plan',
-                      subtitle: 'Manage your subscription',
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: AppColors.accent.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          'BASIC',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.accent,
-                          ),
-                        ),
-                      ),
+                      title: t.currentPlan,
+                      subtitle: t.manageSubscription,
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.receipt_long_rounded,
-                      title: 'Invoices',
-                      subtitle: 'View GST invoices & payment history',
+                      title: t.invoices,
+                      subtitle: t.viewInvoices,
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.credit_card_rounded,
-                      title: 'Payment Method',
+                      title: t.paymentMethod,
                       subtitle: 'Stripe / Razorpay',
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.description_rounded,
-                      title: 'GST Settings',
-                      subtitle: 'GSTIN, place of supply, HSN code',
+                      title: t.gstSettings,
+                      subtitle: t.gstDescription,
                     ),
                   ],
                 ),
@@ -199,52 +197,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
-        // ─── AI Configuration ────────────────────────────────
+        /// SIGN OUT
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
           sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('AI Configuration'),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _buildSettingTile(
-                      icon: Icons.auto_awesome,
-                      title: 'AI Model',
-                      subtitle: 'Claude Haiku (Pro) / Opus (Elite)',
-                    ),
-                    const Divider(color: AppColors.divider, height: 1),
-                    _buildSettingTile(
-                      icon: Icons.data_usage_rounded,
-                      title: 'AI Usage',
-                      subtitle: 'Token budget & overage settings',
-                    ),
-                    const Divider(color: AppColors.divider, height: 1),
-                    _buildSettingTile(
-                      icon: Icons.tune_rounded,
-                      title: 'AI Preferences',
-                      subtitle: 'Response language, tone, detail level',
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 400.ms).fadeIn(),
+            child: _buildSectionHeader(t.dangerZone),
           ),
         ),
 
-        // ─── Danger Zone ─────────────────────────────────────
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('Danger Zone'),
-          ),
-        ),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           sliver: SliverToBoxAdapter(
@@ -253,20 +213,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
+
                     _buildSettingTile(
                       icon: Icons.logout_rounded,
-                      title: 'Sign Out',
-                      subtitle: 'Log out of your account',
+                      title: t.signOut,
+                      subtitle: t.logoutAccount,
                       titleColor: AppColors.warning,
                       onTap: () async {
                         await ref.read(currentUserProvider.notifier).signOut();
                       },
                     ),
+
                     const Divider(color: AppColors.divider, height: 1),
+
                     _buildSettingTile(
                       icon: Icons.delete_forever_rounded,
-                      title: 'Delete Account',
-                      subtitle: 'Permanently delete your account and all data',
+                      title: t.deleteAccount,
+                      subtitle: t.deleteAccountWarning,
                       titleColor: AppColors.error,
                     ),
                   ],
@@ -276,75 +239,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
-        // ─── Legal & Compliance ──────────────────────────────
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader('Legal & Compliance'),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _buildSettingTile(
-                      icon: Icons.gavel_rounded,
-                      title: 'Terms of Service',
-                      subtitle: 'Read our terms of service agreement',
-                      onTap: () => _launchURL('https://manglamtech.com/terms'),
-                    ),
-                    const Divider(color: AppColors.divider, height: 1),
-                    _buildSettingTile(
-                      icon: Icons.privacy_tip_rounded,
-                      title: 'Privacy Policy',
-                      subtitle: 'Read how we handle and protect your data',
-                      onTap: () =>
-                          _launchURL('https://manglamtech.com/privacy'),
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 550.ms).fadeIn(),
-          ),
-        ),
-
-        // ─── App Info ────────────────────────────────────────
-        SliverPadding(
-          padding: const EdgeInsets.all(20),
-          sliver: SliverToBoxAdapter(
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    'GymOS v0.1.0',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'AI-Powered Gym Management',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: AppColors.textMuted.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ).animate(delay: 600.ms).fadeIn(),
-          ),
-        ),
-
         const SliverToBoxAdapter(child: SizedBox(height: 20)),
       ],
     );
   }
 
+  /// Section Header
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
@@ -357,6 +257,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  /// Settings Tile
   Widget _buildSettingTile({
     required IconData icon,
     required String title,
@@ -370,49 +271,99 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       splashColor: AppColors.primary.withValues(alpha: 0.1),
-      leading: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: titleColor != null
-              ? titleColor.withValues(alpha: 0.1)
-              : AppColors.bgInput,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: titleColor != null
-                ? titleColor.withValues(alpha: 0.2)
-                : AppColors.border.withValues(alpha: 0.5),
-          ),
-        ),
-        child: Icon(icon, color: titleColor ?? AppColors.primary, size: 20),
-      ),
-      title: Text(
-        title,
-        style: GoogleFonts.inter(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          color: titleColor ?? AppColors.textPrimary,
-        ),
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text(
-          subtitle,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-          ),
-        ),
-      ),
+      leading: Icon(icon, color: titleColor ?? AppColors.primary),
+      title: Text(title),
+      subtitle: Text(subtitle),
       trailing: trailing ??
           const Icon(Icons.chevron_right_rounded,
               color: AppColors.textMuted, size: 20),
     );
   }
 
-  Future<void> _launchURL(String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+  /// CURRENT LANGUAGE NAME
+  String _getCurrentLanguageName() {
+    final locale = ref.watch(localeProvider);
+
+    switch (locale.languageCode) {
+      case 'hi':
+        return 'हिन्दी';
+      case 'bn':
+        return 'বাংলা';
+      case 'ta':
+        return 'தமிழ்';
+      case 'te':
+        return 'తెలుగు';
+      case 'mr':
+        return 'मराठी';
+      default:
+        return 'English';
     }
   }
+
+  /// LANGUAGE PICKER
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, _) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                ListTile(
+                  title: const Text('English'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('en'));
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Hindi'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('hi'));
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Tamil'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('ta'));
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Telugu'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('te'));
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Marathi'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('mr'));
+                    Navigator.pop(context);
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Bengali'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('bn'));
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
 }
