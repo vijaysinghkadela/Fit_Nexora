@@ -28,12 +28,10 @@ import '../screens/pro/pro_nutrition_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
 import '../core/enums.dart';
 
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /// Reusable fade transition page builder.
-Page<void> _fadePage(GoRouterState state, Widget child) =>
-    CustomTransitionPage(
+Page<void> _fadePage(GoRouterState state, Widget child) => CustomTransitionPage(
       key: state.pageKey,
       child: child,
       transitionsBuilder: (_, animation, __, child) =>
@@ -142,8 +140,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         name: 'login',
-        pageBuilder: (context, state) =>
-            _fadePage(state, const LoginScreen()),
+        pageBuilder: (context, state) => _fadePage(state, const LoginScreen()),
       ),
       GoRoute(
         path: '/register',

@@ -80,7 +80,7 @@ abstract class PagedStateNotifier<T> extends StateNotifier<PagedListState<T>> {
   Future<void> loadInitial() async {
     if (_busy) return;
     _busy = true;
-    state = state.copyWith(
+    state = PagedListState<T>(
       items: const [],
       isInitialLoading: true,
       isRefreshing: false,
@@ -91,18 +91,22 @@ abstract class PagedStateNotifier<T> extends StateNotifier<PagedListState<T>> {
     );
     try {
       final result = await fetchPage(0);
-      state = state.copyWith(
+      state = PagedListState<T>(
         items: result.items,
         isInitialLoading: false,
+        isRefreshing: false,
+        isLoadingMore: false,
         hasMore: result.hasMore,
         nextOffset: result.nextOffset,
         totalCount: result.totalCount,
         error: null,
       );
     } catch (error) {
-      state = state.copyWith(
+      state = PagedListState<T>(
         items: const [],
         isInitialLoading: false,
+        isRefreshing: false,
+        isLoadingMore: false,
         hasMore: true,
         nextOffset: 0,
         error: error,
@@ -121,9 +125,11 @@ abstract class PagedStateNotifier<T> extends StateNotifier<PagedListState<T>> {
     );
     try {
       final result = await fetchPage(0);
-      state = state.copyWith(
+      state = PagedListState<T>(
         items: result.items,
+        isInitialLoading: false,
         isRefreshing: false,
+        isLoadingMore: false,
         hasMore: result.hasMore,
         nextOffset: result.nextOffset,
         totalCount: result.totalCount,
@@ -154,8 +160,10 @@ abstract class PagedStateNotifier<T> extends StateNotifier<PagedListState<T>> {
     );
     try {
       final result = await fetchPage(state.nextOffset);
-      state = state.copyWith(
+      state = PagedListState<T>(
         items: [...state.items, ...result.items],
+        isInitialLoading: false,
+        isRefreshing: false,
         isLoadingMore: false,
         hasMore: result.hasMore,
         nextOffset: result.nextOffset,

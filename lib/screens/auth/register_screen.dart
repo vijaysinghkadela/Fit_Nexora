@@ -71,6 +71,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         }
       }
     } catch (e) {
+      debugPrint('Registration Error: $e');
       setState(() {
         _errorMessage = _friendlyError(e.toString());
       });
@@ -429,8 +430,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => setState(
-                              () => _selectedRole = UserRole.gymOwner),
+                          onTap: () =>
+                              setState(() => _selectedRole = UserRole.gymOwner),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             padding: const EdgeInsets.symmetric(vertical: 14),
@@ -443,8 +444,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 color: _selectedRole == UserRole.gymOwner
                                     ? AppColors.accent
                                     : AppColors.border.withValues(alpha: 0.5),
-                                width:
-                                    _selectedRole == UserRole.gymOwner ? 1.5 : 1,
+                                width: _selectedRole == UserRole.gymOwner
+                                    ? 1.5
+                                    : 1,
                               ),
                             ),
                             child: Column(
