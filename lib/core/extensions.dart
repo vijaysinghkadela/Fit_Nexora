@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../config/theme.dart';
 
 /// String extensions.
 extension StringExtension on String {
@@ -81,10 +82,13 @@ extension ContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => Theme.of(this).textTheme;
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
+  FitNexoraThemeTokens get fitTheme =>
+      Theme.of(this).extension<FitNexoraThemeTokens>()!;
   Size get screenSize => MediaQuery.sizeOf(this);
   bool get isMobile => screenSize.width < 600;
   bool get isTablet => screenSize.width >= 600 && screenSize.width < 1200;
   bool get isDesktop => screenSize.width >= 1200;
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 
   void showSnackBar(String message, {bool isError = false}) {
     ScaffoldMessenger.of(this).showSnackBar(

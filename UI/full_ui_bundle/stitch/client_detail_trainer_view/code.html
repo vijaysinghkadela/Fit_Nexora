@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-emerald": "#10b981",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0f0a1e",
+                        "surface-dark": "#1c162e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(45, 40, 57, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<div class="max-w-md mx-auto min-h-screen flex flex-col relative overflow-hidden">
+<!-- Header -->
+<header class="flex items-center p-4 justify-between sticky top-0 z-20 glass-panel mb-2">
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-100">arrow_back</span>
+</button>
+<h2 class="text-slate-100 text-lg font-bold tracking-tight">Client Details</h2>
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-100">more_vert</span>
+</button>
+</header>
+<!-- Profile Section -->
+<div class="px-4 py-6 flex flex-col items-center">
+<div class="relative mb-4">
+<div class="size-28 rounded-full border-4 border-primary/30 p-1">
+<div class="w-full h-full rounded-full bg-cover bg-center shadow-2xl" data-alt="Close up portrait of Sarah Jenkins smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzpm_k1IKxz8Z03iYtyQAB9e6hCIRqWd70S3Y_wgPb8vnR9moCOLdhXigqePA-8V9rXPOsh5B-uR4TE-e7Cv25yHtLiJjxVfZAN0YgVA7i31oXgpIIuzUhNSJS7DV-qVJp0Cplbgr754d3ZEksvYtpL7LcU4OD2f1ahYex7AEZEv9FmVoWMvj1ufALJXYK6zP9f45RpTAcfZLCOToEvpjJyVy-OYekfNcsUTMNJ0VDbU26uMUOgCT0cQAYjLbacK9yK04s92ziyIQ");'>
+</div>
+</div>
+<div class="absolute bottom-1 right-1 bg-accent-emerald size-5 rounded-full border-2 border-background-dark shadow-lg"></div>
+</div>
+<div class="text-center mb-6">
+<h1 class="text-2xl font-bold text-slate-100 mb-1">Sarah Jenkins</h1>
+<div class="flex items-center justify-center gap-2">
+<span class="bg-accent-emerald/20 text-accent-emerald text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Active Member</span>
+<span class="text-slate-400 text-sm">• Premium Plan</span>
+</div>
+</div>
+<div class="flex w-full gap-3">
+<button class="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-surface-dark text-slate-100 font-bold border border-white/5 hover:bg-surface-dark/80 transition-all">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+<span>Message</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+<span>Edit Profile</span>
+</button>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="px-4 grid grid-cols-3 gap-3 mb-8">
+<div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
+<p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Weight</p>
+<p class="text-slate-100 text-lg font-bold">64.5<span class="text-xs ml-0.5">kg</span></p>
+<span class="text-accent-emerald text-[11px] font-medium mt-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> 1.2
+                </span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
+<p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Body Fat</p>
+<p class="text-slate-100 text-lg font-bold">22.4<span class="text-xs ml-0.5">%</span></p>
+<span class="text-accent-emerald text-[11px] font-medium mt-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> 0.5
+                </span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center">
+<p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Adherence</p>
+<p class="text-slate-100 text-lg font-bold">95<span class="text-xs ml-0.5">%</span></p>
+<span class="text-accent-emerald text-[11px] font-medium mt-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 2
+                </span>
+</div>
+</div>
+<!-- Tabs -->
+<div class="px-4 border-b border-white/5 flex gap-8 mb-6 overflow-x-auto no-scrollbar">
+<button class="pb-3 border-b-2 border-primary text-primary font-bold text-sm whitespace-nowrap">Workouts</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-400 font-medium text-sm whitespace-nowrap hover:text-slate-200">Nutrition</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-400 font-medium text-sm whitespace-nowrap hover:text-slate-200">Activity</button>
+<button class="pb-3 border-b-2 border-transparent text-slate-400 font-medium text-sm whitespace-nowrap hover:text-slate-200">Goals</button>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 px-4 space-y-6 pb-32">
+<!-- Workouts Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-100 font-bold text-lg">Current Plan</h3>
+<button class="text-primary text-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        Assign New
+                    </button>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center gap-4 group cursor-pointer hover:bg-white/5 transition-colors">
+<div class="size-14 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">fitness_center</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-100 font-bold">Hypertrophy Split v2</p>
+<p class="text-slate-400 text-sm">Week 4 of 12 • 5 sessions/week</p>
+</div>
+<span class="material-symbols-outlined text-slate-500 group-hover:text-slate-300">chevron_right</span>
+</div>
+</section>
+<!-- Nutrition Preview -->
+<section class="space-y-4">
+<h3 class="text-slate-100 font-bold text-lg">Daily Nutrition</h3>
+<div class="glass-panel p-5 rounded-xl">
+<div class="flex justify-between items-end mb-4">
+<div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Target Calories</p>
+<p class="text-slate-100 text-2xl font-black">2,150 <span class="text-sm font-normal text-slate-400">kcal</span></p>
+</div>
+<div class="flex gap-1 items-center bg-accent-emerald/10 px-2 py-1 rounded text-accent-emerald text-[10px] font-bold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            ON TRACK
+                        </div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-bold text-slate-400 w-12">PROTEIN</span>
+<div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 85%;"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-100">160g</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-bold text-slate-400 w-12">CARBS</span>
+<div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-accent-emerald rounded-full" style="width: 60%;"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-100">210g</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-bold text-slate-400 w-12">FATS</span>
+<div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-orange-400 rounded-full" style="width: 45%;"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-100">65g</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Activity Preview -->
+<section class="space-y-4">
+<h3 class="text-slate-100 font-bold text-lg">Recent Logs</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-4 glass-panel p-3 rounded-xl">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-emerald">task_alt</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-100 text-sm font-bold">Leg Day (A)</p>
+<p class="text-slate-500 text-[12px]">Yesterday, 6:45 PM • 72 min</p>
+</div>
+<span class="text-accent-emerald font-bold text-sm">+420 XP</span>
+</div>
+<div class="flex items-center gap-4 glass-panel p-3 rounded-xl opacity-70">
+<div class="size-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400">restaurant</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-100 text-sm font-bold">Nutrition Check-in</p>
+<p class="text-slate-500 text-[12px]">Yesterday, 9:15 PM</p>
+</div>
+<span class="material-symbols-outlined text-slate-500">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Floating Action Button Area -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 z-30">
+<button class="w-full h-14 bg-primary text-white font-bold text-lg rounded-2xl shadow-2xl shadow-primary/40 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+                Log Progress Check-in
+            </button>
+</div>
+<!-- Bottom Navigation Spacer -->
+<div class="h-24"></div>
+<!-- Bottom Bar (Navigation from components) -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-40">
+<div class="flex gap-2 border-t border-white/5 bg-surface-dark px-4 pb-6 pt-3 rounded-t-3xl shadow-2xl">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px] fill-[1]">group</span>
+</div>
+<p class="text-xs font-bold leading-normal tracking-wide">Clients</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">fitness_center</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Library</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">calendar_month</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Schedule</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-wide">Settings</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

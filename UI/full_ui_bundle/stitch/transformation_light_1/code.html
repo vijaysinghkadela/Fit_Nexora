@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "accent": "#8b5cf6",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .comparison-slider { position: relative; height: 400px; width: 100%; overflow: hidden; }
+        .comparison-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background: white; cursor: ew-resize; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .comparison-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; items-center; justify-center; z-index: 11; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-background-light dark:bg-background-dark shadow-xl">
+<header class="flex items-center p-4 justify-between sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Master Tier Journey</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<section class="px-4 py-6 text-center">
+<div class="relative inline-block">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 mx-auto border-4 border-primary/20" data-alt="Professional profile portrait of an athlete" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1n9hC0haJSr5oqPvQR8dTOF4bpMlpSCiVbSb7rwY-w1H7mTtFJ7OF0CRO93GhoSPJczSmG4UJmr58EPNnpJX2gEiOS2g3jsAfjdr2U4zTH_sAG8sK2pkZfvCbx69520NBT9HOzuSv1b-1AtHqfSnFvSqVxcUf24zAZZGjjgRDfbptQsh8E4EkftszSJIKI26VyUv9-35B6vOd7STGU4NTAPotAZVsdlwT0A1ENvh4pJWRrPsK4YP0Ho1YCKZ6H4-LB47RfvD_9Ho");'></div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-2 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-sm">verified</span>
+</div>
+</div>
+<h1 class="mt-4 text-2xl font-bold tracking-tight">Alex Rivers</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">12-Month Transformation • Elite Member</p>
+</section>
+<section class="px-4 mb-8">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold tracking-tight">Visual Comparison</h3>
+<span class="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded">Interactive</span>
+</div>
+<div class="comparison-slider rounded-xl overflow-hidden shadow-2xl relative">
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-alt="Athletic male fitness before photo front view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAeDvlvKYDewlaAYM7npKikUewLQ4HF-rddE07Aabgd3TR7Bgfv41lATnilOSDtPjj9KwE4bKLceKnNb8w4_KOZ7dLc7bv4HIM1G8KrXB2m4PnHPPzaBdP9n8UwezP30nDRyErObaWeQgGpBMkoM-bEq5zVBN4jhgSoyYmNl1CB-s2vkc9Itu6UxvxTq9a2Blj6WeJTObZ0mw12-NB_EWz_aU7MsMAs7s6D2RzcPJr37ZAVoQhKIqRFlzWV8oi0htUQLIOVOVF5osA');">
+<div class="absolute bottom-4 left-4 bg-black/40 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold uppercase">Then (Jan)</div>
+</div>
+<div class="absolute inset-0 w-1/2 h-full bg-cover bg-center overflow-hidden border-r-2 border-white/50" data-alt="Athletic male fitness after photo front view showing muscle definition" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwygwg1KxjfICcZvjPFWyvv2eex7JjEniAkAuX73hOuhKB0xho8tzq23zUhDfWrpyzMH3QG_GJAwADcfPRZB-0bRGOd7QM5ToRXQBhKhdeJLFiDSkP9seyfUX3pDQzVlTNQwFdqSo2r3DGlv32WYVCMO1tIETnbrTRhay4AhpwVaFVgE4piaGsH73Sm8V7YBYo29B-BmXMXv9QByf7l9lT1Z-GDcftF5gZovX9ZKYcM5CD8bdgmYduBc_Q7sk7S0au6j8_Nq-8hQg');">
+<div class="absolute bottom-4 left-4 bg-primary/80 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap">Now (Dec)</div>
+</div>
+<div class="comparison-divider" style="left: 50%;">
+<div class="comparison-handle">
+<span class="material-symbols-outlined text-slate-800">unfold_more_double</span>
+</div>
+</div>
+</div>
+</section>
+<section class="px-4 mb-8">
+<h3 class="text-lg font-bold tracking-tight mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">insights</span>
+                    AI Muscle Density Metrics
+                </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-center">
+<div class="relative size-24 mb-3">
+<svg class="size-full" viewbox="0 0 36 36">
+<circle class="stroke-slate-100 dark:stroke-slate-700" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-accent" cx="18" cy="18" fill="none" r="16" stroke-dasharray="85, 100" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-lg font-bold text-accent">+24%</span>
+</div>
+</div>
+<p class="text-sm font-semibold">Upper Body</p>
+<p class="text-xs text-slate-500">Density Growth</p>
+</div>
+<div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-center">
+<div class="relative size-24 mb-3">
+<svg class="size-full" viewbox="0 0 36 36">
+<circle class="stroke-slate-100 dark:stroke-slate-700" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-accent" cx="18" cy="18" fill="none" r="16" stroke-dasharray="62, 100" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-lg font-bold text-accent">+18%</span>
+</div>
+</div>
+<p class="text-sm font-semibold">Lower Body</p>
+<p class="text-xs text-slate-500">Hypertrophy Index</p>
+</div>
+</div>
+</section>
+<section class="px-4 mb-8">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold tracking-tight">Timeline Grid</h3>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="aspect-square rounded-lg bg-cover bg-center bg-slate-200 relative group overflow-hidden" data-alt="Progress photo Month 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDYwvxQesgvawEZ8yN_DM12AEMYDeQSwbC21WCKyv_cLMrvGkSYUiIvUYTYh14TSeUIdRzFUn4HwT4f7qkKr8WzMZ-5c6oa-Ho3yIzbJACHBF0R2vc-rTUofva4vhbRS8AgV14VcS0bsqHVhq4HknCCNlOMo55eSNBGRw35Def3_3fYzXfPdKlvrjZsleCvsGoMDZIFAdORiAEHcs5-_H_piDRd34knsuI8ISGdyFq6zWopsEdhS6YZt8xCs5MgkQndigznJoXnGRw');">
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+<span class="text-[10px] text-white font-bold">JAN</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-cover bg-center bg-slate-200 relative group overflow-hidden" data-alt="Progress photo Month 4" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4luJLdKSAo1t4lebJ6fcQFtViA5LO-gYDjt90LW3Nrbknd-yv78NLKUpByO4MbvstyWYB5P1asXhhTwvO6YK_JTf-aJ5XqH8EP80R9WykqOR-3IKSHZk8V4KAyCeSZ8jBthGNBHRgXgRYIX2NIEC3CF6608m_u8QCdrajbK9rasCwgqCH018XI94xZwuYcLcElqqPQbj9eE6x7G4ODnwfapckkWsinLIHy_LOBPkoD90vseu8HSozl4x_rN5MBsaUJ_K_Acf10Ck');">
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+<span class="text-[10px] text-white font-bold">APR</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-cover bg-center bg-slate-200 relative group overflow-hidden" data-alt="Progress photo Month 8" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBwHCwaExL0wloT7hAzKFL541qOhV0H3WZqtckkZGo8BMjlbyTIZgUSYs9HcYYZTyraLhV2ganfRXJuU_kkZyqhjGJGNEiMDUfaLfSVggqSdI-H8E-dxGylHPvDHDX3qOKc2KL8I6lXRoYujIdQu-ADl4apx1oyRg7ZTI4X_MfHemboaMJP6aZhCrG-6PN-x-su4vdgKDHcx6fIN98CTM2JF3S3W2u-VIa760FlKnfA0Hzcq3yu_dP6nMOHTYieNiE2xvZ3jEXvODU');">
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+<span class="text-[10px] text-white font-bold">AUG</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-cover bg-center bg-slate-200 relative group overflow-hidden" data-alt="Progress photo Month 10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCLDLfMScTiFGXTv_Du3JwLVt7GLdTuGNTE8qAPS4Utt6k9-xb8A-4K4jZ1mb_QoZg6c5HE7IBf058709Ism0kWiCAqz96kaxu1y-AQ2xmw5m3R4i26OzBDAcEnWVuUh3RBegnQnOxUB7UMRsPcXHqmtGCMUTQydoz3lkKC0s-q4EiTi1oJGVHOfhvezKAI6HGfBvmQjGme472NeJ_OdaLGyT4MFV6cCNHyS4fzfEC-zj90BQMAepKQWSUJ8daqNWK0543FY9wKhRA');">
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+<span class="text-[10px] text-white font-bold">OCT</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-cover bg-center bg-slate-200 relative group overflow-hidden" data-alt="Progress photo Month 11" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBD_OisLvoz-xnutLYgK-2akk4vA0Xrzhd6DKg-h2qAmvU9hXQf-dHl6AanU7ieuha-p06r_ieOP-49_V6dMWkoEmXKODUTOnSzNA-0uAp8GWXHLgyC5u-2YbfsIOriUGELnUKJ6YCJqGfs5gl8klqrs7fGdNXnpsEpnYO8U1ZYp8P5KYUHsiV-r0eMyhHCeHmi5UqwjGQd3_j73kH225Cwtao_HHD3vi8gFq9Ilhez0Qp88-UK5VtoFQTEzB6xvoV4FLooIumXdmk');">
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+<span class="text-[10px] text-white font-bold">NOV</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-primary/10 flex flex-col items-center justify-center border-2 border-dashed border-primary/30 cursor-pointer">
+<span class="material-symbols-outlined text-primary mb-1">add_a_photo</span>
+<span class="text-[10px] font-bold text-primary">DEC</span>
+</div>
+</div>
+</section>
+<section class="px-4">
+<div class="bg-gradient-to-br from-primary to-orange-600 p-6 rounded-2xl text-white shadow-lg">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-xl font-bold">Next Milestone</h4>
+<p class="text-white/80 text-sm mt-1">Maintenance &amp; Aesthetic Refinement</p>
+</div>
+<span class="material-symbols-outlined text-3xl opacity-50">trophy</span>
+</div>
+<div class="mt-6 w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="bg-white h-full" style="width: 75%;"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] font-bold uppercase tracking-widest opacity-80">
+<span>Current Stage</span>
+<span>Next Tier</span>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 z-30">
+<div class="flex justify-around items-center h-16 px-2">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-medium">Workouts</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-bold">analytics</span>
+<span class="text-[10px] font-bold">Progress</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="text-[10px] font-medium">Diet</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

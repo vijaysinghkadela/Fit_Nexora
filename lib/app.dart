@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config/routes.dart';
 import 'config/theme.dart';
+import 'config/theme_mode_provider.dart';
 import 'providers/locale_provider.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,15 +17,16 @@ class GymOSApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
-      title: 'GymOS — AI-Powered Gym Management',
+      title: 'FitNexora',
       debugShowCheckedModeBanner: false,
 
       /// THEME
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
 
       /// LANGUAGE
       locale: locale,

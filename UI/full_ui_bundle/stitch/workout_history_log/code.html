@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Workout History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0a0812",
+                        "emerald-custom": "#0bda6f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(45, 40, 57, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.2);
+        }
+        .glass-nav {
+            background: rgba(21, 16, 34, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 glass-nav border-b border-primary/20 px-4 py-4">
+<div class="flex items-center justify-between mb-4">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-slate-100">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-slate-100">Workout History</h1>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-slate-100">calendar_month</span>
+</button>
+</div>
+<!-- Horizontal Calendar Strip -->
+<div class="flex gap-4 overflow-x-auto no-scrollbar py-2">
+<div class="flex flex-col items-center min-w-[50px] gap-1">
+<span class="text-[10px] font-semibold uppercase opacity-50">Mon</span>
+<div class="size-10 flex items-center justify-center rounded-full text-sm">12</div>
+</div>
+<div class="flex flex-col items-center min-w-[50px] gap-1">
+<span class="text-[10px] font-semibold uppercase opacity-50">Tue</span>
+<div class="size-10 flex items-center justify-center rounded-full text-sm">13</div>
+</div>
+<div class="flex flex-col items-center min-w-[50px] gap-1">
+<span class="text-[10px] font-semibold uppercase opacity-50">Wed</span>
+<div class="size-10 flex items-center justify-center rounded-full bg-primary text-white font-bold shadow-lg shadow-primary/40">14</div>
+</div>
+<div class="flex flex-col items-center min-w-[50px] gap-1 text-primary">
+<span class="text-[10px] font-semibold uppercase">Thu</span>
+<div class="size-10 flex items-center justify-center rounded-full text-sm border border-primary/30">15</div>
+</div>
+<div class="flex flex-col items-center min-w-[50px] gap-1">
+<span class="text-[10px] font-semibold uppercase opacity-50">Fri</span>
+<div class="size-10 flex items-center justify-center rounded-full text-sm">16</div>
+</div>
+<div class="flex flex-col items-center min-w-[50px] gap-1">
+<span class="text-[10px] font-semibold uppercase opacity-50">Sat</span>
+<div class="size-10 flex items-center justify-center rounded-full text-sm">17</div>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-4 pt-6 space-y-8">
+<!-- At a Glance Summary Card -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold tracking-tight">At a Glance</h2>
+<span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">October 2023</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">fitness_center</span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Workouts</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-2xl font-bold">18</p>
+<p class="text-emerald-custom text-xs font-bold">+12%</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">weight</span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Volume (kg)</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-2xl font-bold">42.5k</p>
+<p class="text-emerald-custom text-xs font-bold">+5%</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">timer</span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Duration</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-2xl font-bold">22h 15m</p>
+<p class="text-emerald-custom text-xs font-bold">+8%</p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">local_fire_department</span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Calories</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-2xl font-bold">8.4k</p>
+<p class="text-emerald-custom text-xs font-bold">+15%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Personal Best Section -->
+<section>
+<div class="bg-gradient-to-r from-primary to-primary/60 p-0.5 rounded-xl shadow-lg shadow-primary/20">
+<div class="bg-background-dark/90 rounded-[calc(0.75rem-0.125rem)] p-4 flex items-center gap-4">
+<div class="size-12 bg-primary rounded-full flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+<div class="flex-1">
+<p class="text-[10px] font-bold text-primary uppercase tracking-widest">New Personal Best</p>
+<h3 class="font-bold text-slate-100">Bench Press: 115kg</h3>
+<p class="text-xs text-slate-400">Achieved during Upper Body Power session</p>
+</div>
+<span class="material-symbols-outlined text-primary">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Recent Sessions List -->
+<section class="space-y-4">
+<h2 class="text-lg font-bold tracking-tight">Recent Sessions</h2>
+<!-- Workout Card 1 -->
+<div class="glass-card rounded-xl overflow-hidden border-l-4 border-l-primary">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-bold text-lg leading-none mb-1">Upper Body Power</h3>
+<p class="text-xs text-slate-400">Oct 14 • 6:30 AM</p>
+</div>
+<div class="bg-emerald-custom/10 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-custom">bolt</span>
+<span class="text-[10px] font-bold text-emerald-custom uppercase">940 XP</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">schedule</span>
+<span class="text-sm font-medium">1h 12m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">weight</span>
+<span class="text-sm font-medium">12,450 kg</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-3 border-t border-primary/10">
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Bench Press</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Pull Ups</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Dips</span>
+<span class="text-[10px] font-medium text-primary">+3 more</span>
+</div>
+</div>
+</div>
+<!-- Workout Card 2 -->
+<div class="glass-card rounded-xl overflow-hidden border-l-4 border-l-emerald-custom">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-bold text-lg leading-none mb-1">HIIT Shred</h3>
+<p class="text-xs text-slate-400">Oct 12 • 5:45 PM</p>
+</div>
+<div class="bg-emerald-custom/10 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-custom">bolt</span>
+<span class="text-[10px] font-bold text-emerald-custom uppercase">720 XP</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">schedule</span>
+<span class="text-sm font-medium">45m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">local_fire_department</span>
+<span class="text-sm font-medium">580 kcal</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-3 border-t border-primary/10">
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Burpees</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Sprints</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Mountain Climbers</span>
+<span class="text-[10px] font-medium text-primary">+2 more</span>
+</div>
+</div>
+</div>
+<!-- Workout Card 3 -->
+<div class="glass-card rounded-xl overflow-hidden border-l-4 border-l-primary">
+<div class="p-4">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-bold text-lg leading-none mb-1">Leg Day Focus</h3>
+<p class="text-xs text-slate-400">Oct 10 • 7:15 AM</p>
+</div>
+<div class="bg-emerald-custom/10 px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-custom">bolt</span>
+<span class="text-[10px] font-bold text-emerald-custom uppercase">1,120 XP</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">schedule</span>
+<span class="text-sm font-medium">1h 25m</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-sm">weight</span>
+<span class="text-sm font-medium">15,800 kg</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-3 border-t border-primary/10">
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Squats</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Leg Press</span>
+<span class="text-[10px] font-medium bg-slate-800 px-2 py-1 rounded text-slate-300">Lunges</span>
+<span class="text-[10px] font-medium text-primary">+4 more</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-primary/20 px-4 pb-6 pt-3 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-slate-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">history</span>
+<span class="text-[10px] font-bold">History</span>
+</a>
+<a class="flex items-center justify-center -mt-10" href="#">
+<div class="size-14 bg-primary rounded-full flex items-center justify-center text-white shadow-xl shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-2xl">add</span>
+</div>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">group</span>
+<span class="text-[10px] font-medium">Social</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</body></html>

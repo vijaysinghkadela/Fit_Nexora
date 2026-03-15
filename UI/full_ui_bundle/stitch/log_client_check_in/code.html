@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Log Session</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0f0a1e",
+                        "glass-dark": "rgba(31, 27, 39, 0.6)",
+                        "accent-emerald": "#10b981",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glassmorphism {
+            background: rgba(40, 32, 60, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.2);
+        }
+        .glowing-button {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #895af6;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(137, 90, 246, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark overflow-x-hidden pb-24">
+<!-- Header -->
+<div class="sticky top-0 z-50 flex items-center bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-primary/10">
+<div class="text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/20 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">close</span>
+</div>
+<h2 class="text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Log Session</h2>
+<div class="flex w-10 items-center justify-end">
+<div class="text-primary">
+<span class="material-symbols-outlined">fitbit</span>
+</div>
+</div>
+</div>
+<div class="px-4 py-6 space-y-6">
+<!-- Client Selection Summary -->
+<section>
+<h3 class="text-primary text-xs font-bold uppercase tracking-widest mb-3 px-1">Client</h3>
+<div class="flex items-center gap-4 glassmorphism p-4 rounded-xl">
+<div class="relative shrink-0">
+<img class="aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary/30" data-alt="Professional portrait of Sarah Jenkins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQBR1VlSbp3seOAa7BzYwh8etMJUylFrlvqLvq1_kgmB3DGIiLPFvy40UYebAMEmc8Cfz-tn0wYrCRHAifRphwPUWC4NxU8q5nyvcdg3-NaSfrr9zj66C862tNbwhZS8ji4Pwjx6vKDH42yK1ba6u5IO3JiEVQ4qduWN1sNWgJCXUKC32CpG_ZlWRdKC1ts83YoLog4C7Wb1bzpZQezDTGIGS3DJO95wG9gmtGsa8cYki4RE6rXksmdep5cLEaOXDJyvnuE-TJ-Nw"/>
+<div class="absolute bottom-0 right-0 h-4 w-4 bg-accent-emerald border-2 border-background-dark rounded-full"></div>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-slate-100 text-base font-semibold leading-normal">Sarah Jenkins</p>
+<p class="text-slate-400 text-sm font-normal leading-normal">Personal Training • HIIT Focus</p>
+</div>
+<div class="shrink-0 text-slate-400">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Session Details Section -->
+<section class="space-y-4">
+<h3 class="text-primary text-xs font-bold uppercase tracking-widest mb-1 px-1">Session Details</h3>
+<div class="grid grid-cols-2 gap-3">
+<label class="flex flex-col gap-2">
+<span class="text-slate-300 text-xs font-medium px-1">Date</span>
+<div class="relative">
+<input class="w-full rounded-xl bg-primary/10 border-primary/20 text-slate-100 text-sm focus:ring-primary focus:border-primary h-12 px-4 appearance-none" type="date" value="2023-10-24"/>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-slate-300 text-xs font-medium px-1">Duration</span>
+<select class="w-full rounded-xl bg-primary/10 border-primary/20 text-slate-100 text-sm focus:ring-primary focus:border-primary h-12 px-4">
+<option>45 mins</option>
+<option selected="">60 mins</option>
+<option>90 mins</option>
+</select>
+</label>
+</div>
+<label class="flex flex-col gap-2">
+<span class="text-slate-300 text-xs font-medium px-1">Workout Type</span>
+<select class="w-full rounded-xl bg-primary/10 border-primary/20 text-slate-100 text-sm focus:ring-primary focus:border-primary h-12 px-4">
+<option>Strength Training</option>
+<option selected="">HIIT &amp; Cardio</option>
+<option>Mobility &amp; Recovery</option>
+<option>Functional Fitness</option>
+</select>
+</label>
+</section>
+<!-- Performance Metrics -->
+<section class="space-y-6">
+<h3 class="text-primary text-xs font-bold uppercase tracking-widest mb-1 px-1">Performance Metrics</h3>
+<div class="glassmorphism p-5 rounded-xl space-y-8">
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-slate-200 text-sm font-medium">Session Intensity</span>
+<span class="text-primary text-lg font-bold">8/10</span>
+</div>
+<input class="w-full h-2 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary" max="10" min="1" type="range" value="8"/>
+<div class="flex justify-between text-[10px] text-slate-500 font-bold uppercase">
+<span>Light</span>
+<span>Moderate</span>
+<span>Extreme</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<span class="text-slate-200 text-sm font-medium">Client Effort</span>
+<span class="text-primary text-lg font-bold">High</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 rounded-lg bg-primary/10 border border-primary/20 text-slate-400 text-xs font-bold">LOW</button>
+<button class="py-2 rounded-lg bg-primary/10 border border-primary/20 text-slate-400 text-xs font-bold">MEDIUM</button>
+<button class="py-2 rounded-lg bg-primary border border-primary text-slate-100 text-xs font-bold">HIGH</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Trainer Notes -->
+<section class="space-y-2">
+<h3 class="text-primary text-xs font-bold uppercase tracking-widest px-1">Trainer Notes</h3>
+<textarea class="w-full rounded-xl bg-primary/5 border-primary/20 text-slate-100 text-sm focus:ring-primary focus:border-primary p-4 placeholder:text-slate-600" placeholder="Sarah crushed the interval sprints today. Improved form on deadlifts, but watch the lower back fatigue in the 4th set..." rows="4"></textarea>
+</section>
+<!-- Photo Upload -->
+<section class="space-y-2">
+<h3 class="text-primary text-xs font-bold uppercase tracking-widest px-1">Workout Log / Progress Photo</h3>
+<div class="w-full h-32 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-3xl">add_a_photo</span>
+<span class="text-slate-400 text-xs font-medium">Tap to upload photo</span>
+</div>
+</section>
+</div>
+<!-- Sticky Footer Action -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-background-dark/90 backdrop-blur-xl border-t border-primary/10">
+<button class="w-full h-14 bg-accent-emerald text-background-dark font-bold rounded-xl flex items-center justify-center gap-2 transition-transform active:scale-95 glowing-button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                Complete Log
+            </button>
+</div>
+</div>
+</body></html>

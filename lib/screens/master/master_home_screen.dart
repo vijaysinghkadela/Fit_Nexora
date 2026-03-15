@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/elite_member_provider.dart';
 import '../../providers/master_member_provider.dart';
@@ -14,394 +15,618 @@ import '../elite/elite_paywall_screen.dart';
 import '../member/member_paywall_screen.dart';
 import '../pro/pro_paywall_screen.dart';
 import 'master_paywall_screen.dart';
-import 'master_ai_coach_screen.dart';
-import 'master_analytics_screen.dart';
-import 'master_recovery_screen.dart';
-import 'master_challenges_screen.dart';
-import 'master_live_sessions_screen.dart';
 
-/// Master Plan Home — 4-layer paywall gate + gold dashboard.
+/// Master tier home rebuilt around the stitched premium dashboard layout.
 class MasterHomeScreen extends ConsumerWidget {
   const MasterHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(memberHasAccessProvider).when(
-      loading: () => const _LoadScaffold(),
-      error: (_, __) => const MemberPaywallScreen(),
-      data: (ok) => !ok
-          ? const MemberPaywallScreen()
-          : ref.watch(memberHasProAccessProvider).when(
-              loading: () => const _LoadScaffold(),
-              error: (_, __) => const ProPaywallScreen(),
-              data: (ok) => !ok
-                  ? const ProPaywallScreen()
-                  : ref.watch(memberHasEliteAccessProvider).when(
-                      loading: () => const _LoadScaffold(),
-                      error: (_, __) => const ElitePaywallScreen(),
-                      data: (ok) => !ok
-                          ? const ElitePaywallScreen()
-                          : ref.watch(memberHasMasterAccessProvider).when(
-                              loading: () => const _LoadScaffold(),
-                              error: (_, __) => const MasterPaywallScreen(),
+          loading: () => const DashboardSkeletonScaffold(),
+          error: (_, __) => const MemberPaywallScreen(),
+          data: (ok) => !ok
+              ? const MemberPaywallScreen()
+              : ref.watch(memberHasProAccessProvider).when(
+                    loading: () => const DashboardSkeletonScaffold(),
+                    error: (_, __) => const ProPaywallScreen(),
+                    data: (ok) => !ok
+                        ? const ProPaywallScreen()
+                        : ref.watch(memberHasEliteAccessProvider).when(
+                              loading: () => const DashboardSkeletonScaffold(),
+                              error: (_, __) => const ElitePaywallScreen(),
                               data: (ok) => !ok
-                                  ? const MasterPaywallScreen()
-                                  : const _MasterDashboard(),
+                                  ? const ElitePaywallScreen()
+                                  : ref.watch(memberHasMasterAccessProvider).when(
+                                        loading: () =>
+                                            const DashboardSkeletonScaffold(),
+                                        error: (_, __) =>
+                                            const MasterPaywallScreen(),
+                                        data: (ok) => !ok
+                                            ? const MasterPaywallScreen()
+                                            : const _MasterDashboard(),
+                                      ),
                             ),
-                    ),
-            ),
-    );
+                  ),
+        );
   }
 }
-
-class _LoadScaffold extends StatelessWidget {
-  const _LoadScaffold();
-  @override
-  Widget build(BuildContext context) => const DashboardSkeletonScaffold();
-}
-
-// ─── Master Dashboard ─────────────────────────────────────────────────────────
 
 class _MasterDashboard extends ConsumerWidget {
   const _MasterDashboard();
 
-  static const _gold  = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user      = ref.watch(currentUserProvider).value;
+    final colors = context.fitTheme;
+    final user = ref.watch(currentUserProvider).value;
     final recoveryAsync = ref.watch(masterRecoveryScoreProvider);
-    final membershipAsync = ref.watch(memberMembershipProvider);
-    final nutritionAsync  = ref.watch(proTodayNutritionProvider);
-    final firstName = user?.fullName.split(' ').first ?? 'Master';
+    final nutritionAsync = ref.watch(proTodayNutritionProvider);
+    final firstName = ((user?.fullName ?? '').trim().isEmpty)
+        ? 'Alex'
+        : user!.fullName.split(' ').first;
+    final recoveryScore = recoveryAsync.maybeWhen(
+      data: (value) => value,
+      orElse: () => 0,
+    );
+
     Future<void> refreshAll() async {
-      ref.invalidate(memberMembershipProvider);
       ref.invalidate(masterRecoveryScoreProvider);
       ref.invalidate(proTodayNutritionProvider);
-      ref.invalidate(masterAnalyticsProvider);
       await Future.wait([
-        ref.read(memberMembershipProvider.future),
         ref.read(masterRecoveryScoreProvider.future),
         ref.read(proTodayNutritionProvider.future),
       ]);
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: refreshAll,
-          backgroundColor: AppColors.bgElevated,
-          color: AppColors.primary,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-          // ─── AppBar
-          SliverAppBar(
-            floating: true,
-            backgroundColor: AppColors.bgDark,
-            toolbarHeight: 90,
-            title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Text('Welcome back, ', style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textSecondary)),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [_gold, _orange]),
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [BoxShadow(color: _gold.withValues(alpha:0.5), blurRadius: 10)],
+      backgroundColor: colors.background,
+      body: RefreshIndicator(
+        onRefresh: refreshAll,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              floating: true,
+              backgroundColor: colors.background.withValues(alpha: 0.96),
+              title: Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      gradient: colors.brandGradient,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'F',
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.workspace_premium_rounded,
-                        color: Colors.black, size: 11),
-                    const SizedBox(width: 4),
-                    Text('MASTER', style: GoogleFonts.inter(
-                        fontSize: 9, fontWeight: FontWeight.w900,
-                        color: Colors.black, letterSpacing: 1.2)),
-                  ]),
+                  const SizedBox(width: 10),
+                  Text(
+                    'FitNexora',
+                    style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () => context.go('/master/analytics'),
+                  icon: const Icon(Icons.analytics_outlined),
                 ),
-              ]),
-              Text(firstName, style: GoogleFonts.inter(
-                  fontSize: 24, fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimary)),
-            ]),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.analytics_rounded, color: _gold),
-                tooltip: 'Analytics',
-                onPressed: () => _push(context, const MasterAnalyticsScreen()),
-              ),
-              const SizedBox(width: 4),
-            ],
-          ),
-
-          // ─── Membership + calorie strip
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: membershipAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (m) => m == null ? const SizedBox.shrink()
-                    : _MasterBanner(membership: m),
-              ),
-            ),
-          ),
-
-          // ─── Recovery ring
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: recoveryAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (score) => _RecoveryWidget(score: score),
-              ),
-            ),
-          ),
-
-          // ─── Feature grid
-          _sectionLbl('YOUR MASTER FEATURES'),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            sliver: SliverToBoxAdapter(child: _MasterGrid(context: context)),
-          ),
-
-          // ─── Today summary
-          _sectionLbl("TODAY'S SUMMARY"),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-            sliver: SliverToBoxAdapter(
-              child: nutritionAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (n) => GlassmorphicCard(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(children: [
-                      _summaryTile('Calories', '${n.calories.round()}',
-                          'kcal', AppColors.primary),
-                      _vDivider(),
-                      _summaryTile('Protein', '${n.protein.round()}',
-                          'g', AppColors.accent),
-                      _vDivider(),
-                      _summaryTile('Carbs', '${n.carbs.round()}',
-                          'g', AppColors.info),
-                      _vDivider(),
-                      _summaryTile('Fat', '${n.fat.round()}',
-                          'g', AppColors.warning),
-                    ]),
-                  ),
-                ).animate().fadeIn(),
-              ),
-            ),
-          ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _push(BuildContext ctx, Widget w) =>
-      Navigator.push(ctx, MaterialPageRoute(builder: (_) => w));
-
-  Widget _sectionLbl(String t) => SliverPadding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-        sliver: SliverToBoxAdapter(
-          child: Text(t, style: GoogleFonts.inter(
-              fontSize: 11, fontWeight: FontWeight.w700,
-              color: AppColors.textMuted, letterSpacing: 1.2)),
-        ),
-      );
-
-  Widget _summaryTile(String label, String val, String unit, Color c) =>
-      Expanded(child: Column(children: [
-        Text(val, style: GoogleFonts.inter(
-            fontSize: 18, fontWeight: FontWeight.w900, color: c)),
-        Text(unit, style: GoogleFonts.inter(fontSize: 10, color: c)),
-        const SizedBox(height: 2),
-        Text(label, style: GoogleFonts.inter(
-            fontSize: 10, color: AppColors.textMuted)),
-      ]));
-
-  Widget _vDivider() => Container(
-      width: 1, height: 40,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      color: AppColors.divider);
-}
-
-// ─── Feature Grid ─────────────────────────────────────────────────────────────
-
-class _MasterGrid extends StatelessWidget {
-  final BuildContext context;
-  const _MasterGrid({required this.context});
-
-  static const _gold   = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
-
-  void _push(Widget w) =>
-      Navigator.push(context, MaterialPageRoute(builder: (_) => w));
-
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      (Icons.smart_toy_rounded,          'AI Coach',     _gold,             () => _push(const MasterAiCoachScreen())),
-      (Icons.analytics_rounded,          'Analytics',    AppColors.primary, () => _push(const MasterAnalyticsScreen())),
-      (Icons.battery_charging_full_rounded,'Recovery',   AppColors.success, () => _push(const MasterRecoveryScreen())),
-      (Icons.emoji_events_rounded,        'Challenges',  _orange,           () => _push(const MasterChallengesScreen())),
-      (Icons.video_call_rounded,          'Live Sessions',AppColors.info,   () => _push(const MasterLiveSessionsScreen())),
-      (Icons.support_agent_rounded,       'Priority Chat',AppColors.accent, () => _push(const MasterLiveSessionsScreen())),
-    ];
-
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 1.1,
-      children: items.asMap().entries.map((e) {
-        final i = e.key;
-        final (icon, label, color, onTap) = e.value;
-        return GestureDetector(
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: color.withValues(alpha: 0.25)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color, size: 26),
-                const SizedBox(height: 6),
-                Text(label, textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
+                IconButton(
+                  onPressed: () => context.go('/settings'),
+                  icon: const Icon(Icons.settings_outlined),
+                ),
+                const SizedBox(width: 8),
               ],
             ),
-          ).animate(delay: (i * 50).ms).fadeIn().scale(begin: const Offset(0.9, 0.9)),
-        );
-      }).toList(),
-    );
-  }
-}
-
-// ─── Recovery Widget ──────────────────────────────────────────────────────────
-
-class _RecoveryWidget extends StatelessWidget {
-  final int score;
-  const _RecoveryWidget({required this.score});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = score >= 80
-        ? AppColors.success
-        : score >= 50
-            ? AppColors.warning
-            : AppColors.error;
-    final label = score >= 80 ? 'Fully Recovered' : score >= 50 ? 'Moderate' : 'Need Rest';
-
-    return GestureDetectorTip(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const MasterRecoveryScreen())),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            color.withValues(alpha: 0.12),
-            color.withValues(alpha: 0.04),
-          ]),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Row(children: [
-          SizedBox(
-            width: 60, height: 60,
-            child: Stack(alignment: Alignment.center, children: [
-              CircularProgressIndicator(
-                value: score / 100,
-                strokeWidth: 6,
-                backgroundColor: AppColors.bgElevated,
-                valueColor: AlwaysStoppedAnimation(color),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        gradient: colors.brandGradient,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        firstName[0].toUpperCase(),
+                        style: GoogleFonts.inter(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ELITE MEMBER',
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: colors.textMuted,
+                              letterSpacing: 1.3,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Welcome, $firstName',
+                            style: GoogleFonts.inter(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: colors.textPrimary,
+                              letterSpacing: -0.8,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.surface,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: colors.border),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'RANK',
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            '#12',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: colors.accent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text('$score', style: GoogleFonts.inter(
-                  fontSize: 15, fontWeight: FontWeight.w900, color: color)),
-            ]),
-          ),
-          const SizedBox(width: 16),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Recovery Score', style: GoogleFonts.inter(
-                fontSize: 13, color: AppColors.textSecondary)),
-            Text(label, style: GoogleFonts.inter(
-                fontSize: 18, fontWeight: FontWeight.w800, color: color)),
-            Text('Tap for personalised recovery plan', style: GoogleFonts.inter(
-                fontSize: 11, color: AppColors.textMuted)),
-          ])),
-          Icon(Icons.chevron_right_rounded, color: color),
-        ]),
-      ).animate().fadeIn(),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: recoveryAsync.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                  data: (score) {
+                    final readiness = score.round().clamp(0, 100);
+                    final progress = readiness / 100;
+                    final loadLabel = readiness >= 80
+                        ? 'Peak performance'
+                        : readiness >= 60
+                            ? 'Ready to push'
+                            : 'Recovery focus';
+                    return GlassmorphicCard(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 176,
+                              height: 176,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 176,
+                                    height: 176,
+                                    child: CircularProgressIndicator(
+                                      value: progress.toDouble(),
+                                      strokeWidth: 10,
+                                      color: colors.brand,
+                                      backgroundColor: colors.ringTrack,
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '$readiness',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 48,
+                                          fontWeight: FontWeight.w800,
+                                          color: colors.textPrimary,
+                                        ),
+                                      ),
+                                      Text(
+                                        'READINESS',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
+                                          color: colors.textMuted,
+                                          letterSpacing: 1.1,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colors.accent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                loadLabel.toUpperCase(),
+                                style: GoogleFonts.inter(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: colors.accent,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              'Your CNS is ready for high-intensity training',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: colors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'AI detected optimal recovery levels across your vital metrics.',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: colors.textSecondary,
+                                height: 1.45,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: nutritionAsync.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                  data: (nutrition) => Row(
+                    children: [
+                      Expanded(
+                        child: _MiniMetric(
+                          label: 'Heart rate',
+                          value: '72',
+                          unit: 'bpm',
+                          icon: Icons.favorite_rounded,
+                          color: colors.danger,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _MiniMetric(
+                          label: 'Kcal burned',
+                          value: '${nutrition.calories.round()}',
+                          unit: '',
+                          icon: Icons.local_fire_department_rounded,
+                          color: colors.accent,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _MiniMetric(
+                          label: 'Load',
+                          value: recoveryScore >= 80
+                              ? 'High'
+                              : 'Mod',
+                          unit: '',
+                          icon: Icons.bolt_rounded,
+                          color: colors.brand,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'MASTER FEATURES',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: colors.textMuted,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => context.go('/master/analytics'),
+                      child: const Text('See All'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverToBoxAdapter(
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _FeatureChip(
+                      icon: Icons.videocam_outlined,
+                      label: 'Live',
+                      onTap: () => context.go('/master/live'),
+                    ),
+                    _FeatureChip(
+                      icon: Icons.smart_toy_outlined,
+                      label: 'Coach',
+                      selected: true,
+                      onTap: () => context.go('/master/ai'),
+                    ),
+                    _FeatureChip(
+                      icon: Icons.bar_chart_rounded,
+                      label: 'Stats',
+                      onTap: () => context.go('/master/analytics'),
+                    ),
+                    _FeatureChip(
+                      icon: Icons.emoji_events_outlined,
+                      label: 'Rank',
+                      onTap: () => context.go('/master/challenges'),
+                    ),
+                    _FeatureChip(
+                      icon: Icons.health_and_safety_outlined,
+                      label: 'Recovery',
+                      onTap: () => context.go('/master/recovery'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'RECOMMENDED TODAY',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: colors.textMuted,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+              sliver: SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        colors.surface,
+                        colors.surfaceAlt,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colors.brand.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          'MASTER TIER',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: colors.brand,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        'Hypertrophy V4: Elite Force',
+                        style: GoogleFonts.inter(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: colors.textPrimary,
+                          letterSpacing: -0.9,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Advanced strength and conditioning block tailored to your current readiness.',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: colors.textSecondary,
+                          height: 1.45,
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      FilledButton.icon(
+                        onPressed: () => context.go('/master/ai'),
+                        icon: const Icon(Icons.play_arrow_rounded),
+                        label: const Text('Start Session'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-/// Wrapper so GestureDetector works cleanly inside a Container.
-class GestureDetectorTip extends StatelessWidget {
-  final Widget child;
-  final VoidCallback onTap;
-  const GestureDetectorTip({required this.child, required this.onTap, super.key});
+class _MiniMetric extends StatelessWidget {
+  final String label;
+  final String value;
+  final String unit;
+  final IconData icon;
+  final Color color;
+
+  const _MiniMetric({
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.icon,
+    required this.color,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: onTap, child: child);
+    final colors = context.fitTheme;
+    return GlassmorphicCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+                if (unit.isNotEmpty) ...[
+                  const SizedBox(width: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Text(
+                      unit,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: colors.textMuted,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-// ─── Membership Banner ────────────────────────────────────────────────────────
+class _FeatureChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
 
-class _MasterBanner extends StatelessWidget {
-  final dynamic membership;
-  const _MasterBanner({required this.membership});
-
-  static const _gold  = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
+  const _FeatureChip({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.selected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final days = membership.daysRemaining as int;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [_gold.withValues(alpha:0.12), _orange.withValues(alpha:0.06)]),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _gold.withValues(alpha:0.4)),
-      ),
-      child: Row(children: [
-        const Icon(Icons.workspace_premium_rounded, color: _gold, size: 22),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(membership.planName as String,
-              style: GoogleFonts.inter(fontSize: 14,
-                  fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
-          Text('$days days remaining · Master Access',
-              style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary)),
-        ])),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: AppColors.success.withValues(alpha:0.15),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.success.withValues(alpha:0.3)),
+    final colors = context.fitTheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? colors.brand.withValues(alpha: 0.12) : colors.surface,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: selected ? colors.brand : colors.border,
           ),
-          child: Text('ACTIVE', style: GoogleFonts.inter(
-              fontSize: 10, fontWeight: FontWeight.w800,
-              color: AppColors.success, letterSpacing: 1)),
         ),
-      ]),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: selected ? colors.brand : colors.textSecondary),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: selected ? colors.brand : colors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

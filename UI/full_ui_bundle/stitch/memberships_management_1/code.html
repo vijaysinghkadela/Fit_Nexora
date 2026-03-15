@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Membership Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#10b981", // Emerald accent
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1a0b16", // Dark violet base
+                        "violet-accent": "#2d0f28",
+                        "glass": "rgba(45, 15, 40, 0.7)",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glassmorphic {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Header Section -->
+<header class="sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-slate-200 dark:border-violet-accent/50">
+<div class="flex items-center gap-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">Membership Tiers</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400">Manage your gym offerings</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-violet-accent/50">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">search</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-violet-accent/50">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Stats Overview -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 mt-2">
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-white dark:bg-violet-accent/30 border border-slate-100 dark:border-white/5">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Members</span>
+<span class="text-2xl font-bold">1,482</span>
+<div class="flex items-center gap-1 text-[10px] text-primary">
+<span class="material-symbols-outlined text-xs">trending_up</span> 12% inc.
+                </div>
+</div>
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-white dark:bg-violet-accent/30 border border-slate-100 dark:border-white/5">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Revenue (MRR)</span>
+<span class="text-2xl font-bold">$42.5k</span>
+<div class="flex items-center gap-1 text-[10px] text-primary">
+<span class="material-symbols-outlined text-xs">trending_up</span> 8.4% inc.
+                </div>
+</div>
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-white dark:bg-violet-accent/30 border border-slate-100 dark:border-white/5">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Active Tiers</span>
+<span class="text-2xl font-bold">3</span>
+<div class="flex items-center gap-1 text-[10px] text-slate-400">
+<span class="material-symbols-outlined text-xs">info</span> Stable
+                </div>
+</div>
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-white dark:bg-violet-accent/30 border border-slate-100 dark:border-white/5">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Churn Rate</span>
+<span class="text-2xl font-bold">1.2%</span>
+<div class="flex items-center gap-1 text-[10px] text-primary">
+<span class="material-symbols-outlined text-xs">keyboard_double_arrow_down</span> 0.5% dec.
+                </div>
+</div>
+</div>
+<!-- Filtering Options -->
+<div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-5 text-white shadow-lg shadow-primary/20">
+<span class="text-sm font-semibold">Active</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-100 dark:bg-violet-accent px-5 border border-slate-200 dark:border-white/10">
+<span class="text-sm font-medium">Archived</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-100 dark:bg-violet-accent px-5 border border-slate-200 dark:border-white/10">
+<span class="text-sm font-medium">Drafts</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-100 dark:bg-violet-accent px-5 border border-slate-200 dark:border-white/10 ml-auto">
+<span class="material-symbols-outlined text-sm">tune</span>
+<span class="text-sm font-medium">Filters</span>
+</button>
+</div>
+<!-- Membership List -->
+<div class="flex flex-col gap-4 p-4">
+<!-- Elite Tier Card -->
+<div class="glassmorphic rounded-2xl overflow-hidden relative border-l-4 border-l-primary p-5 flex flex-col gap-4 shadow-xl">
+<div class="absolute top-0 right-0 p-4">
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Top Performer</span>
+</div>
+<div class="flex items-start gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">workspace_premium</span>
+</div>
+<div class="flex-1">
+<h3 class="text-lg font-bold">Elite Membership</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Full access + Personal Trainer</p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Price</span>
+<span class="text-lg font-bold text-primary">$129<span class="text-xs font-normal text-slate-400">/mo</span></span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Duration</span>
+<span class="text-lg font-bold">Annual</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Members</span>
+<span class="text-lg font-bold">412</span>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 h-10 rounded-xl bg-white/10 dark:bg-white/5 text-sm font-semibold border border-white/10">Edit Details</button>
+<button class="flex-1 h-10 rounded-xl bg-primary text-white text-sm font-semibold shadow-lg shadow-primary/20">View Stats</button>
+</div>
+</div>
+<!-- Pro Tier Card -->
+<div class="glassmorphic rounded-2xl overflow-hidden relative p-5 flex flex-col gap-4 border border-white/5">
+<div class="flex items-start gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-200 dark:bg-violet-accent text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-2xl">star</span>
+</div>
+<div class="flex-1">
+<h3 class="text-lg font-bold">Pro Membership</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Unlimited Gym + Classes</p>
+</div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full border border-primary/20">Active</span>
+</div>
+<div class="grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Price</span>
+<span class="text-lg font-bold text-primary">$79<span class="text-xs font-normal text-slate-400">/mo</span></span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Duration</span>
+<span class="text-lg font-bold">Monthly</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Members</span>
+<span class="text-lg font-bold">845</span>
+</div>
+</div>
+</div>
+<!-- Basic Tier Card -->
+<div class="glassmorphic rounded-2xl overflow-hidden relative p-5 flex flex-col gap-4 border border-white/5 opacity-80">
+<div class="flex items-start gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-200 dark:bg-violet-accent text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-2xl">fitness_center</span>
+</div>
+<div class="flex-1">
+<h3 class="text-lg font-bold">Basic Membership</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Gym access (Off-peak)</p>
+</div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full border border-primary/20">Active</span>
+</div>
+<div class="grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Price</span>
+<span class="text-lg font-bold text-primary">$39<span class="text-xs font-normal text-slate-400">/mo</span></span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Duration</span>
+<span class="text-lg font-bold">Monthly</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-slate-500 font-bold">Members</span>
+<span class="text-lg font-bold">225</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 h-14 w-14 rounded-full bg-primary text-white shadow-2xl shadow-primary/40 flex items-center justify-center z-30 ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-slate-200 dark:border-violet-accent/50 px-6 pb-6 pt-3 flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-variation-fill">badge</span>
+<span class="text-[10px] font-medium">Memberships</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-medium">Users</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</body></html>

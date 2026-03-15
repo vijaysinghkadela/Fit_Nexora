@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent": "#10b981", 
+                        "background-dark": "#0f0a1e", // Deep violet background
+                        "glass": "rgba(255, 255, 255, 0.05)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: 100dvh;
+            background: radial-gradient(circle at 50% 0%, #1e153a 0%, #0f0a1e 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-input:focus-within {
+            border-color: #895af6;
+            background: rgba(137, 90, 246, 0.05);
+            box-shadow: 0 0 20px rgba(137, 90, 246, 0.15);
+        }
+        .orb {
+            position: absolute;
+            border-radius: 100%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-slate-100 flex justify-center overflow-hidden">
+<!-- Background Decorative Elements -->
+<div class="orb w-80 h-80 bg-primary/20 -top-20 -right-20"></div>
+<div class="orb w-96 h-96 bg-accent/10 top-1/2 -left-40"></div>
+<div class="orb w-64 h-64 bg-primary/10 bottom-0 right-0"></div>
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col bg-transparent overflow-y-auto overflow-x-hidden z-10">
+<!-- Header -->
+<div class="flex items-center p-6 pb-2 justify-between">
+<button class="text-white flex size-10 shrink-0 items-center justify-center rounded-full glass-card hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-white text-lg font-bold tracking-tight flex-1 text-center pr-10">FitNexora</h2>
+</div>
+<!-- Progress Indicator -->
+<div class="flex flex-col gap-3 p-6">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Onboarding</p>
+<p class="text-slate-400 text-sm font-medium">Step 2 of 4</p>
+</div>
+<p class="text-white text-xs font-bold px-2 py-1 glass-card rounded-md">50%</p>
+</div>
+<div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+<div class="h-full rounded-full bg-gradient-to-r from-primary via-primary to-accent transition-all duration-700 ease-out" style="width: 50%;"></div>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 px-6 pt-4">
+<h1 class="text-white text-3xl font-bold leading-tight mb-2">Build your profile</h1>
+<p class="text-slate-400 text-base mb-8">This helps us calculate your calorie and macro needs for optimal results.</p>
+<div class="space-y-8">
+<!-- Gender Selection -->
+<div class="space-y-3">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Gender</label>
+<div class="grid grid-cols-2 gap-3">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="gender" type="radio" value="Male"/>
+<div class="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl glass-card border-transparent peer-checked:border-primary peer-checked:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors peer-checked:text-primary">male</span>
+<span class="text-sm font-bold text-slate-400 peer-checked:text-white">Male</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="gender" type="radio" value="Female"/>
+<div class="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl glass-card border-transparent peer-checked:border-primary peer-checked:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors peer-checked:text-primary">female</span>
+<span class="text-sm font-bold text-slate-400 peer-checked:text-white">Female</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Height and Weight -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-3">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Height</label>
+<div class="relative glass-input flex items-center rounded-2xl px-4 h-16 group">
+<span class="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors mr-2">straighten</span>
+<input class="w-full bg-transparent border-none p-0 text-white font-bold placeholder:text-slate-600 focus:ring-0 outline-none" placeholder="175" type="number"/>
+<span class="text-xs font-bold text-accent">cm</span>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Weight</label>
+<div class="relative glass-input flex items-center rounded-2xl px-4 h-16 group">
+<span class="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors mr-2">scale</span>
+<input class="w-full bg-transparent border-none p-0 text-white font-bold placeholder:text-slate-600 focus:ring-0 outline-none" placeholder="70" type="number"/>
+<span class="text-xs font-bold text-accent">kg</span>
+</div>
+</div>
+</div>
+<!-- Age -->
+<div class="space-y-3">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Age</label>
+<div class="relative glass-input flex items-center rounded-2xl px-4 h-16 group">
+<span class="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors mr-2">calendar_today</span>
+<input class="w-full bg-transparent border-none p-0 text-white font-bold placeholder:text-slate-600 focus:ring-0 outline-none" placeholder="25" type="number"/>
+<span class="text-xs font-bold text-accent">Years</span>
+</div>
+</div>
+<!-- Unit Toggle -->
+<div class="flex justify-center">
+<button class="group flex items-center gap-2 px-6 py-3 rounded-full glass-card hover:bg-white/10 transition-all text-xs font-bold text-slate-400 uppercase tracking-wider">
+<span class="material-symbols-outlined text-lg group-hover:rotate-45 transition-transform">settings</span>
+                        Switch to Imperial (ft, lbs)
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<div class="p-6 pt-10 mt-auto">
+<button class="relative w-full h-16 bg-primary hover:bg-primary/90 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(137,90,246,0.3)] flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] group">
+<span class="text-lg">Continue</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-center text-[10px] text-slate-500 mt-6 px-10 leading-relaxed uppercase tracking-tighter">
+                By continuing, you agree to our <a class="text-slate-400 underline underline-offset-2" href="#">Terms of Service</a> and <a class="text-slate-400 underline underline-offset-2" href="#">Privacy Policy</a>.
+            </p>
+</div>
+</div>
+</body></html>

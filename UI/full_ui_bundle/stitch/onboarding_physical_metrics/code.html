@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent": "#10b981", // Emerald/Mint accent
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex justify-center">
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col bg-background-light dark:bg-background-dark overflow-x-hidden shadow-2xl border-x border-slate-200 dark:border-slate-800">
+<!-- Header / Top Bar -->
+<div class="flex items-center p-6 pb-2 justify-between">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-200/50 dark:bg-primary/10 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">FitNexora</h2>
+</div>
+<!-- Progress Indicator -->
+<div class="flex flex-col gap-3 p-6">
+<div class="flex gap-6 justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">Physical Metrics</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Step 2 of 4</p>
+</div>
+<div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+<div class="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all duration-500" style="width: 50%;"></div>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 px-6 pt-4">
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-bold leading-tight mb-2">Build your profile</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base mb-8">This helps us calculate your calorie and macro needs for optimal results.</p>
+<div class="space-y-6">
+<!-- Gender Selection -->
+<div class="space-y-3">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Gender</label>
+<div class="flex h-12 flex-1 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800/50 backdrop-blur-md p-1 border border-slate-200 dark:border-slate-700/50">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-slate-500 dark:text-slate-400 text-sm font-bold transition-all">
+<span class="truncate">Male</span>
+<input checked="" class="invisible w-0" name="gender" type="radio" value="Male"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-primary has-[:checked]:text-white text-slate-500 dark:text-slate-400 text-sm font-bold transition-all">
+<span class="truncate">Female</span>
+<input class="invisible w-0" name="gender" type="radio" value="Female"/>
+</label>
+</div>
+</div>
+<!-- Height and Weight Row -->
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-3">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Height</label>
+<div class="relative group">
+<input class="w-full h-14 bg-slate-100 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="175" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-accent uppercase">cm</span>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Weight</label>
+<div class="relative group">
+<input class="w-full h-14 bg-slate-100 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="70" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-accent uppercase">kg</span>
+</div>
+</div>
+</div>
+<!-- Age Selection -->
+<div class="space-y-3">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Age</label>
+<div class="relative group">
+<input class="w-full h-14 bg-slate-100 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 rounded-xl px-4 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="25" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-accent uppercase">Years</span>
+</div>
+</div>
+<!-- Unit Toggle (Small/Subtle) -->
+<div class="flex justify-end pt-2">
+<button class="text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-primary flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-sm">settings</span>
+                        Switch to Imperial (ft, lbs)
+                    </button>
+</div>
+</div>
+</div>
+<!-- Footer / CTA -->
+<div class="p-6 pt-10 mt-auto">
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all transform active:scale-[0.98]">
+<span>Continue</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-slate-500 dark:text-slate-500 mt-6 px-8">
+                By continuing, you agree to our Terms of Service and Privacy Policy.
+            </p>
+</div>
+<!-- Background Decorative Elements (Glassmorphic blobs) -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute top-1/2 -left-32 w-80 h-80 bg-accent/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute -bottom-24 -right-16 w-48 h-48 bg-primary/30 rounded-full blur-[80px] pointer-events-none"></div>
+</div>
+</body></html>

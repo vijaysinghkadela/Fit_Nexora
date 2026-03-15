@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "emerald-accent": "#10b981",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .premium-gradient {
+            background: radial-gradient(circle at top right, rgba(137, 90, 246, 0.15), transparent),
+                        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen premium-gradient">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center p-4 sticky top-0 z-50 bg-background-dark/80 backdrop-blur-md border-b border-primary/10 justify-between">
+<div class="flex items-center gap-4">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-100">arrow_back</span>
+</button>
+<h1 class="text-slate-100 text-xl font-bold tracking-tight">Master Perks</h1>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-accent/10 border border-emerald-accent/20">
+<span class="material-symbols-outlined text-emerald-accent text-sm">verified</span>
+<span class="text-emerald-accent text-xs font-bold uppercase tracking-wider">VIP Active</span>
+</div>
+</header>
+<main class="flex-1 pb-24">
+<section class="p-6 flex flex-col items-center text-center">
+<div class="relative mb-6">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
+<div class="relative bg-center bg-no-repeat aspect-square bg-cover rounded-full border-4 border-primary/30 size-32 shadow-2xl" data-alt="Premium athletic portrait of a fitness member" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDiHgMOZBM_h5NkHOaAzqwGzwX3EY9Ns4f7U5zhLAkesF3gn1B4PPUWTSyWCD0_j68C2mi4_sIxqCZy-o4iXR4VRGgraZSnyDWkwf7zBJepJhXDZhJjHb6OeY5AHcpl6lmC5oZMNL6eOweU69oYKP1PHaeK8pO4c0UV3WTKE_JVGgw-kDUCv0-CUmhXCBaiWg1jCLqXIAhnM7jfM1xJ-fw-Qq6iY9gm3kUJB6rQMSKzcEitcK8PAeAxA-xURDq3sgLGvTgBl9P7I9g");'>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary p-2 rounded-full border-4 border-background-dark shadow-lg">
+<span class="material-symbols-outlined text-white text-lg">workspace_premium</span>
+</div>
+</div>
+<h2 class="text-slate-100 text-3xl font-bold tracking-tight mb-1">FitNexora Master Tier</h2>
+<p class="text-primary font-medium">Exclusive Gold Membership</p>
+<div class="mt-4 flex gap-4 text-xs text-slate-400 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_today</span> Since Oct 2023</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">location_on</span> Global Access</span>
+</div>
+</section>
+<section class="px-4 py-4 space-y-4">
+<h3 class="px-2 text-slate-400 text-sm font-bold uppercase tracking-widest">Active Benefits</h3>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">support_agent</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex size-12 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-2xl">support_agent</span>
+</div>
+<div>
+<h4 class="text-slate-100 text-lg font-bold">Elite Concierge Support</h4>
+<p class="text-slate-400 text-sm">24/7 dedicated fitness assistant for scheduling and nutrition advice.</p>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-4 border-t border-primary/10">
+<span class="text-emerald-accent text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span> Instant Response
+                        </span>
+<button class="bg-primary hover:bg-primary/80 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20">
+                            Chat Now
+                        </button>
+</div>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">exercise</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex size-12 items-center justify-center rounded-lg bg-emerald-accent/20 text-emerald-accent">
+<span class="material-symbols-outlined text-2xl">fitness_center</span>
+</div>
+<div>
+<h4 class="text-slate-100 text-lg font-bold">Private Trainer Sessions</h4>
+<p class="text-slate-400 text-sm">4 monthly 1-on-1 sessions with our master-certified instructors.</p>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-4 border-t border-primary/10">
+<span class="text-slate-400 text-xs">Remaining: 3 Sessions</span>
+<button class="bg-white/10 hover:bg-white/20 text-slate-100 px-5 py-2 rounded-lg text-sm font-bold transition-all border border-white/10">
+                            Book Session
+                        </button>
+</div>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">groups</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex size-12 items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-2xl">event_upcoming</span>
+</div>
+<div>
+<h4 class="text-slate-100 text-lg font-bold">Exclusive Workshops</h4>
+<p class="text-slate-400 text-sm">Early access to boutique workshops and wellness seminars.</p>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-4 border-t border-primary/10">
+<span class="text-primary text-xs font-semibold">Next: June 15th</span>
+<button class="bg-white/10 hover:bg-white/20 text-slate-100 px-5 py-2 rounded-lg text-sm font-bold transition-all border border-white/10">
+                            View Calendar
+                        </button>
+</div>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">handshake</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex size-12 items-center justify-center rounded-lg bg-emerald-accent/20 text-emerald-accent">
+<span class="material-symbols-outlined text-2xl">loyalty</span>
+</div>
+<div>
+<h4 class="text-slate-100 text-lg font-bold">Partner Benefits</h4>
+<p class="text-slate-400 text-sm">Up to 30% off at premium athletic apparel and healthy food partners.</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<div class="bg-background-dark/40 rounded-lg p-3 border border-primary/10">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Partner Store</p>
+<p class="text-slate-200 text-sm font-bold">25% OFF Gear</p>
+</div>
+<div class="bg-background-dark/40 rounded-lg p-3 border border-primary/10">
+<p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Health Bar</p>
+<p class="text-slate-200 text-sm font-bold">Free Smoothie</p>
+</div>
+</div>
+<button class="w-full mt-2 bg-emerald-accent/10 hover:bg-emerald-accent/20 text-emerald-accent py-3 rounded-lg text-sm font-bold border border-emerald-accent/20 transition-all">
+                        View All Discounts
+                    </button>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-dark/90 backdrop-blur-xl px-4 pb-6 pt-3">
+<div class="flex gap-2 max-w-md mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<p class="text-[10px] font-medium tracking-wide">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-2xl">fitness_center</span>
+<p class="text-[10px] font-medium tracking-wide">Workouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">stars</span>
+<p class="text-[10px] font-medium tracking-wide">Perks</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<p class="text-[10px] font-medium tracking-wide">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

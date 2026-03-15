@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .glass-card-active {
+            background: rgba(137, 90, 246, 0.15);
+            border: 2px solid #895af6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col items-center">
+<div class="relative flex h-auto min-h-screen w-full max-w-md flex-col bg-background-light dark:bg-background-dark overflow-x-hidden shadow-2xl">
+<!-- Header / Top Bar -->
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="text-slate-900 dark:text-slate-100 flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-2xl cursor-pointer">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">FitNexora</h2>
+</div>
+<!-- Progress Section -->
+<div class="flex flex-col gap-3 p-6">
+<div class="flex gap-6 justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold">Step 1 of 4</p>
+<p class="text-slate-500 dark:text-primary/70 text-xs font-medium uppercase tracking-wider">Goal Setting</p>
+</div>
+<div class="h-2 w-full rounded-full bg-slate-200 dark:bg-primary/10 overflow-hidden">
+<div class="h-full rounded-full bg-primary" style="width: 25%;"></div>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal">Setting up your personalized profile</p>
+</div>
+<!-- Hero Title -->
+<div class="px-6 py-4">
+<h1 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold leading-tight text-left">
+                What's your <span class="text-primary">primary goal?</span>
+</h1>
+<p class="text-slate-600 dark:text-slate-400 mt-2 text-base">We'll tailor your workout experience based on your response.</p>
+</div>
+<!-- Selection Grid -->
+<div class="grid grid-cols-1 gap-4 p-6 overflow-y-auto flex-1">
+<!-- Build Muscle Card (Active) -->
+<div class="glass-card glass-card-active flex items-center p-5 rounded-xl cursor-pointer transition-all duration-200 group">
+<div class="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary text-white mr-4">
+<span class="material-symbols-outlined text-3xl">fitness_center</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-none mb-1">Build Muscle</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">Gain strength and muscle mass</p>
+</div>
+<div class="text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<!-- Lose Weight Card -->
+<div class="glass-card flex items-center p-5 rounded-xl cursor-pointer transition-all duration-200 hover:bg-primary/5 group">
+<div class="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">monitor_weight</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-none mb-1">Lose Weight</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">Burn fat and get leaner</p>
+</div>
+<div class="text-slate-300 dark:text-slate-700">
+<span class="material-symbols-outlined">circle</span>
+</div>
+</div>
+<!-- Improve Endurance Card -->
+<div class="glass-card flex items-center p-5 rounded-xl cursor-pointer transition-all duration-200 hover:bg-primary/5 group">
+<div class="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">directions_run</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-none mb-1">Improve Endurance</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">Boost stamina and cardiovascular health</p>
+</div>
+<div class="text-slate-300 dark:text-slate-700">
+<span class="material-symbols-outlined">circle</span>
+</div>
+</div>
+<!-- Better Health Card -->
+<div class="glass-card flex items-center p-5 rounded-xl cursor-pointer transition-all duration-200 hover:bg-primary/5 group">
+<div class="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary mr-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">favorite</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-none mb-1">Overall Health</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">Stay active and improve wellness</p>
+</div>
+<div class="text-slate-300 dark:text-slate-700">
+<span class="material-symbols-outlined">circle</span>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar -->
+<div class="flex flex-col px-6 py-8 gap-4">
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 bg-primary text-white text-lg font-bold leading-normal tracking-wide shadow-lg shadow-primary/30 active:scale-[0.98] transition-transform">
+<span>Continue</span>
+</button>
+<p class="text-center text-slate-500 text-xs px-4">
+                You can always change your goals later in the settings menu.
+            </p>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-[-50px] left-[-50px] w-[200px] h-[200px] bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+</div>
+</body></html>

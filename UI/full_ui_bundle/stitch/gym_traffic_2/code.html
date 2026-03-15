@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<div class="flex items-center p-4 justify-between sticky top-0 z-10 bg-background-dark/80 backdrop-blur-md">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">FitNexora Traffic</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-6 p-4 pb-24">
+<!-- Live Occupancy Circular Meter -->
+<div class="flex flex-col items-center justify-center p-8 rounded-xl glass relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+<div class="relative flex items-center justify-center">
+<svg class="size-48">
+<circle class="text-primary/10" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.6" stroke-dashoffset="175.9" stroke-linecap="round" stroke-width="12" style="stroke-dashoffset: calc(502.6 - (502.6 * 65) / 100);"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-4xl font-bold text-slate-100">65%</span>
+<span class="text-xs font-medium text-slate-400 uppercase tracking-widest">Occupied</span>
+</div>
+</div>
+<div class="mt-6 text-center">
+<p class="text-slate-100 text-base font-semibold">Moderate Crowds</p>
+<p class="text-slate-400 text-sm">Estimated wait time: 5 mins</p>
+</div>
+</div>
+<!-- Current Vibe & Status Cards -->
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2 rounded-xl glass p-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-xl">bolt</span>
+<span class="text-xs font-bold uppercase tracking-wider">Current Vibe</span>
+</div>
+<p class="text-slate-100 text-lg font-bold">Energized</p>
+<p class="text-slate-400 text-xs">High tempo music playing</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl glass p-4">
+<div class="flex items-center gap-2 text-emerald-400">
+<span class="material-symbols-outlined text-xl">thermostat</span>
+<span class="text-xs font-bold uppercase tracking-wider">Climate</span>
+</div>
+<p class="text-slate-100 text-lg font-bold">21°C</p>
+<p class="text-slate-400 text-xs">Optimal for training</p>
+</div>
+</div>
+<!-- Peak Hours Heat Map (Hourly Bar Chart) -->
+<div class="flex flex-col gap-4 rounded-xl glass p-5">
+<div class="flex justify-between items-end">
+<h3 class="text-slate-100 text-base font-bold">Peak Hours Heat Map</h3>
+<span class="text-primary text-xs font-medium">Thursday</span>
+</div>
+<div class="flex items-end justify-between h-32 pt-4">
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/20 rounded-t-full h-12"></div>
+<span class="text-[10px] text-slate-500">6a</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/40 rounded-t-full h-20"></div>
+<span class="text-[10px] text-slate-500">8a</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/30 rounded-t-full h-16"></div>
+<span class="text-[10px] text-slate-500">10a</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/20 rounded-t-full h-10"></div>
+<span class="text-[10px] text-slate-500">12p</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/40 rounded-t-full h-24"></div>
+<span class="text-[10px] text-slate-500">2p</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary rounded-t-full h-32"></div>
+<span class="text-[10px] text-primary font-bold">4p</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/80 rounded-t-full h-28"></div>
+<span class="text-[10px] text-slate-500">6p</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/50 rounded-t-full h-20"></div>
+<span class="text-[10px] text-slate-500">8p</span>
+</div>
+<div class="flex flex-col items-center gap-2 w-full">
+<div class="w-2 bg-primary/20 rounded-t-full h-8"></div>
+<span class="text-[10px] text-slate-500">10p</span>
+</div>
+</div>
+</div>
+<!-- Members Currently In -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-100 text-base font-bold">Members Currently In</h3>
+<span class="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full font-bold">142 Online</span>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between p-3 rounded-xl bg-slate-800/40 border border-primary/5">
+<div class="flex items-center gap-3">
+<img alt="Avatar" class="size-10 rounded-full border border-primary/20" data-alt="Portrait of a male gym member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsodVLBqC2QMGE--0D03T2znneuKRhO2zxapbZeyha3M-90U_bIxCXMLHU_RvytGJNjE7DdfmAmUtxLyXIcTXicqZYT_YBkA6Hv9IUFk-__8-rtdri0p-5pnHY_0ziTx8gx-cpyEwIzZnSYRjP8JbMLN85inJDRb2k3RutHD39YDAMNToHjhW4A4vN-jN2_YKhtiKrADm13vwNuPFtWmS_u0nnDpCFXIVFWz7am_oIS8gcdBPji4kOkVXbwBxqHapAdkd1miMWZ3c"/>
+<div>
+<p class="text-slate-100 text-sm font-semibold">Felix Graham</p>
+<p class="text-slate-500 text-xs">Training: Strength</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-primary text-xs font-medium">1h 10m</span>
+<span class="text-[10px] text-slate-500">Workout Time</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl bg-slate-800/40 border border-primary/5">
+<div class="flex items-center gap-3">
+<img alt="Avatar" class="size-10 rounded-full border border-primary/20" data-alt="Portrait of a female gym member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4c54pkt0r354Q1VMHu1uAe6MEjKO1SQYipuhHK7B1cz_T6-5WVWNs70N1fQEYOlEX0H5xzNPQt9csyAYPrEf7BSyVgX2LZEjNnW4sSTYx-I0dWJOtMbrpKdkebSdBnPM9i6-vnGOwuTvBxd6vos4IR_ql9mXdh4z5bGOnsCrMpI3d71wMe5e0pu5V6_qqFufU4PCnA8K-ANgtYB3H9jOYOdVtwY4KKsG01OflT_Gnkv_ymTuc1UdQr92Ok_oGdoIdpmje_D5h3AU"/>
+<div>
+<p class="text-slate-100 text-sm font-semibold">Sarah Jenkins</p>
+<p class="text-slate-500 text-xs">Training: Cardio</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-primary text-xs font-medium">25m</span>
+<span class="text-[10px] text-slate-500">Workout Time</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl bg-slate-800/40 border border-primary/5">
+<div class="flex items-center gap-3">
+<img alt="Avatar" class="size-10 rounded-full border border-primary/20" data-alt="Portrait of a male athlete" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF4lB7_o0ey95ekWI1KTxQ9QDaFT-iHx4n7IdTg41Qh_xZ4X4qPFDyhM0CnM9rz-SGODQGXhHxiNBSWjgNkCelKpjS2Sn62diwL7rShvVCQAD_o4mSJIeyoexnSNubGZZXcUHzhBF6fsGXyd69egZhBE0S0zjVjeJT3v53IsD3IfMnKiviGklCwhI9SsDEui3xIeVNDh-9_aIGBtDZqQ8vx8eosoPEFKhJ-fxMusK_xN7qNUJ5BiDHNXGMll3X2ZfAgTSY-lxgslg"/>
+<div>
+<p class="text-slate-100 text-sm font-semibold">Mike Ross</p>
+<p class="text-slate-500 text-xs">Training: HIIT</p>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-primary text-xs font-medium">45m</span>
+<span class="text-[10px] text-slate-500">Workout Time</span>
+</div>
+</div>
+</div>
+<button class="w-full py-3 text-slate-400 text-sm font-medium border border-slate-800 rounded-xl hover:bg-slate-800/50 transition-colors">
+                    View All Members
+                </button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-20 flex gap-2 border-t border-slate-800 bg-background-dark/95 backdrop-blur-lg px-4 pb-6 pt-3">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Workouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">analytics</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Traffic</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

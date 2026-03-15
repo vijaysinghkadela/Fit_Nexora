@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Trainer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-emerald": "#10b981",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f0a1e",
+                        "glass-bg": "rgba(255, 255, 255, 0.7)",
+                        "glass-border": "rgba(137, 90, 246, 0.15)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+            box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(137, 90, 246, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 min-h-screen pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 glass-card border-b border-glass-border px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-gradient-to-tr from-primary to-accent-emerald flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-2xl">exercise</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight tracking-tight text-slate-800">FitNexora</h1>
+<p class="text-xs text-slate-500 font-medium">Trainer Pro</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-accent-emerald rounded-full ring-2 ring-white"></span>
+</button>
+<div class="size-10 rounded-full border-2 border-primary/20 p-0.5 shadow-sm">
+<div class="w-full h-full rounded-full bg-cover bg-center" data-alt="Professional portrait of a fitness trainer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB3eVjkSvYkWEf9VwJjrAKTO8kQ7F2O9ykHQsAuDa5ZeQVPMpVkU9QSgdskQuLPxE6oTTk0E6LqbFqeQypZ8ciuHWX3Yh8bAjY7P6ZKXC1DyBqAS7dbJR5d4NssPjRaeJnsykWixukJxTHE1Dh4Goowq-P8LnALqqXuOJCMppu8oxsPzQhZMom4nVpk3dkyzaR0tbJjDKWItFzv1dthwoz4uuqxuoKpmSzgpGUHnagYa8qB2AS1Zuu90KJ97HqMFMEGQ1fK2939yMw')"></div>
+</div>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-4 py-6 space-y-8">
+<!-- Profile Summary -->
+<section class="space-y-4">
+<div class="flex items-end justify-between">
+<div>
+<h2 class="text-2xl font-bold text-slate-800">Welcome, Coach Alex</h2>
+<p class="text-slate-500">Manage your gym ecosystem</p>
+</div>
+<span class="text-xs font-bold px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">Elite Tier Trainer</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="glass-card p-5 rounded-xl space-y-1">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-semibold">Active Clients</p>
+<span class="material-symbols-outlined text-accent-emerald text-xl">group</span>
+</div>
+<p class="text-3xl font-bold text-slate-800">24</p>
+<p class="text-xs text-accent-emerald font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +2 this week
+                    </p>
+</div>
+<div class="glass-card p-5 rounded-xl space-y-1">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-semibold">Avg Adherence</p>
+<span class="material-symbols-outlined text-primary text-xl">verified</span>
+</div>
+<p class="text-3xl font-bold text-slate-800">92%</p>
+<div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full w-[92%] rounded-full shadow-[0_0_8px_rgba(137,90,246,0.4)]"></div>
+</div>
+</div>
+<div class="glass-card p-5 rounded-xl space-y-1">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 text-sm font-semibold">Pending Tasks</p>
+<span class="material-symbols-outlined text-orange-500 text-xl">assignment_late</span>
+</div>
+<p class="text-3xl font-bold text-slate-800">5</p>
+<p class="text-xs text-slate-500 font-medium italic">3 plan reviews due today</p>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section class="flex flex-wrap gap-3">
+<button class="flex-1 min-w-[140px] bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-xl">person_add</span>
+<span class="text-sm">Add Client</span>
+</button>
+<button class="flex-1 min-w-[140px] glass-card hover:bg-white text-slate-700 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-xl text-primary">edit_document</span>
+<span class="text-sm">Create Plan</span>
+</button>
+<button class="flex-1 min-w-[140px] glass-card hover:bg-white text-slate-700 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-xl text-accent-emerald">campaign</span>
+<span class="text-sm">Announce</span>
+</button>
+</section>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+<!-- Daily Schedule & Performance (Left Column) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Daily Schedule -->
+<section class="glass-card rounded-xl p-5">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold text-slate-800">Today's Schedule</h3>
+<a class="text-xs text-primary font-bold hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4 items-start relative pl-4 border-l-2 border-primary/40">
+<span class="text-xs font-bold text-slate-400 w-10 shrink-0">09:00</span>
+<div>
+<p class="text-sm font-bold text-slate-700">Sarah Jenkins</p>
+<p class="text-xs text-slate-500">HIIT Intensity Session</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative pl-4 border-l-2 border-accent-emerald/40">
+<span class="text-xs font-bold text-slate-400 w-10 shrink-0">11:30</span>
+<div>
+<p class="text-sm font-bold text-slate-700">Marc Russo</p>
+<p class="text-xs text-slate-500">Plan Review (Nutrition)</p>
+</div>
+</div>
+<div class="flex gap-4 items-start relative pl-4 border-l-2 border-slate-300">
+<span class="text-xs font-bold text-slate-400 w-10 shrink-0">14:00</span>
+<div>
+<p class="text-sm font-bold text-slate-700">Emily Chen</p>
+<p class="text-xs text-slate-500">Strength Assessment</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Performance Mini-Charts -->
+<section class="glass-card rounded-xl p-5">
+<h3 class="font-bold text-slate-800 mb-4">Client Growth Trend</h3>
+<div class="flex items-end gap-1.5 h-32 w-full px-1">
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[40%]" title="Mon"></div>
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[60%]" title="Tue"></div>
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[55%]" title="Wed"></div>
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[80%]" title="Thu"></div>
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[75%]" title="Fri"></div>
+<div class="bg-accent-emerald w-full rounded-t-sm h-[95%] shadow-sm" title="Sat"></div>
+<div class="bg-primary/10 hover:bg-primary/30 transition-colors w-full rounded-t-sm h-[45%]" title="Sun"></div>
+</div>
+<div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+<span>Mon</span>
+<span>Wed</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</section>
+</div>
+<!-- Client Management (Right Column) -->
+<section class="lg:col-span-3 glass-card rounded-xl p-5 overflow-hidden flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="font-bold text-slate-800">Client Management</h3>
+<p class="text-xs text-slate-500 font-medium">Manage 24 active trainees</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 glass-card rounded-lg bg-white/50 border-slate-100 hover:border-primary/20 text-slate-500 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">search</span></button>
+<button class="p-2 glass-card rounded-lg bg-white/50 border-slate-100 hover:border-primary/20 text-slate-500 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">filter_list</span></button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-1">
+<!-- Client Item 1 -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-primary/10 hover:shadow-sm transition-all">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm" data-alt="Portrait of active client Sarah" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEbQ6KwO_xBLzFeAwcMxJGO0cEpUucRCnClPx6Q0_VWXQcY00woOP9RAKfoPC0MRsjrVHTPpDi68hyl_SKvKTB3E_1F0DrApf-n7OMC3n9KGmsaVuEBTMBEIABUPftYEkde90Gyg-qE5hwnTX29GNM6L0WoIhhTCM8l2HCbzJeIDG746QCukH62GyzwpKvFOB7_PwOa4J-b9jPrXr6HmDOTPMN26XQGrr54lM-v7G8nasOMvnzFo0kNvo4ZH99y9xW_GMreJMPU5w')"></div>
+<div>
+<p class="text-sm font-bold text-slate-700">Sarah Jenkins</p>
+<span class="text-[10px] font-bold uppercase text-accent-emerald flex items-center gap-1">
+<span class="size-1.5 bg-accent-emerald rounded-full"></span> Active
+                                </span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<p class="text-[10px] font-bold text-slate-400 uppercase">Progress</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/10">+2.4kg Lean</span>
+</div>
+</div>
+<!-- Client Item 2 -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-primary/10 hover:shadow-sm transition-all">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm" data-alt="Portrait of client Marc" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAsSYv6IezIFKRsGV2AovhuVstmNUoVI0_hg23LMenEpqKWgWcQgm2yuLYRK6S4hN5pXUJz7eiuqv7rWnnpJeJKSew9TsiIjiM2pbuBk76_VrRsH1Wihezz17pxpK9uy1nVZjCNDnSKB7qMnln_dIPUTwX607R6dcemhja3QZU7SH5YY2oLi-T2UCaKgdfTAmWhPfASydL159JgzyGrVVSagbfukw_04P_SdQWLZ0AdFA8WRuIz8zLhWRbE5ALRf7iwtQ_ZX31vX7Q')"></div>
+<div>
+<p class="text-sm font-bold text-slate-700">Marc Russo</p>
+<span class="text-[10px] font-bold uppercase text-orange-500 flex items-center gap-1">
+<span class="size-1.5 bg-orange-500 rounded-full"></span> Needs Update
+                                </span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<p class="text-[10px] font-bold text-slate-400 uppercase">Last Seen</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">2 days ago</span>
+</div>
+</div>
+<!-- Client Item 3 -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-primary/10 hover:shadow-sm transition-all">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm" data-alt="Portrait of active client Emily" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDx48g-glRiQXdBc9U_u6l2k_ARh7gG40YFzFm0t2_bXTmghGxrNyWyIJhDV18bIbcjfTJZErnNtGxIvNtbknlzqWYPMbLB40ZCcy1AZGxwg-zUTk4QcKPDgx260_9R6IbCQZgwhebuVRuv48Kze7LH1jpnoXg-6NwHXdbaureh47qeprb0q40BIeGwfo8tkrTyR6fjvv0JngylMVnpnyxZ1gqzesxHu4vgGflQ_N53kyxNdlKYriSia4kbJBd0mC8qdd_aXwyrv0E')"></div>
+<div>
+<p class="text-sm font-bold text-slate-700">Emily Chen</p>
+<span class="text-[10px] font-bold uppercase text-accent-emerald flex items-center gap-1">
+<span class="size-1.5 bg-accent-emerald rounded-full"></span> Active
+                                </span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<p class="text-[10px] font-bold text-slate-400 uppercase">Progress</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent-emerald/10 text-accent-emerald border border-accent-emerald/10">-5% Fat</span>
+</div>
+</div>
+<!-- Client Item 4 -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-primary/10 hover:shadow-sm transition-all">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-white shadow-sm" data-alt="Portrait of client Jason" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAnfuygoqXwly3eTF9inxYvobfJUXMjpY12nHEZs99iQ1YGvXqCb0q8EtI0PgdTaoak0shnhWQMWxuY_sMLnvMX5db2JflJahWAljH6cEAyERwyVAUnAGwEFPDEgWyn2sHr7SdukVqV4Yf-S8Dggz7egJ3_0elk2DfIXsonqxxLyyLPSJv0h2gErlJ2F1C6D9vI8P8dpVTa1tzs9rFR3ob4eVbyqkFUOQjK_9K_K5HWByxE5l6-hly2b-q2Ye11vnZfjPzFuIYMbFE')"></div>
+<div>
+<p class="text-sm font-bold text-slate-700">Jason Miller</p>
+<span class="text-[10px] font-bold uppercase text-slate-400 flex items-center gap-1">
+<span class="size-1.5 bg-slate-400 rounded-full"></span> On Vacation
+                                </span>
+</div>
+</div>
+<div class="text-right flex flex-col items-end gap-1">
+<p class="text-[10px] font-bold text-slate-400 uppercase">Status</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">Resuming Oct 15</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-glass-border pb-6 pt-3 px-6 rounded-t-2xl">
+<div class="max-w-md mx-auto flex items-center justify-between">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="p-2 rounded-full bg-primary text-white shadow-lg shadow-primary/30 transition-all">
+<span class="material-symbols-outlined fill-[1]">home</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary transition-all" href="#">
+<div class="p-2">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest">Clients</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary transition-all" href="#">
+<div class="p-2">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest">Workouts</span>
+</a>
+<a class="flex flex-col items-center gap-1 group text-slate-400 hover:text-primary transition-all" href="#">
+<div class="p-2">
+<span class="material-symbols-outlined">person</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

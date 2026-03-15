@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#ffffff",
+                        "background-dark": "#151022",
+                        "mint": "#10b981",
+                        "slate-50": "#f8fafc",
+                        "slate-100": "#f1f5f9",
+                        "slate-200": "#e2e8f0",
+                        "slate-300": "#cbd5e1",
+                        "slate-400": "#94a3b8",
+                        "slate-500": "#64748b",
+                        "slate-600": "#475569",
+                        "slate-700": "#334155",
+                        "slate-800": "#1e293b",
+                        "slate-900": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 10px 30px -5px rgba(137, 90, 246, 0.08)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .glow-primary {
+            box-shadow: 0 10px 25px -5px rgba(137, 90, 246, 0.4);
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background-light font-display text-slate-900 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="flex items-center bg-white p-4 border-b border-slate-100 justify-between sticky top-0 z-50">
+<div class="text-slate-600 flex size-10 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h2 class="text-slate-900 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center uppercase tracking-widest">FitNexora AI</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex cursor-pointer items-center justify-center rounded-full size-10 bg-primary/10 text-primary">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-4 py-8 max-w-md mx-auto w-full">
+<!-- Hero Title -->
+<div class="mb-10 text-center">
+<h1 class="text-slate-900 tracking-tight text-3xl font-extrabold leading-tight mb-2">
+                AI Workout <span class="text-primary">Architect</span>
+</h1>
+<p class="text-slate-500 text-sm font-medium">Precision training powered by neural networks.</p>
+</div>
+<!-- Goal Selection -->
+<div class="mb-8">
+<h3 class="text-slate-900 text-sm font-bold uppercase tracking-wider mb-4 px-1">Select Your Objective</h3>
+<div class="grid grid-cols-3 gap-3">
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-primary bg-primary/5 text-primary shadow-soft transition-all">
+<span class="material-symbols-outlined font-bold">fitness_center</span>
+<span class="text-xs font-bold">BULK</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-400 transition-all hover:border-slate-200">
+<span class="material-symbols-outlined">straighten</span>
+<span class="text-xs font-bold">CUT</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-slate-100 bg-slate-50 text-slate-400 transition-all hover:border-slate-200">
+<span class="material-symbols-outlined">balance</span>
+<span class="text-xs font-bold">MAINTAIN</span>
+</button>
+</div>
+</div>
+<!-- Intensity Level -->
+<div class="mb-10">
+<div class="flex justify-between items-center mb-4 px-1">
+<h3 class="text-slate-900 text-sm font-bold uppercase tracking-wider">Training Intensity</h3>
+<span class="text-primary text-xs font-bold bg-primary/10 px-3 py-1 rounded-full">Advanced</span>
+</div>
+<div class="px-1">
+<input class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-primary" max="5" min="1" type="range" value="4"/>
+<div class="flex justify-between mt-3 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
+<span>Recovery</span>
+<span>Hypertrophy</span>
+<span>Maximum Effort</span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 glow-primary transition-all active:scale-[0.98] mb-12">
+<span class="material-symbols-outlined">auto_awesome</span>
+            GENERATE WITH AI
+        </button>
+<!-- Generated Sample Section -->
+<div class="relative">
+<div class="absolute -top-3 left-4 bg-mint text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg shadow-mint/20 z-10">
+                CURRENT GENERATION
+            </div>
+<div class="glass rounded-2xl p-6 shadow-card relative">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-slate-900 font-extrabold text-xl tracking-tight">Day 01: Hyper-Chest</h4>
+<p class="text-slate-500 text-xs mt-1 font-medium">Focus: Pectoral hypertrophy &amp; Peak tension</p>
+</div>
+<div class="size-10 rounded-full bg-mint/10 flex items-center justify-center text-mint">
+<span class="material-symbols-outlined font-bold">bolt</span>
+</div>
+</div>
+<!-- Exercises -->
+<div class="space-y-6">
+<div class="flex items-center gap-4 group">
+<div class="size-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
+<span class="material-symbols-outlined">exercise</span>
+</div>
+<div class="flex-1 border-b border-slate-100 pb-4">
+<div class="flex justify-between items-center">
+<span class="text-sm font-bold text-slate-800 uppercase tracking-wide">Bench Press (DB)</span>
+<span class="text-[10px] text-slate-400 font-bold">4 SETS × 10 REPS</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full mt-3">
+<div class="w-3/4 h-full bg-mint rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="size-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
+<span class="material-symbols-outlined">dynamic_form</span>
+</div>
+<div class="flex-1 border-b border-slate-100 pb-4">
+<div class="flex justify-between items-center">
+<span class="text-sm font-bold text-slate-800 uppercase tracking-wide">Incline Cable Fly</span>
+<span class="text-[10px] text-slate-400 font-bold">3 SETS × 15 REPS</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full mt-3">
+<div class="w-1/2 h-full bg-mint rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<div class="size-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary border border-slate-100">
+<span class="material-symbols-outlined">timer</span>
+</div>
+<div class="flex-1 pb-1">
+<div class="flex justify-between items-center">
+<span class="text-sm font-bold text-slate-800 uppercase tracking-wide">Weighted Dips</span>
+<span class="text-[10px] text-slate-400 font-bold">AMRAP × 3</span>
+</div>
+<div class="w-full h-1.5 bg-slate-100 rounded-full mt-3">
+<div class="w-1/4 h-full bg-mint rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-5 border-t border-slate-100 flex justify-between items-center">
+<span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Estimated Duration: 45 min</span>
+<button class="text-primary text-[10px] font-bold uppercase flex items-center gap-1 hover:gap-2 transition-all">
+                        View Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="sticky bottom-0 w-full border-t border-slate-100 bg-white/90 backdrop-blur-md px-4 pb-8 pt-4 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">assignment</span>
+<span class="text-[10px] font-bold">Plans</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-[10px] font-bold">Stats</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</nav>
+</body></html>

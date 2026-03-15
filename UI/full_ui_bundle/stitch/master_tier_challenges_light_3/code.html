@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Master Tier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "mint": "#00d18b",
+                        "background-light": "#FFFFFF",
+                        "background-alt": "#F8F9FA",
+                        "text-dark": "#1A1A1A",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03)',
+                        'card': '0 10px 30px -5px rgba(137, 90, 246, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(137, 90, 246, 0.05);
+        }
+        .mint-card {
+            background: #f0fff9;
+            box-shadow: 0 4px 20px -2px rgba(0, 209, 139, 0.05);
+            border: 1px solid rgba(0, 209, 139, 0.1);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background-alt font-display text-text-dark min-h-screen pb-24">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary font-bold">workspace_premium</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold tracking-tight">Master Tier</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold">FitNexora Elite</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-slate-500">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-slate-100 transition-colors relative">
+<span class="material-symbols-outlined text-slate-500">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-mint rounded-full border-2 border-white"></span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto p-4 space-y-8">
+<!-- Hero Section: Global Master Challenge -->
+<section class="relative group">
+<div class="relative overflow-hidden rounded-2xl bg-slate-900 aspect-[4/5] flex flex-col justify-end p-6 shadow-xl">
+<div class="absolute inset-0 opacity-60 mix-blend-overlay bg-cover bg-center" data-alt="Intense athlete training in a high-tech gym atmosphere" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBydh7qYf7dJniy9lMZfpBEScn6BQ4CwswBtpsRzAxzLSMwza0CLHsQEPWN-0aAbLWL-eeck2PaJbMvV_Wny6Tu6a8i0uX7W7CW8D-RQ4mLq3V9NFuM98qgAtrh7JyjbKXnia2an-2aA7a5el5TlOvq8Tn3S8rIuu3KS79MZJccrhYKZLL81Aa5drf0fpm9q0a_iCIhde-Z52qpgwRgOgkO1imA8NTnzJaN9zjrKldCoHPka7zFGhoXf7Ts_QR2VBcfLZDG54weXmU')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+<div class="relative z-10 space-y-4">
+<span class="bg-mint text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Active Now</span>
+<h2 class="text-4xl font-extrabold leading-tight text-white">Global Master Challenge</h2>
+<div class="flex gap-4 items-end">
+<div class="flex flex-col">
+<span class="text-[10px] text-slate-300 uppercase font-bold tracking-tighter">Prize Pool</span>
+<span class="text-3xl font-black text-white">$50,000</span>
+</div>
+<div class="h-10 w-px bg-white/20 mb-1"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-slate-300 uppercase font-bold tracking-tighter">Slots</span>
+<span class="text-3xl font-black text-mint">500</span>
+</div>
+</div>
+<!-- Countdown -->
+<div class="flex gap-2 pt-2">
+<div class="flex-1 bg-white/10 backdrop-blur-md rounded-xl py-2 flex flex-col items-center border border-white/10">
+<span class="text-lg font-bold text-white">03</span>
+<span class="text-[8px] uppercase text-slate-300">Days</span>
+</div>
+<div class="flex-1 bg-white/10 backdrop-blur-md rounded-xl py-2 flex flex-col items-center border border-white/10">
+<span class="text-lg font-bold text-white">14</span>
+<span class="text-[8px] uppercase text-slate-300">Hrs</span>
+</div>
+<div class="flex-1 bg-white/10 backdrop-blur-md rounded-xl py-2 flex flex-col items-center border border-white/10">
+<span class="text-lg font-bold text-white">22</span>
+<span class="text-[8px] uppercase text-slate-300">Min</span>
+</div>
+<div class="flex-1 bg-white/10 backdrop-blur-md rounded-xl py-2 flex flex-col items-center border border-white/10">
+<span class="text-lg font-bold text-white">58</span>
+<span class="text-[8px] uppercase text-slate-300">Sec</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-[0.98]">
+                    Enter Challenge
+                </button>
+</div>
+</div>
+</section>
+<!-- Live Leaderboard -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-mint font-bold">leaderboard</span>
+                Top Tier Athletes
+            </h3>
+<button class="text-primary text-xs font-bold uppercase tracking-widest">Full List</button>
+</div>
+<div class="space-y-3">
+<!-- Rank 1 -->
+<div class="glass-card p-4 rounded-2xl flex items-center gap-4 transition-transform active:scale-[0.99]">
+<div class="relative">
+<img class="size-14 rounded-full border-2 border-mint p-0.5" data-alt="Portrait of professional male athlete" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZGY8nioi7SafhZVbJkIcKpZu9Sp_Kf5AtOXrD2U0y1t-3O25XCNAzrYeOiUozjTtIs8mt7FSqr2u08uTSkcGhXG_f1rMbUPtm6XkjBiMK-1isVSPbSvEogYqUMenqbY5TtX-DOnwy6bSDTElqhOy0VpLqJB-okZ8cu5FgAQz0JApiGcFPtfiG8CZlu9SWhiekVFr0JX0-MOyFuoAjAJYSQkzsy9RPuc_xO_Wq3zsD9r70BNqxn2wlvNNDkDBx7Ti2IDdOCw6rf-Q"/>
+<span class="absolute -top-1 -left-1 bg-mint text-white text-[10px] font-black size-6 flex items-center justify-center rounded-full shadow-sm">1</span>
+</div>
+<div class="flex-1">
+<p class="font-extrabold text-slate-900">Marcus Vane</p>
+<div class="flex gap-3 mt-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-slate-400">bolt</span>
+<span class="text-[11px] text-slate-500 font-medium">98% Power</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-slate-400">speed</span>
+<span class="text-[11px] text-slate-500 font-medium">9.4 Score</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-mint font-black text-xl">12,450</p>
+<p class="text-[9px] uppercase text-slate-400 font-bold">Points</p>
+</div>
+</div>
+<!-- Rank 2 -->
+<div class="glass-card p-4 rounded-2xl flex items-center gap-4 transition-transform active:scale-[0.99]">
+<div class="relative">
+<img class="size-14 rounded-full border-2 border-slate-100 p-0.5" data-alt="Portrait of elite female runner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-Q7YUMiS1VuUNcphPIZ2IK4sHY3NqJN8UOiuhWPjhjt0k1RyymiE505PHIU3Deu4IwrFcDw5nKWKCpNEDMR0TySbIPXMumTmyP1n1cugF6qQXFIlTQSotjSiuSaTmQ3M8qaA-iGXHegYnYTDP5yxwhWjOyJu8UWKDxu8UzujFf13Dr7JfWN8W3YrO_RQNGmwqL928nxL_2EVh0Xvf2C0x4iq_mbBVZEFMXB-O3ervMSMa95YBwTxHGIPrwA3cqckGtlp7V_ti_RY"/>
+<span class="absolute -top-1 -left-1 bg-slate-800 text-white text-[10px] font-black size-6 flex items-center justify-center rounded-full">2</span>
+</div>
+<div class="flex-1">
+<p class="font-extrabold text-slate-900">Elena Rodriguez</p>
+<div class="flex gap-3 mt-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-slate-400">bolt</span>
+<span class="text-[11px] text-slate-500 font-medium">94% Power</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-slate-400">speed</span>
+<span class="text-[11px] text-slate-500 font-medium">9.1 Score</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-slate-900 font-black text-xl">11,820</p>
+<p class="text-[9px] uppercase text-slate-400 font-bold">Points</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Community Milestones -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-primary font-bold">groups</span>
+            Community Goals
+        </h3>
+<div class="mint-card p-6 rounded-2xl space-y-5">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-extrabold text-lg text-slate-900">1 Million Reps Together</h4>
+<p class="text-slate-500 text-xs mt-0.5">Current milestone for the FitNexora Elite</p>
+</div>
+<div class="bg-white p-2.5 rounded-xl shadow-sm">
+<span class="material-symbols-outlined text-mint font-bold">fitness_center</span>
+</div>
+</div>
+<div class="space-y-2.5">
+<div class="flex justify-between text-[11px] font-black uppercase tracking-wider text-mint">
+<span>742,000 / 1,000,000 Reps</span>
+<span>74%</span>
+</div>
+<div class="h-3 w-full bg-mint/10 rounded-full overflow-hidden">
+<div class="h-full bg-mint w-[74%] rounded-full shadow-[0_0_12px_rgba(0,209,139,0.3)]"></div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2.5">
+<img class="size-8 rounded-full border-2 border-white shadow-sm" data-alt="Community member avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyjYz3RKwm-L8q17pn0nlOJbz8MLIO6BTkgko71tG0wMbFzfMC5EfXCvtVqeZyWHSM-YeZ3XetYYOEzihlnYeot2w-1dCmtH_c2YV2_kRuq7dMbSkg_WJyMRbe_uDhvsQ_qi-OkVIpP9vIJfTupk0z3OL3MAJib7JgSBipwjErfofXoiALN9__KscgQIZsLH_2x_Hq7ArjcfFVGrrffH73BWpOo1wdXfMnGWmJTx3tU0OZc5Sv2i5wSqv0Ex-zOONXwW3PahOkoyQ"/>
+<img class="size-8 rounded-full border-2 border-white shadow-sm" data-alt="Community member avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANbuNz4NU5gCGL9y2SKDI0cmZN3F_Ft6bGvl-AkOYpcH2TjRAlMClpUVvoMzgMg922XsC_8B-Tdh4r2Xv4atZ1INfPdzoF-M5O7Gmu4omSr0eu_REeq-61Brgb31rDmPgP6AbPcQVGnhZczyU7P_uF2nSBonrYeLViFIulFu8trR9BrFna0IWFgucoTBMK6eHrA7t-jOMpBSA67BeNAp7mA7KisCmjnyhMp5s-ejqBDigOVMhEZ4EOvxXHXejU3qYcymF1ubqxmeM"/>
+<img class="size-8 rounded-full border-2 border-white shadow-sm" data-alt="Community member avatar 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTvd6elNfStjcMkzbPdWSyTG5yx7iBN_qGM6_6B5BW7sxHoXUQjS6_85Wgkxpn2tRWwO7ARNndzmdzX6Xim7YRGd7yBLFt97ZqaO6WUp3JYhcXLC5qZfVWM5cQP06TjZW1X4jKb3HJ2syzCncPHBC_LxwLcsIeojz4XDQ6JbAq-KsDDSbvFPAKpByIMthXBcQWdBw4qFKMdyanC2TLAFpO7CjR_D8-9oYZL1or8GxNnhTXOp-k1jxyps0h1vokGTYrtQ2EBEMrq0c"/>
+<div class="size-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[9px] font-bold text-slate-600 shadow-sm">+2.4k</div>
+</div>
+<span class="text-[11px] font-bold text-slate-500">athletes training now</span>
+</div>
+</div>
+</section>
+<!-- Elite Rewards -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-primary font-bold">military_tech</span>
+            Elite Rewards
+        </h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-2xl text-center space-y-3">
+<div class="mx-auto size-16 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl font-bold">verified</span>
+</div>
+<div>
+<p class="font-bold text-sm text-slate-900">Titan Badge</p>
+<p class="text-[10px] text-slate-500 font-medium">Unlock at Level 50</p>
+</div>
+<div class="pt-1">
+<span class="text-[10px] bg-slate-100 text-slate-500 py-1.5 px-4 rounded-full font-bold">LOCKED</span>
+</div>
+</div>
+<div class="glass-card p-5 rounded-2xl text-center space-y-3 border-mint/20">
+<div class="mx-auto size-16 bg-mint/10 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-mint text-3xl font-bold">watch</span>
+</div>
+<div>
+<p class="font-bold text-sm text-slate-900">Pro Hardware</p>
+<p class="text-[10px] text-slate-500 font-medium">Limited Edition Strap</p>
+</div>
+<div class="pt-1">
+<span class="text-[10px] bg-mint text-white py-1.5 px-4 rounded-full font-bold shadow-sm">ELIGIBLE</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-3 pb-8 z-50 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.05)]">
+<div class="max-w-md mx-auto flex items-center justify-between">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">emoji_events</span>
+<span class="text-[10px] font-bold">Challenges</span>
+</a>
+<div class="relative -top-6">
+<button class="size-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 flex items-center justify-center border-4 border-white transition-transform active:scale-90">
+<span class="material-symbols-outlined text-3xl font-bold">bolt</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold">Social</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

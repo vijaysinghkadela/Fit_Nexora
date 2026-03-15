@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-emerald": "#10b981",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .timer-glow {
+            filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.4));
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header / Branding Area -->
+<div class="flex items-center justify-between p-6">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">bolt</span>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-primary">FitNexora</span>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-200 dark:bg-primary/20">
+<span class="material-symbols-outlined text-slate-700 dark:text-primary">close</span>
+</button>
+</div>
+<!-- Main Content Container -->
+<main class="flex-1 flex flex-col items-center justify-center px-6 pb-20">
+<!-- Large Circular Progress Timer -->
+<div class="relative w-72 h-72 flex items-center justify-center mb-12">
+<!-- Background Circle -->
+<svg class="absolute w-full h-full -rotate-90">
+<circle class="text-slate-200 dark:text-primary/10" cx="144" cy="144" fill="transparent" r="130" stroke="currentColor" stroke-width="12"></circle>
+<!-- Progress Circle (Emerald) -->
+<circle class="text-accent-emerald timer-glow" cx="144" cy="144" fill="transparent" r="130" stroke="currentColor" stroke-dasharray="816.8" stroke-dashoffset="16.3" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<!-- Timer Text -->
+<div class="text-center z-10">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-widest mb-1">Remaining</p>
+<h1 class="text-7xl font-black tracking-tighter text-slate-900 dark:text-white">01:28</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Goal: 01:30</p>
+</div>
+</div>
+<!-- Exercise Details -->
+<div class="text-center mb-10 w-full max-w-sm">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-emerald/10 text-accent-emerald text-xs font-bold uppercase tracking-widest mb-4">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-emerald opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-accent-emerald"></span>
+</span>
+                Resting
+            </div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 leading-tight">Next Set</h2>
+<p class="text-xl text-primary font-medium">Barbell Bench Press</p>
+<div class="mt-4 flex items-center justify-center gap-4 text-slate-500 dark:text-slate-400 font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">layers</span> Set 3 of 4</span>
+<span class="w-1 h-1 rounded-full bg-slate-400"></span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">fitness_center</span> 185 lbs</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+<button class="glass-card py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary">more_time</span>
+<span class="font-bold text-slate-900 dark:text-slate-100">+30s</span>
+</button>
+<button class="glass-card py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary">fast_forward</span>
+<span class="font-bold text-slate-900 dark:text-slate-100">Skip Rest</span>
+</button>
+<button class="col-span-2 bg-primary hover:bg-primary/90 py-5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/30 transition-all active:scale-95">
+<span class="material-symbols-outlined text-white">play_arrow</span>
+<span class="font-bold text-white text-lg">Start Next Set Now</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Component (Reused/Modified) -->
+<div class="fixed bottom-0 left-0 right-0 border-t border-slate-200 dark:border-primary/20 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl px-4 pb-6 pt-2 z-50">
+<div class="flex gap-2 max-w-md mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">timer</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">analytics</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</div>
+</div>
+<!-- Background Decorative Gradient -->
+<div class="fixed -z-10 top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed -z-10 bottom-0 right-0 w-[300px] h-[300px] bg-accent-emerald/5 rounded-full blur-[100px] pointer-events-none"></div>
+</body></html>

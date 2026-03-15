@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora | Member Progress</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .emerald-gradient {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.02) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark overflow-x-hidden border-x border-slate-200 dark:border-primary/10">
+<!-- Header -->
+<div class="flex items-center p-4 pb-2 justify-between sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Member Progress</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-primary/10 text-slate-900 dark:text-slate-100 p-0">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+<!-- Profile Section -->
+<div class="flex p-4 @container">
+<div class="flex w-full flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-20 w-20 ring-2 ring-primary/30" data-alt="Profile picture of a fitness member" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-IjJi_qedUAnloC8OhwRBZ4ByYzH0_PXCUE4Mh825RDhKrBhSp45HPHmLnHKFJt3LbkAulK-5XyuJFCdnaZ9fhODCbkA4tHZOb7D2FeffwfKw9CZdLhCPWuDiwkzl7MWOb7sHfW5W3l5Nde7axOvUMb6gf-GG9aHtFvhnU8HosORBp4-hRJVcal1OL1aIzrr5pr_8lXPeKPcsTWjVyakEPzT-KknGRmkpU6o5NZm_Gkp3GynUWPxbeE1T_Fo8t4nM63FhMLP7kdg");'></div>
+<div class="flex flex-col">
+<p class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight">Alex Johnson</p>
+<p class="text-primary text-sm font-semibold uppercase tracking-wider">Standard Tier</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Member since Jan 2024</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Stats Grid -->
+<div class="grid grid-cols-2 gap-3 p-4">
+<div class="flex flex-col gap-1 rounded-xl p-4 glass-card border-l-4 border-l-primary">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Total Workouts</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight">24</p>
+<span class="text-emerald-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_up</span> 12%
+                    </span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 glass-card">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Current Weight</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight">78.5</p>
+<span class="text-slate-400 text-xs">kg</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 glass-card border-l-4 border-l-emerald-500">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Body Fat</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight">18.2%</p>
+<span class="text-emerald-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_down</span> 1.1%
+                    </span>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 glass-card">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Streak</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight">5</p>
+<span class="text-slate-400 text-xs">days</span>
+</div>
+</div>
+</div>
+<!-- Chart Placeholder -->
+<div class="px-4 py-2">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Weight &amp; Body Fat</h3>
+<div class="flex bg-slate-200 dark:bg-primary/10 rounded-lg p-1">
+<button class="px-3 py-1 text-xs font-bold bg-primary text-white rounded-md">6M</button>
+<button class="px-3 py-1 text-xs font-bold text-slate-500">1Y</button>
+</div>
+</div>
+<div class="w-full h-48 rounded-xl glass-card flex items-end justify-between p-4 relative overflow-hidden">
+<!-- Simple SVG Line Chart Representation -->
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,80 Q25,75 40,60 T70,40 T100,30" fill="none" stroke="#895af6" stroke-width="2"></path>
+<path d="M0,90 Q25,85 40,75 T70,65 T100,55" fill="none" stroke="#10b981" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-16 bg-primary/20 rounded-full"></div>
+<span class="text-[10px] text-slate-500">JAN</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-20 bg-primary/20 rounded-full"></div>
+<span class="text-[10px] text-slate-500">FEB</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-24 bg-primary/20 rounded-full"></div>
+<span class="text-[10px] text-slate-500">MAR</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-28 bg-primary rounded-full ring-4 ring-primary/10"></div>
+<span class="text-[10px] text-slate-900 dark:text-slate-100 font-bold">APR</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-12 bg-primary/20 rounded-full"></div>
+<span class="text-[10px] text-slate-500">MAY</span>
+</div>
+<div class="flex flex-col items-center gap-2 z-10">
+<div class="w-1.5 h-14 bg-primary/20 rounded-full"></div>
+<span class="text-[10px] text-slate-500">JUN</span>
+</div>
+</div>
+</div>
+<!-- Recent Gains Section -->
+<div class="px-4 py-4">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold mb-3">Recent Gains (PB)</h3>
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between p-3 rounded-xl emerald-gradient border border-emerald-500/20">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div>
+<p class="text-sm font-bold">Deadlift</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Improvement +10kg</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-base font-bold text-emerald-500">145 kg</p>
+<p class="text-[10px] text-slate-400">2 days ago</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl emerald-gradient border border-emerald-500/20">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+<span class="material-symbols-outlined">directions_run</span>
+</div>
+<div>
+<p class="text-sm font-bold">5K Run</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Personal record</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-base font-bold text-emerald-500">22:15</p>
+<p class="text-[10px] text-slate-400">Last week</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Body Measurements Table -->
+<div class="px-4 py-4 mb-20">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold">Measurements</h3>
+<button class="text-primary text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Add Log
+                </button>
+</div>
+<div class="overflow-hidden rounded-xl border border-slate-200 dark:border-primary/10">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-100 dark:bg-primary/5">
+<tr>
+<th class="p-3 font-semibold text-slate-600 dark:text-slate-400">Part</th>
+<th class="p-3 font-semibold text-slate-600 dark:text-slate-400">Current</th>
+<th class="p-3 font-semibold text-slate-600 dark:text-slate-400">Diff</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-primary/10">
+<tr>
+<td class="p-3 font-medium">Chest</td>
+<td class="p-3">104 cm</td>
+<td class="p-3 text-emerald-500 font-bold">+1.2</td>
+</tr>
+<tr>
+<td class="p-3 font-medium">Waist</td>
+<td class="p-3">82 cm</td>
+<td class="p-3 text-emerald-500 font-bold">-0.8</td>
+</tr>
+<tr>
+<td class="p-3 font-medium">Arms</td>
+<td class="p-3">38 cm</td>
+<td class="p-3 text-emerald-500 font-bold">+0.5</td>
+</tr>
+<tr>
+<td class="p-3 font-medium">Thighs</td>
+<td class="p-3">61 cm</td>
+<td class="p-3 text-slate-400">0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 w-full max-w-md mx-auto flex gap-2 border-t border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark/95 backdrop-blur-md px-4 pb-4 pt-2 z-20">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-[10px] font-medium">Workouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">analytics</span>
+<p class="text-[10px] font-bold">Progress</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Exercise Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "emerald-accent": "#10b981",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #895af6;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-slate-100">
+<!-- Main App Container (Simulating Screen 27 in background) -->
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Background Mockup of 'Create Workout Plan' -->
+<div class="absolute inset-0 z-0 opacity-40 p-6">
+<div class="flex items-center justify-between mb-8">
+<span class="material-symbols-outlined text-3xl">arrow_back</span>
+<h1 class="text-xl font-bold">New Routine</h1>
+<span class="material-symbols-outlined text-3xl">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="h-24 w-full bg-primary/10 rounded-xl border border-primary/20"></div>
+<div class="h-48 w-full bg-primary/10 rounded-xl border border-primary/20"></div>
+</div>
+</div>
+<!-- Overlay/Backdrop -->
+<div class="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm"></div>
+<!-- Bottom Sheet Modal Content -->
+<div class="absolute inset-x-0 bottom-0 z-20 flex h-[92%] flex-col bg-background-dark rounded-t-xl border-t border-white/10 shadow-2xl overflow-hidden">
+<!-- BottomSheetHandle & Header -->
+<div class="flex flex-col items-stretch pt-2">
+<div class="flex h-1.5 w-12 self-center rounded-full bg-slate-700 mb-4"></div>
+<div class="flex items-center px-6 pb-2 justify-between">
+<button class="text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<h2 class="text-xl font-bold tracking-tight">Add Exercises</h2>
+<div class="w-8"></div> <!-- Spacer for symmetry -->
+</div>
+<!-- Glassmorphic Search Bar -->
+<div class="px-6 py-4">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-primary">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 glass-effect bg-white/5 border-white/10 rounded-2xl focus:ring-2 focus:ring-primary/50 focus:border-primary text-white placeholder-slate-400 outline-none transition-all" placeholder="Search exercise..." type="text"/>
+</div>
+</div>
+<!-- Horizontal Pill Filters -->
+<div class="flex gap-3 px-6 pb-4 overflow-x-auto no-scrollbar">
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 text-white shadow-lg shadow-primary/20 cursor-pointer">
+<span class="text-sm font-semibold">All</span>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-effect px-5 text-slate-300 hover:bg-white/10 transition-colors cursor-pointer border border-white/5">
+<span class="text-sm font-medium">Chest</span>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-effect px-5 text-slate-300 hover:bg-white/10 transition-colors cursor-pointer border border-white/5">
+<span class="text-sm font-medium">Back</span>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-effect px-5 text-slate-300 hover:bg-white/10 transition-colors cursor-pointer border border-white/5">
+<span class="text-sm font-medium">Legs</span>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full glass-effect px-5 text-slate-300 hover:bg-white/10 transition-colors cursor-pointer border border-white/5">
+<span class="text-sm font-medium">Cardio</span>
+</div>
+</div>
+</div>
+<!-- Exercise List Section -->
+<div class="flex-1 overflow-y-auto px-6 space-y-4 pb-32 custom-scrollbar">
+<h3 class="text-sm font-semibold text-slate-500 uppercase tracking-widest pt-2">Recommended</h3>
+<!-- Exercise Card 1 -->
+<div class="flex items-center p-4 glass-effect rounded-2xl hover:bg-white/5 transition-all group">
+<div class="h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+<img alt="Exercise Preview" class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Bodybuilder doing bench press exercise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBemXoVpWC-ijkWt9gqNSQHFRlaTPvhztnwW83MK8zPAbHz0s7Yi3L9mp5tMpV8EEQAGLdlew9xIEWOzk3A086ftfDXOeaa3-Msdbw3bW_Xytjrne7U6nXjL_Lp-865Pm1hjOg_gHuqyIC1kjnPVydDIypCn-RH3upqlf03pC0D9qy3ZXOzmMZUP1fsJc-j9J274KEMZIuZQcji2zt9knBLlDuFRJtB5qUGAAa01Rzqyg_pPwu9_T6cCRZ-pmp4HJCdxtAqyNq1od8"/>
+</div>
+<div class="ml-4 flex-1">
+<h4 class="font-bold text-lg text-white">Barbell Bench Press</h4>
+<p class="text-sm text-slate-400">Chest, Triceps</p>
+</div>
+<button class="bg-primary/20 hover:bg-primary text-primary hover:text-white p-2.5 rounded-xl transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Exercise Card 2 -->
+<div class="flex items-center p-4 glass-effect rounded-2xl hover:bg-white/5 transition-all group">
+<div class="h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+<img alt="Exercise Preview" class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Person performing weighted squats in gym" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5oldu0w1Tn8HuG4gaOW6whLuBbPGoDibvqrHUEV2iUSyWcTQGkwmV0rhpEp0RpR0E70qyOm7BAzNs03TVMvNy_Yp5DqNDtiJiO8P-c_-JSsdeHAi7wFROI1c8kU0pjGP8n-lNcubGJihDwPY12QP9pjIY5M-nlDeo-xcvtiPsgCly0t-AtkkG6zOl0TLI9KQ4LJWS90vAS1UP_Yy2S2OXSm1h6pv6Sy9iAcdyHIZUJIg2qvkwPJapdF_JfGz9j5qXSI0Z48lfZVA"/>
+</div>
+<div class="ml-4 flex-1">
+<h4 class="font-bold text-lg text-white">Weighted Squat</h4>
+<p class="text-sm text-slate-400">Quads, Glutes</p>
+</div>
+<button class="bg-emerald-accent/20 hover:bg-emerald-accent text-emerald-accent hover:text-white p-2.5 rounded-xl transition-all">
+<span class="material-symbols-outlined">check</span>
+</button>
+</div>
+<!-- Exercise Card 3 -->
+<div class="flex items-center p-4 glass-effect rounded-2xl hover:bg-white/5 transition-all group">
+<div class="h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+<img alt="Exercise Preview" class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Athlete doing wide grip pullups" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2V49R10lXE-gWQY06_o9Yoqb1eeRgLUxaEfL2jKd0aHIaJu9wDFC1AvEMVa5blEbAOsAaB3N9e-HRTORQqYPhB4jg-UytpmCApqsfjta7O3mqzNI9irq-UANT9kz1n_UxM-KDZykrn3ulFO2Zv897zxDRRm8Br95S7wM5YKPGHlbMsFxC4eimzkoB7nMRTg0HfVR-2VR6mP0sfQxoz3Gux42j5yVE6MMDTexIgfRwxJbX7Pu_bIFZTJWaPWSVXs4Z7YD621CJeBk"/>
+</div>
+<div class="ml-4 flex-1">
+<h4 class="font-bold text-lg text-white">Wide-Grip Pull Ups</h4>
+<p class="text-sm text-slate-400">Back, Biceps</p>
+</div>
+<button class="bg-primary/20 hover:bg-primary text-primary hover:text-white p-2.5 rounded-xl transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Exercise Card 4 -->
+<div class="flex items-center p-4 glass-effect rounded-2xl hover:bg-white/5 transition-all group">
+<div class="h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+<img alt="Exercise Preview" class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Kettlebell swing workout movement" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxEB7pGcOcackNzhtv1TfXAwr2VBbWPnuQzaasBIyKQQ2f5s-Z56KFZ-gHRi9ZrL9atSb7X1i8b_e22B2h-Fa84zYxHqzJnnq9de3IiiKuh32onFj4yS-iCNfgh-wDTyDZysATtTZS67F3EUPTuw63WwFjGMnmkERquCGei1OntpIpLt_QTQM_hTISfiaf8bH1kugcNP1cJrMe9WoBEujA0liXKUdG3RT8IB5z1yFFJuaoRReF2ecWLIZWvanEorHft9CjS-zIF7Y"/>
+</div>
+<div class="ml-4 flex-1">
+<h4 class="font-bold text-lg text-white">Kettlebell Swings</h4>
+<p class="text-sm text-slate-400">Full Body, Cardio</p>
+</div>
+<button class="bg-primary/20 hover:bg-primary text-primary hover:text-white p-2.5 rounded-xl transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Exercise Card 5 -->
+<div class="flex items-center p-4 glass-effect rounded-2xl hover:bg-white/5 transition-all group">
+<div class="h-16 w-16 rounded-xl overflow-hidden bg-slate-800 shrink-0">
+<img alt="Exercise Preview" class="h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Dumbbell bicep curl exercise" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeZ4q3BWZaK5SJeW1kyI3swHWQR6JrA3QAPapwe5QdU-RPXiXIBwM5a30pGKvs23XTXAsVsun6osb7Ns9r0RIUJ33uIMdnPuut_2E_4Y6mokzZuGoKpwuQbw8Xbn54oIRc6rLGynz4LygtUfzdTxvdS9Z6FkNCx97qID7dGT5AZQbIofSx5Z3qIVuvytpN7GMuQO8yPY6C0xhX11pBHMtg3atlkA7j-egRonnfv5W-NXGm82Y7i0y1zFVveClX7CIcaNKpXYvVi0o"/>
+</div>
+<div class="ml-4 flex-1">
+<h4 class="font-bold text-lg text-white">Dumbbell Curls</h4>
+<p class="text-sm text-slate-400">Biceps</p>
+</div>
+<button class="bg-primary/20 hover:bg-primary text-primary hover:text-white p-2.5 rounded-xl transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Summary Bar & Confirm Button -->
+<div class="absolute bottom-0 inset-x-0 p-6 glass-effect bg-background-dark/80 border-t border-white/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex -space-x-3">
+<div class="h-8 w-8 rounded-full border-2 border-background-dark bg-primary flex items-center justify-center text-[10px] font-bold">BP</div>
+<div class="h-8 w-8 rounded-full border-2 border-background-dark bg-emerald-accent flex items-center justify-center text-[10px] font-bold">SQ</div>
+<div class="h-8 w-8 rounded-full border-2 border-background-dark bg-slate-700 flex items-center justify-center text-[10px] font-medium">+1</div>
+</div>
+<p class="text-sm font-medium text-slate-300">3 Exercises Selected</p>
+</div>
+<button class="w-full h-14 bg-primary text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    Confirm Selection
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-mint": "#0bda6f",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0a0812",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-primary {
+            background: rgba(137, 90, 246, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 glass px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">bolt</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-none tracking-tight">FitNexora</h1>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mt-1">Admin Dashboard</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full glass hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full glass hover:bg-primary/20 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-accent-mint rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/30 overflow-hidden ml-2">
+<img alt="Owner Profile" class="w-full h-full object-cover" data-alt="Professional portrait of a male gym owner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPlRe0HtCqx2peWsskQQ7E_nPH4XXxyT-5w9YK7xVMRZablOw67OwwI6bQnKfudlbpOt6e70PCMwp19HHOmI85x9q0bhijUM8L2WUGZJZNqdcmfbMxKbhnDlbUXgVatB7l82b9skTqezei3_qFbBvvrTwn1YQsLhkq2D1SpGSKxIB1mGyV6naXfoDSHzze_Sqhb34dzc_709yJBpdUkJ-hy3BFUtsxqYpO28jw100r9R--hSprjFTXRsjzniQ_2zcz0R5pJ3lfoPk"/>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto p-4 space-y-6">
+<!-- Quick Stats -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="glass p-5 rounded-xl">
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Total Members</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">1,240</h3>
+<span class="text-accent-mint text-xs font-bold flex items-center bg-accent-mint/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 5.4%
+                    </span>
+</div>
+</div>
+<div class="glass p-5 rounded-xl">
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Monthly Revenue</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">$42.8k</h3>
+<span class="text-accent-mint text-xs font-bold flex items-center bg-accent-mint/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 8.2%
+                    </span>
+</div>
+</div>
+<div class="glass p-5 rounded-xl">
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">New Leads</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">84</h3>
+<span class="text-primary text-xs font-bold flex items-center bg-primary/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span> Week
+                    </span>
+</div>
+</div>
+<div class="glass p-5 rounded-xl border-l-4 border-primary">
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">Avg Session</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">72m</h3>
+<span class="text-slate-400 text-xs font-bold flex items-center">
+                        Stable
+                    </span>
+</div>
+</div>
+</div>
+<!-- Gym Traffic Chart (Modified Component) -->
+<section class="glass rounded-xl p-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+<div>
+<h2 class="text-xl font-bold tracking-tight">Gym Occupancy</h2>
+<p class="text-slate-400 text-sm">Real-time traffic vs historical average</p>
+</div>
+<div class="flex gap-2">
+<span class="flex items-center gap-1.5 text-xs text-slate-300 glass px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Live
+                    </span>
+<span class="flex items-center gap-1.5 text-xs text-slate-300 glass px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-slate-500"></span> Average
+                    </span>
+</div>
+</div>
+<div class="relative h-[200px] w-full mt-4">
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 472 150">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#895af6" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#895af6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 109C18 109 18 21 36 21C54 21 54 41 72 41C90 41 90 93 108 93C127 93 127 33 145 33C163 33 163 101 181 101C199 101 199 61 217 61C236 61 236 45 254 45C272 45 272 121 290 121C308 121 308 149 326 149C344 149 344 1 363 1C381 1 381 81 399 81C417 81 417 129 435 129C453 129 453 25 472 25V150H0V109Z" fill="url(#chartGradient)"></path>
+<path d="M0 109C18 109 18 21 36 21C54 21 54 41 72 41C90 41 90 93 108 93C127 93 127 33 145 33C163 33 163 101 181 101C199 101 199 61 217 61C236 61 236 45 254 45C272 45 272 121 290 121C308 121 308 149 326 149C344 149 344 1 363 1C381 1 381 81 399 81C417 81 417 129 435 129C453 129 453 25 472 25" stroke="#895af6" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="flex justify-between mt-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest px-1">
+<span>6am</span>
+<span>9am</span>
+<span>12pm</span>
+<span>3pm</span>
+<span>6pm</span>
+<span>9pm</span>
+<span>12am</span>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- AI Usage & Insights -->
+<div class="lg:col-span-1 glass rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl">auto_awesome</span>
+</div>
+<h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">psychology</span>
+                    AI Usage Meter
+                </h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-slate-400">Automated Programs</span>
+<span class="font-bold">78%</span>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-purple-400 w-[78%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-slate-400">Retention Risk Analysis</span>
+<span class="font-bold">42%</span>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-purple-400 w-[42%]"></div>
+</div>
+</div>
+<div class="glass-primary p-4 rounded-lg mt-4">
+<p class="text-xs text-primary-200 leading-relaxed italic">
+                            "AI suggests increasing evening spin classes by 15% based on current traffic spikes."
+                        </p>
+</div>
+</div>
+</div>
+<!-- Active Memberships -->
+<div class="lg:col-span-2 glass rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold">Recent Memberships</h3>
+<button class="text-xs text-primary font-bold uppercase tracking-wider">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-xs text-slate-500 uppercase tracking-wider border-b border-white/5">
+<th class="pb-3 font-semibold">Member</th>
+<th class="pb-3 font-semibold">Plan</th>
+<th class="pb-3 font-semibold">Status</th>
+<th class="pb-3 font-semibold">Activity</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold">JD</div>
+<div>
+<p class="text-sm font-semibold">John Doe</p>
+<p class="text-[10px] text-slate-500">Member since May</p>
+</div>
+</div>
+</td>
+<td class="py-4">
+<span class="text-xs glass px-2 py-1 rounded">Elite Platinum</span>
+</td>
+<td class="py-4">
+<span class="flex items-center gap-1.5 text-[10px] font-bold text-accent-mint uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-mint animate-pulse"></span> Active
+                                    </span>
+</td>
+<td class="py-4">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full border border-background-dark bg-slate-700 flex items-center justify-center text-[8px]">M</div>
+<div class="w-6 h-6 rounded-full border border-background-dark bg-primary flex items-center justify-center text-[8px]">T</div>
+<div class="w-6 h-6 rounded-full border border-background-dark bg-slate-700 flex items-center justify-center text-[8px]">W</div>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold">SM</div>
+<div>
+<p class="text-sm font-semibold">Sarah Miller</p>
+<p class="text-[10px] text-slate-500">Member since Jan</p>
+</div>
+</div>
+</td>
+<td class="py-4">
+<span class="text-xs glass px-2 py-1 rounded">Standard</span>
+</td>
+<td class="py-4">
+<span class="flex items-center gap-1.5 text-[10px] font-bold text-orange-400 uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Expiring
+                                    </span>
+</td>
+<td class="py-4">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full border border-background-dark bg-primary flex items-center justify-center text-[8px]">F</div>
+<div class="w-6 h-6 rounded-full border border-background-dark bg-primary flex items-center justify-center text-[8px]">S</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<section class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-500">Quick Actions</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass rounded-xl hover:glass-primary hover:text-primary transition-all group">
+<div class="w-12 h-12 rounded-full glass flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<span class="text-sm font-semibold">Add Client</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass rounded-xl hover:glass-primary hover:text-primary transition-all group">
+<div class="w-12 h-12 rounded-full glass flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<span class="text-sm font-semibold">Announcement</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass rounded-xl hover:glass-primary hover:text-primary transition-all group">
+<div class="w-12 h-12 rounded-full glass flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<span class="text-sm font-semibold">New Workout</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-3 p-6 glass rounded-xl hover:glass-primary hover:text-primary transition-all group">
+<div class="w-12 h-12 rounded-full glass flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-sm font-semibold">Billing</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/5 px-6 pb-6 pt-3 flex items-center justify-between z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-variation-fill-1">grid_view</span>
+<span class="text-[10px] font-bold uppercase">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold uppercase">Clients</span>
+</a>
+<div class="relative -mt-10">
+<button class="w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/40 ring-4 ring-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-bold uppercase">Chat</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase">Config</span>
+</a>
+</nav>
+</body></html>

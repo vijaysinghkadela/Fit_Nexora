@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Manual Food Entry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6", // Deep Violet
+                        "emerald-accent": "#10b981", // Emerald accent
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0f0a1e", // Darker violet-black
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .emerald-glow {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-primary/10">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Manual Food Entry</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<main class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-md mx-auto w-full">
+<!-- Quick Search (Secondary Focus) -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+</div>
+<input class="w-full bg-primary/5 border border-primary/20 rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-sm placeholder:text-slate-500" placeholder="Search common foods..." type="text"/>
+</div>
+<!-- Meal Details Form -->
+<section class="space-y-5">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-xl">restaurant_menu</span>
+<h2 class="font-semibold text-sm uppercase tracking-wider text-primary/80">Meal Details</h2>
+</div>
+<!-- Meal Name -->
+<div class="space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">MEAL NAME</label>
+<input class="w-full bg-primary/10 border border-primary/10 rounded-xl py-4 px-4 focus:bg-primary/15 focus:border-primary/30 transition-all outline-none" placeholder="e.g. Grilled Salmon &amp; Asparagus" type="text"/>
+</div>
+<!-- Meal Type Selector -->
+<div class="space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1 text-center block">MEAL TYPE</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="flex flex-col items-center gap-1 p-3 rounded-xl bg-primary/20 border-2 border-primary text-white">
+<span class="material-symbols-outlined text-lg">wb_twilight</span>
+<span class="text-[10px] font-bold">Breakfast</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-3 rounded-xl bg-primary/5 border-2 border-transparent hover:border-primary/20 text-slate-400">
+<span class="material-symbols-outlined text-lg">light_mode</span>
+<span class="text-[10px] font-bold">Lunch</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-3 rounded-xl bg-primary/5 border-2 border-transparent hover:border-primary/20 text-slate-400">
+<span class="material-symbols-outlined text-lg">dark_mode</span>
+<span class="text-[10px] font-bold">Dinner</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-3 rounded-xl bg-primary/5 border-2 border-transparent hover:border-primary/20 text-slate-400">
+<span class="material-symbols-outlined text-lg">cookie</span>
+<span class="text-[10px] font-bold">Snack</span>
+</button>
+</div>
+</div>
+<!-- Macros Grid -->
+<div class="glass-card p-5 rounded-2xl space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Calories (kcal)</label>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-lg p-3 text-center text-lg font-bold text-emerald-accent focus:border-emerald-accent/50 focus:ring-0 outline-none" placeholder="0" type="number"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Protein (g)</label>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-lg p-3 text-center text-lg font-bold text-primary focus:border-primary/50 focus:ring-0 outline-none" placeholder="0" type="number"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Carbs (g)</label>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-lg p-3 text-center text-lg font-bold text-sky-400 focus:border-sky-400/50 focus:ring-0 outline-none" placeholder="0" type="number"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase">Fats (g)</label>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-lg p-3 text-center text-lg font-bold text-orange-400 focus:border-orange-400/50 focus:ring-0 outline-none" placeholder="0" type="number"/>
+</div>
+</div>
+</div>
+<!-- Date & Time -->
+<div class="flex gap-3">
+<div class="flex-1 space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">DATE</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">calendar_today</span>
+<input class="w-full bg-primary/10 border-none rounded-xl py-3 pl-10 text-sm font-medium" readonly="" type="text" value="Today, Oct 24"/>
+</div>
+</div>
+<div class="flex-1 space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">TIME</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg">schedule</span>
+<input class="w-full bg-primary/10 border-none rounded-xl py-3 pl-10 text-sm font-medium" readonly="" type="text" value="12:30 PM"/>
+</div>
+</div>
+</div>
+<!-- Notes & Tags -->
+<div class="space-y-3">
+<label class="text-xs font-medium text-slate-400 ml-1">NOTES &amp; TAGS</label>
+<div class="flex flex-wrap gap-2 mb-2">
+<span class="px-3 py-1 bg-emerald-accent/10 text-emerald-accent border border-emerald-accent/20 rounded-full text-[10px] font-bold uppercase tracking-tight">High Protein</span>
+<span class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-bold uppercase tracking-tight">Post-Workout</span>
+<button class="px-3 py-1 bg-slate-800 text-slate-400 border border-slate-700 rounded-full text-[10px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">add</span> ADD TAG
+                    </button>
+</div>
+<textarea class="w-full bg-primary/5 border border-primary/10 rounded-xl p-4 text-sm focus:ring-1 focus:ring-primary/30 outline-none placeholder:text-slate-600" placeholder="Add a note..." rows="2"></textarea>
+</div>
+</section>
+<!-- Spacer -->
+<div class="h-10"></div>
+</main>
+<!-- Footer Action -->
+<div class="p-4 bg-background-light dark:bg-background-dark/90 backdrop-blur-md border-t border-primary/10">
+<button class="w-full bg-emerald-accent text-slate-900 font-bold py-4 rounded-xl flex items-center justify-center gap-2 emerald-glow hover:brightness-110 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">check_circle</span>
+            LOG MEAL
+        </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-primary/10 bg-background-light dark:bg-background-dark px-4 pb-6 pt-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+<p class="text-[10px] font-bold leading-normal uppercase">Dashboard</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1">add_circle</span>
+<p class="text-[10px] font-bold leading-normal uppercase">Log</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+<p class="text-[10px] font-bold leading-normal uppercase">Plans</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<p class="text-[10px] font-bold leading-normal uppercase">Profile</p>
+</a>
+</div>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Splash Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0a0812",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-morphism {
+            background: rgba(137, 90, 246, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(137, 90, 246, 0.3);
+        }
+        .glow-effect {
+            filter: drop-shadow(0 0 15px rgba(137, 90, 246, 0.6));
+        }
+        .bg-gradient-radial {
+            background: radial-gradient(circle at center, rgba(137, 90, 246, 0.15) 0%, rgba(10, 8, 18, 1) 70%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden">
+<div class="relative flex h-screen w-full flex-col items-center justify-between bg-background-light dark:bg-background-dark p-8">
+<div class="absolute inset-0 bg-gradient-radial pointer-events-none"></div>
+<div class="flex-1 flex flex-col items-center justify-center w-full max-w-md relative z-10">
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150"></div>
+<div class="w-48 h-48 rounded-full glass-morphism flex items-center justify-center relative border border-white/10">
+<div class="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/30 to-transparent"></div>
+<span class="text-8xl font-black text-white glow-effect select-none">F</span>
+</div>
+</div>
+<div class="text-center space-y-2">
+<h1 class="text-white tracking-tight text-5xl font-extrabold leading-tight">
+                    Fit<span class="text-primary">Nexora</span>
+</h1>
+<p class="text-slate-400 text-sm font-medium tracking-[0.2em] uppercase">Premium Fitness Intelligence</p>
+</div>
+</div>
+<div class="w-full max-w-[280px] space-y-6 pb-12 relative z-10">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between px-1">
+<p class="text-slate-400 text-xs font-medium leading-normal tracking-wide">Syncing performance data...</p>
+<p class="text-primary text-xs font-bold leading-normal">74%</p>
+</div>
+<div class="h-1.5 w-full rounded-full bg-slate-800/50 overflow-hidden">
+<div class="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary" style="width: 74%;"></div>
+</div>
+</div>
+<div class="flex justify-center">
+<div class="flex gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-primary/20"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20">
+<div class="absolute top-1/4 -left-20 w-80 h-80 bg-primary/30 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary/20 rounded-full blur-[120px]"></div>
+</div>
+</body></html>

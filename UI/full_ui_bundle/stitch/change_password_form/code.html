@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#120b08",
+                        "accent-violet": "#8b5cf6",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-input {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus-within {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center p-4 pb-2 justify-between sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<button class="text-slate-900 dark:text-slate-100 flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12">Change Password</h2>
+</div>
+<div class="max-w-md mx-auto w-full px-6 pt-8">
+<header class="mb-8">
+<h3 class="text-slate-900 dark:text-slate-100 tracking-tight text-3xl font-bold leading-tight mb-2">Secure Your Account</h3>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-relaxed">Update your password to keep your FitNexora fitness data and personal profile safe.</p>
+</header>
+<form class="space-y-6">
+<!-- Current Password -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-700 dark:text-slate-300 text-sm font-semibold uppercase tracking-wider ml-1">Current Password</label>
+<div class="flex w-full items-stretch glass-input rounded-xl overflow-hidden transition-all duration-300">
+<input class="bg-transparent flex w-full min-w-0 flex-1 border-none text-slate-900 dark:text-white h-14 placeholder:text-slate-400 dark:placeholder:text-slate-600 px-4 text-base font-normal focus:ring-0" placeholder="••••••••" type="password"/>
+<button class="text-slate-400 dark:text-slate-500 flex items-center justify-center px-4 hover:text-accent-violet transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- New Password -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-700 dark:text-slate-300 text-sm font-semibold uppercase tracking-wider ml-1">New Password</label>
+<div class="flex w-full items-stretch glass-input rounded-xl overflow-hidden transition-all duration-300">
+<input class="bg-transparent flex w-full min-w-0 flex-1 border-none text-slate-900 dark:text-white h-14 placeholder:text-slate-400 dark:placeholder:text-slate-600 px-4 text-base font-normal focus:ring-0" placeholder="••••••••" type="password"/>
+<button class="text-slate-400 dark:text-slate-500 flex items-center justify-center px-4 hover:text-accent-violet transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+<div class="flex flex-wrap gap-x-4 gap-y-2 mt-2 ml-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+<span class="text-xs text-slate-500">At least 8 characters</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">circle</span>
+<span class="text-xs text-slate-500">One special character</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">circle</span>
+<span class="text-xs text-slate-500">One uppercase letter</span>
+</div>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="flex flex-col gap-2">
+<label class="text-slate-700 dark:text-slate-300 text-sm font-semibold uppercase tracking-wider ml-1">Confirm New Password</label>
+<div class="flex w-full items-stretch glass-input rounded-xl overflow-hidden transition-all duration-300">
+<input class="bg-transparent flex w-full min-w-0 flex-1 border-none text-slate-900 dark:text-white h-14 placeholder:text-slate-400 dark:placeholder:text-slate-600 px-4 text-base font-normal focus:ring-0" placeholder="••••••••" type="password"/>
+<button class="text-slate-400 dark:text-slate-500 flex items-center justify-center px-4 hover:text-accent-violet transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<div class="pt-6">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2" type="submit">
+                        Update Password
+                        <span class="material-symbols-outlined">lock_reset</span>
+</button>
+</div>
+<div class="flex justify-center pt-2">
+<button class="text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-accent-violet transition-colors" type="button">
+                        Forgot your current password?
+                    </button>
+</div>
+</form>
+</div>
+<!-- Decorative Background Element -->
+<div class="fixed -bottom-24 -right-24 w-64 h-64 bg-accent-violet/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="fixed -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+</div>
+</body></html>

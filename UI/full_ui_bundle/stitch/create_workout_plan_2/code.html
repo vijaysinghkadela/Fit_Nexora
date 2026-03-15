@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Create Workout Plan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent": "#00f5a0",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0f0a1e",
+                        "card-dark": "#1a1433",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-morphism {
+            background: rgba(26, 20, 51, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .accent-glow {
+            box-shadow: 0 0 15px rgba(0, 245, 160, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 glass-morphism px-4 py-4 flex items-center justify-between border-b border-white/10">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">New Workout Plan</h1>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</header>
+<main class="p-4 space-y-6 pb-32">
+<!-- Plan Basic Info Section -->
+<section class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-xl">edit_note</span>
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Plan Basic Info</h2>
+</div>
+<div class="glass-morphism rounded-xl p-5 space-y-5">
+<!-- Plan Name -->
+<div class="space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">Plan Name</label>
+<input class="w-full bg-background-dark/50 border border-white/10 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-600" placeholder="e.g. 12-Week Hypertrophy" type="text"/>
+</div>
+<!-- Difficulty Selection -->
+<div class="space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">Difficulty Level</label>
+<div class="flex bg-background-dark/50 p-1 rounded-xl border border-white/5">
+<label class="flex-1 cursor-pointer">
+<input class="hidden peer" name="difficulty" type="radio" value="beginner"/>
+<div class="text-center py-2 rounded-lg text-sm font-medium text-slate-400 peer-checked:bg-primary peer-checked:text-white transition-all">Beginner</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input checked="" class="hidden peer" name="difficulty" type="radio" value="intermediate"/>
+<div class="text-center py-2 rounded-lg text-sm font-medium text-slate-400 peer-checked:bg-primary peer-checked:text-white transition-all">Intermediate</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="hidden peer" name="difficulty" type="radio" value="advanced"/>
+<div class="text-center py-2 rounded-lg text-sm font-medium text-slate-400 peer-checked:bg-primary peer-checked:text-white transition-all">Advanced</div>
+</label>
+</div>
+</div>
+<!-- Goal Selection -->
+<div class="space-y-2">
+<label class="text-xs font-medium text-slate-400 ml-1">Primary Goal</label>
+<div class="relative">
+<select class="w-full bg-background-dark/50 border border-white/10 rounded-lg px-4 py-3 appearance-none focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all">
+<option>Hypertrophy (Muscle Growth)</option>
+<option>Maximum Strength</option>
+<option>Fat Loss &amp; Tone</option>
+<option>Endurance</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Optimization Toggle -->
+<section class="glass-morphism rounded-xl p-4 flex items-center justify-between border border-primary/20 bg-primary/5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<div>
+<h3 class="text-sm font-bold">AI Plan Optimization</h3>
+<p class="text-xs text-slate-400">Suggest sets, reps &amp; rest based on goal</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent"></div>
+</label>
+</section>
+<!-- Exercise Builder Section -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-xl">fitness_center</span>
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Exercise Builder</h2>
+</div>
+<span class="text-xs font-medium text-primary">3 Exercises</span>
+</div>
+<!-- Exercise Cards List -->
+<div class="space-y-3">
+<!-- Card 1 -->
+<div class="glass-morphism rounded-xl p-4 flex gap-4 items-start relative overflow-hidden group">
+<div class="w-16 h-16 rounded-lg bg-slate-800 overflow-hidden shrink-0 border border-white/5">
+<img class="w-full h-full object-cover opacity-80" data-alt="Male athlete performing bench press in gym" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJlptZV_8Xh_1kW7DQWWuvZ6HdXjBAatxhdIfhz0tWMgqAXbMhJkrLdLdbdUWUnMwKm4lPn69ZICoE8ju9jqrabEPNItYn26r0tlByYBtrnnTYApDv0CU7W5y-MNo-SpdgNC2QFOI9yHRUlvo43PPMBdvHwxEFCtKleUcKSxJuNQWWoPt_a4GwECUvZZ9N3rg3dG5GAufu9CB0uBwkETlKIh5ZhpYTvCPgLZ0S13bZeKSvKu74M12lMI2DITXTxYpDHoqqyfLis5w"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-slate-100">Barbell Bench Press</h4>
+<button class="text-slate-500 hover:text-red-400">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-3">
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Sets</p>
+<p class="text-sm font-bold text-accent">4</p>
+</div>
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Reps</p>
+<p class="text-sm font-bold text-accent">8-12</p>
+</div>
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Rest</p>
+<p class="text-sm font-bold text-accent">90s</p>
+</div>
+</div>
+</div>
+<div class="absolute left-0 top-0 w-1 h-full bg-accent"></div>
+</div>
+<!-- Card 2 -->
+<div class="glass-morphism rounded-xl p-4 flex gap-4 items-start relative overflow-hidden group">
+<div class="w-16 h-16 rounded-lg bg-slate-800 overflow-hidden shrink-0 border border-white/5">
+<img class="w-full h-full object-cover opacity-80" data-alt="Close up of heavy dumbbells in a row" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-G0m7BE_RiCOxG5JnlIs_wLz5kPHzTHwyNuXxQpvyume796-KHW1YYnf5k_hY8UmgPWaJzjD9oex85NHMhZZgf5FioVC1kwbYxYy1Ay_5K3qZYYjtB0WbhKR5sQOZy1JcmTMDeT76ElwCEf7B3OKq8jZZsKxBGjRT9g579AqPgiGyUQ--cPIYnbdqN7vXAuoPV08X483NRMUa1Xp_lDXaksZTLlHkJ8U2ie3pqTWGcd9eDPYIKpoNqJQJ-RC2LN6vaGKRq_1F0Bk"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-slate-100">Incline DB Flys</h4>
+<button class="text-slate-500 hover:text-red-400">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-3">
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Sets</p>
+<p class="text-sm font-bold text-accent">3</p>
+</div>
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Reps</p>
+<p class="text-sm font-bold text-accent">15</p>
+</div>
+<div class="bg-white/5 rounded-md p-2 text-center">
+<p class="text-[10px] text-slate-400 uppercase font-bold">Rest</p>
+<p class="text-sm font-bold text-accent">60s</p>
+</div>
+</div>
+</div>
+<div class="absolute left-0 top-0 w-1 h-full bg-accent"></div>
+</div>
+</div>
+<!-- Search & Add Button -->
+<button class="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-white/10 rounded-xl hover:bg-white/5 hover:border-primary/50 transition-all text-slate-400 hover:text-primary group">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-semibold">Search &amp; Add Exercise</span>
+</button>
+</section>
+</main>
+<!-- Bottom Action Area -->
+<div class="fixed bottom-0 left-0 right-0 p-4 glass-morphism border-t border-white/10">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-transform active:scale-95 accent-glow">
+<span class="material-symbols-outlined">save</span>
+                Save &amp; Assign Plan
+            </button>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Master Tier Recovery Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-4 py-4 flex items-center justify-between">
+<button class="p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">menu</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Master Tier Recovery</h1>
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Professional athlete profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKrirVKK10wxL8hhtFH53CG2ozQsp1Q86WpNSDPKrz1AysVp-hEq2U729BTKEBwj8lLtvJr0xLKfRtTZoQwATXQZ4XENvyCieeeNYt5sxZl53ycsr2fK9kRbxvPzDVeRRIY2QapHzi7uX0P7liviv8YJ7wj832yKiisnQUvC49Cx6EwUfpqJmWhlYerbNBG_AHs4A3nEQHG030nJomWFRqxlghctkYRV6koMyIkPLeKkOGDZwZIREq_hT1skOzdmCMzqetFEdA5CA"/>
+</div>
+</div>
+</header>
+<main class="max-w-md mx-auto p-4 space-y-6">
+<!-- Elite Readiness Score Gauge -->
+<section class="bg-white dark:bg-slate-900/50 rounded-xl p-6 shadow-sm border border-primary/5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Current Status</h2>
+<p class="text-2xl font-bold">Elite Readiness</p>
+</div>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +2%
+                </span>
+</div>
+<div class="relative flex flex-col items-center justify-center py-4">
+<!-- Circular Gauge Simulation -->
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-primary/10" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="33.17" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-5xl font-black text-slate-900 dark:text-white">94</span>
+<span class="text-sm font-medium text-slate-500">OPTIMAL</span>
+</div>
+</div>
+<p class="mt-4 text-center text-slate-600 dark:text-slate-400 text-sm">Your nervous system is fully recovered. High intensity training is recommended today.</p>
+</div>
+</section>
+<!-- Muscle Soreness Heat Map -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-lg font-bold">Muscle Analysis</h2>
+<button class="text-primary text-sm font-semibold">View 3D Model</button>
+</div>
+<div class="bg-white dark:bg-slate-900/50 rounded-xl p-4 shadow-sm border border-primary/5">
+<div class="flex gap-4">
+<div class="flex-1 aspect-[3/4] bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center relative overflow-hidden">
+<img class="opacity-50 object-cover w-full h-full grayscale" data-alt="Anatomical heat map showing muscle recovery zones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC56kVDCi1FklxInFDgejUp2tE9MSwY62m7b5bBxHEuClpOLcO2Z6D9aqoxYt1e41247V4-oVy6q0Qsj5rGkyeTabpqrn-6Wjc2F9H8D5AniPlFHsykkjg2F_YKA5n7yBUSSXp78jxMjXNiBXdgJ7Ug9NOrxEdGcxPorZazjefSL3EEx2Rc-ZkeFjCVjPwa7fayuJL3HN3xcJ9o9f_wxsNvLp74H77A76XQUGKifu8YUQa47aDvVOriZr0yUd-Z2mKTQTctx7ts3S4"/>
+<!-- Simulated Heat Map Overlays -->
+<div class="absolute top-1/4 left-1/3 w-12 h-12 bg-primary/40 blur-xl rounded-full"></div>
+<div class="absolute bottom-1/4 right-1/4 w-16 h-16 bg-yellow-400/30 blur-xl rounded-full"></div>
+</div>
+<div class="w-1/3 space-y-4">
+<div class="space-y-1">
+<p class="text-[10px] uppercase font-bold text-slate-400">High Tension</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<p class="text-xs font-semibold">Lower Back</p>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] uppercase font-bold text-slate-400">Moderate</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+<p class="text-xs font-semibold">Quadriceps</p>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] uppercase font-bold text-slate-400">Recovered</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+<p class="text-xs font-semibold">Deltoids</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Guided Recovery Suggestions -->
+<section class="space-y-3">
+<h2 class="text-lg font-bold px-1">Guided Recovery</h2>
+<div class="grid grid-cols-1 gap-4">
+<!-- Suggestion 1: Glassmorphic Card -->
+<div class="group relative overflow-hidden rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/20 dark:border-white/5 p-4 flex gap-4 hover:shadow-lg transition-all border-l-4 border-l-primary">
+<div class="w-16 h-16 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">hot_tub</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-slate-900 dark:text-white">Contrast Therapy</h3>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase">AI Choice</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">15 mins cycle of cold plunge and sauna to reduce lower back inflammation.</p>
+</div>
+</div>
+<!-- Suggestion 2: Glassmorphic Card -->
+<div class="group relative overflow-hidden rounded-xl bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border border-white/20 dark:border-white/5 p-4 flex gap-4 hover:shadow-lg transition-all border-l-4 border-l-blue-400">
+<div class="w-16 h-16 shrink-0 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-500 text-3xl">self_improvement</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-slate-900 dark:text-white">Active Mobility</h3>
+<span class="text-[10px] font-bold text-blue-500 bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded uppercase">12 Mins</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">Targeted hip openers and thoracic spine rotations for your afternoon session.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Recovery Trends -->
+<section class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary">insights</span>
+<h2 class="font-bold">Recovery Trend</h2>
+</div>
+<div class="h-24 flex items-end justify-between gap-1 px-2">
+<div class="w-full bg-primary/20 rounded-t-sm h-1/2"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-2/3"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-3/4"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-1/2"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-4/5"></div>
+<div class="w-full bg-primary/20 rounded-t-sm h-5/6"></div>
+<div class="w-full bg-primary rounded-t-sm h-full"></div>
+</div>
+<div class="flex justify-between mt-2 px-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-3">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">analytics</span>
+<span class="text-[10px] font-bold">Recovery</span>
+</a>
+<div class="relative -top-8">
+<button class="w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 flex items-center justify-center border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-semibold">Training</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-semibold">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

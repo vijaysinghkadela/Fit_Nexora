@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<div class="flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50 p-4 border-b border-slate-200 dark:border-slate-800 justify-between">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Master Tier</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">notifications</span>
+</button>
+</div>
+</div>
+<!-- Hero Section -->
+<div class="p-4 @container">
+<div class="relative flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-xl shadow-primary/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Elite athlete training in a high-end gym" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBJYLawkc8zPWYDv20LP6NZ2QaAKl62DNV4nMk9fBPBTlFaB3Y5g-qNS5AByGd92ClhTzmuDkYpW_A3NfvwAbH9xLr6j6vaDcuyrskEAO20V5zQ3eIi1DkU5Y2v9wsZJEirDwPpAi2YOQj_smfixHq4Tco1J_UMjPXzZlci9uzdDg43stDFWOT7pqSNEc4_ZRnVorvc-KF3pagujzKylLCKw14xchCKuwTC0Lua8-H5z8RlcMvxO5K9b1IHuJiw7UwEh5gfsI-uFmE");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+</div>
+<div class="relative mt-24 mb-4 mx-4 glass-card p-6 rounded-xl">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+<p class="text-primary text-xs font-bold uppercase tracking-widest">Global Master Challenge</p>
+</div>
+<h3 class="text-slate-900 text-2xl font-extrabold leading-tight mb-2">The Apex Games</h3>
+<p class="text-slate-600 text-sm font-medium mb-6 leading-relaxed">Join the top 1% of athletes worldwide in a 30-day endurance trial.</p>
+<div class="flex items-center justify-between gap-4">
+<div class="flex -space-x-2">
+<img alt="Participant" class="size-8 rounded-full border-2 border-white" data-alt="Athlete profile thumbnail 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhgW9lchisK5SllAkR3T5kXFPas3liCLYDqimdVSmJbWtKCx-lKv08ls_hPie6VxVOll5_NaLUotB9U2cKb-iWBWDA5fGvb1QD74V0qWSLFiPJMwlnRDUK7TQyiY9vtg76oKIGjgzu6VQklQx4ml2ys1a3YuKHug3yLidovVnNAASls4qLW0qY9SyIhKHoxvZAqbuTaDbHJORze7tCO_kJn6S2cr-Jc9WLmKkFktXfH712a8-SuTzZt25HJF5nfukp6mwHCm69wKA"/>
+<img alt="Participant" class="size-8 rounded-full border-2 border-white" data-alt="Athlete profile thumbnail 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc9ZgXDW24fSsKj4MWvutNhHsP1-6ntP0vD2qs3eNXXSmKWsQYDJIXLRz2IT6D9e-urdyLTEb23R-UtO0OA6DUwNkM3UMoHZjDurMOHY_wQxDEpcYwpKir_bLhs1WpqZTxODObIqjFIoA7yeiMpuj1QveN8AodIgfwZFjT3xVhAp01-zIUk4M1wTbhgm7grzhrCl0BBLkqXImDEj21qOCjvSmx66aLd2r8hY4HY4gJANuFfH8-BS0RJk5-6J0mqQ2su51tC93QN40"/>
+<img alt="Participant" class="size-8 rounded-full border-2 border-white" data-alt="Athlete profile thumbnail 3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU0LBHRimYRBLwMkwEFKUnuZU4nI2lSUz52xAKkgj-hIKvFYGyyciIUMSjSB5OUjUlS56zZcyfvtY_DAr9zI5-xB5hd9MVLYZf92Iy96EuZ7FkFhbgD8WUc1E4D2A8-G-8s-3FNpsv0MdSDyEpkeUSv5172HoSc81gBB9w8BAB_GsRt5uV_Rjb_EQEImFn03-glHVNS7FNs5rSMKVGvixumi9pAsmIri2PL7PA-a-wr7NMIZ8InE62_XpVuR39reXZp--boTGr8qQ"/>
+<div class="flex size-8 items-center justify-center rounded-full border-2 border-white bg-slate-200 text-[10px] font-bold text-slate-600">+42k</div>
+</div>
+<button class="flex flex-1 min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all">
+                            Join Now
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4 px-4 py-2">
+<div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Active Goals</p>
+<p class="text-2xl font-bold mt-1">1,248</p>
+<div class="mt-2 h-1 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-2/3"></div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Stakes</p>
+<p class="text-2xl font-bold mt-1">$45.2k</p>
+<p class="text-[10px] text-green-500 font-bold mt-1 flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">trending_up</span> +12% this week
+                </p>
+</div>
+</div>
+<!-- Leaderboard -->
+<div class="px-4 pb-3 pt-6 flex items-center justify-between">
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-tight">Elite Leaderboard</h2>
+<button class="text-primary text-sm font-bold">View All</button>
+</div>
+<div class="flex flex-col gap-2 px-4 pb-20">
+<!-- Rank 1 -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-transform hover:scale-[1.01]">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-primary" data-alt="Portrait of Alex Rivers" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCBdvPoAqSvbgSD5U6osN121nqiq07k7aN7mC733zAbqzEBfA_PLvXujNGnfLP4AvmMZm7dJS0P94Mn7NxwRzSXMHmDZ_qEGt9ecR1YdJ68MNUq5B2V7X39VUYFrp52ngvsNjcoQ6aXrfQMdjsr_n8P_n1watdpbJFGlz1L2ZcjFe3pHyHhFoid2S_sHjjNak3v2CaxgWSIEjOu9OYD3RTAVhOkv0WemNd5zNWWJS-_tYpWzKmJfwws5YC3AjcrSVGgbqkpwLI8SVA");'></div>
+<div class="absolute -top-1 -right-1 bg-yellow-400 text-white size-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">1</div>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold line-clamp-1">Alex Rivers</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Global Rank • Pro League</p>
+</div>
+<div class="text-right">
+<p class="text-primary text-base font-bold">18,450</p>
+<p class="text-slate-400 text-[10px] uppercase font-bold tracking-tighter">PTS</p>
+</div>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm opacity-90">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-slate-300 dark:border-slate-600" data-alt="Portrait of Sarah Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7yQHwZ7QloUHyfvyPPY-_WZj3CUewklIZqEmoSgfdVbeEfgjZbyDp-UurZGLcp9paDefWXm38vCQ3br9qfZ2PC1pWyZIxC6Ky4pszCxrcLBEhDU2VM2cyyniBqlRkgTZQOySroezWvqU-TPNc4dVyKYskd6PifbYSrnoWjyyMCZgdnto_zBvfQLwzOPbvG_lHy-u0OxvNkWBll8RDJDnAhfxrR3YZTBzJcoXxKrB1aEgehkgEQoy11LQSJes-cMdj3Co5KG9IWI8");'></div>
+<div class="absolute -top-1 -right-1 bg-slate-300 text-slate-700 size-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">2</div>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold line-clamp-1">Sarah Chen</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Regional Lead • Elite</p>
+</div>
+<div class="text-right">
+<p class="text-slate-700 dark:text-slate-300 text-base font-bold">17,920</p>
+<p class="text-slate-400 text-[10px] uppercase font-bold tracking-tighter">PTS</p>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm opacity-80">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-14 border-2 border-amber-600/30" data-alt="Portrait of Marcus Thorne" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcajHDMgkHvUS9trBnaa89pqyfAd254Cf5qygeRlNEtn16QShq5znjJ3hu2bBzv_monrOIGlSPms1ryZasni82GupOTk6ZDWfXxbjWweVZKMYW-UDcDNquxosC90GsYJYaETyUEMoDaULngG-yfmaBDrzxE_PUOeK2DFO5bryUjqhE14KFfFtlV3E_MSpXu65B1k9YKo2WfuAwaRWYmG5gj9mawZvgHIrgmgbkwQtV8nOg5LSR2i2cTu8jtk2baPgKAajs2DAyH9Q");'></div>
+<div class="absolute -top-1 -right-1 bg-amber-600 text-white size-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white">3</div>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold line-clamp-1">Marcus Thorne</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">High Roller • Elite</p>
+</div>
+<div class="text-right">
+<p class="text-slate-700 dark:text-slate-300 text-base font-bold">16,840</p>
+<p class="text-slate-400 text-[10px] uppercase font-bold tracking-tighter">PTS</p>
+</div>
+</div>
+</div>
+<!-- Navigation -->
+<div class="fixed bottom-0 left-0 right-0 z-50">
+<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-background-dark/95 backdrop-blur-lg px-4 pb-6 pt-3 shadow-2xl">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined font-bold">trophy</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest">Challenges</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest">Leagues</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest">Profile</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

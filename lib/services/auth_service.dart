@@ -116,4 +116,38 @@ class AuthService {
   Future<void> resetPassword(String email) async {
     await _client.auth.resetPasswordForEmail(email);
   }
+
+  /// Verify the recovery OTP and establish a password recovery session.
+  Future<void> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
+    await _client.auth.verifyOTP(
+      type: OtpType.recovery,
+      email: email,
+      token: token,
+    );
+  }
+
+  /// Update the password for the current recovery or signed-in session.
+  Future<void> updatePassword(
+    String newPassword, {
+    String? currentPassword,
+  }) async {
+    if (currentPassword != null && currentPassword.isNotEmpty) {
+      final email = _client.auth.currentUser?.email;
+      if (email == null || email.isEmpty) {
+        throw Exception('Unable to verify your current password. Please sign in again.');
+      }
+
+      await _client.auth.signInWithPassword(
+        email: email,
+        password: currentPassword,
+      );
+    }
+
+    await _client.auth.updateUser(
+      UserAttributes(password: newPassword),
+    );
+  }
 }

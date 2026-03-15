@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora | Admin Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f8fafc",
+                        "surface-light": "#ffffff",
+                        "emerald-accent": "#10b981",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 12px -4px rgba(0, 0, 0, 0.03)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #895af6 0%, #10b981 100%);
+        }
+        body {
+            min-height: 100dvh;
+        }
+        #report-overlay {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light font-display text-slate-800 min-h-screen flex flex-col">
+<!-- Top Header -->
+<header class="sticky top-0 z-50 glass-card border-b border-primary/10 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight text-slate-900">Admin Analytics</h1>
+<p class="text-xs text-slate-500">Deep Performance Insights</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-lg transition-all duration-300 group" onclick="document.getElementById('report-overlay').style.display='flex'">
+<span class="material-symbols-outlined text-sm text-primary group-hover:scale-110 transition-transform">download</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-600">Download Report</span>
+</button>
+<button class="sm:hidden flex items-center justify-center p-2 bg-primary/10 border border-primary/20 rounded-full text-primary" onclick="document.getElementById('report-overlay').style.display='flex'">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+<div class="size-9 rounded-full bg-cover border-2 border-primary/30" data-alt="User profile avatar of the admin" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZGeS-czBD_C6Fnky_k2mWv1P5HPxmjJtAaZVTpmC_ryorxySXLaMdHfpJH0z0fhYS30lIAJnrsM04kWty_OGV5ntOymdnP0Z46h-0gu34VVa5eZghp5xenT4jtXAWOoWH7f_LwbJ4enaPtZvwZGG9rzkmsTv6NC9TlrcumMPl-eltwW7VBL98X_k7IB5wDEnPQJn2Nb2DQQBE56OF0LLlYiU5Gt2r3--uYuaO3FJmrKZNzSJKgxP-MxITz_NZ3wzxAo32W_lXydc')"></div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24 space-y-4 p-4">
+<!-- Revenue Analysis Section -->
+<section class="glass-card rounded-xl p-5 shadow-soft">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="font-bold text-slate-900">Global Revenue Breakdown</h3>
+<p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">6 Month Trend • Rev per Gym</p>
+</div>
+<div class="flex gap-2">
+<span class="text-emerald-accent text-xs font-bold">+18.4%</span>
+</div>
+</div>
+<div class="h-44 w-full relative mt-4">
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+<!-- Revenue Gradient Area -->
+<path d="M0 120 C 50 110, 80 40, 120 60 C 160 80, 200 10, 250 30 C 300 50, 350 10, 400 5 V 150 H 0 Z" fill="url(#rev_grad)"></path>
+<!-- Revenue Line -->
+<path d="M0 120 C 50 110, 80 40, 120 60 C 160 80, 200 10, 250 30 C 300 50, 350 10, 400 5" stroke="#895af6" stroke-linecap="round" stroke-width="3"></path>
+<!-- Rev Per Gym Line (Mint) -->
+<path d="M0 140 C 50 135, 100 120, 150 125 C 200 130, 250 110, 300 115 C 350 120, 400 105" stroke="#10b981" stroke-dasharray="4 4" stroke-linecap="round" stroke-width="2"></path>
+<defs>
+<lineargradient id="rev_grad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#895af6" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#895af6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-slate-400 font-bold uppercase">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-6 pt-4 border-t border-slate-100">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold">Total Revenue</p>
+<p class="text-xl font-bold text-slate-900">₹2.84 Cr</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold">Avg. Rev / Gym</p>
+<p class="text-xl font-bold text-emerald-accent">₹22.1k</p>
+</div>
+</div>
+</section>
+<!-- Distribution & Tier Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<!-- Gym Distribution Map Summary -->
+<section class="glass-card rounded-xl p-5 shadow-soft">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-bold text-slate-900">Top Hubs</h3>
+<span class="material-symbols-outlined text-primary text-sm">map</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-medium text-slate-700">
+<span>Mumbai, MH</span>
+<span class="text-primary font-bold">412 Gyms</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-medium text-slate-700">
+<span>Bangalore, KA</span>
+<span class="text-primary font-bold">328 Gyms</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-medium text-slate-700">
+<span>Delhi, NCR</span>
+<span class="text-primary font-bold">284 Gyms</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 62%"></div>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors uppercase">
+                VIEW GLOBAL MAP
+            </button>
+</section>
+<!-- Subscription Tier Distribution -->
+<section class="glass-card rounded-xl p-5 shadow-soft">
+<h3 class="font-bold mb-6 text-slate-900">Tier Distribution</h3>
+<div class="flex items-center gap-8">
+<div class="relative size-28 shrink-0">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="16" stroke="#f1f5f9" stroke-width="4"></circle>
+<!-- Elite -->
+<circle cx="18" cy="18" fill="none" r="16" stroke="#895af6" stroke-dasharray="25, 100" stroke-dashoffset="0" stroke-width="4"></circle>
+<!-- Pro -->
+<circle cx="18" cy="18" fill="none" r="16" stroke="#10b981" stroke-dasharray="45, 100" stroke-dashoffset="-25" stroke-width="4"></circle>
+<!-- Basic -->
+<circle cx="18" cy="18" fill="none" r="16" stroke="#94a3b8" stroke-dasharray="30, 100" stroke-dashoffset="-70" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-lg font-bold text-slate-900">1.2k</span>
+<span class="text-[8px] text-slate-500 uppercase font-bold">Total</span>
+</div>
+</div>
+<div class="flex-1 space-y-3">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-primary"></span>
+<div>
+<p class="text-[10px] text-slate-500 font-bold uppercase">Elite</p>
+<p class="text-xs font-bold text-slate-800">25% (321)</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-emerald-accent"></span>
+<div>
+<p class="text-[10px] text-slate-500 font-bold uppercase">Pro</p>
+<p class="text-xs font-bold text-slate-800">45% (578)</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-slate-400"></span>
+<div>
+<p class="text-[10px] text-slate-500 font-bold uppercase">Basic</p>
+<p class="text-xs font-bold text-slate-800">30% (385)</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Platform Health Metrics -->
+<section class="glass-card rounded-xl p-5 shadow-soft">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold text-slate-900">System Performance</h3>
+<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-accent text-[10px] font-bold uppercase tracking-tight border border-emerald-100">
+<span class="size-1.5 rounded-full bg-emerald-accent animate-pulse"></span>
+                Operational
+            </span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">bolt</span>
+<span class="text-[10px] text-slate-500 font-bold uppercase">API Latency</span>
+</div>
+<p class="text-lg font-bold text-slate-900">42ms</p>
+<div class="w-full h-1 bg-slate-200 rounded-full mt-2">
+<div class="h-full bg-emerald-accent rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">cloud_sync</span>
+<span class="text-[10px] text-slate-500 font-bold uppercase">Uptime (30d)</span>
+</div>
+<p class="text-lg font-bold text-slate-900">99.98%</p>
+<div class="w-full h-1 bg-slate-200 rounded-full mt-2">
+<div class="h-full bg-primary rounded-full" style="width: 99%"></div>
+</div>
+</div>
+<div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">database</span>
+<span class="text-[10px] text-slate-500 font-bold uppercase">DB Load</span>
+</div>
+<p class="text-lg font-bold text-slate-900">24%</p>
+<div class="w-full h-1 bg-slate-200 rounded-full mt-2">
+<div class="h-full bg-primary rounded-full" style="width: 24%"></div>
+</div>
+</div>
+<div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">group_work</span>
+<span class="text-[10px] text-slate-500 font-bold uppercase">Active Conn</span>
+</div>
+<p class="text-lg font-bold text-slate-900">4.2k</p>
+<div class="w-full h-1 bg-slate-200 rounded-full mt-2">
+<div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-50">
+<div class="flex items-center justify-around py-2">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Gyms</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Users</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined filled font-variation-fill-1">analytics</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Analytics</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Settings</span>
+</a>
+</div>
+</nav>
+<style>
+    .font-variation-fill-1 {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+</style>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm transition-all duration-300" id="report-overlay">
+<div class="bg-white max-w-sm w-full rounded-2xl p-8 flex flex-col items-center text-center shadow-2xl border border-primary/10">
+<div class="size-20 rounded-full bg-emerald-accent/10 flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-5xl text-emerald-accent font-variation-fill-1">check_circle</span>
+</div>
+<h2 class="text-2xl font-bold text-slate-900 mb-3">Generating Report</h2>
+<p class="text-slate-500 text-sm leading-relaxed mb-8">
+            Your revenue report is being prepared and will download shortly.
+        </p>
+<button class="w-full py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-95 uppercase tracking-wider text-xs" onclick="document.getElementById('report-overlay').style.display='none'">
+            Close
+        </button>
+</div>
+</div>
+</body></html>

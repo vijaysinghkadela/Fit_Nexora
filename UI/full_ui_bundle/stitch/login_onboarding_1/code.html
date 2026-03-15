@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Transformation Starts Here</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#895af6",
+              "background-light": "#f6f5f8",
+              "background-dark": "#151022",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Hero Section with Background -->
+<div class="relative h-[45vh] w-full @container">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Athletic person training in a dark modern gym environment" style='background-image: linear-gradient(to bottom, rgba(21, 16, 34, 0.2), rgba(21, 16, 34, 1)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAHu68_y7RYIIdtqDXLxfJBvvpyyGgUrhYZ4-kea7MKXS2FPcCQP9c-OLrtUlKkKxpOSOGM5dnSr_r2XlUnZfMe1p3wMrsHANDxObXiJxZdWbnCPM3TghJAi3oTDBjemc7NB8wlvdT8fz0eseMz6sJvrzePvYboGvyXE1j_lRbjAwpgtrpbqpelauB_UaI4Sp1JtizVkIV4XZH1YM3uAYtK4XWQ69aHSAVklmy3_77inIhYWXg9JcyLvFwSzxwcTyfvWz2Rf0skdHI");'>
+</div>
+<!-- Top App Bar Navigation -->
+<div class="relative z-10 flex items-center p-6 justify-between">
+<div class="text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full bg-background-dark/40 backdrop-blur-md">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div class="text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full bg-background-dark/40 backdrop-blur-md">
+<span class="material-symbols-outlined">help_outline</span>
+</div>
+</div>
+<!-- Branding Logo Overlay -->
+<div class="absolute bottom-8 left-0 right-0 px-6">
+<div class="flex flex-col items-center">
+<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/40">
+<span class="material-symbols-outlined text-4xl text-white">bolt</span>
+</div>
+<h1 class="text-4xl font-extrabold tracking-tight text-white">Fit<span class="text-primary">Nexora</span></h1>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex flex-1 flex-col px-6 pb-10 pt-4">
+<div class="mb-8 text-center">
+<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Welcome Back</h2>
+<p class="mt-2 text-slate-500 dark:text-slate-400">Log in to continue your fitness journey</p>
+</div>
+<!-- Login Form -->
+<div class="space-y-4">
+<div class="group relative">
+<label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">mail</span>
+<input class="w-full rounded-xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100" placeholder="name@example.com" type="email"/>
+</div>
+</div>
+<div class="group relative">
+<label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+<input class="w-full rounded-xl border border-slate-200 bg-white py-4 pl-12 pr-12 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100" placeholder="Enter your password" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer">visibility</span>
+</div>
+</div>
+<div class="flex items-center justify-end">
+<a class="text-sm font-semibold text-primary hover:underline" href="#">Forgot password?</a>
+</div>
+<button class="w-full rounded-xl bg-primary py-4 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95">
+                    Sign In
+                </button>
+</div>
+<!-- Divider -->
+<div class="my-8 flex items-center gap-4">
+<div class="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800"></div>
+<span class="text-xs font-medium uppercase tracking-widest text-slate-400">OR</span>
+<div class="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800"></div>
+</div>
+<!-- Biometric & Social -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 text-sm font-medium transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900">
+<span class="material-symbols-outlined text-primary">fingerprint</span>
+                    Biometric
+                </button>
+<button class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 text-sm font-medium transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900">
+<span class="material-symbols-outlined text-primary">google</span>
+                    Google
+                </button>
+</div>
+<!-- Onboarding CTA -->
+<div class="mt-auto pt-10 text-center">
+<p class="text-slate-500 dark:text-slate-400">
+                    New here? 
+                    <a class="font-bold text-primary underline underline-offset-4" href="#">Start your transformation</a>
+</p>
+</div>
+</div>
+<!-- Footer Navigation Blur Effect -->
+<div class="fixed bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-background-light dark:from-background-dark pointer-events-none"></div>
+</div>
+</body></html>

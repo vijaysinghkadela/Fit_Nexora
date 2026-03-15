@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                        "emerald-accent": "#10b981",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.75rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(21, 16, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.2);
+        }
+        .scan-frame {
+            border: 2px solid rgba(137, 90, 246, 0.5);
+            box-shadow: 0 0 20px rgba(137, 90, 246, 0.3);
+        }
+        .scan-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #895af6, transparent);
+            box-shadow: 0 0 15px #895af6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-background-dark via-[#1a142e] to-background-dark">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 z-10">
+<button class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="text-center">
+<h1 class="text-lg font-bold tracking-tight">FitNexora Scan</h1>
+<p class="text-xs text-slate-400">Barcode &amp; Label Scanner</p>
+</div>
+<button class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+<span class="material-symbols-outlined">help</span>
+</button>
+</header>
+<!-- Main Viewfinder Section -->
+<main class="relative flex flex-1 flex-col items-center justify-center px-6">
+<!-- Viewfinder Area -->
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden border border-white/10 bg-slate-900/40">
+<!-- Background Image Placeholder (Simulating Camera) -->
+<div class="absolute inset-0 opacity-40 bg-cover bg-center" data-alt="Supermarket grocery aisle background for scanner" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZEA63AP5SSPpGp-CxTYfbaRphqWnSWO0nM2bCzEBxZogPLXZp8sh3jMriO-p0M0V8BQNQ7GlafMDy7za7pu2akhOgGuMIn9NKOwGegB1-e8dqoTWA93SXJVnuNtYcchUX7b9RQyZ3JqXkvz01S5rbiMHeaNQE0t41NIPrIcMm8rZQNhA1485CnVcyxnfL4CFXr3LM_JbbTEWlVSBZ6iaYyR9NlR98mBoDXgWlf9y71pdwHsmmHLD01UfgEIIHOo5sQfh9xsfXZf8')"></div>
+<!-- Scanning Frame Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="relative w-64 h-48 scan-frame rounded-lg">
+<!-- Corner Accents -->
+<div class="absolute -top-1 -left-1 size-6 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+<div class="absolute -top-1 -right-1 size-6 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+<div class="absolute -bottom-1 -left-1 size-6 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+<div class="absolute -bottom-1 -right-1 size-6 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+<!-- Animated Scanning Line -->
+<div class="scan-line absolute w-full top-1/2 -translate-y-1/2"></div>
+</div>
+</div>
+<!-- Controls Over Viewfinder -->
+<div class="absolute bottom-6 left-0 right-0 flex justify-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-sm font-medium hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">flashlight_on</span>
+<span>Flash</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-sm font-medium hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">keyboard</span>
+<span>Manual</span>
+</button>
+</div>
+</div>
+<!-- Scanning Status Card -->
+<div class="w-full mt-6 glass-panel rounded-xl p-5 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="flex h-2 w-2 rounded-full bg-emerald-accent animate-pulse"></div>
+<span class="text-sm font-semibold text-slate-100">Scanning for barcode...</span>
+</div>
+<span class="text-xs text-primary font-bold px-2 py-1 bg-primary/10 rounded uppercase tracking-wider">Auto-Focus On</span>
+</div>
+<div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 rounded-full"></div>
+</div>
+</div>
+</main>
+<!-- Recent Scans Bottom Sheet -->
+<section class="mt-8 px-6 pb-28">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Recent Scans</h3>
+<button class="text-sm text-primary font-medium">View All</button>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Scan Item 1 -->
+<div class="flex items-center gap-4 p-3 rounded-lg bg-primary/5 border border-primary/10">
+<div class="size-12 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Greek yogurt container product shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzr2NjlXU05igqScOC_ZkfKMwYaGRlM8zl2mORSNPSWIqhFzngz7I_1ad3JBJ0okmRwwilYKtjZyFULpzVlKMlZHi2cAXppx_ehnmEigil9AD0ygX-h494-RIlBw91SWQBKZTF9E8UFrHNFd3ITApoKbrytd7xpwE6VwaggdnVUfy-s_iN3j3bgxph4d1NPn_p_94CbV-iYd_vcIs8vXgyzil9HRvmSatbbwv1d4zAfqBjqbEbfJJk7zZCd6TXQ8L3eVzfdibGouQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-bold truncate">Greek Yogurt - Blueberry</h4>
+<p class="text-xs text-slate-400">Chobani • 150g</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-emerald-accent">120 kcal</span>
+<p class="text-[10px] text-slate-500">2 mins ago</p>
+</div>
+</div>
+<!-- Scan Item 2 -->
+<div class="flex items-center gap-4 p-3 rounded-lg bg-primary/5 border border-primary/10 opacity-80">
+<div class="size-12 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Almond milk carton product shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz2ptMxkI4y7glH_V_PgxJr9BbjiJr-nW5vwzYfphSURaurgKg3V1kc1THTUzcxZim_k1FuOx3nL96j0PYvTuMJ9iy-V3Yfc3RewDcYIRM4xYNWGsPrjyOpWSIB-DnYuXn9Re_oCAiDUS2X-7TfaCWFi1ucSobsIwMiviVWusQgoRG0ZJTROYfkgAtIVKp5x4sZuKvR-mEqbq4x02xr3pGOO7QLgaz7B6aEt6JBuSFdlnYbA8sj01qil8jvfcOZHk1R-h8M2cclxU"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-bold truncate">Unsweetened Almond Milk</h4>
+<p class="text-xs text-slate-400">Silk • 240ml</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-bold text-emerald-accent">30 kcal</span>
+<p class="text-[10px] text-slate-500">1 hour ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full glass-panel border-t border-primary/20 px-6 py-4 flex items-center justify-between z-20">
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-medium">Workouts</span>
+</a>
+<div class="relative -mt-12">
+<div class="absolute inset-0 bg-primary blur-lg opacity-40 rounded-full"></div>
+<a class="relative flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined text-3xl">qr_code_scanner</span>
+</a>
+</div>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="text-[10px] font-medium">Nutrition</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .glass-nav {
+            background: rgba(21, 16, 34, 0.8);
+            backdrop-filter: blur(16px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 border-b border-primary/10">
+<div class="flex items-center justify-between max-w-2xl mx-auto w-full">
+<h1 class="text-xl font-bold tracking-tight">Announcements</h1>
+<button class="text-xs font-semibold text-primary uppercase tracking-wider hover:opacity-80 transition-opacity">
+                Mark all as read
+            </button>
+</div>
+</header>
+<!-- Categories -->
+<nav class="flex gap-3 p-4 overflow-x-auto no-scrollbar max-w-2xl mx-auto w-full">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 text-white text-sm font-semibold">
+            All
+        </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 px-5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-primary/30 transition-colors">
+            Events
+        </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 px-5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-primary/30 transition-colors">
+            Maintenance
+        </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 px-5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-primary/30 transition-colors">
+            Trainer Tips
+        </button>
+</nav>
+<!-- Feed -->
+<main class="flex-1 max-w-2xl mx-auto w-full px-4 pb-24 space-y-4">
+<!-- High Impact Event Card -->
+<div class="group relative flex flex-col items-stretch justify-start rounded-xl overflow-hidden glass-card shadow-xl transition-all hover:scale-[1.01]">
+<div class="absolute top-4 left-4 z-10 flex gap-2">
+<span class="bg-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white shadow-lg shadow-primary/40">New</span>
+<span class="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white border border-white/20">Events</span>
+</div>
+<div class="w-full bg-center bg-no-repeat aspect-[16/9] bg-cover" data-alt="Group of people practicing yoga in a park during sunrise" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDlldpx4_JT_l6SoDiHBMTQ30KxUhHURv6wsnmlEsjn_oPzSRT2dYtLgUiFeT_BBjdFoMPTgBcFa21ngjm0opdX-NkHpkiBEBhZjkgnOEDZpW2M9_TftEYuPNHnZZFv2XXE632ST0cf1Ld4vjx0bEgLZn4blrehDtDLVyYyb-4bldmvGr7PfzvHOLjEYlg4Uy0jCeRtuAejUQAAp6d7e3_n6_4P_bf7HSMiYVyZp5T4dmd3x-2beoW2MhM2coxjr--fqtRvlarMOn0");'>
+</div>
+<div class="flex flex-col gap-2 p-5">
+<h3 class="text-white text-xl font-bold leading-tight tracking-tight">Yoga at the Park</h3>
+<p class="text-slate-300 text-sm leading-relaxed mb-2">Join us this Saturday for an invigorating sunrise session led by Master Instructor Elena. All levels welcome.</p>
+<div class="flex items-center justify-between border-t border-primary/10 pt-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span class="text-xs font-semibold">Oct 24, 06:30 AM</span>
+</div>
+<button class="flex items-center justify-center rounded-lg h-9 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Maintenance Card -->
+<div class="flex items-stretch justify-between gap-4 rounded-xl glass-card p-4 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+<div class="flex flex-[2_2_0px] flex-col gap-3">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-red-500 text-[10px] font-black uppercase tracking-tighter bg-red-500/10 px-2 py-0.5 rounded">Urgent</span>
+<p class="text-slate-500 dark:text-primary/60 text-xs font-bold uppercase tracking-widest">Maintenance</p>
+</div>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Pool Maintenance Update</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">The lap pool will be closed for quarterly cleaning tomorrow between 2 PM and 5 PM.</p>
+</div>
+<button class="flex items-center justify-center rounded-lg h-9 px-4 bg-primary/10 dark:bg-primary/20 text-primary text-xs font-bold w-fit hover:bg-primary/20 transition-colors">
+                    Mark as Read
+                </button>
+</div>
+<div class="w-24 h-24 sm:w-32 sm:h-auto bg-center bg-no-repeat bg-cover rounded-lg shrink-0" data-alt="Clear blue luxury swimming pool water ripples" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQUvPQ7bIHUACRNLZGGa4NZJhQ8Ugi_ttjuZ-zLDL3lXK-AZ8mGVKyreS6N82mZ0chcNFkRor5ksfjcurIUxntol8EtBhJfH0cyy57--N1Pzb4rpF3ZAru3is3ORNIIhT3EmJxe-3DqHwq6qJIeKppTUu2_6jB9_Nb85GGUCzLVQ27CK6G3pRS3E1f_LIpGENzpRUE__GVhBxaJGKGHIUKUWorKao-ghgEWr3DyCnUOAy4iY0KefRECxV3HYyTXvzho0T-ZJhrmho");'>
+</div>
+</div>
+<!-- Trainer Tip Card -->
+<div class="flex flex-col rounded-xl glass-card overflow-hidden">
+<div class="p-5">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary">fitness_center</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-bold">Trainer Tip of the Week</p>
+<p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">By Coach Marcus</p>
+</div>
+</div>
+<p class="text-slate-700 dark:text-slate-300 text-base italic leading-relaxed font-medium">
+                    "Don't skip your cooldown. Just 5 minutes of mobility work post-workout reduces cortisol levels and speeds up muscle recovery significantly."
+                </p>
+</div>
+<div class="bg-primary/5 px-5 py-3 border-t border-primary/10 flex justify-between items-center">
+<span class="text-xs text-slate-500">2 hours ago</span>
+<button class="text-primary text-xs font-bold hover:underline">Share Tip</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-30 glass-nav border-t border-primary/10">
+<div class="flex max-w-2xl mx-auto h-16">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium uppercase tracking-tight">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-[10px] font-medium uppercase tracking-tight">Workouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary relative" href="#">
+<span class="material-symbols-outlined font-fill text-primary">notifications</span>
+<p class="text-[10px] font-bold uppercase tracking-tight">Updates</p>
+<div class="absolute top-2 right-1/2 translate-x-3 w-2 h-2 bg-red-500 rounded-full border-2 border-background-dark"></div>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-[10px] font-medium uppercase tracking-tight">Social</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<p class="text-[10px] font-medium uppercase tracking-tight">Profile</p>
+</a>
+</div>
+</nav>
+</body></html>

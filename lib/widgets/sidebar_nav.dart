@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../core/constants.dart';
+import '../core/extensions.dart';
 
 /// Sidebar item data.
 class SidebarItem {
@@ -32,74 +32,84 @@ class SidebarNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = isCollapsed ? 72.0 : 260.0;
+    final colors = context.fitTheme;
+    final width = isCollapsed ? 78.0 : 272.0;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
       width: width,
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
+      decoration: BoxDecoration(
+        color: colors.surface,
         border: Border(
-          right: BorderSide(color: AppColors.border, width: 1),
+          right: BorderSide(color: colors.border, width: 1),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: colors.glow.withValues(alpha: 0.08),
+            blurRadius: 28,
+            offset: const Offset(12, 0),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          // Logo header
-          _buildHeader(),
-          const Divider(color: AppColors.divider, height: 1),
-
-          // Nav items
+          _buildHeader(context),
+          Divider(color: colors.divider, height: 1),
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               itemCount: items.length,
               itemBuilder: (context, index) {
-                return _buildNavItem(items[index], index);
+                return _buildNavItem(context, items[index], index);
               },
             ),
           ),
-
-          // User section
-          const Divider(color: AppColors.divider, height: 1),
-          _buildUserSection(),
+          Divider(color: colors.divider, height: 1),
+          _buildUserSection(context),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final colors = context.fitTheme;
     return Container(
-      height: 64,
-      padding: EdgeInsets.symmetric(
-        horizontal: isCollapsed ? 16 : 20,
-      ),
+      height: 76,
+      padding: EdgeInsets.symmetric(horizontal: isCollapsed ? 18 : 22),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.accent],
-              ),
-              borderRadius: BorderRadius.circular(10),
+              gradient: colors.brandGradient,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.glow.withValues(alpha: 0.28),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: const Icon(
-              Icons.fitness_center_rounded,
-              size: 18,
+              Icons.bolt_rounded,
+              size: 20,
               color: Colors.white,
             ),
           ),
           if (!isCollapsed) ...[
             const SizedBox(width: 12),
-            Text(
-              'GymOS',
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+            Expanded(
+              child: Text(
+                'FitNexora',
+                style: GoogleFonts.inter(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w800,
+                  color: colors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
               ),
             ),
           ],
@@ -108,56 +118,55 @@ class SidebarNav extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(SidebarItem item, int index) {
+  Widget _buildNavItem(BuildContext context, SidebarItem item, int index) {
+    final colors = context.fitTheme;
     final isSelected = index == selectedIndex;
 
     return Tooltip(
       message: isCollapsed ? item.label : '',
       child: Container(
-        margin: const EdgeInsets.only(bottom: 4),
+        margin: const EdgeInsets.only(bottom: 6),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: () => onItemTap(index),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: EdgeInsets.symmetric(
-                horizontal: isCollapsed ? 16 : 14,
-                vertical: 12,
+                horizontal: isCollapsed ? 18 : 14,
+                vertical: 13,
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withValues(alpha: 0.12)
+                    ? colors.brand.withValues(alpha: 0.12)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(12),
-                border: isSelected
-                    ? const Border(
-                        left: BorderSide(
-                          color: AppColors.primary,
-                          width: 3,
-                        ),
-                      )
-                    : null,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected
+                      ? colors.brand.withValues(alpha: 0.24)
+                      : Colors.transparent,
+                ),
               ),
               child: Row(
                 children: [
                   Icon(
                     item.icon,
-                    size: 22,
-                    color: isSelected ? AppColors.primary : AppColors.textMuted,
+                    size: 21,
+                    color: isSelected ? colors.brand : colors.textMuted,
                   ),
                   if (!isCollapsed) ...[
                     const SizedBox(width: 14),
-                    Text(
-                      item.label,
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
+                    Expanded(
+                      child: Text(
+                        item.label,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color:
+                              isSelected ? colors.brand : colors.textSecondary,
+                        ),
                       ),
                     ),
                   ],
@@ -170,18 +179,19 @@ class SidebarNav extends StatelessWidget {
     );
   }
 
-  Widget _buildUserSection() {
+  Widget _buildUserSection(BuildContext context) {
+    final colors = context.fitTheme;
     return Container(
       padding: EdgeInsets.all(isCollapsed ? 12 : 16),
       child: Row(
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: AppColors.primary.withValues(alpha: 0.2),
+            backgroundColor: colors.brand.withValues(alpha: 0.18),
             child: Text(
               userName.isNotEmpty ? userName[0].toUpperCase() : '?',
               style: GoogleFonts.inter(
-                color: AppColors.primary,
+                color: colors.brand,
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
               ),
@@ -198,7 +208,7 @@ class SidebarNav extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -206,7 +216,7 @@ class SidebarNav extends StatelessWidget {
                     userEmail,
                     style: GoogleFonts.inter(
                       fontSize: 11,
-                      color: AppColors.textMuted,
+                      color: colors.textMuted,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -215,8 +225,11 @@ class SidebarNav extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             IconButton(
-              icon: const Icon(Icons.logout_rounded,
-                  color: AppColors.textMuted, size: 18),
+              icon: Icon(
+                Icons.logout_rounded,
+                color: colors.textMuted,
+                size: 18,
+              ),
               onPressed: onSignOut,
               tooltip: 'Sign out',
               constraints: const BoxConstraints(

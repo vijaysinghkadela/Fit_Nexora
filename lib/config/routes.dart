@@ -5,44 +5,88 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../config/app_config.dart';
 import '../core/constants.dart';
+import '../core/enums.dart';
 import '../models/user_model.dart';
 import '../providers/auth_provider.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/auth/register_screen.dart';
-import '../screens/auth/onboarding_screen.dart';
-import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/splash_screen.dart';
-import '../screens/todos/todos_screen.dart';
-import '../screens/traffic/gym_traffic_screen.dart';
-import '../screens/nutrition/nutrition_screen.dart';
 import '../screens/admin/admin_screen.dart';
-import '../screens/member/member_home_screen.dart';
-import '../screens/member/member_workout_screen.dart';
-import '../screens/member/member_diet_screen.dart';
-import '../screens/member/member_progress_screen.dart';
+import '../screens/auth/change_password_screen.dart';
+import '../screens/auth/forgot_password_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/onboarding_screen.dart';
+import '../screens/auth/password_updated_screen.dart';
+import '../screens/auth/register_screen.dart';
+import '../screens/auth/verify_otp_screen.dart';
+import '../screens/clients/clients_screen.dart';
+import '../screens/dashboard/dashboard_screen.dart';
+import '../screens/diet/diet_plans_screen.dart';
+import '../screens/elite/elite_ai_trainer_screen.dart';
+import '../screens/elite/elite_chat_screen.dart';
+import '../screens/elite/elite_home_screen.dart';
+import '../screens/elite/elite_muscle_progress_screen.dart';
+import '../screens/elite/elite_paywall_screen.dart';
+import '../screens/elite/elite_supplement_screen.dart';
+import '../screens/elite/elite_transformation_screen.dart';
+import '../screens/master/master_ai_coach_screen.dart';
+import '../screens/master/master_analytics_screen.dart';
+import '../screens/master/master_challenges_screen.dart';
+import '../screens/master/master_home_screen.dart';
+import '../screens/master/master_live_sessions_screen.dart';
+import '../screens/master/master_paywall_screen.dart';
+import '../screens/master/master_recovery_screen.dart';
 import '../screens/member/member_announcements_screen.dart';
+import '../screens/member/member_diet_screen.dart';
+import '../screens/member/member_home_screen.dart';
+import '../screens/member/member_paywall_screen.dart';
+import '../screens/member/member_progress_screen.dart';
+import '../screens/member/member_workout_screen.dart';
+import '../screens/memberships/memberships_screen.dart';
+import '../screens/nutrition/nutrition_screen.dart';
+import '../screens/pro/pro_ai_screen.dart';
 import '../screens/pro/pro_home_screen.dart';
-import '../screens/pro/pro_nutrition_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
-import '../core/enums.dart';
+import '../screens/pro/pro_nutrition_screen.dart';
+import '../screens/pro/pro_paywall_screen.dart';
+import '../screens/settings/settings_screen.dart';
+import '../screens/splash_screen.dart';
+import '../screens/subscription/pricing_screen.dart';
+import '../screens/todos/todos_screen.dart';
+import '../screens/trainer/trainer_dashboard_screen.dart';
+import '../screens/traffic/gym_traffic_screen.dart';
+import '../screens/workouts/workouts_screen.dart';
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/// Reusable fade transition page builder.
-Page<void> _fadePage(GoRouterState state, Widget child) => CustomTransitionPage(
+Page<void> _fadePage(GoRouterState state, Widget child) =>
+    CustomTransitionPage(
       key: state.pageKey,
       child: child,
       transitionsBuilder: (_, animation, __, child) =>
           FadeTransition(opacity: animation, child: child),
     );
 
-/// Routes that do not require authentication.
-const _publicRoutes = ['/', '/login', '/register'];
+const _publicRoutes = [
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/verify-otp',
+  '/change-password',
+  '/password-updated',
+];
 
-String _homeRouteForRole(UserRole role) =>
-    role == UserRole.client ? '/member' : '/dashboard';
+String _homeRouteForRole(UserRole role) {
+  switch (role) {
+    case UserRole.superAdmin:
+      return '/admin';
+    case UserRole.trainer:
+      return '/trainer';
+    case UserRole.client:
+      return '/member';
+    case UserRole.gymOwner:
+      return '/dashboard';
+  }
+}
 
 UserRole? _resolveCurrentRole(
   AsyncValue<AppUser?>? currentUser,
@@ -58,14 +102,6 @@ UserRole? _resolveCurrentRole(
   return UserRole.fromString(metadataRole);
 }
 
-// ─── Auth refresh listenable ──────────────────────────────────────────────────
-
-/// Converts a [Stream] into a [ChangeNotifier] so GoRouter calls its redirect
-/// every time the stream emits (i.e. on every Supabase auth state change).
-///
-/// Without this, GoRouter only runs [redirect] during navigation transitions,
-/// which creates a race condition where the session appears null and the
-/// authenticated user is bounced back to /login.
 class GoRouterRefreshStream extends ChangeNotifier {
   late final StreamSubscription<dynamic> _subscription;
 
@@ -80,9 +116,6 @@ class GoRouterRefreshStream extends ChangeNotifier {
   }
 }
 
-// ─── Router Provider ─────────────────────────────────────────────────────────
-
-/// GoRouter configuration with auth guards.
 final routerProvider = Provider<GoRouter>((ref) {
   final hasSupabase = AppConfig.hasSupabase;
   final supabase = hasSupabase ? Supabase.instance.client : null;
@@ -90,18 +123,13 @@ final routerProvider = Provider<GoRouter>((ref) {
   GoRouterRefreshStream? refreshStream;
   if (supabase != null) {
     refreshStream = GoRouterRefreshStream(supabase.auth.onAuthStateChange);
-
-    // Clean up the refresh stream when the provider is disposed.
     ref.onDispose(refreshStream.dispose);
   }
 
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: kDebugMode,
-
-    /// Re-evaluate redirect whenever Supabase auth state changes.
     refreshListenable: refreshStream,
-
     redirect: (context, state) {
       final session = supabase?.auth.currentSession;
       final isAuth = session != null;
@@ -110,26 +138,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       final currentUser = hasSupabase ? ref.read(currentUserProvider) : null;
       final role = _resolveCurrentRole(currentUser, supabase);
 
-      // Unauthenticated user trying to access a protected route → /login.
       if (!isAuth && !isPublic) return '/login';
 
-      // Authenticated user on splash, login, or register — route based on role.
-      if (isAuth &&
-          (location == '/' ||
-              location == '/login' ||
-              location == '/register')) {
+      if (isAuth && (location == '/' || location == '/login' || location == '/register')) {
         if (role == null) return location == '/' ? null : '/';
         return _homeRouteForRole(role);
       }
 
-      // Guard the admin route — only superAdmins may enter.
-      if (location == '/admin') {
-        if (role != UserRole.superAdmin) {
-          return role == UserRole.client ? '/member' : '/dashboard';
-        }
+      if (location == '/admin' && role != UserRole.superAdmin) {
+        return role == null ? '/dashboard' : _homeRouteForRole(role);
       }
 
-      return null; // No redirect needed.
+      return null;
     },
     routes: [
       GoRoute(
@@ -145,8 +165,43 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         name: 'register',
+        pageBuilder: (context, state) => _fadePage(state, const RegisterScreen()),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        name: 'forgot-password',
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          ForgotPasswordScreen(
+            initialEmail: state.uri.queryParameters['email'],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/verify-otp',
+        name: 'verify-otp',
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          VerifyOtpScreen(
+            initialEmail: state.uri.queryParameters['email'],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/change-password',
+        name: 'change-password',
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          ChangePasswordScreen(
+            initialEmail: state.uri.queryParameters['email'],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/password-updated',
+        name: 'password-updated',
         pageBuilder: (context, state) =>
-            _fadePage(state, const RegisterScreen()),
+            _fadePage(state, const PasswordUpdatedScreen()),
       ),
       GoRoute(
         path: '/onboarding',
@@ -157,6 +212,41 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/dashboard',
         name: 'dashboard',
         builder: (context, state) => const DashboardScreen(),
+      ),
+      GoRoute(
+        path: '/trainer',
+        name: 'trainer',
+        builder: (context, state) => const TrainerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/clients',
+        name: 'clients',
+        builder: (context, state) => const ClientsScreen(),
+      ),
+      GoRoute(
+        path: '/memberships',
+        name: 'memberships',
+        builder: (context, state) => const MembershipsScreen(),
+      ),
+      GoRoute(
+        path: '/workouts',
+        name: 'workouts',
+        builder: (context, state) => const WorkoutsScreen(),
+      ),
+      GoRoute(
+        path: '/diet-plans',
+        name: 'diet-plans',
+        builder: (context, state) => const DietPlansScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/pricing',
+        name: 'pricing',
+        builder: (context, state) => const PricingScreen(),
       ),
       GoRoute(
         path: '/member',
@@ -184,9 +274,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MemberAnnouncementsScreen(),
       ),
       GoRoute(
+        path: '/member/paywall',
+        name: 'member-paywall',
+        builder: (context, state) => const MemberPaywallScreen(),
+      ),
+      GoRoute(
         path: '/pro',
         name: 'pro',
         builder: (context, state) => const ProHomeScreen(),
+      ),
+      GoRoute(
+        path: '/pro/ai',
+        name: 'pro-ai',
+        builder: (context, state) => const ProAiScreen(),
       ),
       GoRoute(
         path: '/pro/nutrition',
@@ -197,6 +297,81 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/pro/measurements',
         name: 'pro-measurements',
         builder: (context, state) => const ProMeasurementsScreen(),
+      ),
+      GoRoute(
+        path: '/pro/paywall',
+        name: 'pro-paywall',
+        builder: (context, state) => const ProPaywallScreen(),
+      ),
+      GoRoute(
+        path: '/elite',
+        name: 'elite',
+        builder: (context, state) => const EliteHomeScreen(),
+      ),
+      GoRoute(
+        path: '/elite/ai',
+        name: 'elite-ai',
+        builder: (context, state) => const EliteAiTrainerScreen(),
+      ),
+      GoRoute(
+        path: '/elite/chat',
+        name: 'elite-chat',
+        builder: (context, state) => const EliteChatScreen(),
+      ),
+      GoRoute(
+        path: '/elite/supplements',
+        name: 'elite-supplements',
+        builder: (context, state) => const EliteSupplementScreen(),
+      ),
+      GoRoute(
+        path: '/elite/progress',
+        name: 'elite-progress',
+        builder: (context, state) => const EliteMuscleProgressScreen(),
+      ),
+      GoRoute(
+        path: '/elite/transformation',
+        name: 'elite-transformation',
+        builder: (context, state) => const EliteTransformationScreen(),
+      ),
+      GoRoute(
+        path: '/elite/paywall',
+        name: 'elite-paywall',
+        builder: (context, state) => const ElitePaywallScreen(),
+      ),
+      GoRoute(
+        path: '/master',
+        name: 'master',
+        builder: (context, state) => const MasterHomeScreen(),
+      ),
+      GoRoute(
+        path: '/master/ai',
+        name: 'master-ai',
+        builder: (context, state) => const MasterAiCoachScreen(),
+      ),
+      GoRoute(
+        path: '/master/analytics',
+        name: 'master-analytics',
+        builder: (context, state) => const MasterAnalyticsScreen(),
+      ),
+      GoRoute(
+        path: '/master/challenges',
+        name: 'master-challenges',
+        builder: (context, state) => const MasterChallengesScreen(),
+      ),
+      GoRoute(
+        path: '/master/live',
+        name: 'master-live',
+        builder: (context, state) => const MasterLiveSessionsScreen(),
+      ),
+      GoRoute(
+        path: '/master/recovery',
+        name: 'master-recovery',
+        builder: (context, state) => const MasterRecoveryScreen(),
+      ),
+      GoRoute(
+        path: '/master/paywall',
+        name: 'master-paywall',
+        builder: (context, state) => const MasterPaywallScreen(),
       ),
       GoRoute(
         path: '/admin',
@@ -211,14 +386,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/traffic',
         name: 'traffic',
-        pageBuilder: (context, state) =>
-            _fadePage(state, const GymTrafficScreen()),
+        pageBuilder: (context, state) => _fadePage(state, const GymTrafficScreen()),
       ),
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
-        pageBuilder: (context, state) =>
-            _fadePage(state, const NutritionScreen()),
+        pageBuilder: (context, state) => _fadePage(state, const NutritionScreen()),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

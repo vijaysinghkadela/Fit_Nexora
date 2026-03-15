@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../../core/constants.dart';
+import '../core/constants.dart';
+import '../core/extensions.dart';
 
 /// Reusable glassmorphic card with frosted-glass effect and subtle animated transitions.
 class GlassmorphicCard extends StatelessWidget {
@@ -21,16 +22,17 @@ class GlassmorphicCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.fitTheme;
     Widget content = AnimatedContainer(
       duration: AppConstants.normalAnimation,
       curve: AppConstants.smoothCurve,
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: AppColors.glassBorder, width: 1),
+        border: Border.all(color: colors.glassBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: colors.glow.withValues(alpha: 0.2),
             blurRadius: 32,
             offset: const Offset(0, 12),
           ),
@@ -42,8 +44,7 @@ class GlassmorphicCard extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.bgCard
-                  .withValues(alpha: 0.65), // Let more blur through
+              color: colors.glassFill,
               borderRadius: BorderRadius.circular(borderRadius),
             ),
             child: child,
@@ -58,8 +59,8 @@ class GlassmorphicCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          highlightColor: AppColors.glassBg,
-          splashColor: AppColors.glassBg.withValues(alpha: 0.1),
+          highlightColor: colors.glassFill,
+          splashColor: colors.glassFill.withValues(alpha: 0.5),
           child: content,
         ),
       );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/constants.dart';
+import '../core/extensions.dart';
 
 /// Animated stat card for dashboard metrics.
 class StatCard extends StatelessWidget {
@@ -28,6 +29,7 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.fitTheme;
     // Generate a soft glow color based on the icon's color
     final glowColor = color.withValues(alpha: 0.15);
 
@@ -36,9 +38,9 @@ class StatCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppColors.bgCard,
+            color: colors.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: colors.border),
           ),
           child: Stack(
             children: [
@@ -68,7 +70,7 @@ class StatCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.bgInput,
+                          color: colors.surfaceAlt,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: color.withValues(alpha: 0.2),
@@ -81,11 +83,11 @@ class StatCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.bgInput,
+                            color: colors.surfaceAlt,
                             border: Border.all(
                               color: isTrendPositive == true
-                                  ? AppColors.success.withValues(alpha: 0.3)
-                                  : AppColors.error.withValues(alpha: 0.3),
+                                  ? colors.success.withValues(alpha: 0.3)
+                                  : colors.danger.withValues(alpha: 0.3),
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -98,8 +100,8 @@ class StatCard extends StatelessWidget {
                                     : Icons.trending_down_rounded,
                                 size: 14,
                                 color: isTrendPositive == true
-                                    ? AppColors.success
-                                    : AppColors.error,
+                                    ? colors.success
+                                    : colors.danger,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -108,8 +110,8 @@ class StatCard extends StatelessWidget {
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
                                   color: isTrendPositive == true
-                                      ? AppColors.success
-                                      : AppColors.error,
+                                      ? colors.success
+                                      : colors.danger,
                                 ),
                               ),
                             ],
@@ -123,7 +125,7 @@ class StatCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 30,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
+                      color: colors.textPrimary,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -133,7 +135,7 @@ class StatCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
+                      color: colors.textSecondary,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -142,7 +144,7 @@ class StatCard extends StatelessWidget {
                       subtitle!,
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: AppColors.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   ],

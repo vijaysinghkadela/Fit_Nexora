@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Diet Plans Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "emerald-accent": "#10b981",
+                        "violet-accent": "#8b5cf6",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#1a0f1c", // Dark violet base
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        .glow-violet {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+        .glow-primary {
+            box-shadow: 0 0 15px rgba(236, 91, 19, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<div class="flex items-center bg-white/5 dark:bg-black/20 backdrop-blur-md p-4 sticky top-0 z-50 justify-between border-b border-slate-200 dark:border-white/10">
+<div class="text-slate-900 dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">FitNexora Diet</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-primary text-white">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+<main class="flex-1 pb-24">
+<!-- Daily Calorie Gauge Section -->
+<div class="px-4 pt-6 pb-4">
+<div class="relative flex flex-col items-center justify-center py-8 glass rounded-xl overflow-hidden border-primary/20">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-emerald-accent/5 pointer-events-none"></div>
+<h2 class="text-slate-900 dark:text-white tracking-tight text-xl font-bold mb-6">Daily Progress</h2>
+<!-- Circular Gauge Sim -->
+<div class="relative size-48 flex items-center justify-center">
+<svg class="size-full -rotate-90" viewbox="0 0 100 100">
+<circle class="text-slate-200 dark:text-white/10" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary glow-primary" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="87.9" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-extrabold text-slate-900 dark:text-white">1,625</span>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest">of 2,500 kcal</span>
+</div>
+</div>
+<div class="mt-6 flex gap-4 w-full px-8">
+<div class="flex-1 flex flex-col items-center">
+<span class="text-emerald-accent font-bold">875</span>
+<span class="text-[10px] uppercase text-slate-500 dark:text-slate-400">Remaining</span>
+</div>
+<div class="w-px h-8 bg-slate-200 dark:bg-white/10"></div>
+<div class="flex-1 flex flex-col items-center">
+<span class="text-violet-accent font-bold">65%</span>
+<span class="text-[10px] uppercase text-slate-500 dark:text-slate-400">Achieved</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Macro Breakdown Section -->
+<div class="px-4 py-4">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                    Macro Breakdown
+                </h3>
+<div class="grid grid-cols-3 gap-3">
+<!-- Protein -->
+<div class="glass p-4 rounded-xl flex flex-col items-center gap-2 border-emerald-accent/20">
+<span class="text-[10px] font-bold text-emerald-accent uppercase tracking-wider">Protein</span>
+<div class="h-24 w-2 bg-slate-200 dark:bg-white/10 rounded-full relative overflow-hidden">
+<div class="absolute bottom-0 left-0 right-0 bg-emerald-accent glow-emerald h-[80%] rounded-full"></div>
+</div>
+<span class="text-sm font-bold dark:text-white">120g</span>
+<span class="text-[10px] text-slate-500">Target 150g</span>
+</div>
+<!-- Carbs -->
+<div class="glass p-4 rounded-xl flex flex-col items-center gap-2 border-primary/20">
+<span class="text-[10px] font-bold text-primary uppercase tracking-wider">Carbs</span>
+<div class="h-24 w-2 bg-slate-200 dark:bg-white/10 rounded-full relative overflow-hidden">
+<div class="absolute bottom-0 left-0 right-0 bg-primary glow-primary h-[50%] rounded-full"></div>
+</div>
+<span class="text-sm font-bold dark:text-white">185g</span>
+<span class="text-[10px] text-slate-500">Target 250g</span>
+</div>
+<!-- Fats -->
+<div class="glass p-4 rounded-xl flex flex-col items-center gap-2 border-violet-accent/20">
+<span class="text-[10px] font-bold text-violet-accent uppercase tracking-wider">Fats</span>
+<div class="h-24 w-2 bg-slate-200 dark:bg-white/10 rounded-full relative overflow-hidden">
+<div class="absolute bottom-0 left-0 right-0 bg-violet-accent glow-violet h-[65%] rounded-full"></div>
+</div>
+<span class="text-sm font-bold dark:text-white">55g</span>
+<span class="text-[10px] text-slate-500">Target 80g</span>
+</div>
+</div>
+</div>
+<!-- Meal Timeline Section -->
+<div class="px-4 py-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Meal Timeline</h3>
+<button class="text-primary text-xs font-bold uppercase tracking-wider">Edit Plan</button>
+</div>
+<div class="flex flex-col gap-4 relative">
+<!-- Vertical Timeline Line -->
+<div class="absolute left-6 top-4 bottom-4 w-0.5 bg-gradient-to-b from-primary via-emerald-accent to-violet-accent opacity-30"></div>
+<!-- Breakfast -->
+<div class="flex gap-4 relative">
+<div class="size-12 rounded-full glass flex items-center justify-center z-10 border-primary/30 shrink-0">
+<span class="material-symbols-outlined text-primary">sunny</span>
+</div>
+<div class="glass flex-1 p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">08:00 AM</p>
+<h4 class="font-bold text-slate-900 dark:text-white">Oatmeal &amp; Berries</h4>
+<p class="text-xs text-emerald-accent">Completed • 420 kcal</p>
+</div>
+<span class="material-symbols-outlined text-emerald-accent">check_circle</span>
+</div>
+</div>
+<!-- Lunch -->
+<div class="flex gap-4 relative">
+<div class="size-12 rounded-full glass flex items-center justify-center z-10 border-emerald-accent/30 shrink-0">
+<span class="material-symbols-outlined text-emerald-accent">restaurant</span>
+</div>
+<div class="glass flex-1 p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">01:00 PM</p>
+<h4 class="font-bold text-slate-900 dark:text-white">Grilled Chicken Salad</h4>
+<p class="text-xs text-emerald-accent">Completed • 580 kcal</p>
+</div>
+<span class="material-symbols-outlined text-emerald-accent">check_circle</span>
+</div>
+</div>
+<!-- Snack (Active) -->
+<div class="flex gap-4 relative">
+<div class="size-12 rounded-full bg-primary flex items-center justify-center z-10 glow-primary shrink-0">
+<span class="material-symbols-outlined text-white">bolt</span>
+</div>
+<div class="bg-primary/10 border border-primary/30 flex-1 p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs text-primary font-bold">04:30 PM (NOW)</p>
+<h4 class="font-bold text-slate-900 dark:text-white">Protein Shake &amp; Almonds</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Scheduled • 250 kcal</p>
+</div>
+<span class="material-symbols-outlined text-primary">timer</span>
+</div>
+</div>
+<!-- Dinner -->
+<div class="flex gap-4 relative">
+<div class="size-12 rounded-full glass flex items-center justify-center z-10 border-violet-accent/30 shrink-0">
+<span class="material-symbols-outlined text-violet-accent">dark_mode</span>
+</div>
+<div class="glass flex-1 p-4 rounded-xl flex items-center justify-between opacity-60">
+<div>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">07:30 PM</p>
+<h4 class="font-bold text-slate-900 dark:text-white">Salmon &amp; Asparagus</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Scheduled • 650 kcal</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">schedule</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex gap-2 border-t border-slate-200 dark:border-white/10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl px-4 pb-6 pt-3">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] fill-1">restaurant_menu</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Nutrition</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">fitness_center</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Workouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#221610",
+                        "surface-light": "#F3F0FF",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<header class="flex items-center bg-white dark:bg-background-dark border-b border-slate-100 dark:border-slate-800 p-4 gap-3 sticky top-0 z-10">
+<button class="flex items-center justify-center p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">arrow_back</span>
+</button>
+<div class="relative">
+<div class="size-10 rounded-full bg-cover bg-center border border-slate-100" data-alt="Elite AI Coach profile picture portrait" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBoEGuw_ozUw_IqntYWkeONUWDwtbf9Z2k5HLqiUDM1VlT11kYysPRqDDrciY77YXd10dv5tzlEX3YB3DYzkdnYNzRSviNmnC5uEsu9r0iohM5ma_cy0K5WhiBtHCOQHEPhJM9X1A530d0V9BM38dW6li9QyZyooatQjEi3F0j6zlPheYwYjSnfVpcdxdFF16PR-oE-XJU7qLzQlPBee2k2NZYtv62YDwsarZ1OMqdik_XdumAG1Vni5WZFzfjUEfBb-w-DFkg-pD4");'></div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex flex-col flex-1">
+<h2 class="text-slate-900 dark:text-white text-base font-bold leading-tight">Elite AI Coach</h2>
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Online</span>
+</div>
+<button class="flex items-center justify-center p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">more_vert</span>
+</button>
+</header>
+<!-- Chat Area -->
+<main class="flex-1 overflow-y-auto p-4 space-y-6">
+<div class="flex justify-center">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider rounded-full">Today</span>
+</div>
+<!-- AI Message -->
+<div class="flex items-end gap-3 max-w-[85%]">
+<div class="size-8 rounded-full bg-cover bg-center shrink-0 mb-1" data-alt="Elite AI Coach mini avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCC-rX0wrdeTs--bSYcmqrNhqW-RQqfFH8Mvcifj9RUm-G0Ik5h6S_BJDA1AbUboME25e_7c_OeX46MW43TBOSGbaXngUUEmeck0vzOi9ZPPgQxOd70wlG6RqhOGT2M_T14qJRTZ71ihR9lV3AGkls95apRP5pJpnJiQhxl6jsp8V1b3f3SMxitHMWjtWEzfa1f3qXl1yj-UK7NmRBoyJZOMc-uoeJtWX-wv8esaWqIxxjHcaPNr4HzcixBNDO0GIEILP_OqUjvfYE");'></div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-light dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 rounded-2xl rounded-bl-none shadow-sm">
+<p class="text-sm leading-relaxed">Hello! Ready to push your limits today? How can I help you reach Master Tier?</p>
+</div>
+<span class="text-[10px] text-slate-400 ml-1">09:41 AM</span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-end gap-3 justify-end ml-auto max-w-[85%]">
+<div class="flex flex-col items-end gap-1">
+<div class="bg-primary text-white p-4 rounded-2xl rounded-br-none shadow-md">
+<p class="text-sm leading-relaxed">I want to focus on high-intensity interval training today.</p>
+</div>
+<span class="text-[10px] text-slate-400 mr-1">09:42 AM</span>
+</div>
+</div>
+<!-- AI Message -->
+<div class="flex items-end gap-3 max-w-[85%]">
+<div class="size-8 rounded-full bg-cover bg-center shrink-0 mb-1" data-alt="Elite AI Coach mini avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBSLw_b6LX7sCpDZonFZEb-n6xb5-WhmjNafe07fXmwwVglBATYUlAjUjuASF1t28LYZNhxfzTsIgDK2AEW5qKAn17gm7XdC1l9s45zWfgchLDm4yIUztoA-BcvGYrJtLazzQJyz2rncE0Yt3sVPCBMyW0QN9Y3dnCwVxrV1K2d0FdyVB8hOubqDhP52jBzQtfIBUCxd7boAA1j2BoBEdn8CRX3z9nlgPowf-ZKC8PXEHt0n7jTQU1yzQeexhMMeVtW1M5X4MaqwjU");'></div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-light dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 rounded-2xl rounded-bl-none shadow-sm">
+<p class="text-sm leading-relaxed">Great choice. HIIT is excellent for cardiovascular endurance. Should we look at a 20-minute or 30-minute session?</p>
+</div>
+<span class="text-[10px] text-slate-400 ml-1">09:42 AM</span>
+</div>
+</div>
+<!-- Action Chips -->
+<div class="flex flex-wrap gap-2 pt-2 pb-4">
+<button class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-full hover:bg-primary/5 transition-colors">
+                    20-minute session
+                </button>
+<button class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-full hover:bg-primary/5 transition-colors">
+                    30-minute session
+                </button>
+<button class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-full hover:bg-primary/5 transition-colors">
+                    Analyze my progress
+                </button>
+<button class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-full hover:bg-primary/5 transition-colors">
+                    Suggest today's workout
+                </button>
+</div>
+</main>
+<!-- Input Bar -->
+<footer class="p-4 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-2 py-2 shadow-lg border border-slate-100 dark:border-slate-700">
+<button class="flex items-center justify-center p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<input class="flex-1 border-none focus:ring-0 text-sm py-2 bg-transparent text-slate-900 dark:text-slate-100" placeholder="Type your message..." type="text"/>
+<button class="flex items-center justify-center p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="flex items-center justify-center size-10 bg-primary text-white rounded-lg shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>

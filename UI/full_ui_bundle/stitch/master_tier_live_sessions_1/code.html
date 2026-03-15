@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Master Tier Live Sessions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-mint": "#00f5d4",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                        "glass": "rgba(255, 255, 255, 0.05)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(137, 90, 246, 0.3);
+        }
+        .glow-mint {
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="flex items-center justify-between px-6 pt-8 pb-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">workspace_premium</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Master Tier</span>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight">Live Sessions</h1>
+</div>
+<button class="size-12 rounded-full glass-card flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto px-4 pb-24">
+<!-- Active Now Section -->
+<section class="mb-8">
+<div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden group">
+<!-- Video Placeholder -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-black/20" data-alt="High intensity olympic lifting session video preview">
+<img alt="Live workout session" class="w-full h-full object-cover mix-blend-overlay opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkqzkwTeleLwqO5a5EIFukkpHm-pkQwIxV8LMOU1JySCgk7m0pPnQo3kPBfUkgPuYML3rjOIA5gCVDsT8-M-RdXBj98nepJGM1805UVTFW6gS0YMJqrG2pCInkvVnZbUT9KiYi6tSS2wFW_ZHIZgk3dORi8JgH5Sa0QXpZkuOmUttJvOXwwl5R73GExXywdNtn93HS4Ht0lCu-4RRj8Qdb_F3C1K1lrzHDfuUf53XXff1s-ywfqmePMErU0e6LkPWyc6QYsHlvwdQ"/>
+</div>
+<!-- Live Indicators -->
+<div class="absolute top-4 left-4 flex gap-2">
+<div class="flex items-center gap-1.5 bg-red-600 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+</span>
+                        Live
+                    </div>
+<div class="glass-card px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 text-white">
+<span class="material-symbols-outlined text-[14px]">visibility</span>
+                        1.2k
+                    </div>
+</div>
+<!-- Play Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="size-16 rounded-full bg-primary/90 text-white flex items-center justify-center glow-primary">
+<span class="material-symbols-outlined text-4xl translate-x-0.5">play_arrow</span>
+</button>
+</div>
+<!-- Session Info Overlay -->
+<div class="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-xs font-medium text-accent-mint flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">fitness_center</span>
+                            Strength &amp; Power
+                        </p>
+<h3 class="text-lg font-bold text-white">Olympic Lifting: Coach Sarah</h3>
+</div>
+<button class="bg-white text-background-dark font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-accent-mint transition-colors">
+                        Join Now
+                    </button>
+</div>
+</div>
+<!-- Stats Bar (Glassmorphic Widgets) -->
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div class="glass-card p-4 rounded-xl flex items-center gap-3">
+<div class="size-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Coach Heart Rate</p>
+<p class="text-lg font-bold text-slate-100">142 <span class="text-xs font-normal text-slate-500">BPM</span></p>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex items-center gap-3">
+<div class="size-10 rounded-lg bg-accent-mint/10 flex items-center justify-center text-accent-mint">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Group Power</p>
+<p class="text-lg font-bold text-slate-100">842 <span class="text-xs font-normal text-slate-500">AVG W</span></p>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Schedule -->
+<section>
+<div class="flex items-center justify-between mb-4 px-2">
+<h2 class="text-lg font-bold">Upcoming Sessions</h2>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="space-y-3">
+<!-- Schedule Item 1 -->
+<div class="glass-card p-4 rounded-xl flex items-center justify-between border-l-4 border-l-primary">
+<div class="flex items-center gap-4">
+<div class="relative size-12 rounded-full overflow-hidden border-2 border-primary/20" data-alt="Portrait of a male fitness coach">
+<img alt="Coach Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCevSPxaGp5NKTFo_VOXGQjr_7pR-GPnh9gVnux3o8NRGTaLKUKwv1fjqm0WFlfCdMTokyYtgx-vYZwu82X-Nyt1TishU6cRREY0BFaGeueujvd_CH6NZG9ZIiyUuk76GzwPaXjUGLvBZdTqAvMSSC1S1kX7X9O93mdhRzPC80wX93AwEOVwZX1gTnXJ5yafzP3rYm1l2Y9OKIAqXWh4bLnWh7aBfCJP-wAJt5fw17zNiV-5Xk9T-2TW_2Pm8NlrFp0133L26LHfRI"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-100">Hypertrophy Masterclass</p>
+<p class="text-xs text-slate-400">Coach Marcus • 14:00 PM</p>
+</div>
+</div>
+<button class="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl">calendar_add_on</span>
+</button>
+</div>
+<!-- Schedule Item 2 -->
+<div class="glass-card p-4 rounded-xl flex items-center justify-between border-l-4 border-l-accent-mint">
+<div class="flex items-center gap-4">
+<div class="relative size-12 rounded-full overflow-hidden border-2 border-accent-mint/20" data-alt="Portrait of a female yoga instructor">
+<img alt="Coach Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoH5VDheh6PSavWFrVcWblJMkAHrkwqrzUN-PWCDGMAlwWuf6LXmKa5l1b4HYifCTC1hDNBMdqdeJpa_Hi3-S7ZzV1B__5tRfIwU8QWG6mM7cgB27TgLroCcHcIll3ItUpq0io4j6T2uU1zZ7ak0_ZuFBDYLxtRmHxRK_f5Fn-qvNAGlgR23ZReJhAFc-4bkv2-WjwtaGxh3bjC9Rw7EHlfgPkBn2qlj1PXuiJnc1CUK4xiaMIJ9KKJzD76tIomazS-7ZbGpwhruA"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-100">Zen Recovery Flow</p>
+<p class="text-xs text-slate-400">Coach Elena • 16:30 PM</p>
+</div>
+</div>
+<button class="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl">calendar_add_on</span>
+</button>
+</div>
+<!-- Schedule Item 3 -->
+<div class="glass-card p-4 rounded-xl flex items-center justify-between border-l-4 border-l-slate-700">
+<div class="flex items-center gap-4">
+<div class="relative size-12 rounded-full overflow-hidden border-2 border-slate-700/20" data-alt="Portrait of a professional athlete">
+<img alt="Coach Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB23vxB6vlQOlYYYjVjC0zy-YuK6NP7zolsW4AjTu4341mb__s0PP4dKxY9lcaxu_UvfHW3mOCsnjxf9vbhAaMMftmxk_d3aUbm4MDM4pJumyv1cyQVnOZS02TY2pmgK5pDH9ThLC5-R0Mtq0tlHQWtL8LWZSMQRX_rStoAwdJocQf2B_awAci62GmzAzP4olfCPJ9NEjH9Niu6oE_7vFEml_L5z14GSRutimtWYCuPz0RW-JuCl2bv1PnwewtARThkVaafZ3nV8Tc"/>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-100">Endurance Peak 5k</p>
+<p class="text-xs text-slate-400">Coach David • Tomorrow 08:00 AM</p>
+</div>
+</div>
+<button class="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl">calendar_add_on</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50">
+<div class="flex gap-2 border-t border-white/5 bg-background-dark/80 backdrop-blur-xl px-4 pb-6 pt-3">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Insights</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">auto_graph</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Predict</p>
+</a>
+<!-- Active State -->
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-[28px] fill-[1]">videocam</span>
+<span class="absolute -top-1 -right-1 flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+</div>
+<p class="text-[10px] font-bold leading-normal tracking-wide">Live</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Members</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">shield_person</span>
+<p class="text-[10px] font-medium leading-normal tracking-wide">Admin</p>
+</a>
+</div>
+</nav>
+</body></html>

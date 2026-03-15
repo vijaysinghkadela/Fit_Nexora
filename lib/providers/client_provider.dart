@@ -26,6 +26,17 @@ final gymClientsProvider = FutureProvider<List<ClientProfile>>((ref) async {
   return db.getClientsForGym(gym.id);
 });
 
+/// Clients assigned to the currently signed-in trainer.
+final trainerClientsProvider =
+    FutureProvider.autoDispose<List<ClientProfile>>((ref) async {
+  final gym = ref.watch(selectedGymProvider);
+  final user = ref.watch(currentUserProvider).value;
+  if (gym == null || user == null) return [];
+
+  final db = ref.read(databaseServiceProvider);
+  return db.getClientsForTrainer(gym.id, user.id);
+});
+
 /// Memberships expiring within 7 days.
 final expiringMembershipsProvider =
     FutureProvider<List<Membership>>((ref) async {

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Exercise Comparison</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "emerald-accent": "#10b981",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0f0a1e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<nav class="sticky top-0 z-50 backdrop-blur-xl bg-background-dark/80 border-b border-primary/20 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">FitNexora</h1>
+</div>
+<button class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">share</span>
+</button>
+</nav>
+<main class="p-4 space-y-6">
+<header class="text-center">
+<h2 class="text-2xl font-bold bg-gradient-to-r from-primary to-emerald-accent bg-clip-text text-transparent">Exercise Comparison</h2>
+<p class="text-slate-400 text-sm mt-1">Deep dive into your performance metrics</p>
+</header>
+<div class="relative flex items-center gap-3">
+<div class="flex-1 bg-primary/5 border border-primary/20 rounded-xl overflow-hidden p-3 flex flex-col items-center text-center gap-2">
+<div class="w-full aspect-square rounded-lg bg-slate-800 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Athlete performing a barbell bench press" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrkJzHabrj-YFga_8Np1J5ma1k70nTxOL6dM3dkAKp628fEmozxDXF3W4nN7xtzm3I2TiDTutiofhbE4gVBiOTTm3iagI46QvteldSzB2dPxBX3ZyC5BgGAvy3HsYshOA7n6GrBhmVIaLnhlibfpaGV0e0c07OZtjypIyZGbV4mQBAmFW86aYwd4QZQN-xhbzF--OuXESTiwne_KMjJy8kXHb8o1rxwPqlieo6jbFKabFMMg77oUa2qvtMdnNXayVlS9bN6V7zaxo"/>
+</div>
+<p class="text-xs font-bold leading-tight line-clamp-2">Barbell Bench Press</p>
+</div>
+<div class="absolute left-1/2 -translate-x-1/2 z-10 size-10 rounded-full bg-emerald-accent flex items-center justify-center text-background-dark font-black text-xs border-4 border-background-dark">
+                VS
+            </div>
+<div class="flex-1 bg-emerald-accent/5 border border-emerald-accent/20 rounded-xl overflow-hidden p-3 flex flex-col items-center text-center gap-2">
+<div class="w-full aspect-square rounded-lg bg-slate-800 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Athlete performing a dumbbell chest press" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzztvrvuuHHcRcFCdQuNTjcZuleC7iqMgRWNnshilrjrQ1k44Krr7JPntE9njQ03kwRhxaEQ5jHis_t5EroEzj3SPjmpHeYT_XrR28VH9TzpxQMhhVhIhS1iYDzV8ebcsu5WL1qQwBDGrRR4eE3R-rzpoh6_pCHYCX3sR0weHO2-xpqCSgwaHyo1sKocTW59PEByM1F9_MR6WyOlcJRquw2Ypfo6m7AZqm4jurFK3U0s04-MjRrYs63ys-wmz12gX4768MMLhY3qY"/>
+</div>
+<p class="text-xs font-bold leading-tight line-clamp-2">Dumbbell Chest Press</p>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/10 rounded-xl p-5 backdrop-blur-md">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h3 class="text-sm font-medium text-slate-400">Weight Progress (L6M)</h3>
+<p class="text-2xl font-bold">Max 1RM Trends</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-2 rounded-full bg-primary"></span>
+<span class="text-slate-300">Barbell</span>
+</div>
+<div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-2 rounded-full bg-emerald-accent"></span>
+<span class="text-slate-300">Dumbbell</span>
+</div>
+</div>
+</div>
+<div class="h-48 relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 150">
+<path d="M0 120 Q 50 110, 100 80 T 200 60 T 300 30 T 400 10" fill="none" stroke="#895af6" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0 140 Q 50 135, 100 110 T 200 105 T 300 85 T 400 75" fill="none" stroke="#10b981" stroke-linecap="round" stroke-width="3"></path>
+<circle cx="400" cy="10" fill="#895af6" r="4"></circle>
+<circle cx="400" cy="75" fill="#10b981" r="4"></circle>
+</svg>
+<div class="flex justify-between mt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+<span>Jan</span>
+<span>Mar</span>
+<span>May</span>
+<span>Jul</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div class="bg-primary/5 border border-primary/10 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm">trophy</span>
+<span class="text-xs font-bold uppercase tracking-widest">Personal Best</span>
+</div>
+<div class="grid grid-cols-2 divide-x divide-primary/20">
+<div class="pr-2">
+<p class="text-xl font-bold text-primary">225 <span class="text-xs font-normal opacity-70">lbs</span></p>
+</div>
+<div class="pl-4">
+<p class="text-xl font-bold text-emerald-accent">90 <span class="text-xs font-normal opacity-70">lbs (ea)</span></p>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/10 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm">fitness_center</span>
+<span class="text-xs font-bold uppercase tracking-widest">Total Volume (Mo)</span>
+</div>
+<div class="grid grid-cols-2 divide-x divide-primary/20">
+<div class="pr-2">
+<p class="text-xl font-bold text-primary">12,450 <span class="text-xs font-normal opacity-70">lbs</span></p>
+</div>
+<div class="pl-4">
+<p class="text-xl font-bold text-emerald-accent">8,200 <span class="text-xs font-normal opacity-70">lbs</span></p>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/10 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-sm">repeat</span>
+<span class="text-xs font-bold uppercase tracking-widest">Avg. Reps / Set</span>
+</div>
+<div class="grid grid-cols-2 divide-x divide-primary/20">
+<div class="pr-2">
+<p class="text-xl font-bold text-primary">6.4</p>
+</div>
+<div class="pl-4">
+<p class="text-xl font-bold text-emerald-accent">10.2</p>
+</div>
+</div>
+</div>
+</div>
+<section class="bg-gradient-to-br from-primary/20 to-emerald-accent/20 border border-white/10 rounded-xl p-5 relative overflow-hidden">
+<div class="absolute -top-12 -right-12 size-32 bg-primary/30 blur-3xl rounded-full"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-emerald-accent">auto_awesome</span>
+<h3 class="font-bold text-lg">Key Insights</h3>
+</div>
+<p class="text-sm text-slate-300 leading-relaxed italic">
+                    "You lift <span class="text-primary font-bold">15% more volume</span> with Barbell Bench Press, making it your primary strength builder. However, Dumbbell Press shows <span class="text-emerald-accent font-bold">superior stability trends</span> and higher metabolic stress (avg reps: 10.2). Consider prioritizing Barbell for heavy triples and Dumbbells for hypertrophy."
+                </p>
+</div>
+</section>
+</main>
+<div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4">
+<div class="max-w-md mx-auto bg-background-dark/90 backdrop-blur-2xl border border-primary/20 rounded-full flex items-center justify-around py-3 px-6 shadow-2xl">
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-[10px] font-bold uppercase tracking-tighter">Workout</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">insights</span>
+<p class="text-[10px] font-bold uppercase tracking-tighter">Analysis</p>
+</a>
+<div class="size-12 -mt-10 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-2xl">add</span>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<p class="text-[10px] font-bold uppercase tracking-tighter">Plans</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">person_outline</span>
+<p class="text-[10px] font-bold uppercase tracking-tighter">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

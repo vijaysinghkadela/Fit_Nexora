@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled { font-variation-settings: 'FILL' 1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Navigation -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center p-4 justify-between max-w-xl mx-auto w-full">
+<div class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center font-display">Diet Plans</h2>
+<div class="flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">more_horiz</span>
+</div>
+</div>
+<!-- Tabs -->
+<div class="max-w-xl mx-auto w-full px-4">
+<div class="flex gap-8">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-2" href="#">
+<p class="text-sm font-bold font-display">All Plans</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-3 pt-2" href="#">
+<p class="text-sm font-bold font-display">Active</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-2" href="#">
+<p class="text-sm font-bold font-display">Favorites</p>
+</a>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-xl mx-auto w-full p-4 space-y-6">
+<!-- Active Plan Hero Section -->
+<section>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-extrabold pb-4 font-display">Your Active Plan</h2>
+<div class="group relative overflow-hidden rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+<div class="h-48 w-full bg-cover bg-center" data-alt="Healthy colorful salad with fresh ingredients" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCiQzfYifnCmkdug9OdrcMfPePsp9LFzQjj5JdmOhq5G7zX5qNnilgffeSHVt7NLhce7X68nL1_DtYT3Tao8D2atFzWsgzm4TXialUJZ_sE2wxTnEbYbTf9GyxZv_B8nrGfH-3Cj-WQ-nepkJy0IxjTf8xOQNyjRP0w34T1fmh1grbq32oEeJPy85omNp3SBadjLV6aRz1haFVmUurUt5Ro00Ug6fVGyow-5U4G7F9pCsG69KgZecQEJJdK0UN4uoDpVWmc2Sth_u8')"></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<div>
+<p class="text-slate-900 dark:text-slate-100 text-xl font-bold font-display">Intermittent Fasting</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">16:8 Protocol • Started 12 days ago</p>
+</div>
+<div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Active</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-3 gap-4 my-6">
+<div class="flex flex-col items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+<span class="text-primary font-bold text-lg font-display">1,800</span>
+<span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kcal Target</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+<span class="text-slate-900 dark:text-slate-100 font-bold text-lg font-display">65%</span>
+<span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Completed</span>
+</div>
+<div class="flex flex-col items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+<span class="text-slate-900 dark:text-slate-100 font-bold text-lg font-display">4.2</span>
+<span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Kg Lost</span>
+</div>
+</div>
+<button class="w-full py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                        View Detailed Progress
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Nutrition Summary / Macros -->
+<section class="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-slate-800 dark:text-slate-200">Macro Distribution</h3>
+<span class="text-xs font-bold text-slate-400 uppercase">Today's Balance</span>
+</div>
+<div class="flex items-center justify-between gap-8">
+<!-- Simple CSS Donut Representation -->
+<div class="relative size-32 shrink-0">
+<svg class="size-full" viewbox="0 0 36 36">
+<circle class="stroke-slate-100 dark:stroke-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="4"></circle>
+<!-- Protein (Blue) -->
+<circle class="stroke-blue-500" cx="18" cy="18" fill="none" r="16" stroke-dasharray="30 100" stroke-dashoffset="0" stroke-width="4"></circle>
+<!-- Carbs (Primary/Orange) -->
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="45 100" stroke-dashoffset="-30" stroke-width="4"></circle>
+<!-- Fats (Green) -->
+<circle class="stroke-emerald-500" cx="18" cy="18" fill="none" r="16" stroke-dasharray="25 100" stroke-dashoffset="-75" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-xs text-slate-400 font-medium">Remaining</span>
+<span class="text-lg font-bold text-slate-900 dark:text-slate-100">420</span>
+</div>
+</div>
+<div class="flex-1 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-primary"></span>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Carbohydrates</span>
+</div>
+<span class="text-sm font-bold text-slate-800 dark:text-slate-200">145g</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-blue-500"></span>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Protein</span>
+</div>
+<span class="text-sm font-bold text-slate-800 dark:text-slate-200">110g</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-emerald-500"></span>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Healthy Fats</span>
+</div>
+<span class="text-sm font-bold text-slate-800 dark:text-slate-200">55g</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Other Recommendations -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold font-display">Alternative Plans</h3>
+<a class="text-primary text-sm font-bold hover:underline" href="#">Explore More</a>
+</div>
+<div class="space-y-4">
+<!-- Small Card 1 -->
+<div class="flex gap-4 p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl items-center">
+<div class="size-20 rounded-lg bg-cover bg-center shrink-0" data-alt="Keto friendly meal prep containers" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDGSEUzYQ4QdXuVFIAPY4iDcxbXmxZ4P5IRN5CAD_37xDHTjEFfRNnEtYqhtmQz0P-zqUwjHnTc7SVgLgGnexFjBMF6uCf9cJPGUUXO9z3RfrOGlmTdq3Qc_vprfZlQnikM2Nc8NUKVOdIl8DaHak9Zr-sxXlBJStrJHH7g7mQkuYX_3n0_q5_Egvkco4Ckft6oWVO_UxUD-oRvy_Bt5R1T6DzkP1PjsEyIdaQzjbbI2zPNy6peB3_c8scvI7Tvn4nf9VDrxKBL_Vk')"></div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-slate-900 dark:text-slate-100 truncate">Ketogenic Diet</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">High fat, low carb protocol</p>
+<div class="mt-2 flex items-center gap-3">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">local_fire_department</span> 1,600 kcal
+                            </span>
+</div>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+<!-- Small Card 2 -->
+<div class="flex gap-4 p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl items-center">
+<div class="size-20 rounded-lg bg-cover bg-center shrink-0" data-alt="Fresh mediterranean vegetable bowl" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCyo5gkLy8jtTBdX6isetpabpwMtHsNmhOXCqWQkS5LOrMkNLNSSUNaa7Grl9uMEkCp4M0udTxwovWSwXRG2QGCJX5llAs9iIBy1Pv-LmbsqQ0oGyw1aRYJK4m2sYYacTIdCkMifMM-wWyB4kFDuOprnH5nwMaXMawfPD_f83W-ehYBQlWE5MjOLc0pdAubLhADFkQRBDSLWSMMLwchRU0kFBm-4rlc54aeylEbguhtrmvmZPAGaTk-Na7FLNkt5vxAsS4NlG-FcQ')"></div>
+<div class="flex-1 min-w-0">
+<p class="font-bold text-slate-900 dark:text-slate-100 truncate">Mediterranean</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Heart healthy &amp; balanced</p>
+<div class="mt-2 flex items-center gap-3">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">local_fire_department</span> 2,100 kcal
+                            </span>
+</div>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+</div>
+</div>
+</section>
+<div class="h-20"></div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-4 pb-6 pt-2">
+<div class="max-w-xl mx-auto flex justify-between items-center">
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined filled">calendar_today</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Plans</span>
+</a>
+<div class="flex flex-1 flex-col items-center -mt-8">
+<button class="bg-primary size-14 rounded-full text-white shadow-lg shadow-primary/30 flex items-center justify-center border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<span class="text-[10px] font-bold uppercase tracking-tight text-slate-400 mt-1">Log</span>
+</div>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Progress</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

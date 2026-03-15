@@ -1,419 +1,832 @@
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:go_router/go_router.dart';
-import '../../core/constants.dart';
+import '../../config/theme.dart';
+import '../../config/theme_mode_provider.dart';
 import '../../core/enums.dart';
+import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
+import '../../models/gym_model.dart';
+import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
-import '../../l10n/app_localizations.dart';
 
-/// Settings screen — gym profile, plan management, GST, account.
-class SettingsScreen extends ConsumerStatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context)!;
-
-    final currentUser = ref.watch(currentUserProvider);
+    final colors = context.fitTheme;
+    final user = ref.watch(currentUserProvider).value;
     final gym = ref.watch(selectedGymProvider);
-
-    return SafeArea(
-      child: CustomScrollView(
-        slivers: [
-
-        /// APP BAR
-        SliverAppBar(
-          floating: true,
-          backgroundColor: AppColors.bgDark,
-          title: Text(
-            t.settings,
-            style: GoogleFonts.inter(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-
-        /// ACCOUNT
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader(t.account),
-          ),
-        ),
-
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-
-                    _buildSettingTile(
-                      icon: Icons.person_rounded,
-                      title: currentUser.value?.fullName ?? 'User',
-                      subtitle: currentUser.value?.email ?? '',
-                      trailing: const Text(
-                        'Edit',
-                        style: TextStyle(color: AppColors.primary),
-                      ),
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.security_rounded,
-                      title: t.changePassword,
-                      subtitle: t.updateLoginCredentials,
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.badge_rounded,
-                      title: t.role,
-                      subtitle: currentUser.value?.globalRole.label ?? 'Client',
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 100.ms).fadeIn(),
-          ),
-        ),
-
-        /// GYM PROFILE
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader(t.gymProfile),
-          ),
-        ),
-
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-
-                    _buildSettingTile(
-                      icon: Icons.store_rounded,
-                      title: gym?.name ?? 'Your Gym',
-                      subtitle: t.gymNameLocation,
-                      trailing: const Text(
-                        'Edit',
-                        style: TextStyle(color: AppColors.primary),
-                      ),
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.schedule_rounded,
-                      title: t.operatingHours,
-                      subtitle: t.setWorkingHours,
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    /// LANGUAGE
-                    _buildSettingTile(
-                      icon: Icons.language_rounded,
-                      title: t.language,
-                      subtitle: _getCurrentLanguageName(),
-                      onTap: () => _showLanguagePicker(context),
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 200.ms).fadeIn(),
-          ),
-        ),
-
-        /// BILLING
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader(t.subscriptionBilling),
-          ),
-        ),
-
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-
-                    _buildSettingTile(
-                      icon: Icons.workspace_premium_rounded,
-                      title: t.currentPlan,
-                      subtitle: t.manageSubscription,
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.receipt_long_rounded,
-                      title: t.invoices,
-                      subtitle: t.viewInvoices,
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.credit_card_rounded,
-                      title: t.paymentMethod,
-                      subtitle: 'Stripe / Razorpay',
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.description_rounded,
-                      title: t.gstSettings,
-                      subtitle: t.gstDescription,
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 300.ms).fadeIn(),
-          ),
-        ),
-
-        /// SUPER ADMIN SECTION — only visible to super_admin users
-        if (currentUser.value?.globalRole == UserRole.superAdmin) ...[
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-            sliver: SliverToBoxAdapter(
-              child: _buildSectionHeader('SUPER ADMIN'),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverToBoxAdapter(
-              child: GlassmorphicCard(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _buildSettingTile(
-                    icon: Icons.admin_panel_settings_rounded,
-                    title: 'Admin Panel',
-                    subtitle: 'Platform stats, user management & controls',
-                    titleColor: AppColors.primary,
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, AppColors.accent],
-                        ),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        'ADMIN',
-                        style: GoogleFonts.inter(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                    onTap: () => context.go('/admin'),
-                  ),
-                ),
-              ).animate(delay: 150.ms).fadeIn(),
-            ),
-          ),
-        ],
-
-        /// SIGN OUT
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: _buildSectionHeader(t.dangerZone),
-          ),
-        ),
-
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-
-                    _buildSettingTile(
-                      icon: Icons.logout_rounded,
-                      title: t.signOut,
-                      subtitle: t.logoutAccount,
-                      titleColor: AppColors.warning,
-                      onTap: () async {
-                        await ref.read(currentUserProvider.notifier).signOut();
-                      },
-                    ),
-
-                    const Divider(color: AppColors.divider, height: 1),
-
-                    _buildSettingTile(
-                      icon: Icons.delete_forever_rounded,
-                      title: t.deleteAccount,
-                      subtitle: t.deleteAccountWarning,
-                      titleColor: AppColors.error,
-                    ),
-                  ],
-                ),
-              ),
-            ).animate(delay: 500.ms).fadeIn(),
-          ),
-        ),
-
-        const SliverToBoxAdapter(child: SizedBox(height: 20)),
-        ],
-      ),
-    );
-  }
-
-  /// Section Header
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: GoogleFonts.inter(
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textMuted,
-        letterSpacing: 1,
-      ),
-    );
-  }
-
-  /// Settings Tile
-  Widget _buildSettingTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    Widget? trailing,
-    Color? titleColor,
-    VoidCallback? onTap,
-  }) {
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      splashColor: AppColors.primary.withValues(alpha: 0.1),
-      leading: Icon(icon, color: titleColor ?? AppColors.primary),
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: trailing ??
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textMuted, size: 20),
-    );
-  }
-
-  /// CURRENT LANGUAGE NAME
-  String _getCurrentLanguageName() {
+    final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    final homeRoute = _homeRouteFor(user?.globalRole);
+    final workoutRoute = _workoutRouteFor(user?.globalRole);
 
-    switch (locale.languageCode) {
-      case 'hi':
-        return 'हिन्दी';
-      case 'bn':
-        return 'বাংলা';
-      case 'ta':
-        return 'தமிழ்';
-      case 'te':
-        return 'తెలుగు';
-      case 'mr':
-        return 'मराठी';
-      default:
-        return 'English';
+    Future<void> signOut() async {
+      await ref.read(currentUserProvider.notifier).signOut();
+      if (context.mounted) {
+        context.go('/login');
+      }
+    }
+
+    return Scaffold(
+      backgroundColor: colors.background,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colors.backgroundAlt.withValues(alpha: 0.7),
+              colors.background,
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: -120,
+              right: -90,
+              child: _SettingsGlow(
+                color: colors.brand.withValues(alpha: 0.12),
+                size: 240,
+              ),
+            ),
+            Positioned(
+              bottom: -140,
+              left: -120,
+              child: _SettingsGlow(
+                color: colors.brandSecondary.withValues(alpha: 0.1),
+                size: 300,
+              ),
+            ),
+            SafeArea(
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                      child: Row(
+                        children: [
+                          _RoundIconButton(
+                            icon: Icons.arrow_back_rounded,
+                            onTap: () {
+                              if (Navigator.of(context).canPop()) {
+                                Navigator.of(context).maybePop();
+                              } else {
+                                context.go(homeRoute);
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            t.settings,
+                            style: GoogleFonts.inter(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _ProfileCard(
+                        user: user,
+                        gym: gym,
+                        colors: colors,
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionTitle(label: 'ACCOUNT'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SettingsGroup(
+                        children: [
+                          _SettingsRow(
+                            icon: Icons.person_rounded,
+                            title: 'Personal Info',
+                            subtitle: user?.email ?? 'Not signed in',
+                            onTap: () {
+                              context.showSnackBar('Profile editing will be wired next.');
+                            },
+                          ),
+                          _SettingsRow(
+                            icon: Icons.shield_rounded,
+                            title: 'Security & Password',
+                            subtitle: 'Update login and recovery settings',
+                            onTap: () => context.go('/change-password'),
+                          ),
+                          _SettingsRow(
+                            icon: Icons.card_membership_rounded,
+                            title: 'Membership',
+                            subtitle: _membershipLabel(user, gym),
+                            onTap: () => context.go('/pricing'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionTitle(label: 'PREFERENCES'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SettingsGroup(
+                        children: [
+                          _SettingsRow(
+                            icon: Icons.notifications_rounded,
+                            title: 'Notifications',
+                            subtitle: 'On',
+                            onTap: () {
+                              context.showSnackBar('Notification preferences are coming next.');
+                            },
+                          ),
+                          _SettingsRow(
+                            icon: Icons.straighten_rounded,
+                            title: 'Units',
+                            subtitle: 'Metric',
+                            onTap: () {
+                              context.showSnackBar('Unit preferences are coming next.');
+                            },
+                          ),
+                          _SettingsRow(
+                            icon: Icons.language_rounded,
+                            title: t.language,
+                            subtitle: _languageLabel(locale.languageCode),
+                            onTap: () => _showLanguagePicker(context, ref),
+                          ),
+                          _SettingsRow(
+                            icon: themeMode == ThemeMode.dark
+                                ? Icons.dark_mode_rounded
+                                : themeMode == ThemeMode.light
+                                    ? Icons.light_mode_rounded
+                                    : Icons.phone_android_rounded,
+                            title: 'Theme',
+                            subtitle: _themeLabel(themeMode),
+                            onTap: () => _showThemePicker(context, ref),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionTitle(label: 'SUPPORT'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SettingsGroup(
+                        children: [
+                          _SettingsRow(
+                            icon: Icons.help_rounded,
+                            title: 'Help Center',
+                            subtitle: 'Guides, FAQs, and setup support',
+                            onTap: () {
+                              context.showSnackBar('Support center is coming next.');
+                            },
+                          ),
+                          _SettingsRow(
+                            icon: Icons.policy_rounded,
+                            title: 'Privacy Policy',
+                            subtitle: 'How FitNexora handles your data',
+                            onTap: () {
+                              context.showSnackBar('Privacy documentation is coming next.');
+                            },
+                          ),
+                          _SettingsRow(
+                            icon: Icons.description_rounded,
+                            title: 'Terms of Service',
+                            subtitle: 'Platform usage and subscription terms',
+                            onTap: () {
+                              context.showSnackBar('Terms documentation is coming next.');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (user?.globalRole == UserRole.superAdmin) ...[
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                      sliver: SliverToBoxAdapter(
+                        child: _SectionTitle(label: 'PLATFORM'),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                      sliver: SliverToBoxAdapter(
+                        child: _SettingsGroup(
+                          children: [
+                            _SettingsRow(
+                              icon: Icons.admin_panel_settings_rounded,
+                              title: 'Admin Panel',
+                              subtitle: 'Platform stats, activity, and registrations',
+                              onTap: () => context.go('/admin'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(56),
+                          side: BorderSide(
+                            color: colors.brand.withValues(alpha: 0.2),
+                            width: 1.4,
+                          ),
+                          foregroundColor: colors.brand,
+                          backgroundColor: colors.surface.withValues(alpha: 0.85),
+                        ),
+                        onPressed: signOut,
+                        icon: const Icon(Icons.logout_rounded),
+                        label: const Text('Log Out'),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
+                      child: Center(
+                        child: Text(
+                          'FITNEXORA V2.4.1 (${_buildFlavorLabel(user)})',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.1,
+                            color: colors.textMuted,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _SettingsBottomBar(
+        colors: colors,
+        homeRoute: homeRoute,
+        workoutRoute: workoutRoute,
+      ),
+    );
+  }
+
+  static String _themeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.dark:
+        return 'Dark';
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.system:
+        return 'System';
     }
   }
 
-  /// LANGUAGE PICKER
-  void _showLanguagePicker(BuildContext context) {
-    showModalBottomSheet(
+  static String _languageLabel(String code) {
+    switch (code) {
+      case 'hi':
+        return 'Hindi';
+      case 'bn':
+        return 'Bengali';
+      case 'ta':
+        return 'Tamil';
+      case 'te':
+        return 'Telugu';
+      case 'mr':
+        return 'Marathi';
+      default:
+        return 'English (US)';
+    }
+  }
+
+  static String _buildFlavorLabel(AppUser? user) {
+    switch (user?.globalRole) {
+      case UserRole.superAdmin:
+        return 'MASTER BUILD';
+      case UserRole.gymOwner:
+        return 'OWNER BUILD';
+      case UserRole.trainer:
+        return 'TRAINER BUILD';
+      case UserRole.client:
+      case null:
+        return 'MEMBER BUILD';
+    }
+  }
+
+  static String _membershipLabel(AppUser? user, Gym? gym) {
+    if (gym != null) {
+      return '${gym.planTier.label} Plan Active';
+    }
+    switch (user?.globalRole) {
+      case UserRole.superAdmin:
+        return 'Master Tier';
+      case UserRole.gymOwner:
+        return 'Owner workspace active';
+      case UserRole.trainer:
+        return 'Trainer workspace active';
+      case UserRole.client:
+      case null:
+        return 'Member access active';
+    }
+  }
+
+  static String _homeRouteFor(UserRole? role) {
+    switch (role) {
+      case UserRole.superAdmin:
+        return '/admin';
+      case UserRole.gymOwner:
+        return '/dashboard';
+      case UserRole.trainer:
+        return '/trainer';
+      case UserRole.client:
+      case null:
+        return '/member';
+    }
+  }
+
+  static String _workoutRouteFor(UserRole? role) {
+    switch (role) {
+      case UserRole.superAdmin:
+        return '/dashboard';
+      case UserRole.gymOwner:
+      case UserRole.trainer:
+        return '/workouts';
+      case UserRole.client:
+      case null:
+        return '/member/workout';
+    }
+  }
+
+  static Future<void> _showLanguagePicker(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final currentLocale = ref.read(localeProvider);
+    final colors = context.fitTheme;
+    await showModalBottomSheet<void>(
       context: context,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
       builder: (context) {
-        return Consumer(
-          builder: (context, ref, _) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-
-                ListTile(
-                  title: const Text('English'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('en'));
-                    Navigator.pop(context);
+        return SafeArea(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              for (final entry in const {
+                'en': 'English (US)',
+                'hi': 'Hindi',
+                'bn': 'Bengali',
+                'ta': 'Tamil',
+                'te': 'Telugu',
+                'mr': 'Marathi',
+              }.entries)
+                RadioListTile<String>(
+                  value: entry.key,
+                  groupValue: currentLocale.languageCode,
+                  title: Text(entry.value),
+                  onChanged: (value) async {
+                    if (value == null) return;
+                    await ref
+                        .read(localeProvider.notifier)
+                        .setLocale(Locale(value));
+                    if (context.mounted) Navigator.of(context).pop();
                   },
                 ),
-
-                ListTile(
-                  title: const Text('Hindi'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('hi'));
-                    Navigator.pop(context);
-                  },
-                ),
-
-                ListTile(
-                  title: const Text('Tamil'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('ta'));
-                    Navigator.pop(context);
-                  },
-                ),
-
-                ListTile(
-                  title: const Text('Telugu'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('te'));
-                    Navigator.pop(context);
-                  },
-                ),
-
-                ListTile(
-                  title: const Text('Marathi'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('mr'));
-                    Navigator.pop(context);
-                  },
-                ),
-
-                ListTile(
-                  title: const Text('Bengali'),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLocale(const Locale('bn'));
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            );
-          },
+            ],
+          ),
         );
       },
     );
   }
 
+  static Future<void> _showThemePicker(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final currentMode = ref.read(themeModeProvider);
+    final colors = context.fitTheme;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              for (final option in const {
+                ThemeMode.light: ('Light', Icons.light_mode_rounded),
+                ThemeMode.dark: ('Dark', Icons.dark_mode_rounded),
+                ThemeMode.system: ('System', Icons.phone_android_rounded),
+              }.entries)
+                RadioListTile<ThemeMode>(
+                  value: option.key,
+                  groupValue: currentMode,
+                  secondary: Icon(option.value.$2),
+                  title: Text(option.value.$1),
+                  onChanged: (value) async {
+                    if (value == null) return;
+                    await ref.read(themeModeProvider.notifier).setThemeMode(value);
+                    if (context.mounted) Navigator.of(context).pop();
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ProfileCard extends StatelessWidget {
+  const _ProfileCard({
+    required this.user,
+    required this.gym,
+    required this.colors,
+  });
+
+  final AppUser? user;
+  final Gym? gym;
+  final FitNexoraThemeTokens colors;
+
+  @override
+  Widget build(BuildContext context) {
+    final initial = (user?.fullName.isNotEmpty ?? false)
+        ? user!.fullName[0].toUpperCase()
+        : 'F';
+
+    return GlassmorphicCard(
+      borderRadius: 24,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Row(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    gradient: colors.brandGradient,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      initial,
+                      style: GoogleFonts.inter(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 2,
+                  right: 2,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: colors.brand,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: colors.surface, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.verified_rounded,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user?.fullName ?? 'FitNexora User',
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    user?.email ?? 'Not signed in',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: colors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: colors.brand.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      gym != null
+                          ? '${gym!.planTier.label} Tier'
+                          : user?.globalRole.label ?? 'Member',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: colors.brand,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return Text(
+      label,
+      style: GoogleFonts.inter(
+        fontSize: 11,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.2,
+        color: colors.textMuted,
+      ),
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return GlassmorphicCard(
+      borderRadius: 24,
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1)
+              Divider(height: 1, color: colors.divider),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      onTap: onTap,
+      leading: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: colors.brand.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(icon, color: colors.brand),
+      ),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          color: colors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: GoogleFonts.inter(
+          fontSize: 12,
+          color: colors.textSecondary,
+        ),
+      ),
+      trailing: Icon(Icons.chevron_right_rounded, color: colors.textMuted),
+    );
+  }
+}
+
+class _RoundIconButton extends StatelessWidget {
+  const _RoundIconButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: colors.surface.withValues(alpha: 0.88),
+          shape: BoxShape.circle,
+          border: Border.all(color: colors.border),
+        ),
+        child: Icon(icon, color: colors.textPrimary),
+      ),
+    );
+  }
+}
+
+class _SettingsBottomBar extends StatelessWidget {
+  const _SettingsBottomBar({
+    required this.colors,
+    required this.homeRoute,
+    required this.workoutRoute,
+  });
+
+  final FitNexoraThemeTokens colors;
+  final String homeRoute;
+  final String workoutRoute;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      _BottomItem(
+        label: 'Home',
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        route: homeRoute,
+      ),
+      _BottomItem(
+        label: 'Workouts',
+        icon: Icons.fitness_center_outlined,
+        activeIcon: Icons.fitness_center_rounded,
+        route: workoutRoute,
+      ),
+      const _BottomItem(
+        label: 'Traffic',
+        icon: Icons.analytics_outlined,
+        activeIcon: Icons.analytics_rounded,
+        route: '/traffic',
+      ),
+      const _BottomItem(
+        label: 'Profile',
+        icon: Icons.account_circle_outlined,
+        activeIcon: Icons.account_circle_rounded,
+        route: '/settings',
+      ),
+    ];
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        10,
+        10,
+        10,
+        10 + MediaQuery.paddingOf(context).bottom,
+      ),
+      decoration: BoxDecoration(
+        color: colors.surface.withValues(alpha: 0.96),
+        border: Border(top: BorderSide(color: colors.divider)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: items.map((item) {
+          final isSelected = item.route == '/settings';
+          return InkWell(
+            onTap: () {
+              if (!isSelected) context.go(item.route);
+            },
+            borderRadius: BorderRadius.circular(14),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isSelected ? item.activeIcon : item.icon,
+                    color: isSelected ? colors.brand : colors.textMuted,
+                    size: 22,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    item.label,
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight:
+                          isSelected ? FontWeight.w800 : FontWeight.w600,
+                      color: isSelected ? colors.brand : colors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _BottomItem {
+  const _BottomItem({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+    required this.route,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
+  final String route;
+}
+
+class _SettingsGlow extends StatelessWidget {
+  const _SettingsGlow({
+    required this.color,
+    required this.size,
+  });
+
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [color, Colors.transparent],
+          ),
+        ),
+      ),
+    );
+  }
 }

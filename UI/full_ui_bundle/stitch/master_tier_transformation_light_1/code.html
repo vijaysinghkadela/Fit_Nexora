@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "accent-violet": "#8b5cf6",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .violet-glow { box-shadow: 0 4px 20px -5px rgba(139, 92, 246, 0.3); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div class="flex flex-col items-center">
+<h1 class="text-slate-900 dark:text-slate-100 text-base font-bold leading-tight tracking-tight">Master Tier Transformation</h1>
+<span class="text-[10px] uppercase tracking-widest text-primary font-bold">Elite Member Access</span>
+</div>
+<div class="flex w-10 items-center justify-end">
+<button class="text-slate-900 dark:text-slate-100">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-2xl mx-auto w-full pb-24">
+<!-- Profile Section -->
+<section class="p-6 flex flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-32 w-32 ring-4 ring-primary ring-offset-4 ring-offset-background-light" data-alt="Professional fitness portrait of Alex Rivers" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBJgbf0FRfJbfYyP46wUgN-e3helFmVV3HAPH-s7jnsmRBk3oL1CsLy7LXZkJVw9XuAo6jSQbqC3dg_GKulbQR8SzxiAjrb4TbbmczlU3030lKsSyom1WXgWtZsRyvhSa4keWgb49octd1f4LqwAzuiyPQOgmy5cUqk8fQfn1k-yC14yu11IxOxXj8pXDLfM6fbIGwW2inF2uqeh7pThap5Q0wyW9pEA7f9Za0opCdLm_0gmBGxvyKhnwzfGh0scsYPNXvGKvMj9Xs");'></div>
+<div class="absolute -bottom-2 right-0 bg-primary text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">DAY 120</div>
+</div>
+<div class="mt-6 text-center">
+<h2 class="text-2xl font-extrabold tracking-tight">Alex Rivers</h2>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="text-accent-violet font-semibold text-sm">AI Muscle Density: +14.2%</span>
+<span class="h-1 w-1 rounded-full bg-slate-300"></span>
+<span class="text-slate-500 text-sm">84.2kg | 11.4% BF</span>
+</div>
+</div>
+</section>
+<!-- Metric Cards -->
+<section class="px-4 grid grid-cols-3 gap-3">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-2">fitness_center</span>
+<span class="text-[10px] text-slate-500 uppercase font-bold">Lean Mass</span>
+<span class="text-lg font-bold">74.5kg</span>
+</div>
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center">
+<span class="material-symbols-outlined text-accent-violet mb-2">monitoring</span>
+<span class="text-[10px] text-slate-500 uppercase font-bold">Density</span>
+<span class="text-lg font-bold">High</span>
+</div>
+<div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center">
+<span class="material-symbols-outlined text-primary mb-2">speed</span>
+<span class="text-[10px] text-slate-500 uppercase font-bold">Metabolic</span>
+<span class="text-lg font-bold">2.4k</span>
+</div>
+</section>
+<!-- Before/After Comparison -->
+<section class="p-4 mt-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold tracking-tight">Visual Evolution</h3>
+<span class="text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded">High Fidelity</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="relative group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-2 border-transparent group-hover:border-primary/30 transition-all">
+<img class="w-full h-full object-cover grayscale" data-alt="Physique on Day 1 initial state" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt7_i8HDB8MkArJk8R9_jAFFBeccGDC8eIw4hQ9RvMfuIPcan6NBkSo6R043EPwngUt_hSNXEXW5oHmWMKc0pnjE28AP1pbBwf2vMMc0IBLL2yFOQSLVHahR9sJwLFFQ80jmBLpECF4rrXf66JdWS3LnOhJjqvwXvb7GLg-RUTpNwukQT8S2b-TDztWBJePszu3rFxjZG558l6snvkPo1WBkUpac8vYufDsemJd9g6_MIULclibsLhxvqKsG_RRyp6Ur-AjJFSlMk"/>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-sm bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full">Day 1</p>
+</div>
+</div>
+</div>
+<div class="relative group cursor-pointer">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-2 border-primary group-hover:border-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="Physique on Day 120 transformed state" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIigyG9aN9morX-MVi8um41dYib-cdxcnRHSMF_Nr-hLlJ0QhZekALwShm6GNt3Z66UDNtep-t3_x2ynSPxtsBBswv2FPuPLJYMwEG7bC6-qGxoIPxEQnVwqoiHJLJ2xxfDLTQnYrSbdffns82eMM3oSynCD9EJtd8-4RZ_85_ZQHQ_i44ksEW3uCNJPKsPVKkOcCwTMPSG-c-VbnRicGgcXDmXjSAo1a-yjKXwzmMqxMvHx2Zm-IYOaaGQASsE-qP16QxR1oNmo0"/>
+<div class="absolute bottom-4 left-4">
+<p class="text-white font-bold text-sm bg-primary px-3 py-1 rounded-full">Day 120</p>
+</div>
+</div>
+<div class="absolute top-4 right-4 bg-accent-violet/90 backdrop-blur-sm text-white p-1 rounded-full">
+<span class="material-symbols-outlined text-xs">auto_awesome</span>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Predictive Timeline -->
+<section class="p-4 mt-2">
+<div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl shadow-accent-violet/5 border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-accent-violet">timeline</span>
+<h3 class="font-bold">Predictive Progress Timeline</h3>
+</div>
+<div class="relative h-24 flex items-end justify-between px-2">
+<!-- Progress Line -->
+<div class="absolute bottom-0 left-0 w-full h-1 bg-slate-100 dark:bg-slate-700 rounded-full"></div>
+<div class="absolute bottom-0 left-0 w-2/3 h-1 bg-gradient-to-r from-primary to-accent-violet rounded-full"></div>
+<!-- Projection Points -->
+<div class="flex flex-col items-center gap-2">
+<span class="text-[10px] font-bold text-slate-400">MAY</span>
+<div class="w-2 h-2 rounded-full bg-slate-300"></div>
+</div>
+<div class="flex flex-col items-center gap-2">
+<span class="text-[10px] font-bold text-slate-400">JUN</span>
+<div class="w-2 h-2 rounded-full bg-slate-300"></div>
+</div>
+<div class="flex flex-col items-center gap-2">
+<span class="text-[10px] font-bold text-primary">JUL</span>
+<div class="w-4 h-4 rounded-full bg-primary ring-4 ring-primary/20"></div>
+</div>
+<div class="flex flex-col items-center gap-2">
+<span class="text-[10px] font-bold text-accent-violet">AUG (est)</span>
+<div class="w-4 h-4 rounded-full border-2 border-dashed border-accent-violet animate-pulse"></div>
+</div>
+</div>
+<p class="mt-6 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Based on your <span class="text-accent-violet font-bold">current trajectory</span>, you are projected to reach <span class="text-slate-900 dark:text-slate-100 font-bold">8% Body Fat</span> by August 15th.
+                </p>
+</div>
+</section>
+<!-- Insights -->
+<section class="p-4 mb-4">
+<div class="bg-primary/5 rounded-2xl p-4 border border-primary/10 flex gap-4">
+<div class="bg-primary/20 h-10 w-10 shrink-0 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+</div>
+<div>
+<h4 class="font-bold text-primary text-sm">Master Insight</h4>
+<p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Muscle density in the posterior chain has increased by 18% in the last 30 days. Increasing protein intake by 15g will optimize further recovery.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 pb-6 pt-2 z-20">
+<div class="flex justify-around items-center max-w-2xl mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium">Stats</span>
+</a>
+<div class="relative -top-6">
+<div class="bg-primary text-white h-14 w-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/40 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-medium">Programs</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

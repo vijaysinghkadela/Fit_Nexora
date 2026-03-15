@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6", // Violet
+                        "accent": "#4ade80", // Mint
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .glass-dark {
+            background: rgba(21, 16, 34, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(137, 90, 246, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 glass-dark border-b border-primary/20 px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined fill-1">diamond</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold tracking-tight">Elite Transformation</h1>
+<p class="text-xs text-primary font-semibold uppercase tracking-widest">Master Tier</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-primary/10 text-slate-400">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 rounded-full hover:bg-primary/10 text-slate-400 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow p-4 space-y-6 pb-24">
+<!-- Before & After Comparison -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Visual Progress</h2>
+<span class="text-xs font-medium text-accent">Day 90 vs Day 1</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="relative group">
+<div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" data-alt="Athletic male fitness before transformation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDzFjK_e3yLi9JbYBZJrwPWPB055OqZOUo83TrpuH1ZxAzgidI2qVIMwXocxMZ0GAemp94szUMS6lkZYIWheZE5N4Qjp27GIt_mIx5k06Il3P1KFbMJ-SpYp41fsDbzYmntWaG_dyyswetecjHBpq588bapfYOJMSGMNsfKITkbmjlUYcr80Eb5MFYZmuQLI7KdmZM1S8Wiw-XhYRdizkLK2sAGl8Yf5uKd0dr2NGZwh30ySsYnqZgCfGEQAtPAXF49IlK7JvbfBk"/>
+<div class="absolute bottom-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded text-[10px] font-bold uppercase">Before</div>
+</div>
+</div>
+<div class="relative group">
+<div class="aspect-[3/4] rounded-xl overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Muscular male fitness after high-end transformation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj8I9MJPXq30E-iUyiq7XRSuCT2wB0lumM__VyOyfpYebe5PGR2sCmIT9LDIkmfDsa32VI50U5vyXLh0YnQarYPfoFJsh8jiO1VVKOsq1WQjN9xm4wztGCgUm4-_2ccmW7LkLEB-z5H86-h42UhtClZd0HZy70ze-tfZSef-JDzRPJ2CkTeg_ThL5679I6fyYvBxVuJy4NrEg1qtZHUlVsx8qJ2TjUdT8QjGGjxi1V9ciU18tosrvwYgFULAYFgXVo1jv4Qqrd-Xk"/>
+<div class="absolute bottom-2 right-2 px-2 py-1 bg-primary text-white rounded text-[10px] font-bold uppercase shadow-lg shadow-primary/40">After</div>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Metrics Grid -->
+<section class="grid grid-cols-2 gap-4">
+<!-- Muscle Density -->
+<div class="glass p-4 rounded-xl border-l-4 border-l-primary">
+<p class="text-xs font-medium text-slate-400">Muscle Density</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold">+14.2%</span>
+<span class="material-symbols-outlined text-accent text-sm">trending_up</span>
+</div>
+<div class="mt-4 flex items-end gap-1 h-12">
+<div class="flex-1 bg-primary/20 h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-2/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-3/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-full rounded-t-sm"></div>
+</div>
+</div>
+<!-- Symmetry Score -->
+<div class="glass p-4 rounded-xl border-l-4 border-l-accent">
+<p class="text-xs font-medium text-slate-400">Symmetry Score</p>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold">96.8%</span>
+<span class="text-[10px] text-accent font-bold">OPTIMAL</span>
+</div>
+<div class="mt-4 flex flex-col gap-2">
+<div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-accent w-[96%]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 font-bold">
+<span>L-SIDE</span>
+<span>R-SIDE</span>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Transformation Predictor -->
+<section class="glass rounded-xl p-5 border border-primary/30 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<span class="material-symbols-outlined text-primary/40 text-4xl">neurology</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">AI Forecast</span>
+<h3 class="text-sm font-bold">Next 30 Days Predictor</h3>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-3xl font-bold text-accent">-2.4% <span class="text-sm font-normal text-slate-400">Body Fat</span></p>
+<p class="text-xs text-slate-400 mt-1">Based on current 98% diet adherence</p>
+</div>
+<div class="w-16 h-16 flex items-center justify-center rounded-full border-4 border-accent border-t-transparent animate-spin-slow">
+<span class="material-symbols-outlined text-accent">auto_graph</span>
+</div>
+</div>
+<button class="w-full mt-5 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                    View Full AI Report
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Timeline Milestones -->
+<section class="space-y-4">
+<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider px-1">Journey Milestones</h3>
+<div class="space-y-4 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-primary/20">
+<!-- Milestone 1 -->
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 rounded-full bg-accent flex items-center justify-center z-10 shadow-[0_0_10px_rgba(74,222,128,0.4)]">
+<span class="material-symbols-outlined text-slate-900 text-xs font-bold">check</span>
+</div>
+<div class="flex-1 pb-4">
+<p class="text-sm font-bold">Target Body Fat reached</p>
+<p class="text-xs text-slate-500 mt-0.5">May 12, 2024 • 12.5% achieved</p>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 rounded-full bg-accent flex items-center justify-center z-10 shadow-[0_0_10px_rgba(74,222,128,0.4)]">
+<span class="material-symbols-outlined text-slate-900 text-xs font-bold">check</span>
+</div>
+<div class="flex-1 pb-4">
+<p class="text-sm font-bold">Strength Milestone: 225lb Bench</p>
+<p class="text-xs text-slate-500 mt-0.5">Apr 28, 2024 • 5 Rep Max</p>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="flex gap-4 relative">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 ring-4 ring-background-dark">
+<div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-primary">Next Goal: Muscle Density Peak</p>
+<p class="text-xs text-slate-500 mt-0.5">Expected in 14 days</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass-dark border-t border-primary/20 px-2 pb-6 pt-2 z-50">
+<div class="flex justify-around items-end max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="text-slate-400 group-hover:text-primary transition-colors flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Insights</p>
+</a>
+<a class="flex flex-col items-center gap-1 group text-primary" href="#">
+<div class="flex h-10 w-10 bg-primary/20 rounded-xl items-center justify-center mb-1">
+<span class="material-symbols-outlined fill-1">diamond</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest">Predict</p>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="text-slate-400 group-hover:text-primary transition-colors flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">live_tv</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Live</p>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="text-slate-400 group-hover:text-primary transition-colors flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Members</p>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="text-slate-400 group-hover:text-primary transition-colors flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">shield_person</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Admin</p>
+</a>
+</div>
+</nav>
+</body></html>

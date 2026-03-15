@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                        "emerald-accent": "#10b981",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .success-glow {
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col items-center justify-center p-4">
+<!-- Main Container -->
+<div class="relative w-full max-w-[440px] flex flex-col items-center">
+<!-- Decorative Background Elements -->
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px]"></div>
+<div class="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-accent/10 rounded-full blur-[80px]"></div>
+<!-- Glassmorphic Card -->
+<div class="glass-panel w-full rounded-xl p-8 flex flex-col items-center text-center relative z-10">
+<!-- Top Navigation (Back Button) -->
+<div class="w-full flex justify-start mb-8">
+<button class="text-slate-900 dark:text-slate-100 p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+</div>
+<!-- Central Success Icon -->
+<div class="mb-8 relative">
+<div class="w-24 h-24 bg-emerald-accent/20 rounded-full flex items-center justify-center success-glow border border-emerald-accent/30">
+<span class="material-symbols-outlined text-emerald-accent text-6xl" style="font-variation-settings: 'wght' 600">
+                        check_circle
+                    </span>
+</div>
+</div>
+<!-- Content Section -->
+<div class="space-y-4 mb-10">
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight">Email Sent!</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base leading-relaxed max-w-[320px] mx-auto">
+                    We've sent a password reset link to your email address. Please check your inbox.
+                </p>
+</div>
+<!-- CTA Section -->
+<div class="w-full space-y-6">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                    Back to Login
+                </button>
+<div class="flex flex-col items-center gap-2">
+<p class="text-slate-500 dark:text-slate-500 text-sm">Didn't receive the email?</p>
+<button class="text-primary hover:text-primary/80 font-semibold text-sm transition-colors decoration-2 hover:underline">
+                        Resend Link
+                    </button>
+</div>
+</div>
+<!-- Subtle Logo Placeholder -->
+<div class="mt-12 opacity-40 grayscale">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded-md"></div>
+<span class="text-slate-900 dark:text-white font-bold tracking-wider text-sm">FITNEXORA</span>
+</div>
+</div>
+</div>
+<!-- Footer Help -->
+<p class="mt-8 text-slate-500 dark:text-slate-500 text-xs">
+            Check your spam folder if you can't find the email.
+        </p>
+</div>
+</body></html>

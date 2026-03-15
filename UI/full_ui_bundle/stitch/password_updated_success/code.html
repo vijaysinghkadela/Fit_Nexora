@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Password Updated - FitNexora</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(236, 91, 19, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(236, 91, 19, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center justify-center font-display transition-colors duration-300">
+<!-- Container -->
+<div class="relative w-full max-w-md h-screen md:h-auto md:max-h-[850px] overflow-hidden bg-background-light dark:bg-background-dark md:rounded-3xl md:shadow-2xl flex flex-col">
+<!-- Header -->
+<div class="flex items-center px-6 py-8 justify-between">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-200/50 dark:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Security</h2>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col items-center justify-center px-8 text-center">
+<!-- Success Icon Container with Glassmorphism -->
+<div class="relative mb-10">
+<div class="absolute inset-0 bg-primary opacity-20 blur-3xl rounded-full"></div>
+<div class="relative flex items-center justify-center w-32 h-32 rounded-full glass-panel border-primary/20">
+<div class="flex items-center justify-center w-24 h-24 rounded-full bg-primary shadow-[0_0_30px_rgba(236,91,13,0.4)]">
+<span class="material-symbols-outlined text-white text-5xl font-bold">check</span>
+</div>
+</div>
+</div>
+<!-- Message Section -->
+<div class="space-y-4 max-w-xs">
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-bold tracking-tight">Success!</h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+                    Your password has been updated successfully. Use your new credentials to log in.
+                </p>
+</div>
+<!-- Visual Decoration / Abstract Image -->
+<div class="mt-12 w-full h-32 rounded-xl overflow-hidden glass-panel flex items-center justify-center relative">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent"></div>
+<div class="flex gap-4">
+<div class="w-12 h-1 bg-primary/40 rounded-full"></div>
+<div class="w-12 h-1 bg-primary/20 rounded-full"></div>
+<div class="w-12 h-1 bg-primary/10 rounded-full"></div>
+</div>
+<img class="hidden" data-alt="Abstract orange and dark brown color gradient background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCghTi_nwLFzS8QH21rmXir4kOGpAMNVQ1E3ZBbtP8JpeYzw2cnaa8CPUhihYPGH4jL7G1BdfYkZbyM2Ku-A4L4ZKV0ACwbfnD8gkcG8t6hZ4wGYa1mSMvzz2nDIicDBESVQ3Cgk4WtmLd3tFoflTMA2AF7slcYdfHgOuF7KsmLWPAVxrJTXi6KH9HXXFEvB9HvAOiPhUwEsOjjL3h4oEn3xLUJsd3uBZloL8E51cfz78-1NLlHdWzjBAWzznFBoqK2hoED_0nV138"/>
+</div>
+</div>
+<!-- Action Button -->
+<div class="px-8 py-10">
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-white text-lg font-bold rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all transform active:scale-[0.98]">
+<span>Back to Settings</span>
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+<p class="mt-6 text-center text-sm text-slate-500 dark:text-slate-500 font-medium">
+                Auto-redirecting in 5 seconds...
+            </p>
+</div>
+<!-- Subtle Footer Branding -->
+<div class="pb-6 flex flex-col items-center">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[14px]">fitness_center</span>
+</div>
+<span class="text-slate-900 dark:text-slate-100 font-bold tracking-tighter text-sm uppercase">FitNexora</span>
+</div>
+</div>
+</div>
+</body></html>

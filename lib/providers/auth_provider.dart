@@ -84,8 +84,12 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
     AuthService authService,
     AuthState authState,
   ) async {
-    if (authState.event == AuthChangeEvent.signedIn &&
-        authState.session?.user != null) {
+    if (authState.event == AuthChangeEvent.signedOut) {
+      state = const AsyncValue.data(null);
+      return;
+    }
+
+    if (authState.session?.user != null) {
       try {
         final profile =
             await authService.getProfile(authState.session!.user.id);
@@ -93,8 +97,6 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
       } catch (e) {
         state = AsyncValue.error(e, StackTrace.current);
       }
-    } else if (authState.event == AuthChangeEvent.signedOut) {
-      state = const AsyncValue.data(null);
     }
   }
 
@@ -163,5 +165,27 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
   /// Reset password by sending a recovery email.
   Future<void> resetPassword(String email) async {
     await _ref.read(authServiceProvider).resetPassword(email);
+  }
+
+  /// Verify the recovery code before allowing a password reset.
+  Future<void> verifyRecoveryOtp({
+    required String email,
+    required String token,
+  }) async {
+    await _ref.read(authServiceProvider).verifyRecoveryOtp(
+          email: email,
+          token: token,
+        );
+  }
+
+  /// Update password for the current session or recovery flow.
+  Future<void> updatePassword(
+    String newPassword, {
+    String? currentPassword,
+  }) async {
+    await _ref.read(authServiceProvider).updatePassword(
+          newPassword,
+          currentPassword: currentPassword,
+        );
   }
 }

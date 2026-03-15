@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora - Create Membership Plan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-input {
+            background: rgba(236, 91, 19, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(236, 91, 19, 0.2);
+        }
+        .glow-button {
+            box-shadow: 0 0 15px rgba(236, 91, 19, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-2xl mx-auto min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center p-6 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">New Membership Plan</h1>
+</div>
+<button class="text-primary font-semibold text-sm">Cancel</button>
+</header>
+<main class="flex-1 px-6 pb-24">
+<!-- Plan Identity Section -->
+<section class="mt-4">
+<h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                    Plan Details
+                </h2>
+<div class="space-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold opacity-80 px-1">Plan Name</label>
+<input class="glass-input w-full rounded-xl px-4 py-4 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 transition-all outline-none" placeholder="e.g. Pro Athlete Elite" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold opacity-80 px-1">Price</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold">$</span>
+<input class="glass-input w-full rounded-xl pl-8 pr-4 py-4 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 transition-all outline-none" placeholder="49.99" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold opacity-80 px-1">Currency</label>
+<select class="glass-input w-full rounded-xl px-4 py-4 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 appearance-none outline-none">
+<option>USD</option>
+<option>EUR</option>
+<option>GBP</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Duration Selection -->
+<section class="mt-10">
+<h3 class="text-sm font-semibold opacity-80 px-1 mb-3">Billing Cycle</h3>
+<div class="grid grid-cols-2 gap-4">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="duration" type="radio"/>
+<div class="glass-input rounded-xl p-4 flex flex-col items-center gap-2 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+<span class="font-bold">Monthly</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="duration" type="radio"/>
+<div class="glass-input rounded-xl p-4 flex flex-col items-center gap-2 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-primary">event_repeat</span>
+<span class="font-bold">Yearly</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Features Checklist -->
+<section class="mt-10">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">task_alt</span>
+                        Plan Features
+                    </h3>
+<button class="text-primary text-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Add Feature
+                    </button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 w-full font-medium" type="text" value="24/7 Gym Access"/>
+<button class="text-slate-400"><span class="material-symbols-outlined text-lg">close</span></button>
+</div>
+<div class="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 w-full font-medium" type="text" value="Free Personal Trainer Session"/>
+<button class="text-slate-400"><span class="material-symbols-outlined text-lg">close</span></button>
+</div>
+<div class="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 w-full font-medium" type="text" value="Access to Sauna &amp; Spa"/>
+<button class="text-slate-400"><span class="material-symbols-outlined text-lg">close</span></button>
+</div>
+<div class="flex items-center gap-3 p-4 rounded-xl glass-input border-dashed">
+<span class="material-symbols-outlined text-slate-400">add_circle</span>
+<input class="bg-transparent border-none p-0 focus:ring-0 w-full text-sm italic" placeholder="Add custom feature..." type="text"/>
+</div>
+</div>
+</section>
+<!-- Additional Options -->
+<section class="mt-10 mb-10">
+<h3 class="text-sm font-semibold opacity-80 px-1 mb-4">Additional Options</h3>
+<div class="flex flex-col gap-4">
+<label class="flex items-center justify-between p-4 glass-input rounded-xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified</span>
+<span class="font-medium">Featured Plan</span>
+</div>
+<input class="w-10 h-6 bg-slate-200 rounded-full appearance-none checked:bg-primary transition-all relative before:content-[''] before:absolute before:h-4 before:w-4 before:bg-white before:rounded-full before:top-1 before:left-1 checked:before:translate-x-4 cursor-pointer" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between p-4 glass-input rounded-xl">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">loyalty</span>
+<span class="font-medium">Entry Fee Required</span>
+</div>
+<input checked="" class="w-10 h-6 bg-slate-200 rounded-full appearance-none checked:bg-primary transition-all relative before:content-[''] before:absolute before:h-4 before:w-4 before:bg-white before:rounded-full before:top-1 before:left-1 checked:before:translate-x-4 cursor-pointer" type="checkbox"/>
+</label>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<footer class="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark to-transparent">
+<div class="max-w-2xl mx-auto">
+<button class="glow-button w-full bg-primary text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">save</span>
+                    Create Membership Plan
+                </button>
+</div>
+</footer>
+</div>
+</body></html>

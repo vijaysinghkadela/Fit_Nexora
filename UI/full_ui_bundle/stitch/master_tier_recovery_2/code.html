@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Master Tier Recovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "accent-mint": "#4ade80",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#0a0712",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-mint {
+            background: rgba(74, 222, 128, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(74, 222, 128, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">bolt</span>
+<h1 class="text-xl font-extrabold tracking-tight">FitNexora</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-primary/10 border border-primary/20 px-3 py-1 rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm scale-90">workspace_premium</span>
+<span class="text-[10px] font-bold tracking-widest text-primary uppercase">Master Tier</span>
+</div>
+<button class="w-10 h-10 rounded-full glass flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-100">notifications</span>
+</button>
+</div>
+</header>
+<!-- Recovery Score Gauge Section -->
+<section class="px-6 py-4">
+<div class="glass rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-3xl rounded-full -mr-16 -mt-16"></div>
+<div class="absolute bottom-0 left-0 w-24 h-24 bg-accent-mint/10 blur-3xl rounded-full -ml-12 -mb-12"></div>
+<h2 class="text-slate-400 text-sm font-medium uppercase tracking-widest mb-6">Elite Readiness</h2>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<!-- Gauge SVG representation -->
+<svg class="w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle class="text-white/5" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle cx="50" cy="50" fill="none" r="45" stroke="url(#gradient)" stroke-dasharray="283" stroke-dashoffset="34" stroke-linecap="round" stroke-width="8"></circle>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#895af6"></stop>
+<stop offset="100%" stop-color="#4ade80"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-5xl font-black text-slate-100 tracking-tighter">88</span>
+<span class="text-accent-mint text-xs font-bold uppercase tracking-wider">Optimal</span>
+</div>
+</div>
+<p class="mt-6 text-slate-300 text-sm leading-relaxed max-w-[240px]">
+                    Your nervous system is primed for <span class="text-white font-bold tracking-tight underline decoration-primary underline-offset-4">Maximum Intensity</span> today.
+                </p>
+</div>
+</section>
+<!-- Muscle Soreness Map & HRV Data Grid -->
+<section class="px-6 py-2 grid grid-cols-2 gap-4">
+<!-- Soreness Map -->
+<div class="glass rounded-xl p-4 flex flex-col h-full">
+<div class="flex items-center justify-between mb-4">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-400">Heat Map</span>
+<span class="material-symbols-outlined text-accent-mint text-lg">body_system</span>
+</div>
+<div class="flex-1 flex items-center justify-center py-2">
+<div class="relative w-20 h-40 opacity-80">
+<!-- Abstract representation of a body silhouette -->
+<div class="absolute inset-0 bg-slate-700/30 rounded-full blur-[2px]"></div>
+<!-- Heat spots -->
+<div class="absolute top-24 left-2 w-6 h-10 bg-orange-500/40 rounded-full blur-md"></div>
+<div class="absolute top-24 right-2 w-6 h-10 bg-orange-500/40 rounded-full blur-md"></div>
+<div class="absolute top-4 left-4 w-12 h-12 bg-primary/20 rounded-full blur-lg"></div>
+<img alt="Abstract body muscle map illustration" class="hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB6NwVq6Hd_RiexS9CwQjjMtKCtk5KYq67l2icud_peK827Del0LdaE8_o8I2IlvRusPX_BCOAL16EYmJruG7YLR1_oFGAr8jRA6-QQ79untmwb-NyuB0le4yU3GmZJaD1E9cKQm-fpki3hibw-OupPbUvDcGunnNhS9UghdHxCyfFOCt80Zyrc-ejCP04wkt4M7pc7kse1b5TwmOXM6e5mOKzAkkxFynSF_JjweOK7nkJx41la4G5UIasOkHvU80xNtNBPnYesmo"/>
+<span class="material-symbols-outlined text-6xl text-slate-100/20 absolute inset-0 flex items-center justify-center">accessibility_new</span>
+</div>
+</div>
+<div class="mt-2 text-center">
+<p class="text-[10px] text-slate-400">Hamstrings: High</p>
+</div>
+</div>
+<!-- Sleep & HRV -->
+<div class="flex flex-col gap-4">
+<div class="glass rounded-xl p-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">bedtime</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sleep Score</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-bold">92</span>
+<span class="text-[10px] text-accent-mint">↑ 4%</span>
+</div>
+</div>
+<div class="glass rounded-xl p-4">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">favorite</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">HRV (ms)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-bold">78</span>
+<span class="text-[10px] text-accent-mint">Stable</span>
+</div>
+</div>
+</div>
+</section>
+<!-- AI-Guided Recovery Flow -->
+<section class="px-6 py-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 ml-1">AI Guided Recovery</h3>
+<div class="relative group cursor-pointer overflow-hidden rounded-xl">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
+<img class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Athlete stretching in a dark gym setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH15dBKBk9vVuyUHMsXeJrhb8oGVVj8vSrwVxGh3hKZgV0E3SARAbeKMXXxL6qejhMf4QziIChnpH2topLBzRnSgvp-nl7SrGxLcrV8wHyGpbAxMcULeEyxywUW8Ga4LSqVRbBDnXdbPnElUOZAejhpgQQbPbLK1-YkPDmZJjxCtayYCaY9t0GvPCa_LxbI2chpYI7Pvph-5HgJDDETDXzg6mAAsWaO61AKFC2Y0aPwNZft3Lt-wamsMaAaY7-ap2M5HADrs2OAPo"/>
+<div class="absolute bottom-4 left-4 z-20">
+<p class="text-xs font-bold text-accent-mint uppercase tracking-widest mb-1">Selected for you</p>
+<h4 class="text-lg font-bold text-white leading-tight">Post-Lifting Mobility Flow</h4>
+<p class="text-slate-300 text-xs">12 mins • Focusing on Lower Body</p>
+</div>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-xl">
+<span class="material-symbols-outlined text-white">play_arrow</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Advanced Protocols -->
+<section class="px-6 py-4 mb-24">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 ml-1">Advanced Protocols</h3>
+<a class="text-xs text-primary font-bold" href="#">View All</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="glass-mint p-4 rounded-xl flex flex-col items-start gap-3 text-left">
+<div class="w-10 h-10 rounded-lg bg-accent-mint/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-mint">ac_unit</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Cryotherapy</p>
+<p class="text-[10px] text-slate-400">Available 2:00 PM</p>
+</div>
+</button>
+<button class="glass p-4 rounded-xl flex flex-col items-start gap-3 text-left">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">thermostat</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Infrared Sauna</p>
+<p class="text-[10px] text-slate-400">Member Priority</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50">
+<div class="glass border-t border-white/5 bg-background-dark/80 px-4 pb-6 pt-3">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-variation-fill">bar_chart</span>
+<p class="text-[10px] font-bold uppercase tracking-tighter">Insights</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">diamond</span>
+<p class="text-[10px] font-medium uppercase tracking-tighter">Predict</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<p class="text-[10px] font-medium uppercase tracking-tighter">Live</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-[10px] font-medium uppercase tracking-tighter">Members</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<p class="text-[10px] font-medium uppercase tracking-tighter">Admin</p>
+</a>
+</div>
+</div>
+</nav>
+</div>
+</body></html>

@@ -5,8 +5,8 @@ class AppConstants {
   AppConstants._();
 
   // App Info
-  static const String appName = 'GymOS';
-  static const String appTagline = 'AI-Powered Gym Management';
+  static const String appName = 'FitNexora';
+  static const String appTagline = 'AI-Powered Fitness Operations';
   static const String appVersion = '0.1.0';
 
   // Supabase Table Names

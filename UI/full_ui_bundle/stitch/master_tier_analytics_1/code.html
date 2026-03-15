@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitNexora Master Tier Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#895af6",
+                        "background-light": "#f6f5f8",
+                        "background-dark": "#151022",
+                        "accent-emerald": "#10b981",
+                        "accent-rose": "#f43f5e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(137, 90, 246, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(137, 90, 246, 0.1);
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Top Header Navigation -->
+<header class="sticky top-0 z-50 glass px-4 py-4 flex items-center justify-between border-b border-primary/10">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-2 rounded-lg shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white">diamond</span>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight">Master Tier</h1>
+<p class="text-xs text-primary font-medium uppercase tracking-widest">Enterprise Analytics</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full glass flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<main class="p-4 space-y-6">
+<!-- Tab Switcher -->
+<div class="flex p-1 bg-primary/5 rounded-xl border border-primary/10">
+<button class="flex-1 py-2 text-xs font-bold rounded-lg bg-primary text-white">OVERVIEW</button>
+<button class="flex-1 py-2 text-xs font-bold text-slate-400">PREDICTIONS</button>
+<button class="flex-1 py-2 text-xs font-bold text-slate-400">RETENTION</button>
+</div>
+<!-- AI Predicted Revenue Card -->
+<section class="glass rounded-xl p-5 border-l-4 border-l-primary">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-slate-400 text-sm font-medium">AI Predicted Revenue (Q4)</p>
+<h2 class="text-3xl font-bold mt-1">$2,840,500</h2>
+</div>
+<span class="bg-accent-emerald/10 text-accent-emerald px-2 py-1 rounded text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +14.2%
+                </span>
+</div>
+<!-- SVG Chart Representation -->
+<div class="h-32 w-full mt-4">
+<svg class="w-full h-full" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="grad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#895af6;stop-opacity:0.3"></stop>
+<stop offset="100%" style="stop-color:#895af6;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q50,75 100,50 T200,60 T300,30 T400,10 V100 H0 Z" fill="url(#grad)"></path>
+<path d="M0,80 Q50,75 100,50 T200,60 T300,30 T400,10" fill="none" stroke="#895af6" stroke-linecap="round" stroke-width="3"></path>
+<!-- Prediction Dots -->
+<circle cx="300" cy="30" fill="#895af6" r="4"></circle>
+<circle cx="400" cy="10" fill="#10b981" r="4"></circle>
+</svg>
+</div>
+<div class="flex justify-between text-[10px] text-slate-500 font-bold uppercase mt-2">
+<span>Current</span>
+<span class="text-primary">Forecasted End of Year</span>
+</div>
+</section>
+<!-- KPI Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="glass rounded-xl p-4 border border-primary/10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-accent-emerald text-sm">bolt</span>
+<p class="text-slate-400 text-xs font-bold uppercase">AI Performance</p>
+</div>
+<h3 class="text-xl font-bold">98.4%</h3>
+<div class="w-full bg-slate-800 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-accent-emerald h-full w-[98%]"></div>
+</div>
+</div>
+<div class="glass rounded-xl p-4 border border-primary/10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-sm">payments</span>
+<p class="text-slate-400 text-xs font-bold uppercase">Platform Cost</p>
+</div>
+<h3 class="text-xl font-bold">$12.4k</h3>
+<p class="text-[10px] text-accent-rose font-bold">-2.1% efficiency</p>
+</div>
+</div>
+<!-- Churn Prediction Meter -->
+<section class="glass rounded-xl p-5 border border-primary/10">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold">Churn Prediction Risk</h3>
+<span class="material-symbols-outlined text-slate-500">info</span>
+</div>
+<div class="relative flex flex-col items-center">
+<!-- Half Circle Gauge -->
+<svg class="w-48" viewbox="0 0 100 50">
+<path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#1e1b2e" stroke-linecap="round" stroke-width="8"></path>
+<path d="M 10 50 A 40 40 0 0 1 35 15" fill="none" stroke="url(#churnGrad)" stroke-linecap="round" stroke-width="10"></path>
+<defs>
+<lineargradient id="churnGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#10b981"></stop>
+<stop offset="100%" style="stop-color:#895af6"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute bottom-0 text-center">
+<p class="text-2xl font-black text-primary">Low</p>
+<p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Risk Level</p>
+</div>
+</div>
+<div class="mt-8 space-y-3">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-300">Predicted Churn Rate</span>
+<span class="font-bold text-accent-emerald">2.4%</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-300">Preventable Loss</span>
+<span class="font-bold text-primary">$4,200</span>
+</div>
+</div>
+</section>
+<!-- Membership Conversion Funnel -->
+<section class="glass rounded-xl p-5 border border-primary/10 overflow-hidden">
+<h3 class="font-bold mb-6">Acquisition Funnel</h3>
+<div class="space-y-1">
+<div class="relative h-12 bg-primary/40 rounded-t-lg flex items-center px-4 justify-between border-b border-background-dark/20">
+<span class="text-xs font-bold">Unique Visitors</span>
+<span class="text-xs font-bold">124.5k</span>
+</div>
+<div class="relative h-12 bg-primary/30 mx-2 flex items-center px-4 justify-between border-b border-background-dark/20">
+<span class="text-xs font-bold">Free Trials</span>
+<span class="text-xs font-bold">18.2k</span>
+</div>
+<div class="relative h-12 bg-primary/20 mx-4 flex items-center px-4 justify-between border-b border-background-dark/20">
+<span class="text-xs font-bold">Trial Active</span>
+<span class="text-xs font-bold">9.4k</span>
+</div>
+<div class="relative h-12 bg-primary/10 mx-6 rounded-b-lg flex items-center px-4 justify-between">
+<span class="text-xs font-bold text-primary">Master Subs</span>
+<span class="text-xs font-bold text-primary">1.2k</span>
+</div>
+</div>
+<div class="mt-4 flex justify-center">
+<p class="text-[10px] font-bold text-slate-500 uppercase">Overall Conversion: <span class="text-accent-emerald">6.8%</span></p>
+</div>
+</section>
+<!-- Activity Heatmap -->
+<section class="glass rounded-xl p-5 border border-primary/10">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-bold">Peak Activity Heatmap</h3>
+<select class="bg-transparent border-none text-xs font-bold text-primary focus:ring-0">
+<option>Last 30 Days</option>
+</select>
+</div>
+<div class="heatmap-grid">
+<!-- Days of week labels -->
+<span class="text-[8px] font-bold text-slate-600 text-center">M</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">T</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">W</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">T</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">F</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">S</span>
+<span class="text-[8px] font-bold text-slate-600 text-center">S</span>
+<!-- Generating mock heatmap blocks with varying shades of primary -->
+<div class="aspect-square rounded-sm bg-primary/10"></div>
+<div class="aspect-square rounded-sm bg-primary/40"></div>
+<div class="aspect-square rounded-sm bg-primary/80"></div>
+<div class="aspect-square rounded-sm bg-primary/20"></div>
+<div class="aspect-square rounded-sm bg-primary/60"></div>
+<div class="aspect-square rounded-sm bg-primary/10"></div>
+<div class="aspect-square rounded-sm bg-primary/5"></div>
+<div class="aspect-square rounded-sm bg-primary/20"></div>
+<div class="aspect-square rounded-sm bg-primary/60"></div>
+<div class="aspect-square rounded-sm bg-primary/90"></div>
+<div class="aspect-square rounded-sm bg-primary/40"></div>
+<div class="aspect-square rounded-sm bg-primary/70"></div>
+<div class="aspect-square rounded-sm bg-primary/30"></div>
+<div class="aspect-square rounded-sm bg-primary/10"></div>
+<div class="aspect-square rounded-sm bg-primary/50"></div>
+<div class="aspect-square rounded-sm bg-primary/80"></div>
+<div class="aspect-square rounded-sm bg-primary/100"></div>
+<div class="aspect-square rounded-sm bg-primary/60"></div>
+<div class="aspect-square rounded-sm bg-primary/90"></div>
+<div class="aspect-square rounded-sm bg-primary/40"></div>
+<div class="aspect-square rounded-sm bg-primary/20"></div>
+<div class="aspect-square rounded-sm bg-primary/10"></div>
+<div class="aspect-square rounded-sm bg-primary/30"></div>
+<div class="aspect-square rounded-sm bg-primary/50"></div>
+<div class="aspect-square rounded-sm bg-primary/20"></div>
+<div class="aspect-square rounded-sm bg-primary/40"></div>
+<div class="aspect-square rounded-sm bg-primary/10"></div>
+<div class="aspect-square rounded-sm bg-primary/5"></div>
+</div>
+<div class="mt-4 flex items-center justify-end gap-2">
+<span class="text-[8px] font-bold text-slate-600 uppercase">Less</span>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-sm bg-primary/10"></div>
+<div class="w-2 h-2 rounded-sm bg-primary/40"></div>
+<div class="w-2 h-2 rounded-sm bg-primary/70"></div>
+<div class="w-2 h-2 rounded-sm bg-primary/100"></div>
+</div>
+<span class="text-[8px] font-bold text-slate-600 uppercase">More</span>
+</div>
+</section>
+</main>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 glass border-t border-primary/20 flex justify-around items-center px-4 py-3 z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-variation-fill">dashboard</span>
+<span class="text-[10px] font-bold">Insights</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-[10px] font-bold">Predict</span>
+</a>
+<div class="relative -top-8">
+<button class="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-xl shadow-primary/40 border-4 border-background-dark">
+<span class="material-symbols-outlined text-white text-3xl">auto_awesome</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold">Members</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold">Admin</span>
+</a>
+</nav>
+</body></html>
