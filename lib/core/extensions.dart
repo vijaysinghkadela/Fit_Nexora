@@ -17,11 +17,28 @@ extension StringExtension on String {
 
 /// DateTime extensions.
 extension DateTimeExtension on DateTime {
+  String formatWith(String pattern) => DateFormat(pattern).format(this);
+
   /// Formats as "Mar 4, 2026".
   String get formatted => DateFormat('MMM d, y').format(this);
 
   /// Formats as "04/03/2026".
   String get shortFormatted => DateFormat('dd/MM/yyyy').format(this);
+
+  /// Formats as "4 Mar 2026".
+  String get mediumFormatted => DateFormat('d MMM y').format(this);
+
+  /// Formats as "4 Mar".
+  String get dayMonth => DateFormat('d MMM').format(this);
+
+  /// Formats as "9 AM".
+  String get hourLabel => DateFormat('h a').format(this);
+
+  /// Formats as "09:30 AM".
+  String get timeLabel => DateFormat('hh:mm a').format(this);
+
+  /// Returns the first letter of the weekday label.
+  String get weekdayInitial => DateFormat('E').format(this).substring(0, 1);
 
   /// Returns relative time: "2 days ago", "in 5 hours".
   String get relative {

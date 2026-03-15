@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../core/constants.dart';
 import '../../core/extensions.dart';
+import '../../core/pagination.dart';
 import '../../models/client_profile_model.dart';
+import '../../models/membership_counts.dart';
 import '../../models/membership_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/membership_provider.dart';
+import '../../widgets/error_widgets.dart';
+import '../../widgets/loading_widgets.dart';
 import 'add_membership_screen.dart';
 
-/// All memberships list with status filtering.
 class MembershipsScreen extends ConsumerStatefulWidget {
   const MembershipsScreen({super.key});
 
@@ -19,71 +24,78 @@ class MembershipsScreen extends ConsumerStatefulWidget {
 }
 
 class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
-  String _filter = 'all'; // all, active, expired, expiring
+  Future<void> _handleRefresh() async {
+    ref.invalidate(membershipCountsProvider);
+    await ref.read(pagedMembershipsControllerProvider.notifier).refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
     final gym = ref.watch(selectedGymProvider);
+    final membershipsState = ref.watch(pagedMembershipsControllerProvider);
+    final countsAsync = ref.watch(membershipCountsProvider);
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          backgroundColor: AppColors.bgDark,
-          toolbarHeight: 72,
-          title: Text(
-            'Memberships',
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+    return RefreshIndicator(
+      onRefresh: _handleRefresh,
+      backgroundColor: AppColors.bgElevated,
+      color: AppColors.primary,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            backgroundColor: AppColors.bgDark,
+            toolbarHeight: 72,
+            title: Text(
+              'Memberships',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
             ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: FilledButton.icon(
-                onPressed: () => _showClientPickerSheet(context),
-                icon: const Icon(Icons.add_rounded, size: 18),
-                label: Text(
-                  'Add',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w600),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.accent,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: FilledButton.icon(
+                  onPressed: () => _showClientPickerSheet(context),
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: Text(
+                    'Add',
+                    style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.accent,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-
-        // Filter chips
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-          sliver: SliverToBoxAdapter(
-            child: _buildFilterChips(),
+            ],
           ),
-        ),
-
-        // Membership list
-        if (gym != null)
-          _buildMembershipList(gym.id)
-        else
-          SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'No gym selected',
-                style: GoogleFonts.inter(color: AppColors.textMuted),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+            sliver: SliverToBoxAdapter(
+              child: _buildFilterChips(),
+            ),
+          ),
+          if (gym != null)
+            _buildMembershipList(membershipsState, countsAsync)
+          else
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(
+                  'No gym selected',
+                  style: GoogleFonts.inter(color: AppColors.textMuted),
+                ),
               ),
             ),
-          ),
-
-        const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
-      ],
+          const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
+        ],
+      ),
     );
   }
 
@@ -94,12 +106,13 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
       'expiring': 'Expiring Soon',
       'expired': 'Expired',
     };
+    final currentFilter = ref.watch(membershipFilterProvider);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: filters.entries.map((entry) {
-          final isSelected = _filter == entry.key;
+          final isSelected = currentFilter == entry.key;
           final color = _filterColor(entry.key);
           return Padding(
             padding: const EdgeInsets.only(right: 8),
@@ -120,7 +133,8 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               showCheckmark: false,
-              onSelected: (_) => setState(() => _filter = entry.key),
+              onSelected: (_) =>
+                  ref.read(membershipFilterProvider.notifier).state = entry.key,
             ),
           );
         }).toList(),
@@ -141,88 +155,115 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
     }
   }
 
-  Widget _buildMembershipList(String gymId) {
-    return FutureBuilder<List<Membership>>(
-      future: ref.read(databaseServiceProvider).getMembershipsForGym(gymId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SliverFillRemaining(
+  Widget _buildMembershipList(
+    PagedListState<Membership> membershipsState,
+    AsyncValue<MembershipCounts> countsAsync,
+  ) {
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+            child: countsAsync.when(
+              loading: () => const Row(
+                children: [
+                  Expanded(child: SkeletonBox(height: 34)),
+                  SizedBox(width: 10),
+                  Expanded(child: SkeletonBox(height: 34)),
+                  SizedBox(width: 10),
+                  Expanded(child: SkeletonBox(height: 34)),
+                ],
+              ),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (counts) => _buildCountChips(
+                counts.total,
+                counts.active,
+                counts.expiring,
+              ).animate().fadeIn(duration: 300.ms),
+            ),
+          ),
+        ),
+        if (membershipsState.isInitialLoading)
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (_, __) => const CardSkeleton(height: 110),
+                childCount: 6,
+              ),
+            ),
+          )
+        else if (membershipsState.items.isEmpty && membershipsState.hasError)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: ErrorStateWidget(
+              message: 'Unable to load memberships right now.',
+              onRetry: () =>
+                  ref.read(pagedMembershipsControllerProvider.notifier).loadInitial(),
+            ),
+          )
+        else if (membershipsState.items.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
             child: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
-          );
-        }
-
-        final allMemberships = snapshot.data ?? [];
-        final filtered = _applyFilter(allMemberships);
-
-        // Count summary
-        final activeCount = allMemberships
-            .where((m) => !m.isExpired && m.status.value == 'active')
-            .length;
-        final expiringCount =
-            allMemberships.where((m) => m.expiresWithin(7)).length;
-
-        return SliverMainAxisGroup(
-          slivers: [
-            // Count chips
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                child: _buildCountChips(
-                  allMemberships.length,
-                  activeCount,
-                  expiringCount,
-                ).animate().fadeIn(duration: 300.ms),
-              ),
-            ),
-
-            if (filtered.isEmpty)
-              SliverFillRemaining(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.card_membership_outlined,
-                          size: 56,
-                          color: AppColors.textMuted.withValues(alpha: 0.4)),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No memberships found',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Add a membership from a client\'s profile',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                    ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.card_membership_outlined,
+                    size: 56,
+                    color: AppColors.textMuted.withValues(alpha: 0.4),
                   ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => _MembershipCard(
-                      membership: filtered[index],
-                      delay: index * 50,
+                  const SizedBox(height: 16),
+                  Text(
+                    'No memberships found',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
                     ),
-                    childCount: filtered.length,
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Add a membership from a client profile.',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
               ),
-          ],
-        );
-      },
+            ),
+          )
+        else
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index == membershipsState.items.length) {
+                    return LoadingFooter(
+                      isLoading: membershipsState.isLoadingMore,
+                      hasMore: membershipsState.hasMore,
+                      error: membershipsState.items.isNotEmpty
+                          ? membershipsState.error
+                          : null,
+                      onPressed: () => ref
+                          .read(pagedMembershipsControllerProvider.notifier)
+                          .loadMore(),
+                    );
+                  }
+
+                  return _MembershipCard(
+                    membership: membershipsState.items[index],
+                    delay: index * 50,
+                  );
+                },
+                childCount: membershipsState.items.length + 1,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -233,27 +274,9 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
         const SizedBox(width: 10),
         _CountChip(label: 'Active', count: active, color: AppColors.success),
         const SizedBox(width: 10),
-        _CountChip(
-            label: 'Expiring', count: expiring, color: AppColors.warning),
+        _CountChip(label: 'Expiring', count: expiring, color: AppColors.warning),
       ],
     );
-  }
-
-  List<Membership> _applyFilter(List<Membership> memberships) {
-    switch (_filter) {
-      case 'active':
-        return memberships
-            .where((m) => m.status.value == 'active' && !m.isExpired)
-            .toList();
-      case 'expired':
-        return memberships
-            .where((m) => m.isExpired || m.status.value == 'expired')
-            .toList();
-      case 'expiring':
-        return memberships.where((m) => m.expiresWithin(7)).toList();
-      default:
-        return memberships;
-    }
   }
 
   void _showClientPickerSheet(BuildContext context) {
@@ -280,14 +303,16 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
   }
 }
 
-/// Count chip widget.
 class _CountChip extends StatelessWidget {
+  const _CountChip({
+    required this.label,
+    required this.count,
+    required this.color,
+  });
+
   final String label;
   final int count;
   final Color color;
-
-  const _CountChip(
-      {required this.label, required this.count, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -323,12 +348,14 @@ class _CountChip extends StatelessWidget {
   }
 }
 
-/// Membership card with status indicator and progress bar.
 class _MembershipCard extends StatelessWidget {
+  const _MembershipCard({
+    required this.membership,
+    required this.delay,
+  });
+
   final Membership membership;
   final int delay;
-
-  const _MembershipCard({required this.membership, required this.delay});
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +375,6 @@ class _MembershipCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Status dot
               Container(
                 width: 10,
                 height: 10,
@@ -364,8 +390,6 @@ class _MembershipCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 14),
-
-              // Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,7 +404,7 @@ class _MembershipCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${membership.startDate.shortFormatted} → ${membership.endDate.shortFormatted}',
+                      '${membership.startDate.dayMonth} -> ${membership.endDate.dayMonth}',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: AppColors.textMuted,
@@ -389,8 +413,6 @@ class _MembershipCard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Amount & status
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -405,8 +427,7 @@ class _MembershipCard extends StatelessWidget {
                     ),
                   const SizedBox(height: 4),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -424,8 +445,6 @@ class _MembershipCard extends StatelessWidget {
               ),
             ],
           ),
-
-          // Progress bar
           if (!membership.isExpired && progress != null) ...[
             const SizedBox(height: 12),
             ClipRRect(
@@ -480,15 +499,14 @@ class _MembershipCard extends StatelessWidget {
   }
 }
 
-/// Client picker sheet for selecting a client to add membership.
 class _ClientPickerSheet extends ConsumerWidget {
-  final String gymId;
-  final ValueChanged<ClientProfile> onClientSelected;
-
   const _ClientPickerSheet({
     required this.gymId,
     required this.onClientSelected,
   });
+
+  final String gymId;
+  final ValueChanged<ClientProfile> onClientSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -534,8 +552,19 @@ class _ClientPickerSheet extends ConsumerWidget {
               future: ref.read(databaseServiceProvider).getClientsForGym(gymId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    itemCount: 5,
+                    itemBuilder: (_, __) => const ListTileSkeleton(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return ErrorStateWidget(
+                    message: 'Unable to load clients.',
+                    onRetry: () => (context as Element).markNeedsBuild(),
                   );
                 }
                 final clients = snapshot.data ?? [];
@@ -552,8 +581,7 @@ class _ClientPickerSheet extends ConsumerWidget {
                   );
                 }
                 return ListView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   itemCount: clients.length,
                   itemBuilder: (context, index) {
                     final client = clients[index];
@@ -562,8 +590,7 @@ class _ClientPickerSheet extends ConsumerWidget {
                         : '?';
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.15),
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                         child: Text(
                           initial,
                           style: GoogleFonts.inter(
@@ -589,8 +616,10 @@ class _ClientPickerSheet extends ConsumerWidget {
                               ),
                             )
                           : null,
-                      trailing: const Icon(Icons.chevron_right_rounded,
-                          color: AppColors.textMuted),
+                      trailing: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: AppColors.textMuted,
+                      ),
                       onTap: () => onClientSelected(client),
                     );
                   },

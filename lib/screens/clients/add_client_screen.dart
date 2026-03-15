@@ -4,9 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
 import '../../core/enums.dart';
+import '../../core/validators.dart';
 import '../../models/client_profile_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/client_provider.dart';
 import '../../providers/gym_provider.dart';
+
 
 /// Bottom sheet form for adding a new client.
 class AddClientScreen extends ConsumerStatefulWidget {
@@ -124,8 +127,8 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
       }
 
       if (mounted) {
-        // Invalidate client list so it refreshes
-        ref.invalidate(filteredClientsProvider);
+        ref.invalidate(gymClientsProvider);
+        ref.invalidate(pagedClientsControllerProvider);
         Navigator.of(context).pop(true);
       }
     } catch (e) {
@@ -141,15 +144,6 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-
-  // Must import this for the provider
-  static final filteredClientsProvider =
-      FutureProvider<List<ClientProfile>>((ref) async {
-    final gym = ref.watch(selectedGymProvider);
-    if (gym == null) return [];
-    final db = ref.read(databaseServiceProvider);
-    return db.getClientsForGym(gym.id);
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -237,6 +231,9 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                             hint: 'rahul@email.com',
                             icon: Icons.email_outlined,
                             keyboard: TextInputType.emailAddress,
+                            validator: (v) => v == null || v.trim().isEmpty
+                                ? null
+                                : AppValidators.email(v),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -247,24 +244,31 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                             hint: '+91 9876543210',
                             icon: Icons.phone_outlined,
                             keyboard: TextInputType.phone,
+                            validator: AppValidators.phone,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 14),
-                    Row(
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 14,
                       children: [
-                        Expanded(
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
                           child: _buildTextField(
                             controller: _ageController,
                             label: 'Age',
                             hint: '25',
                             icon: Icons.cake_outlined,
                             keyboard: TextInputType.number,
+                            validator: AppValidators.age,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(child: _buildSexSelector()),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: _buildSexSelector(),
+                        ),
                       ],
                     ),
 
@@ -272,25 +276,30 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                     _buildSectionHeader(
                         'Body Metrics', Icons.monitor_weight_outlined),
                     const SizedBox(height: 14),
-                    Row(
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 14,
                       children: [
-                        Expanded(
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
                           child: _buildTextField(
                             controller: _weightController,
                             label: 'Weight (kg)',
                             hint: '72',
                             icon: Icons.monitor_weight_outlined,
                             keyboard: TextInputType.number,
+                            validator: AppValidators.weightKg,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
                           child: _buildTextField(
                             controller: _heightController,
                             label: 'Height (cm)',
                             hint: '175',
                             icon: Icons.height_rounded,
                             keyboard: TextInputType.number,
+                            validator: AppValidators.heightCm,
                           ),
                         ),
                       ],
@@ -603,10 +612,10 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
           spacing: 8,
           runSpacing: 10,
           children: [
-            _buildChip('Full Gym 🏋️', _equipmentType == EquipmentType.fullGym,
+            _buildChip('Full Gym', _equipmentType == EquipmentType.fullGym,
                 () => setState(() => _equipmentType = EquipmentType.fullGym)),
             _buildChip(
-                'Home 🏠',
+                'Home w/ Equip',
                 _equipmentType == EquipmentType.homeWithEquipment,
                 () => setState(
                     () => _equipmentType = EquipmentType.homeWithEquipment)),

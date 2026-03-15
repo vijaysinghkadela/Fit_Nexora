@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../core/database_values.dart';
 import '../core/enums.dart';
 
 /// Client gym membership (subscription to the gym itself, not SaaS).
@@ -22,7 +23,7 @@ class Membership extends Equatable {
     required this.gymId,
     required this.planName,
     this.amount,
-    this.currency = 'INR',
+    this.currency = DatabaseValues.defaultCurrency,
     required this.startDate,
     required this.endDate,
     this.status = MembershipStatus.active,
@@ -38,7 +39,8 @@ class Membership extends Equatable {
       gymId: json['gym_id'] as String,
       planName: json['plan_name'] as String,
       amount: (json['amount'] as num?)?.toDouble(),
-      currency: json['currency'] as String? ?? 'INR',
+      currency:
+          json['currency'] as String? ?? DatabaseValues.defaultCurrency,
       startDate: DateTime.parse(json['start_date'] as String),
       endDate: DateTime.parse(json['end_date'] as String),
       status:
@@ -64,8 +66,12 @@ class Membership extends Equatable {
     };
   }
 
+  /// Whether this membership is currently active (status=active AND not expired).
+  bool get isActive => status == MembershipStatus.active && !isExpired;
+
   /// Whether this membership is expired.
   bool get isExpired => endDate.isBefore(DateTime.now());
+
 
   /// Days remaining before expiry. Negative if expired.
   int get daysRemaining => endDate.difference(DateTime.now()).inDays;

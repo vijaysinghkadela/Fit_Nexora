@@ -96,8 +96,11 @@ USER MESSAGE: $userMessage
     );
   }
 
-  final data = jsonDecode(response.body);
-  return data['content'][0]['text'];
+  final data = jsonDecode(response.body) as Map<String, dynamic>;
+  final content = (data['content'] as List<dynamic>);
+  return content.isNotEmpty
+      ? (content[0] as Map<String, dynamic>)['text'] as String
+      : '';
 }
 
 // ─── TRACKED VARIANT ─────────────────────────────────────────────────────────

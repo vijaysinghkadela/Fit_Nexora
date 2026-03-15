@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:go_router/go_router.dart';
 import '../../core/constants.dart';
+import '../../core/enums.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
@@ -27,8 +29,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final currentUser = ref.watch(currentUserProvider);
     final gym = ref.watch(selectedGymProvider);
 
-    return CustomScrollView(
-      slivers: [
+    return SafeArea(
+      child: CustomScrollView(
+        slivers: [
 
         /// APP BAR
         SliverAppBar(
@@ -197,6 +200,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ),
 
+        /// SUPER ADMIN SECTION — only visible to super_admin users
+        if (currentUser.value?.globalRole == UserRole.superAdmin) ...[
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+            sliver: SliverToBoxAdapter(
+              child: _buildSectionHeader('SUPER ADMIN'),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverToBoxAdapter(
+              child: GlassmorphicCard(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: _buildSettingTile(
+                    icon: Icons.admin_panel_settings_rounded,
+                    title: 'Admin Panel',
+                    subtitle: 'Platform stats, user management & controls',
+                    titleColor: AppColors.primary,
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.accent],
+                        ),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'ADMIN',
+                        style: GoogleFonts.inter(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                    onTap: () => context.go('/admin'),
+                  ),
+                ),
+              ).animate(delay: 150.ms).fadeIn(),
+            ),
+          ),
+        ],
+
         /// SIGN OUT
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
@@ -240,7 +289,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
 
         const SliverToBoxAdapter(child: SizedBox(height: 20)),
-      ],
+        ],
+      ),
     );
   }
 

@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/constants.dart';
+import '../core/responsive.dart';
+
 
 /// Animated splash/loading screen shown during auth initialization.
 class SplashScreen extends StatelessWidget {
@@ -10,7 +12,11 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Auto-navigate after delay (router will handle redirect)
+    final rs = ResponsiveSize.of(context);
+
+    // After the animation, let GoRouter's redirect decide the destination:
+    //   • Authenticated  → /dashboard
+    //   • Unauthenticated → /login
     Future.delayed(const Duration(seconds: 2), () {
       if (context.mounted) {
         context.go('/login');
@@ -25,8 +31,8 @@ class SplashScreen extends StatelessWidget {
           children: [
             // Logo Icon
             Container(
-              width: 100,
-              height: 100,
+              width: rs.sp(100),
+              height: rs.sp(100),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [AppColors.primary, AppColors.accent],
@@ -42,9 +48,9 @@ class SplashScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.fitness_center_rounded,
-                size: 48,
+                size: rs.sp(48),
                 color: Colors.white,
               ),
             )
@@ -57,13 +63,13 @@ class SplashScreen extends StatelessWidget {
                 )
                 .fadeIn(duration: 400.ms),
 
-            const SizedBox(height: 32),
+            SizedBox(height: rs.sp(32)),
 
             // App Name
             Text(
               'GymOS',
               style: GoogleFonts.inter(
-                fontSize: 40,
+                fontSize: rs.sp(40),
                 fontWeight: FontWeight.w800,
                 color: AppColors.textPrimary,
                 letterSpacing: -1,
@@ -73,24 +79,24 @@ class SplashScreen extends StatelessWidget {
                 .fadeIn(duration: 500.ms)
                 .slideY(begin: 0.3, end: 0),
 
-            const SizedBox(height: 8),
+            SizedBox(height: rs.sp(8)),
 
             // Tagline
             Text(
               'AI-Powered Gym Management',
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: rs.sp(16),
                 fontWeight: FontWeight.w400,
                 color: AppColors.textSecondary,
               ),
             ).animate(delay: 500.ms).fadeIn(duration: 500.ms),
 
-            const SizedBox(height: 48),
+            SizedBox(height: rs.sp(48)),
 
             // Loading indicator
             SizedBox(
-              width: 32,
-              height: 32,
+              width: rs.sp(32),
+              height: rs.sp(32),
               child: CircularProgressIndicator(
                 strokeWidth: 3,
                 color: AppColors.primary,

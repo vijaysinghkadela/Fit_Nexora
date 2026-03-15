@@ -1,5 +1,6 @@
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,13 +39,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final currentUser = ref.read(currentUserProvider).value;
-      if (currentUser == null) throw Exception('User not found');
+      // Profile provider may still be loading right after registration —
+      // fall back to the raw Supabase auth session which is always available.
+      final userId = ref.read(currentUserProvider).value?.id ??
+          Supabase.instance.client.auth.currentUser?.id;
+      if (userId == null) throw Exception('Not authenticated. Please sign in again.');
 
       final db = ref.read(databaseServiceProvider);
       final gym = await db.createGym(
         name: _gymNameController.text.trim(),
-        ownerId: currentUser.id,
+        ownerId: userId,
         address: _addressController.text.trim(),
         phone: _phoneController.text.trim(),
       );

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
+import '../../core/enums.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -45,7 +46,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           );
 
       if (mounted) {
-        context.go('/dashboard');
+        final role = ref.read(currentUserProvider).value?.globalRole;
+        context.go(role == UserRole.client ? '/member' : '/dashboard');
       }
     } catch (e) {
       setState(() {

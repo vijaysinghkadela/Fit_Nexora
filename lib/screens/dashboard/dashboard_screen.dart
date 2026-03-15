@@ -8,6 +8,7 @@ import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/ai_usage_meter.dart';
+import '../../widgets/dashboard_more_sheet.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/stat_card.dart';
 import '../../widgets/sidebar_nav.dart';
@@ -49,34 +50,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       backgroundColor: AppColors.bgDark,
       // Mobile bottom nav
       bottomNavigationBar: (!isDesktop && !isTablet) ? _buildBottomNav() : null,
-      body: Row(
-        children: [
-          // Desktop sidebar
-          if (isDesktop || isTablet)
-            SidebarNav(
-              items: _navItems
-                  .map((n) => SidebarItem(
-                        icon: n.icon,
-                        label: n.label,
-                      ))
-                  .toList(),
-              selectedIndex: _selectedNavIndex,
-              onItemTap: (i) => setState(() => _selectedNavIndex = i),
-              isCollapsed: isTablet,
-              userName: currentUser.value?.fullName ?? 'User',
-              userEmail: currentUser.value?.email ?? '',
-              onSignOut: () async {
-                final router = GoRouter.of(context);
-                await ref.read(currentUserProvider.notifier).signOut();
-                if (mounted) router.go('/login');
-              },
-            ),
+      body: SafeArea(
+        child: Row(
+          children: [
+            // Desktop sidebar
+            if (isDesktop || isTablet)
+              SidebarNav(
+                items: _navItems
+                    .map((n) => SidebarItem(
+                          icon: n.icon,
+                          label: n.label,
+                        ))
+                    .toList(),
+                selectedIndex: _selectedNavIndex,
+                onItemTap: (i) => setState(() => _selectedNavIndex = i),
+                isCollapsed: isTablet,
+                userName: currentUser.value?.fullName ?? 'User',
+                userEmail: currentUser.value?.email ?? '',
+                onSignOut: () async {
+                  final router = GoRouter.of(context);
+                  await ref.read(currentUserProvider.notifier).signOut();
+                  if (mounted) router.go('/login');
+                },
+              ),
 
-          // Main content
-          Expanded(
-            child: _buildContent(),
-          ),
-        ],
+            // Main content
+            Expanded(
+              child: _buildContent(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -104,8 +107,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final gym = ref.watch(selectedGymProvider);
     final stats = ref.watch(dashboardStatsProvider);
 
-    return CustomScrollView(
-      slivers: [
+    return RefreshIndicator(
+      onRefresh: _refreshDashboard,
+      backgroundColor: AppColors.bgElevated,
+      color: AppColors.primary,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
         // App bar
         SliverAppBar(
           floating: true,
@@ -208,8 +216,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             child: _buildRecentActivity(),
           ),
         ),
-      ],
+        ],
+      ),
     );
+  }
+
+  Future<void> _refreshDashboard() async {
+    ref.invalidate(dashboardStatsProvider);
+    await ref.read(dashboardStatsProvider.future);
   }
 
   Widget _buildStatsGrid(AsyncValue<Map<String, dynamic>> stats) {
@@ -217,11 +231,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = constraints.maxWidth > 800
-            ? 4
-            : constraints.maxWidth > 500
-                ? 2
-                : 2;
+        final crossAxisCount = constraints.maxWidth > 800 ? 4 : 2;
 
         return Wrap(
           spacing: 16,
@@ -324,6 +334,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   color: AppColors.warning,
                   onTap: () => setState(() => _selectedNavIndex = 3),
                   delay: 150,
+                ),
+                _QuickActionCard(
+                  icon: Icons.people_outline_rounded,
+                  label: 'Gym Traffic',
+                  description: 'Live crowd & best visit times',
+                  color: AppColors.accent,
+                  onTap: () => context.push('/traffic'),
+                  delay: 150,
+                ),
+                _QuickActionCard(
+                  icon: Icons.restaurant_menu_rounded,
+                  label: 'Nutrition',
+                  description: 'Scan food & track intake',
+                  color: AppColors.warning,
+                  onTap: () => context.push('/nutrition'),
+                  delay: 200,
                 ),
                 _QuickActionCard(
                   icon: Icons.workspace_premium_rounded,
@@ -502,20 +528,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildBottomNav() {
-    // Show 5 items: Dashboard, Clients, Memberships, Workouts, Settings
     final mobileNavItems = [
       _navItems[0], // Dashboard
       _navItems[1], // Clients
       _navItems[2], // Memberships
       _navItems[3], // Workouts
-      _navItems[5], // Settings
+      const _NavItem(icon: Icons.more_horiz_rounded, label: 'More'),
     ];
 
-    // Map from mobile nav indices to actual nav indices
-    final mobileIndexMap = [0, 1, 2, 3, 5];
-    final currentMobileIndex = mobileIndexMap.contains(_selectedNavIndex)
-        ? mobileIndexMap.indexOf(_selectedNavIndex)
-        : 0;
+    final currentMobileIndex = switch (_selectedNavIndex) {
+      0 => 0,
+      1 => 1,
+      2 => 2,
+      3 => 3,
+      4 || 5 => 4,
+      _ => 0,
+    };
 
     return Container(
       decoration: const BoxDecoration(
@@ -526,13 +554,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
       child: BottomNavigationBar(
         currentIndex: currentMobileIndex,
-        onTap: (i) => setState(() => _selectedNavIndex = mobileIndexMap[i]),
+        onTap: (i) {
+          if (i == 4) {
+            _showMoreSheet();
+            return;
+          }
+          setState(() => _selectedNavIndex = i);
+        },
         items: mobileNavItems.map((item) {
           return BottomNavigationBarItem(
             icon: Icon(item.icon),
             label: item.label,
           );
         }).toList(),
+      ),
+    );
+  }
+
+  void _showMoreSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DashboardMoreSheet(
+        onSelect: (index) {
+          Navigator.of(context).pop();
+          setState(() => _selectedNavIndex = index);
+        },
       ),
     );
   }

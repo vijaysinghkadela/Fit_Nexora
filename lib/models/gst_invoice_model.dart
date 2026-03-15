@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../core/database_values.dart';
 
 /// GST-compliant invoice for Indian market.
 ///
@@ -55,7 +56,7 @@ class GstInvoice extends Equatable {
     required this.sgstAmount,
     this.igstAmount = 0.0,
     required this.totalAmount,
-    this.currency = 'INR',
+    this.currency = DatabaseValues.defaultCurrency,
     this.sellerGstin,
     this.buyerGstin,
     this.placeOfSupply,
@@ -123,7 +124,8 @@ class GstInvoice extends Equatable {
       sgstAmount: (json['sgst_amount'] as num).toDouble(),
       igstAmount: (json['igst_amount'] as num?)?.toDouble() ?? 0.0,
       totalAmount: (json['total_amount'] as num).toDouble(),
-      currency: json['currency'] as String? ?? 'INR',
+      currency:
+          json['currency'] as String? ?? DatabaseValues.defaultCurrency,
       sellerGstin: json['seller_gstin'] as String?,
       buyerGstin: json['buyer_gstin'] as String?,
       placeOfSupply: json['place_of_supply'] as String?,

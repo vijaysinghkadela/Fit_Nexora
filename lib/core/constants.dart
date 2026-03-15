@@ -17,6 +17,12 @@ class AppConstants {
   static const String membershipsTable = 'memberships';
   static const String subscriptionsTable = 'subscriptions';
   static const String aiUsageTable = 'ai_usage';
+  static const String gymCheckinsTable = 'gym_checkins';
+  static const String foodLogsTable = 'food_logs';
+  static const String workoutPlansTable = 'workout_plans';
+  static const String dietPlansTable = 'diet_plans';
+  static const String progressCheckInsTable = 'progress_checkins';
+  static const String announcementsTable = 'gym_announcements';
 
   // Storage Buckets
   static const String avatarsBucket = 'avatars';

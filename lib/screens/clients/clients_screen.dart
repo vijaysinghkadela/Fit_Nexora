@@ -8,58 +8,11 @@ import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/gym_provider.dart';
+import '../../providers/client_provider.dart';
+import '../../widgets/error_widgets.dart';
+import '../../widgets/loading_widgets.dart';
 import 'add_client_screen.dart';
 import 'client_detail_screen.dart';
-
-/// Provider for search query.
-final clientSearchQueryProvider = StateProvider<String>((ref) => '');
-
-/// Provider for sort order.
-final clientSortProvider = StateProvider<String>((ref) => 'name_asc');
-
-/// Provider for goal filter.
-final clientGoalFilterProvider = StateProvider<FitnessGoal?>((ref) => null);
-
-final filteredClientsProvider =
-    FutureProvider<List<ClientProfile>>((ref) async {
-  final gym = ref.watch(selectedGymProvider);
-  if (gym == null) return [];
-
-  final db = ref.read(databaseServiceProvider);
-  final clients = await db.getClientsForGym(gym.id);
-  final query = ref.watch(clientSearchQueryProvider).toLowerCase();
-  final sort = ref.watch(clientSortProvider);
-  final goalFilter = ref.watch(clientGoalFilterProvider);
-
-  var result = clients.where((c) {
-    // Goal filter
-    if (goalFilter != null && c.goal != goalFilter) return false;
-    // Search filter
-    if (query.isEmpty) return true;
-    final name = (c.fullName ?? '').toLowerCase();
-    final email = (c.email ?? '').toLowerCase();
-    final phone = (c.phone ?? '').toLowerCase();
-    return name.contains(query) ||
-        email.contains(query) ||
-        phone.contains(query);
-  }).toList();
-
-  // Sort
-  switch (sort) {
-    case 'name_asc':
-      result.sort((a, b) => (a.fullName ?? '').compareTo(b.fullName ?? ''));
-      break;
-    case 'name_desc':
-      result.sort((a, b) => (b.fullName ?? '').compareTo(a.fullName ?? ''));
-      break;
-    case 'recent':
-      result.sort((a, b) => b.id.compareTo(a.id));
-      break;
-  }
-
-  return result;
-});
 
 /// Client list screen with search, filters, and CRUD.
 class ClientsScreen extends ConsumerStatefulWidget {
@@ -80,72 +33,77 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clientsAsync = ref.watch(filteredClientsProvider);
+    final clientsState = ref.watch(pagedClientsControllerProvider);
     final goalFilter = ref.watch(clientGoalFilterProvider);
 
-    return CustomScrollView(
-      slivers: [
-        // Header
-        SliverAppBar(
-          floating: true,
-          backgroundColor: AppColors.bgDark,
-          toolbarHeight: 72,
-          title: Text(
-            'Clients',
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+    return RefreshIndicator(
+      onRefresh: () => ref.read(pagedClientsControllerProvider.notifier).refresh(),
+      backgroundColor: AppColors.bgElevated,
+      color: AppColors.primary,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          // Header
+          SliverAppBar(
+            floating: true,
+            backgroundColor: AppColors.bgDark,
+            toolbarHeight: 72,
+            title: Text(
+              'Clients',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
             ),
+            actions: [
+              // Client count badge
+              if (clientsState.totalCount != null)
+                Container(
+                  margin: const EdgeInsets.only(right: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${clientsState.totalCount} clients',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              // Sort button
+              IconButton(
+                icon: const Icon(Icons.sort_rounded,
+                    color: AppColors.textSecondary, size: 22),
+                onPressed: () => _showSortSheet(context),
+                tooltip: 'Sort',
+              ),
+              // Add client button
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: FilledButton.icon(
+                  onPressed: () => _showAddClientSheet(context),
+                  icon: const Icon(Icons.person_add_rounded, size: 18),
+                  label: Text(
+                    context.isMobile ? 'Add' : 'Add Client',
+                    style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          actions: [
-            // Client count badge
-            if (clientsAsync.hasValue)
-              Container(
-                margin: const EdgeInsets.only(right: 4),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '${clientsAsync.value!.length} clients',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            // Sort button
-            IconButton(
-              icon: const Icon(Icons.sort_rounded,
-                  color: AppColors.textSecondary, size: 22),
-              onPressed: () => _showSortSheet(context),
-              tooltip: 'Sort',
-            ),
-            // Add client button
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: FilledButton.icon(
-                onPressed: () => _showAddClientSheet(context),
-                icon: const Icon(Icons.person_add_rounded, size: 18),
-                label: Text(
-                  context.isMobile ? 'Add' : 'Add Client',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w600),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
 
         // Search bar
         SliverPadding(
@@ -163,31 +121,51 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
           ),
         ),
 
-        // Client list
-        clientsAsync.when(
-          loading: () => const SliverFillRemaining(
-            child: Center(
-                child: CircularProgressIndicator(color: AppColors.primary)),
-          ),
-          error: (error, _) => SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'Error loading clients: $error',
-                style: GoogleFonts.inter(color: AppColors.error),
+          if (clientsState.isInitialLoading)
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (_, __) => const ListTileSkeleton(),
+                  childCount: 6,
+                ),
               ),
-            ),
-          ),
-          data: (clients) {
-            if (clients.isEmpty) {
-              return SliverFillRemaining(child: _buildEmptyState());
-            }
-
-            return SliverPadding(
+            )
+          else if (clientsState.items.isEmpty && clientsState.hasError)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: ErrorStateWidget(
+                message: 'Unable to load clients right now.',
+                onRetry: () => ref
+                    .read(pagedClientsControllerProvider.notifier)
+                    .loadInitial(),
+              ),
+            )
+          else if (clientsState.items.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _buildEmptyState(),
+            )
+          else
+            SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final client = clients[index];
+                    if (index == clientsState.items.length) {
+                      return LoadingFooter(
+                        isLoading: clientsState.isLoadingMore,
+                        hasMore: clientsState.hasMore,
+                        error: clientsState.items.isNotEmpty
+                            ? clientsState.error
+                            : null,
+                        onPressed: () => ref
+                            .read(pagedClientsControllerProvider.notifier)
+                            .loadMore(),
+                      );
+                    }
+
+                    final client = clientsState.items[index];
                     return FutureBuilder<Membership?>(
                       future: ref
                           .read(databaseServiceProvider)
@@ -196,23 +174,24 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                         return _ClientCard(
                           client: client,
                           activeMembership: snapshot.data,
+                          isMembershipLoading:
+                              snapshot.connectionState == ConnectionState.waiting,
                           delay: index * 50,
                           onTap: () => _navigateToDetail(client),
                         );
                       },
                     );
                   },
-                  childCount: clients.length,
+                  childCount: clientsState.items.length + 1,
                 ),
               ),
-            );
-          },
-        ),
+            ),
 
         // Bottom padding
         const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
       ],
-    );
+    ),
+   );
   }
 
   Widget _buildSearchBar() {
@@ -255,6 +234,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         onChanged: (value) {
+          setState(() {});
           ref.read(clientSearchQueryProvider.notifier).state = value;
         },
       ),
@@ -330,7 +310,9 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         return AppColors.success;
       case FitnessGoal.athleticPerformance:
         return AppColors.warning;
-      default:
+      case FitnessGoal.maintenance:
+      case FitnessGoal.rehabilitation:
+      case FitnessGoal.sportSpecific:
         return AppColors.info;
     }
   }
@@ -483,6 +465,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
 class _ClientCard extends StatefulWidget {
   final ClientProfile client;
   final Membership? activeMembership;
+  final bool isMembershipLoading;
   final int delay;
   final VoidCallback onTap;
 
@@ -491,6 +474,7 @@ class _ClientCard extends StatefulWidget {
     required this.delay,
     required this.onTap,
     this.activeMembership,
+    this.isMembershipLoading = false,
   });
 
   @override
@@ -655,7 +639,17 @@ class _ClientCardState extends State<_ClientCard> {
             ),
           ),
         ),
-        if (membershipColor != null)
+        if (widget.isMembershipLoading)
+          const Positioned(
+            bottom: 2,
+            right: 2,
+            child: SkeletonBox(
+              height: 14,
+              width: 14,
+              radius: 7,
+            ),
+          )
+        else if (membershipColor != null)
           Positioned(
             bottom: 2,
             right: 2,

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../core/database_values.dart';
 import '../core/enums.dart';
 
 /// Gym's SaaS subscription (Basic/Pro/Elite plan from GymOS).
@@ -63,7 +64,7 @@ class Subscription extends Equatable {
     this.trialStart,
     this.trialEnd,
     this.amountPaid,
-    this.currency = 'INR',
+    this.currency = DatabaseValues.defaultCurrency,
     this.overageCharges,
     this.gstNumber,
     required this.createdAt,
@@ -128,7 +129,8 @@ class Subscription extends Equatable {
           ? DateTime.parse(json['trial_end'] as String)
           : null,
       amountPaid: (json['amount_paid'] as num?)?.toDouble(),
-      currency: json['currency'] as String? ?? 'INR',
+      currency:
+          json['currency'] as String? ?? DatabaseValues.defaultCurrency,
       overageCharges: (json['overage_charges'] as num?)?.toDouble(),
       gstNumber: json['gst_number'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),

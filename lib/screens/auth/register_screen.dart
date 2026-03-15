@@ -29,6 +29,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isLoading = false;
   bool _agreedToTerms = false;
   String? _errorMessage;
+  UserRole _selectedRole = UserRole.gymOwner;
 
   @override
   void dispose() {
@@ -59,11 +60,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             password: _passwordController.text,
             fullName: _nameController.text.trim(),
             phone: _phoneController.text.trim(),
-            role: UserRole.gymOwner,
+            role: _selectedRole,
           );
 
       if (mounted) {
-        context.go('/onboarding');
+        if (_selectedRole == UserRole.gymOwner) {
+          context.go('/onboarding');
+        } else {
+          context.go('/member');
+        }
       }
     } catch (e) {
       setState(() {
@@ -105,7 +110,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildHeader(),
+                    _buildHeader(_selectedRole),
                     const SizedBox(height: 36),
                     _buildRegisterForm(),
                     const SizedBox(height: 24),
@@ -157,7 +162,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(UserRole role) {
+    final isOwner = role == UserRole.gymOwner;
     return Column(
       children: [
         Container(
@@ -178,8 +184,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
             ],
           ),
-          child: const Icon(Icons.add_business_rounded,
-              size: 36, color: Colors.white),
+          child: Icon(
+            isOwner ? Icons.add_business_rounded : Icons.person_add_rounded,
+            size: 36,
+            color: Colors.white,
+          ),
         )
             .animate()
             .scale(
@@ -191,7 +200,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             .fadeIn(duration: 300.ms),
         const SizedBox(height: 24),
         Text(
-          'Register your gym',
+          isOwner ? 'Register your gym' : 'Join as a Member',
           style: GoogleFonts.inter(
             fontSize: 28,
             fontWeight: FontWeight.w800,
@@ -201,7 +210,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ).animate(delay: 200.ms).fadeIn().slideY(begin: 0.3, end: 0),
         const SizedBox(height: 8),
         Text(
-          'Start managing your gym with AI',
+          isOwner
+              ? 'Start managing your gym with AI'
+              : 'Track workouts, nutrition & progress',
           style: GoogleFonts.inter(
             fontSize: 15,
             color: AppColors.textSecondary,
@@ -345,8 +356,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Email is required';
-                  if (!v.contains('@') || !v.contains('.')) {
-                    return 'Enter a valid email';
+                  final emailRegex =
+                      RegExp(r'^[\w._%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$');
+                  if (!emailRegex.hasMatch(v.trim())) {
+                    return 'Enter a valid email address';
                   }
                   return null;
                 },
@@ -396,6 +409,118 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
+              ),
+
+              const SizedBox(height: 18),
+
+              // Role selector
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'I am a...',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(
+                              () => _selectedRole = UserRole.gymOwner),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            decoration: BoxDecoration(
+                              color: _selectedRole == UserRole.gymOwner
+                                  ? AppColors.accent.withValues(alpha: 0.15)
+                                  : AppColors.bgInput,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _selectedRole == UserRole.gymOwner
+                                    ? AppColors.accent
+                                    : AppColors.border.withValues(alpha: 0.5),
+                                width:
+                                    _selectedRole == UserRole.gymOwner ? 1.5 : 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.business_rounded,
+                                  color: _selectedRole == UserRole.gymOwner
+                                      ? AppColors.accent
+                                      : AppColors.textMuted,
+                                  size: 22,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Gym Owner',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: _selectedRole == UserRole.gymOwner
+                                        ? AppColors.accent
+                                        : AppColors.textMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () =>
+                              setState(() => _selectedRole = UserRole.client),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            decoration: BoxDecoration(
+                              color: _selectedRole == UserRole.client
+                                  ? AppColors.primary.withValues(alpha: 0.15)
+                                  : AppColors.bgInput,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: _selectedRole == UserRole.client
+                                    ? AppColors.primary
+                                    : AppColors.border.withValues(alpha: 0.5),
+                                width:
+                                    _selectedRole == UserRole.client ? 1.5 : 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.fitness_center_rounded,
+                                  color: _selectedRole == UserRole.client
+                                      ? AppColors.primary
+                                      : AppColors.textMuted,
+                                  size: 22,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Gym Member',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: _selectedRole == UserRole.client
+                                        ? AppColors.primary
+                                        : AppColors.textMuted,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
 
               const SizedBox(height: 18),

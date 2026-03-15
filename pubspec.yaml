@@ -20,6 +20,7 @@ dependencies:
 
   # State Management
   flutter_riverpod: ^2.6.1
+  state_notifier: ^2.1.0
 
   # Routing
   go_router: ^14.8.1
@@ -45,6 +46,7 @@ dependencies:
   flutter_svg: ^2.0.17
   url_launcher: ^6.3.1
   http: ^1.2.2
+  fl_chart: ^0.66.0
 
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.6

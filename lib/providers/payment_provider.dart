@@ -30,13 +30,13 @@ final gymPlanTierProvider =
 /// Whether the current subscription is in trial.
 final isTrialingProvider =
     FutureProvider.family<bool, String>((ref, gymId) async {
-  final sub = await ref.read(gymSubscriptionProvider(gymId).future);
+  final sub = await ref.watch(gymSubscriptionProvider(gymId).future);
   return sub?.isTrialing ?? false;
 });
 
 /// Trial days remaining.
 final trialDaysProvider =
     FutureProvider.family<int, String>((ref, gymId) async {
-  final sub = await ref.read(gymSubscriptionProvider(gymId).future);
+  final sub = await ref.watch(gymSubscriptionProvider(gymId).future);
   return sub?.trialDaysRemaining ?? 0;
 });

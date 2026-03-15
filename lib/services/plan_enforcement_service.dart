@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/plan_limits.dart';
 import '../core/constants.dart';
+import '../core/database_values.dart';
 import '../core/enums.dart';
 import '../models/ai_usage_model.dart';
 
@@ -38,7 +39,7 @@ class PlanEnforcementService {
         .from(AppConstants.gymMembersTable)
         .select()
         .eq('gym_id', gymId)
-        .eq('role', 'trainer')
+        .eq('role', DatabaseValues.gymMemberTrainerRole)
         .count(CountOption.exact);
 
     final cap = PlanLimits.maxTrainers[tier]!;

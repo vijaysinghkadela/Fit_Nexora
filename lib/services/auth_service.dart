@@ -33,33 +33,32 @@ class AuthService {
       data: {
         'full_name': fullName,
         'phone': phone,
+        'global_role': role.value,
       },
     );
 
-    if (response.user == null) {
+    final user = response.user;
+    if (user == null) {
       throw Exception('Sign up failed — no user returned');
     }
 
-    // Create profile in profiles table
-    final profile = {
-      'id': response.user!.id,
-      'full_name': fullName,
-      'email': email,
-      'phone': phone,
-      'global_role': role.value,
-    };
-
-    await _client.from(AppConstants.profilesTable).upsert(profile);
-
-    return AppUser(
-      id: response.user!.id,
-      fullName: fullName,
-      email: email,
-      phone: phone,
-      globalRole: role,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+    // The DB trigger handle_new_user() already creates the profile row.
+    // Wait briefly then fetch it so we return a fully-populated AppUser.
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      return await getProfile(user.id);
+    } catch (_) {
+      // Profile row not ready yet — return a minimal AppUser from signup data.
+      return AppUser(
+        id: user.id,
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        globalRole: role,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+    }
   }
 
   /// Sign in with email + password.

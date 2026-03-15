@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/app_config.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
@@ -10,6 +11,12 @@ import '../core/enums.dart';
 
 /// Supabase client provider.
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  if (!AppConfig.hasSupabase) {
+    throw StateError(
+      'Supabase is not configured. Add SUPABASE_URL and '
+      'SUPABASE_ANON_KEY to your .env file.',
+    );
+  }
   return Supabase.instance.client;
 });
 
@@ -66,21 +73,29 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
 
     // Listen for auth state changes
     _ref.listen(authStateProvider, (previous, next) {
-      next.whenData((authState) async {
-        if (authState.event == AuthChangeEvent.signedIn &&
-            authState.session?.user != null) {
-          try {
-            final profile =
-                await authService.getProfile(authState.session!.user.id);
-            state = AsyncValue.data(profile);
-          } catch (e) {
-            state = AsyncValue.error(e, StackTrace.current);
-          }
-        } else if (authState.event == AuthChangeEvent.signedOut) {
-          state = const AsyncValue.data(null);
-        }
+      next.whenData((authState) {
+        _handleAuthChange(authService, authState);
       });
     });
+  }
+
+  /// Internal handler for auth state changes — keeps the whenData callback sync.
+  Future<void> _handleAuthChange(
+    AuthService authService,
+    AuthState authState,
+  ) async {
+    if (authState.event == AuthChangeEvent.signedIn &&
+        authState.session?.user != null) {
+      try {
+        final profile =
+            await authService.getProfile(authState.session!.user.id);
+        state = AsyncValue.data(profile);
+      } catch (e) {
+        state = AsyncValue.error(e, StackTrace.current);
+      }
+    } else if (authState.event == AuthChangeEvent.signedOut) {
+      state = const AsyncValue.data(null);
+    }
   }
 
   /// Sign up and set current user.
@@ -103,6 +118,7 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
       state = AsyncValue.data(user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      rethrow; // Let the UI (register screen) handle and display the error.
     }
   }
 
@@ -120,6 +136,7 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
       state = AsyncValue.data(user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      rethrow;
     }
   }
 

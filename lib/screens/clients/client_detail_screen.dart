@@ -7,7 +7,9 @@ import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/error_widgets.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../widgets/loading_widgets.dart';
 import 'add_client_screen.dart';
 import '../memberships/add_membership_screen.dart';
 
@@ -265,6 +267,20 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
     return FutureBuilder<Membership?>(
       future: ref.read(databaseServiceProvider).getActiveMembership(_client.id),
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CardSkeleton(height: 170);
+        }
+        if (snapshot.hasError) {
+          return GlassmorphicCard(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: ErrorStateWidget(
+                message: 'Unable to load membership details.',
+                onRetry: () => (context as Element).markNeedsBuild(),
+              ),
+            ),
+          );
+        }
         final membership = snapshot.data;
 
         return GlassmorphicCard(
@@ -295,7 +311,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                           : AppColors.success),
                   _buildMembershipRow('Amount',
                       membership.amount != null ? membership.amount!.inr : '—'),
-                  _buildMembershipRow('Ends', membership.endDate.formatted,
+                  _buildMembershipRow('Ends', membership.endDate.mediumFormatted,
                       valueColor: membership.expiresWithin(7)
                           ? AppColors.warning
                           : null),
