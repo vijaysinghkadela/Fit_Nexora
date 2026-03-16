@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
@@ -43,7 +45,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
     if (!_agreedToTerms) {
-      setState(() => _errorMessage = 'Please accept the terms to continue.');
+      setState(() =>
+          _errorMessage = 'Please accept the terms to continue.');
       return;
     }
 
@@ -86,7 +89,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   String _friendlyError(String error) {
-    if (error.contains('already registered') || error.contains('already exists')) {
+    if (error.contains('already registered') ||
+        error.contains('already exists')) {
       return 'An account with this email already exists.';
     }
     if (error.contains('weak password')) {
@@ -100,17 +104,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.fitTheme;
+    final t = context.fitTheme;
 
     return FitAuthScaffold(
-      title: 'Create your account',
-      subtitle: 'Start building your FitNexora workspace or member journey.',
-      heroIcon: _selectedRole == UserRole.gymOwner
-          ? Icons.storefront_rounded
-          : Icons.person_add_alt_1_rounded,
-      footer: TextButton(
-        onPressed: () => context.go('/login'),
-        child: const Text('Already have an account? Sign in'),
+      title: 'Create account',
+      subtitle:
+          'Start building your FitNexora workspace or member journey.',
+      heroIcon: Icons.person_add_alt_1_rounded,
+      footer: Column(
+        children: [
+          TextButton(
+            onPressed: () => context.go('/login'),
+            child: const Text('Already have an account? Sign in'),
+          ),
+        ],
       ),
       child: GlassmorphicCard(
         child: Padding(
@@ -120,57 +127,56 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SegmentedButton<UserRole>(
-                  showSelectedIcon: false,
-                  segments: const [
-                    ButtonSegment(
-                      value: UserRole.gymOwner,
-                      label: Text('Owner'),
-                      icon: Icon(Icons.storefront_outlined),
-                    ),
-                    ButtonSegment(
-                      value: UserRole.trainer,
-                      label: Text('Trainer'),
-                      icon: Icon(Icons.fitness_center_outlined),
-                    ),
-                    ButtonSegment(
-                      value: UserRole.client,
-                      label: Text('Member'),
-                      icon: Icon(Icons.person_outline_rounded),
-                    ),
-                  ],
-                  selected: {_selectedRole},
-                  onSelectionChanged: (selection) {
-                    setState(() => _selectedRole = selection.first);
-                  },
+                // Role selector
+                _RoleSelector(
+                  selectedRole: _selectedRole,
+                  onChanged: (role) =>
+                      setState(() => _selectedRole = role),
                 ),
+                const SizedBox(height: 20),
+
+                // Error banner
                 if (_errorMessage != null) ...[
-                  const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: colors.danger.withValues(alpha: 0.08),
+                      color: t.danger.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: colors.danger.withValues(alpha: 0.22),
-                      ),
+                          color: t.danger.withValues(alpha: 0.22)),
                     ),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(
-                        color: colors.danger,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline_rounded,
+                            color: t.danger, size: 18),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(
+                              color: t.danger,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                  )
+                      .animate()
+                      .fadeIn()
+                      .shake(hz: 2, offset: const Offset(4, 0)),
+                  const SizedBox(height: 16),
                 ],
-                const SizedBox(height: 16),
+
+                // Full name
                 TextFormField(
                   controller: _nameController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
                     labelText: 'Full name',
-                    prefixIcon: Icon(Icons.person_outline_rounded),
+                    prefixIcon:
+                        Icon(Icons.person_outline_rounded),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -179,7 +185,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
+
+                // Email
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -197,7 +205,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
+
+                // Phone
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
@@ -206,17 +216,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     prefixIcon: Icon(Icons.call_outlined),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
+
+                // Password
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
+                    prefixIcon:
+                        const Icon(Icons.lock_outline_rounded),
                     suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() => _obscurePassword = !_obscurePassword);
-                      },
+                      onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword),
                       icon: Icon(
                         _obscurePassword
                             ? Icons.visibility_off_outlined
@@ -231,17 +243,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
+
+                // Confirm password
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirm,
                   decoration: InputDecoration(
                     labelText: 'Confirm password',
-                    prefixIcon: const Icon(Icons.verified_user_outlined),
+                    prefixIcon:
+                        const Icon(Icons.verified_user_outlined),
                     suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() => _obscureConfirm = !_obscureConfirm);
-                      },
+                      onPressed: () => setState(
+                          () => _obscureConfirm = !_obscureConfirm),
                       icon: Icon(
                         _obscureConfirm
                             ? Icons.visibility_off_outlined
@@ -257,30 +271,114 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                CheckboxListTile(
-                  value: _agreedToTerms,
-                  onChanged: (value) {
-                    setState(() => _agreedToTerms = value ?? false);
-                  },
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('I agree to the Terms & Privacy Policy'),
-                  controlAffinity: ListTileControlAffinity.leading,
+
+                // Terms checkbox
+                GestureDetector(
+                  onTap: () =>
+                      setState(() => _agreedToTerms = !_agreedToTerms),
+                  child: Row(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          color: _agreedToTerms
+                              ? t.brand
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: _agreedToTerms
+                                ? t.brand
+                                : t.border,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: _agreedToTerms
+                            ? const Icon(Icons.check_rounded,
+                                color: Colors.white, size: 14)
+                            : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: t.textSecondary),
+                            children: [
+                              const TextSpan(text: 'I agree to the '),
+                              TextSpan(
+                                text: 'Terms & Privacy Policy',
+                                style: TextStyle(
+                                  color: t.brand,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 20),
+
+                // Register button with gradient
                 SizedBox(
-                  height: 54,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleRegister,
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [t.brand, t.brandSecondary],
+                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: t.brand.withValues(alpha: 0.36),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(54),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(18)),
+                      ),
+                      onPressed:
+                          _isLoading ? null : _handleRegister,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2.2,
+                                  color: Colors.white),
+                            )
+                          : Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Create account',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    size: 18),
+                              ],
                             ),
-                          )
-                        : const Text('Create account'),
+                    ),
                   ),
                 ),
               ],
@@ -290,4 +388,108 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ),
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Role selector chips
+// ---------------------------------------------------------------------------
+
+class _RoleSelector extends StatelessWidget {
+  final UserRole selectedRole;
+  final ValueChanged<UserRole> onChanged;
+
+  const _RoleSelector({
+    required this.selectedRole,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.fitTheme;
+
+    const roles = [
+      _RoleChip(
+          role: UserRole.gymOwner,
+          label: 'Owner',
+          icon: Icons.storefront_outlined),
+      _RoleChip(
+          role: UserRole.trainer,
+          label: 'Trainer',
+          icon: Icons.fitness_center_outlined),
+      _RoleChip(
+          role: UserRole.client,
+          label: 'Member',
+          icon: Icons.person_outline_rounded),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'I am a...',
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: t.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: roles.map((chip) {
+            final isSelected = chip.role == selectedRole;
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onChanged(chip.role),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: EdgeInsets.only(
+                      right: chip.role == roles.last.role ? 0 : 8),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? t.brand.withValues(alpha: 0.13)
+                        : t.surfaceAlt,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isSelected ? t.brand : t.border,
+                      width: isSelected ? 1.5 : 1,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        chip.icon,
+                        size: 22,
+                        color: isSelected ? t.brand : t.textSecondary,
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        chip.label,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: isSelected
+                              ? t.brand
+                              : t.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class _RoleChip {
+  final UserRole role;
+  final String label;
+  final IconData icon;
+
+  const _RoleChip(
+      {required this.role, required this.label, required this.icon});
 }

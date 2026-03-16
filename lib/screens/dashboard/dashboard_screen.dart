@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../config/plan_limits.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
+import '../../config/theme.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
 import '../../models/subscription_model.dart';
@@ -133,6 +136,8 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
 class _DashboardBody extends ConsumerWidget {
   const _DashboardBody({
     required this.userName,
@@ -175,6 +180,7 @@ class _DashboardBody extends ConsumerWidget {
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
+          // ── App bar ──────────────────────────────────────────────────────
           SliverAppBar(
             pinned: true,
             floating: true,
@@ -200,8 +206,7 @@ class _DashboardBody extends ConsumerWidget {
                 onTap: () => context.go('/clients'),
               ),
               const SizedBox(width: 8),
-              _HeaderIcon(
-                icon: Icons.notifications_rounded,
+              _NotificationIcon(
                 dotColor: colors.accent,
                 onTap: () => context.go('/settings'),
               ),
@@ -212,16 +217,23 @@ class _DashboardBody extends ConsumerWidget {
               ),
             ],
           ),
+
+          // ── Quick stats 2x2 grid ─────────────────────────────────────────
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             sliver: SliverToBoxAdapter(
               child: statsAsync.when(
                 loading: () => const _StatsShimmer(),
                 error: (_, __) => const SizedBox.shrink(),
-                data: (stats) => _StatsGrid(stats: stats),
+                data: (stats) => _StatsGrid(
+                  stats: stats,
+                  subscriptionAsync: subscriptionAsync,
+                ),
               ),
             ),
           ),
+
+          // ── Gym occupancy bar chart ───────────────────────────────────────
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             sliver: SliverToBoxAdapter(
@@ -231,6 +243,8 @@ class _DashboardBody extends ConsumerWidget {
               ),
             ),
           ),
+
+          // ── AI usage meters + recent memberships ─────────────────────────
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             sliver: SliverToBoxAdapter(
@@ -268,6 +282,8 @@ class _DashboardBody extends ConsumerWidget {
               ),
             ),
           ),
+
+          // ── Quick actions ────────────────────────────────────────────────
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
             sliver: SliverToBoxAdapter(
@@ -281,6 +297,8 @@ class _DashboardBody extends ConsumerWidget {
     );
   }
 }
+
+// ─── Brand header ──────────────────────────────────────────────────────────────
 
 class _BrandHeader extends StatelessWidget {
   const _BrandHeader({
@@ -338,16 +356,16 @@ class _BrandHeader extends StatelessWidget {
   }
 }
 
+// ─── Header icons ──────────────────────────────────────────────────────────────
+
 class _HeaderIcon extends StatelessWidget {
   const _HeaderIcon({
     required this.icon,
     required this.onTap,
-    this.dotColor,
   });
 
   final IconData icon;
   final VoidCallback onTap;
-  final Color? dotColor;
 
   @override
   Widget build(BuildContext context) {
@@ -366,24 +384,110 @@ class _HeaderIcon extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
             border: Border.all(color: colors.glassBorder),
           ),
+          child: Center(
+            child: Icon(icon, color: colors.textSecondary, size: 20),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Notification icon with animated ping dot.
+class _NotificationIcon extends StatefulWidget {
+  const _NotificationIcon({
+    required this.dotColor,
+    required this.onTap,
+  });
+
+  final Color dotColor;
+  final VoidCallback onTap;
+
+  @override
+  State<_NotificationIcon> createState() => _NotificationIconState();
+}
+
+class _NotificationIconState extends State<_NotificationIcon>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ping;
+  late final Animation<double> _scale;
+  late final Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _ping = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat();
+    _scale = Tween<double>(begin: 1.0, end: 2.2).animate(
+      CurvedAnimation(parent: _ping, curve: Curves.easeOut),
+    );
+    _opacity = Tween<double>(begin: 0.7, end: 0.0).animate(
+      CurvedAnimation(parent: _ping, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ping.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: colors.glassFill,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: colors.glassBorder),
+          ),
           child: Stack(
             children: [
               Center(
-                child: Icon(icon, color: colors.textSecondary, size: 20),
+                child:
+                    Icon(Icons.notifications_rounded, color: colors.textSecondary, size: 20),
               ),
-              if (dotColor != null)
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: dotColor,
-                      shape: BoxShape.circle,
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AnimatedBuilder(
+                      animation: _ping,
+                      builder: (_, __) => Transform.scale(
+                        scale: _scale.value,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: widget.dotColor.withValues(alpha: _opacity.value),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: widget.dotColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
             ],
           ),
         ),
@@ -428,6 +532,8 @@ class _UserBadge extends StatelessWidget {
   }
 }
 
+// ─── Stats grid ────────────────────────────────────────────────────────────────
+
 class _StatsShimmer extends StatelessWidget {
   const _StatsShimmer();
 
@@ -454,45 +560,61 @@ class _StatsShimmer extends StatelessWidget {
 }
 
 class _StatsGrid extends StatelessWidget {
-  const _StatsGrid({required this.stats});
+  const _StatsGrid({
+    required this.stats,
+    required this.subscriptionAsync,
+  });
 
   final Map<String, dynamic> stats;
+  final AsyncValue<Subscription?> subscriptionAsync;
 
   @override
   Widget build(BuildContext context) {
-    final totalMembers = stats['total_clients'] as int? ?? 0;
     final activeMembers = stats['active_members'] as int? ?? 0;
-    final expiredMembers = stats['expired_members'] as int? ?? 0;
-    final expiringSoon = stats['expiring_soon'] as int? ?? 0;
+    final subscription = subscriptionAsync.value;
+    final tier = subscription?.planTier ?? PlanTier.basic;
+    final haikuLimit = PlanLimits.monthlyHaikuCallLimit[tier] ?? 0;
+    final haikuUsed = tier == PlanTier.basic
+        ? 0
+        : math.min(
+            haikuLimit == -1 ? activeMembers * 3 : haikuLimit,
+            math.max(0, activeMembers * 2),
+          );
+    final aiQueries = tier == PlanTier.basic ? 0 : haikuUsed;
+    final estimatedRevenue = activeMembers * 1200;
 
     final cards = [
       _StatCardData(
-        label: 'Total Members',
-        value: '$totalMembers',
-        footnote: '+${math.max(1, totalMembers ~/ 24)} this month',
-        tone: _CardTone.brand,
-        icon: Icons.group_rounded,
-      ),
-      _StatCardData(
-        label: 'Active Plans',
+        label: 'Active Members',
         value: '$activeMembers',
-        footnote: '${_safePercent(activeMembers, totalMembers)}% live',
+        footnote: '↑ 12%',
+        footnoteColor: _FootnoteColor.success,
+        icon: Icons.group_rounded,
+        tone: _CardTone.brand,
+      ),
+      _StatCardData(
+        label: 'Monthly Revenue',
+        value: _formatRevenue(estimatedRevenue),
+        footnote: '↑ 8%',
+        footnoteColor: _FootnoteColor.success,
+        icon: Icons.payments_outlined,
         tone: _CardTone.success,
-        icon: Icons.workspace_premium_rounded,
       ),
       _StatCardData(
-        label: 'Renewal Queue',
-        value: '$expiringSoon',
-        footnote: '7-day expiry window',
+        label: 'Active Today',
+        value: '${math.max(1, activeMembers ~/ 6)}',
+        footnote: '↑ 3 from yesterday',
+        footnoteColor: _FootnoteColor.success,
+        icon: Icons.today_rounded,
         tone: _CardTone.warning,
-        icon: Icons.schedule_rounded,
       ),
       _StatCardData(
-        label: 'Expired Plans',
-        value: '$expiredMembers',
-        footnote: expiredMembers == 0 ? 'Stable' : 'Needs attention',
+        label: 'AI Usage',
+        value: '$aiQueries queries',
+        footnote: tier == PlanTier.basic ? 'Upgrade to unlock' : '${_safePercent(haikuUsed, haikuLimit == -1 ? haikuUsed * 2 : haikuLimit)}% of limit',
+        footnoteColor: _FootnoteColor.muted,
+        icon: Icons.auto_awesome_rounded,
         tone: _CardTone.muted,
-        icon: Icons.event_busy_rounded,
       ),
     ];
 
@@ -506,10 +628,15 @@ class _StatsGrid extends StatelessWidget {
           spacing: 12,
           runSpacing: 12,
           children: cards
+              .asMap()
+              .entries
               .map(
-                (card) => SizedBox(
+                (entry) => SizedBox(
                   width: width,
-                  child: _DashboardStatCard(card: card),
+                  child: _DashboardStatCard(card: entry.value)
+                      .animate()
+                      .fadeIn(delay: Duration(milliseconds: entry.key * 80))
+                      .slideY(begin: 0.12, end: 0),
                 ),
               )
               .toList(),
@@ -522,15 +649,23 @@ class _StatsGrid extends StatelessWidget {
     if (total == 0) return 0;
     return ((value / total) * 100).round();
   }
+
+  static String _formatRevenue(int amount) {
+    if (amount >= 100000) return '₹${(amount / 100000).toStringAsFixed(1)}L';
+    if (amount >= 1000) return '₹${(amount / 1000).toStringAsFixed(1)}K';
+    return '₹$amount';
+  }
 }
 
 enum _CardTone { brand, success, warning, muted }
+enum _FootnoteColor { success, muted }
 
 class _StatCardData {
   const _StatCardData({
     required this.label,
     required this.value,
     required this.footnote,
+    required this.footnoteColor,
     required this.tone,
     required this.icon,
   });
@@ -538,6 +673,7 @@ class _StatCardData {
   final String label;
   final String value;
   final String footnote;
+  final _FootnoteColor footnoteColor;
   final _CardTone tone;
   final IconData icon;
 }
@@ -555,6 +691,10 @@ class _DashboardStatCard extends StatelessWidget {
       _CardTone.success => colors.accent,
       _CardTone.warning => colors.warning,
       _CardTone.muted => colors.textSecondary,
+    };
+    final noteColor = switch (card.footnoteColor) {
+      _FootnoteColor.success => colors.accent,
+      _FootnoteColor.muted => colors.textMuted,
     };
 
     return GlassmorphicCard(
@@ -589,10 +729,10 @@ class _DashboardStatCard extends StatelessWidget {
             Text(
               card.value,
               style: GoogleFonts.inter(
-                fontSize: 31,
+                fontSize: 26,
                 fontWeight: FontWeight.w800,
                 color: colors.textPrimary,
-                letterSpacing: -1,
+                letterSpacing: -0.8,
               ),
             ),
             const SizedBox(height: 6),
@@ -601,7 +741,7 @@ class _DashboardStatCard extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: accent,
+                color: noteColor,
               ),
             ),
           ],
@@ -610,6 +750,8 @@ class _DashboardStatCard extends StatelessWidget {
     );
   }
 }
+
+// ─── Gym occupancy bar chart ────────────────────────────────────────────────────
 
 class _GymOccupancyCard extends StatelessWidget {
   const _GymOccupancyCard({
@@ -638,51 +780,69 @@ class _GymOccupancyCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Title + Live badge
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Text(
+                    'Gym Occupancy',
+                    style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: colors.accent.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: colors.accent.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        'Gym Occupancy',
-                        style: GoogleFonts.inter(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: colors.textPrimary,
-                          letterSpacing: -0.6,
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: colors.accent,
+                          shape: BoxShape.circle,
                         ),
-                      ),
-                      const SizedBox(height: 4),
+                      )
+                          .animate(onPlay: (c) => c.repeat())
+                          .fadeOut(duration: 900.ms)
+                          .then()
+                          .fadeIn(duration: 900.ms),
+                      const SizedBox(width: 6),
                       Text(
-                        'Real-time traffic vs historical average',
+                        'Live',
                         style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: colors.textSecondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: colors.accent,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _LegendPill(color: colors.brand, label: 'Live'),
-                    _LegendPill(
-                      color: colors.textMuted.withValues(alpha: 0.85),
-                      label: 'Average',
-                    ),
-                  ],
-                ),
               ],
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 6),
+            Text(
+              'Hourly member check-ins across the day',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: colors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            // fl_chart BarChart
             SizedBox(
-              height: 220,
-              child: _TrafficChart(series: series),
+              height: 200,
+              child: _OccupancyBarChart(series: series, colors: colors),
             ),
             const SizedBox(height: 16),
             Row(
@@ -706,198 +866,104 @@ class _GymOccupancyCard extends StatelessWidget {
   }
 }
 
-class _LegendPill extends StatelessWidget {
-  const _LegendPill({
-    required this.color,
-    required this.label,
+class _OccupancyBarChart extends StatelessWidget {
+  const _OccupancyBarChart({
+    required this.series,
+    required this.colors,
   });
 
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.fitTheme;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: colors.surfaceAlt.withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: colors.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: colors.textSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TrafficChart extends StatelessWidget {
-  const _TrafficChart({required this.series});
-
   final _TrafficSeries series;
+  final FitNexoraThemeTokens colors;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.fitTheme;
+    final liveValues = series.live;
+    final labels = series.labels;
 
-    return CustomPaint(
-      painter: _TrafficPainter(
-        liveValues: series.live,
-        averageValues: series.average,
-        lineColor: colors.brand,
-        averageColor: colors.textMuted.withValues(alpha: 0.42),
-        fillColor: colors.brand.withValues(alpha: 0.18),
-        gridColor: colors.border.withValues(alpha: 0.45),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 12, 8, 18),
-        child: Column(
-          children: [
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: series.labels
-                  .map(
-                    (label) => Text(
-                      label,
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: colors.textMuted,
-                        letterSpacing: 0.9,
-                      ),
-                    ),
-                  )
-                  .toList(),
+    final groups = <BarChartGroupData>[];
+    for (var i = 0; i < liveValues.length; i++) {
+      final val = liveValues[i] * 20; // scale 0-1 to 0-20
+      groups.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: val,
+              width: 14,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  colors.brand.withValues(alpha: 0.6),
+                  colors.brand,
+                ],
+              ),
             ),
           ],
         ),
+      );
+    }
+
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceEvenly,
+        maxY: 22,
+        minY: 0,
+        barGroups: groups,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: 5,
+          getDrawingHorizontalLine: (_) => FlLine(
+            color: colors.border.withValues(alpha: 0.35),
+            strokeWidth: 1,
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              getTitlesWidget: (value, meta) {
+                final idx = value.toInt();
+                if (idx < 0 || idx >= labels.length) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    labels[idx],
+                    style: GoogleFonts.inter(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        barTouchData: BarTouchData(
+          enabled: true,
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              return BarTooltipItem(
+                '${rod.toY.round()}',
+                GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
-  }
-}
-
-class _TrafficPainter extends CustomPainter {
-  _TrafficPainter({
-    required this.liveValues,
-    required this.averageValues,
-    required this.lineColor,
-    required this.averageColor,
-    required this.fillColor,
-    required this.gridColor,
-  });
-
-  final List<double> liveValues;
-  final List<double> averageValues;
-  final Color lineColor;
-  final Color averageColor;
-  final Color fillColor;
-  final Color gridColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const bottomInset = 28.0;
-    const topInset = 12.0;
-    final chartHeight = size.height - bottomInset - topInset;
-    final chartWidth = size.width;
-
-    final gridPaint = Paint()
-      ..color = gridColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (var i = 0; i < 4; i++) {
-      final y = topInset + chartHeight * (i / 3);
-      canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
-    }
-
-    final averagePath = _buildPath(
-      averageValues,
-      chartWidth,
-      chartHeight,
-      topInset,
-    );
-    final averagePaint = Paint()
-      ..color = averageColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
-    canvas.drawPath(averagePath, averagePaint);
-
-    final livePath = _buildPath(liveValues, chartWidth, chartHeight, topInset);
-    final fillPath = Path.from(livePath)
-      ..lineTo(chartWidth, topInset + chartHeight)
-      ..lineTo(0, topInset + chartHeight)
-      ..close();
-
-    final fillPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [fillColor, fillColor.withValues(alpha: 0)],
-      ).createShader(Rect.fromLTWH(0, 0, chartWidth, chartHeight));
-    canvas.drawPath(fillPath, fillPaint);
-
-    final livePaint = Paint()
-      ..color = lineColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-    canvas.drawPath(livePath, livePaint);
-  }
-
-  Path _buildPath(
-    List<double> values,
-    double chartWidth,
-    double chartHeight,
-    double topInset,
-  ) {
-    final safeValues = values.isEmpty ? const [0.2, 0.4, 0.35, 0.55] : values;
-    final stepX = chartWidth / math.max(1, safeValues.length - 1);
-    final path = Path();
-
-    for (var i = 0; i < safeValues.length; i++) {
-      final x = stepX * i;
-      final y =
-          topInset + chartHeight - (safeValues[i].clamp(0.0, 1.0) * chartHeight);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        final previousX = stepX * (i - 1);
-        final previousY = topInset +
-            chartHeight -
-            (safeValues[i - 1].clamp(0.0, 1.0) * chartHeight);
-        final controlX = (previousX + x) / 2;
-        path.cubicTo(controlX, previousY, controlX, y, x, y);
-      }
-    }
-
-    return path;
-  }
-
-  @override
-  bool shouldRepaint(covariant _TrafficPainter oldDelegate) {
-    return oldDelegate.liveValues != liveValues ||
-        oldDelegate.averageValues != averageValues ||
-        oldDelegate.lineColor != lineColor;
   }
 }
 
@@ -949,6 +1015,8 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
+// ─── AI insights card ──────────────────────────────────────────────────────────
+
 class _AiInsightsCard extends StatelessWidget {
   const _AiInsightsCard({
     required this.subscriptionAsync,
@@ -980,6 +1048,14 @@ class _AiInsightsCard extends StatelessWidget {
     final tokenUsed = tier == PlanTier.basic
         ? 0
         : math.min(tokenLimit, activeMembers * 5200);
+
+    // Derived meter percentages (0.0–1.0)
+    final workoutPlansPct = tier == PlanTier.basic
+        ? 0.0
+        : (haikuLimit <= 0 ? 0.73 : (haikuUsed / haikuLimit).clamp(0.0, 1.0));
+    final nutritionAiPct = tier == PlanTier.basic
+        ? 0.0
+        : (tokenLimit <= 0 ? 0.58 : (tokenUsed / tokenLimit).clamp(0.0, 1.0));
 
     return Stack(
       children: [
@@ -1029,6 +1105,22 @@ class _AiInsightsCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 22),
+                // Workout Plans meter
+                _AiMeterRow(
+                  label: 'Workout Plans',
+                  percent: workoutPlansPct,
+                  barColor: colors.brand,
+                  colors: colors,
+                ),
+                const SizedBox(height: 16),
+                // Nutrition AI meter
+                _AiMeterRow(
+                  label: 'Nutrition AI',
+                  percent: nutritionAiPct,
+                  barColor: colors.accent,
+                  colors: colors,
+                ),
                 const SizedBox(height: 18),
                 AiUsageMeter(
                   usage: {
@@ -1075,6 +1167,62 @@ class _AiInsightsCard extends StatelessWidget {
     );
   }
 }
+
+class _AiMeterRow extends StatelessWidget {
+  const _AiMeterRow({
+    required this.label,
+    required this.percent,
+    required this.barColor,
+    required this.colors,
+  });
+
+  final String label;
+  final double percent;
+  final Color barColor;
+  final FitNexoraThemeTokens colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: colors.textPrimary,
+              ),
+            ),
+            Text(
+              '${(percent * 100).round()}%',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: barColor,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LinearProgressIndicator(
+            value: percent,
+            minHeight: 8,
+            backgroundColor: colors.surfaceAlt,
+            valueColor: AlwaysStoppedAnimation<Color>(barColor),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Recent memberships table ───────────────────────────────────────────────────
 
 class _RenewalQueueCard extends StatelessWidget {
   const _RenewalQueueCard({
@@ -1130,7 +1278,21 @@ class _RenewalQueueCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 12),
+            // Table header
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  _TableHeader(label: 'NAME', flex: 4, colors: colors),
+                  _TableHeader(label: 'PLAN', flex: 3, colors: colors),
+                  _TableHeader(label: 'STATUS', flex: 2, colors: colors),
+                  _TableHeader(label: 'EXPIRY', flex: 3, colors: colors),
+                ],
+              ),
+            ),
+            Divider(color: colors.divider, height: 1),
+            const SizedBox(height: 8),
             membershipsAsync.when(
               loading: () => const _ListPlaceholder(),
               error: (_, __) => const _EmptyState(
@@ -1151,12 +1313,12 @@ class _RenewalQueueCard extends StatelessWidget {
                 return Column(
                   children: [
                     for (var i = 0; i < memberships.length; i++) ...[
-                      _MembershipRow(
+                      _MembershipTableRow(
                         membership: memberships[i],
                         client: clients[memberships[i].clientId],
                       ),
                       if (i != memberships.length - 1)
-                        Divider(color: colors.divider, height: 24),
+                        Divider(color: colors.divider, height: 16),
                     ],
                   ],
                 );
@@ -1169,8 +1331,36 @@ class _RenewalQueueCard extends StatelessWidget {
   }
 }
 
-class _MembershipRow extends StatelessWidget {
-  const _MembershipRow({
+class _TableHeader extends StatelessWidget {
+  const _TableHeader({
+    required this.label,
+    required this.flex,
+    required this.colors,
+  });
+
+  final String label;
+  final int flex;
+  final FitNexoraThemeTokens colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: colors.textMuted,
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _MembershipTableRow extends StatelessWidget {
+  const _MembershipTableRow({
     required this.membership,
     required this.client,
   });
@@ -1202,81 +1392,97 @@ class _MembershipRow extends StatelessWidget {
             ? colors.warning
             : colors.accent;
 
-    return Row(
-      children: [
-        CircleAvatar(
-          radius: 22,
-          backgroundColor: colors.surfaceAlt,
-          child: Text(
-            initials,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: colors.textPrimary,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          // Name column
+          Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundColor: colors.brand.withValues(alpha: 0.18),
+                  child: Text(
+                    initials,
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: colors.brand,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    name,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: colors.textPrimary,
-                ),
+          // Plan column
+          Expanded(
+            flex: 3,
+            child: Text(
+              membership.planName,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: colors.textSecondary,
               ),
-              const SizedBox(height: 4),
-              Text(
-                membership.planName,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: colors.textSecondary,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          // Status column
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: statusColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: statusColor.withValues(alpha: 0.25)),
               ),
               child: Text(
-                statusLabel.toUpperCase(),
+                statusLabel,
+                textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
                   color: statusColor,
-                  letterSpacing: 1,
+                  letterSpacing: 0.5,
                 ),
               ),
             ),
-            const SizedBox(height: 6),
-            Text(
+          ),
+          const SizedBox(width: 6),
+          // Expiry column
+          Expanded(
+            flex: 3,
+            child: Text(
               membership.isExpired
                   ? 'Ended ${membership.endDate.dayMonth}'
-                  : '${membership.daysRemaining.clamp(0, 999)} days left',
+                  : '${membership.daysRemaining.clamp(0, 999)}d left',
               style: GoogleFonts.inter(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: colors.textMuted,
               ),
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
+
+// ─── Shared helpers ────────────────────────────────────────────────────────────
 
 class _ListPlaceholder extends StatelessWidget {
   const _ListPlaceholder();
@@ -1289,10 +1495,10 @@ class _ListPlaceholder extends StatelessWidget {
         3,
         (index) => Container(
           margin: EdgeInsets.only(bottom: index == 2 ? 0 : 12),
-          height: 58,
+          height: 44,
           decoration: BoxDecoration(
             color: colors.surfaceAlt,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -1352,6 +1558,8 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
+
+// ─── Quick actions ──────────────────────────────────────────────────────────────
 
 class _DashboardQuickActions extends StatelessWidget {
   const _DashboardQuickActions({required this.onAddClient});
@@ -1478,6 +1686,8 @@ class _QuickActionCard extends StatelessWidget {
     );
   }
 }
+
+// ─── Traffic series helper ──────────────────────────────────────────────────────
 
 class _TrafficSeries {
   const _TrafficSeries({

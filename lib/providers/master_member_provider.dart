@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/dev_bypass.dart';
 import '../models/progress_checkin_model.dart';
 import 'auth_provider.dart';
 import 'elite_member_provider.dart';
@@ -14,6 +15,9 @@ const _masterTiers = {
 /// True when the member has an active Master membership.
 final memberHasMasterAccessProvider =
     FutureProvider.autoDispose<bool>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user != null && isDevUser(user.email)) return true;
+
   final membership = await ref.watch(memberMembershipProvider.future);
   if (membership == null || membership.isExpired) return false;
   return _masterTiers.any(

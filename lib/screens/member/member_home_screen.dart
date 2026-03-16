@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
+import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../core/responsive.dart';
 import '../../providers/auth_provider.dart';
@@ -104,31 +105,46 @@ class _MemberDashboard extends ConsumerWidget {
               ],
             ),
             actions: [
-              if (gym != null)
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        gym.name,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      gym?.name ?? 'Dev Gym',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
                       ),
-                      Text(
-                        'Basic Plan',
+                    ),
+                    membershipAsync.when(
+                      data: (m) => Text(
+                        m?.planName ?? 'No Plan',
                         style: GoogleFonts.inter(
                           fontSize: 10,
                           color: AppColors.textMuted,
                         ),
                       ),
-                    ],
-                  ),
+                      loading: () => Text(
+                        '...',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                      error: (_, __) => Text(
+                        'No Plan',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
             ],
           ),
 
@@ -519,9 +535,17 @@ class _CheckInButtonState extends ConsumerState<_CheckInButton> {
   }
 
   Future<void> _doCheckIn() async {
-    if (widget.gym == null || widget.user == null) return;
+    if (widget.user == null) return;
     setState(() => _loading = true);
     try {
+      // Developer Bypass: Simulate successful check-in
+      if (isDevUser(widget.user?.email as String?)) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) setState(() => _checkedIn = true);
+        return;
+      }
+
+      if (widget.gym == null) return;
       final db = ref.read(databaseServiceProvider);
       await db.memberCheckIn(
         gymId: widget.gym.id as String,
@@ -562,7 +586,7 @@ class _WorkoutCard extends StatelessWidget {
   }
 
   Widget _card(dynamic plan, BuildContext context) {
-    final days = plan.trainingDays as List;
+    final days = plan.days as List;
     final today = DateTime.now().weekday; // 1=Mon..7=Sun
     final todayDay =
         days.isNotEmpty ? days[(today - 1) % days.length] : null;
@@ -595,7 +619,7 @@ class _WorkoutCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    todayDay?.name ?? plan.name as String,
+                    todayDay?.dayName ?? plan.name as String,
                     style: GoogleFonts.inter(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/dev_bypass.dart';
 import '../models/progress_checkin_model.dart';
 import 'auth_provider.dart';
 import 'member_provider.dart';
@@ -9,12 +10,16 @@ import 'member_provider.dart';
 
 const _eliteTiers = {
   'elite', 'elite_monthly', 'elite_yearly',
-  'Elite Plan', 'Elite Monthly', 'Elite Yearly'
+  'Elite Plan', 'Elite Monthly', 'Elite Yearly',
+  'master', 'Master', 'Master Plan',
 };
 
 /// True when the member has an active Elite membership.
 final memberHasEliteAccessProvider =
     FutureProvider.autoDispose<bool>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user != null && isDevUser(user.email)) return true;
+
   final membership = await ref.watch(memberMembershipProvider.future);
   if (membership == null || membership.isExpired) return false;
   return _eliteTiers.any(

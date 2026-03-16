@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
+import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -354,8 +355,25 @@ class _MemberProgressScreenState
     if (val == null || val <= 0) return;
 
     final user = ref.read(currentUserProvider).value;
+    if (user == null) return;
+
+    // Developer Bypass: Simulate saving weight
+    if (isDevUser(user.email)) {
+      ref.invalidate(memberProgressProvider);
+      if (context.mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Weight logged: ${val.toStringAsFixed(1)} kg'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+      return;
+    }
+
     final gym = ref.read(selectedGymProvider);
-    if (user == null || gym == null) return;
+    if (gym == null) return;
 
     try {
       final db = ref.read(databaseServiceProvider);

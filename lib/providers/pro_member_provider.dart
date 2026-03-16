@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/dev_bypass.dart';
 import '../models/food_log_model.dart';
 import '../models/progress_checkin_model.dart';
 import 'auth_provider.dart';
@@ -9,11 +10,14 @@ import 'member_provider.dart';
 /// Pro plan tier names stored in the memberships.plan_name column.
 /// Any membership with planTier = 'pro' or 'elite' unlocks Pro features.
 const _proTiers = {'pro', 'pro_monthly', 'pro_yearly', 'elite',
-    'Pro Plan', 'Pro Monthly', 'Pro Yearly', 'Elite'};
+    'Pro Plan', 'Pro Monthly', 'Pro Yearly', 'Elite', 'master', 'Master'};
 
 /// True when the member has an active Pro (or higher) membership.
 final memberHasProAccessProvider =
     FutureProvider.autoDispose<bool>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user != null && isDevUser(user.email)) return true;
+
   final membership = await ref.watch(memberMembershipProvider.future);
   if (membership == null || membership.isExpired) return false;
   return _proTiers.any((t) =>

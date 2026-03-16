@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +28,8 @@ class AdminScreen extends ConsumerWidget {
     return _AdminDashboard(user: currentUser);
   }
 }
+
+// ─── Access denied ─────────────────────────────────────────────────────────────
 
 class _AccessDeniedPage extends StatelessWidget {
   const _AccessDeniedPage({this.user});
@@ -147,6 +151,8 @@ class _AccessDeniedPage extends StatelessWidget {
     );
   }
 }
+
+// ─── Dashboard ─────────────────────────────────────────────────────────────────
 
 class _AdminDashboard extends ConsumerStatefulWidget {
   const _AdminDashboard({required this.user});
@@ -292,7 +298,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-                        child: _GrowthCard(
+                        child: _SubscriptionGrowthCard(
                           colors: _colors,
                           loading: _loading,
                           points: _snapshot.growthPoints,
@@ -337,6 +343,8 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
     );
   }
 }
+
+// ─── Header ────────────────────────────────────────────────────────────────────
 
 class _AdminHeader extends StatelessWidget {
   const _AdminHeader({
@@ -497,6 +505,8 @@ class _HeaderActionButton extends StatelessWidget {
   static const _colorsBg = Color(0xFF0F0A1E);
 }
 
+// ─── Stats grid ────────────────────────────────────────────────────────────────
+
 class _AdminMetricGrid extends StatelessWidget {
   const _AdminMetricGrid({
     required this.colors,
@@ -530,7 +540,7 @@ class _AdminMetricGrid extends StatelessWidget {
         icon: Icons.group_rounded,
       ),
       _AdminMetricData(
-        label: 'Retention',
+        label: 'Retention Rate',
         value: '${snapshot.retentionPercent}%',
         delta: '+3.1%',
         icon: Icons.autorenew_rounded,
@@ -605,7 +615,10 @@ class _AdminMetricGrid extends StatelessWidget {
               ),
             ],
           ),
-        );
+        )
+            .animate()
+            .fadeIn(delay: Duration(milliseconds: index * 80))
+            .slideY(begin: 0.1, end: 0);
       },
     );
   }
@@ -619,9 +632,6 @@ class _AdminMetricGrid extends StatelessWidget {
   }
 
   static String _formatCompact(int value) {
-    if (value >= 100000) {
-      return '${(value / 1000).toStringAsFixed(1)}k';
-    }
     if (value >= 1000) {
       return '${(value / 1000).toStringAsFixed(1)}k';
     }
@@ -653,8 +663,10 @@ class _AdminMetricData {
   final IconData icon;
 }
 
-class _GrowthCard extends StatelessWidget {
-  const _GrowthCard({
+// ─── Subscription growth area chart (fl_chart LineChart) ──────────────────────
+
+class _SubscriptionGrowthCard extends StatelessWidget {
+  const _SubscriptionGrowthCard({
     required this.colors,
     required this.loading,
     required this.points,
@@ -663,6 +675,8 @@ class _GrowthCard extends StatelessWidget {
   final FitNexoraThemeTokens colors;
   final bool loading;
   final List<double> points;
+
+  static const _monthLabels = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
 
   @override
   Widget build(BuildContext context) {
@@ -692,7 +706,7 @@ class _GrowthCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Monthly active subscriptions across India',
+                      'Monthly active subscriptions — last 6 months',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: colors.textSecondary,
@@ -709,7 +723,7 @@ class _GrowthCard extends StatelessWidget {
                   border: Border.all(color: colors.brand.withValues(alpha: 0.12)),
                 ),
                 child: Text(
-                  'Last 30 Days',
+                  'Past 6 Months',
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -721,7 +735,7 @@ class _GrowthCard extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           SizedBox(
-            height: 180,
+            height: 200,
             child: loading
                 ? Container(
                     decoration: BoxDecoration(
@@ -729,28 +743,11 @@ class _GrowthCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                     ),
                   )
-                : CustomPaint(
-                    painter: _GrowthChartPainter(
-                      points: points,
-                      color: colors.brand,
-                    ),
-                    child: const SizedBox.expand(),
+                : _GrowthLineChart(
+                    points: points,
+                    colors: colors,
+                    labels: _monthLabels,
                   ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              4,
-              (index) => Text(
-                'WEEK ${index + 1}',
-                style: GoogleFonts.inter(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: colors.textMuted,
-                ),
-              ),
-            ),
           ),
         ],
       ),
@@ -758,71 +755,121 @@ class _GrowthCard extends StatelessWidget {
   }
 }
 
-class _GrowthChartPainter extends CustomPainter {
-  const _GrowthChartPainter({
+class _GrowthLineChart extends StatelessWidget {
+  const _GrowthLineChart({
     required this.points,
-    required this.color,
+    required this.colors,
+    required this.labels,
   });
 
   final List<double> points;
-  final Color color;
+  final FitNexoraThemeTokens colors;
+  final List<String> labels;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (points.isEmpty) return;
+  Widget build(BuildContext context) {
+    // Use first 6 points for 6-month view
+    final displayPoints = points.length >= 6 ? points.sublist(0, 6) : points;
+    final spots = displayPoints.asMap().entries.map((e) {
+      return FlSpot(e.key.toDouble(), e.value);
+    }).toList();
 
-    final fillPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          color.withValues(alpha: 0.3),
-          color.withValues(alpha: 0),
+    final maxY = (displayPoints.fold<double>(0, math.max) * 1.25)
+        .clamp(10.0, double.infinity);
+
+    return LineChart(
+      LineChartData(
+        minX: 0,
+        maxX: (displayPoints.length - 1).toDouble(),
+        minY: 0,
+        maxY: maxY,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: maxY / 4,
+          getDrawingHorizontalLine: (_) => FlLine(
+            color: colors.border.withValues(alpha: 0.3),
+            strokeWidth: 1,
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              getTitlesWidget: (value, meta) {
+                final idx = value.toInt();
+                if (idx < 0 || idx >= labels.length) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    labels[idx],
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: colors.textMuted,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: colors.brand,
+            barWidth: 3,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) =>
+                  FlDotCirclePainter(
+                radius: 4,
+                color: colors.brand,
+                strokeWidth: 2,
+                strokeColor: colors.background,
+              ),
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  colors.brand.withValues(alpha: 0.32),
+                  colors.brand.withValues(alpha: 0.0),
+                ],
+              ),
+            ),
+          ),
         ],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    final linePaint = Paint()
-      ..color = color
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final maxPoint = points.reduce(math.max);
-    final minPoint = points.reduce(math.min);
-    final spread = math.max(1.0, maxPoint - minPoint);
-    final dx = size.width / math.max(1, points.length - 1);
-
-    final path = Path();
-    final fillPath = Path();
-
-    for (var i = 0; i < points.length; i++) {
-      final x = dx * i;
-      final y = size.height -
-          (((points[i] - minPoint) / spread) * (size.height - 24)) -
-          12;
-      if (i == 0) {
-        path.moveTo(x, y);
-        fillPath.moveTo(x, size.height);
-        fillPath.lineTo(x, y);
-      } else {
-        path.lineTo(x, y);
-        fillPath.lineTo(x, y);
-      }
-    }
-
-    fillPath
-      ..lineTo(size.width, size.height)
-      ..close();
-
-    canvas.drawPath(fillPath, fillPaint);
-    canvas.drawPath(path, linePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _GrowthChartPainter oldDelegate) {
-    return oldDelegate.points != points || oldDelegate.color != color;
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                return LineTooltipItem(
+                  spot.y.round().toString(),
+                  GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                );
+              }).toList();
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
+
+// ─── Recent gym registrations table ───────────────────────────────────────────
 
 class _RecentGymsCard extends StatelessWidget {
   const _RecentGymsCard({
@@ -846,6 +893,7 @@ class _RecentGymsCard extends StatelessWidget {
         border: Border.all(color: colors.brand.withValues(alpha: 0.14)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
@@ -870,17 +918,25 @@ class _RecentGymsCard extends StatelessWidget {
               ],
             ),
           ),
+          // Table header
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                _TableLabel(label: 'GYM DETAILS', flex: 5, colors: colors),
-                _TableLabel(label: 'LOCATION', flex: 3, colors: colors),
+                _TableLabel(label: 'GYM NAME', flex: 4, colors: colors),
+                _TableLabel(label: 'OWNER', flex: 3, colors: colors),
+                _TableLabel(label: 'PLAN', flex: 2, colors: colors),
                 _TableLabel(label: 'STATUS', flex: 2, colors: colors),
+                _TableLabel(label: 'DATE', flex: 3, colors: colors),
               ],
             ),
           ),
-          const SizedBox(height: 6),
+          Divider(
+            color: colors.brand.withValues(alpha: 0.1),
+            height: 12,
+            indent: 16,
+            endIndent: 16,
+          ),
           if (loading)
             for (var i = 0; i < 3; i++)
               _GymRowPlaceholder(colors: colors)
@@ -907,7 +963,8 @@ class _RecentGymsCard extends StatelessWidget {
               ),
             )
           else
-            for (final gym in gyms) _GymRow(colors: colors, gym: gym),
+            for (final gym in gyms) _GymTableRow(colors: colors, gym: gym),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -942,8 +999,8 @@ class _TableLabel extends StatelessWidget {
   }
 }
 
-class _GymRow extends StatelessWidget {
-  const _GymRow({
+class _GymTableRow extends StatelessWidget {
+  const _GymTableRow({
     required this.colors,
     required this.gym,
   });
@@ -957,7 +1014,7 @@ class _GymRow extends StatelessWidget {
     final statusLabel = gym.isActive ? 'ACTIVE' : 'PENDING';
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: colors.brand.withValues(alpha: 0.08)),
@@ -965,15 +1022,16 @@ class _GymRow extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Gym Name
           Expanded(
-            flex: 5,
+            flex: 4,
             child: Row(
               children: [
                 Container(
-                  width: 42,
-                  height: 42,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     gradient: LinearGradient(
                       colors: [
                         colors.brand.withValues(alpha: 0.3),
@@ -985,69 +1043,81 @@ class _GymRow extends StatelessWidget {
                     child: Text(
                       gym.name.isEmpty ? 'G' : gym.name[0].toUpperCase(),
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w800,
                         color: colors.textPrimary,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        gym.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: colors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        gym.planLabel,
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: colors.textMuted,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    gym.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: colors.textPrimary,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+          // Owner (location as proxy)
           Expanded(
             flex: 3,
             child: Text(
               gym.locationLabel,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
                 fontSize: 12,
                 color: colors.textSecondary,
               ),
             ),
           ),
+          // Plan
           Expanded(
             flex: 2,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(999),
+            child: Text(
+              gym.planTier.toUpperCase(),
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: colors.brand,
+              ),
+            ),
+          ),
+          // Status
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: statusColor.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                statusLabel,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  color: statusColor,
                 ),
-                child: Text(
-                  statusLabel,
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: statusColor,
-                  ),
-                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+          // Date (id prefix as placeholder for date)
+          Expanded(
+            flex: 3,
+            child: Text(
+              gym.dateLabel,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: colors.textMuted,
               ),
             ),
           ),
@@ -1065,7 +1135,7 @@ class _GymRowPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 72,
+      height: 62,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.03),
@@ -1074,6 +1144,8 @@ class _GymRowPlaceholder extends StatelessWidget {
     );
   }
 }
+
+// ─── Recent activity feed ──────────────────────────────────────────────────────
 
 class _RecentActivityCard extends StatelessWidget {
   const _RecentActivityCard({
@@ -1199,6 +1271,8 @@ class _ActivityRow extends StatelessWidget {
   }
 }
 
+// ─── Bottom navigation ─────────────────────────────────────────────────────────
+
 class _AdminBottomBar extends StatelessWidget {
   const _AdminBottomBar({
     required this.colors,
@@ -1243,6 +1317,8 @@ class _AdminBottomBar extends StatelessWidget {
       ),
     ];
 
+    final currentRoute = GoRouterState.of(context).matchedLocation;
+
     return Container(
       padding: EdgeInsets.fromLTRB(10, 8, 10, 10 + bottomInset),
       decoration: BoxDecoration(
@@ -1252,7 +1328,7 @@ class _AdminBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((item) {
-          final isSelected = item.route == '/admin';
+          final isSelected = item.route == currentRoute || (item.route == '/admin' && currentRoute == '/admin');
           return InkWell(
             onTap: () {
               if (!isSelected) context.go(item.route);
@@ -1302,6 +1378,8 @@ class _AdminNavItem {
   final String route;
 }
 
+// ─── Glow orb ──────────────────────────────────────────────────────────────────
+
 class _AdminGlowOrb extends StatelessWidget {
   const _AdminGlowOrb({
     required this.color,
@@ -1327,6 +1405,8 @@ class _AdminGlowOrb extends StatelessWidget {
     );
   }
 }
+
+// ─── Data models ───────────────────────────────────────────────────────────────
 
 class _AdminSnapshot {
   const _AdminSnapshot({
@@ -1356,16 +1436,15 @@ class _AdminSnapshot {
     return math.min(99, math.max(0, ((activeSubscriptions / totalGyms) * 100).round()));
   }
 
+  /// 6 monthly data points for the growth chart
   List<double> get growthPoints {
     final baseline = math.max(8, activeSubscriptions).toDouble();
     return [
-      baseline * 0.8,
-      baseline * 1.1,
+      baseline * 0.80,
+      baseline * 1.10,
       baseline * 0.92,
       baseline * 1.18,
       baseline * 0.76,
-      baseline * 0.98,
-      baseline * 0.7,
       baseline * 1.24,
     ];
   }
@@ -1397,6 +1476,13 @@ class _AdminSnapshot {
         subtitle: 'Latency spike detected in AP-South-1 region.',
         timestamp: '12 hours ago',
       ),
+      const _AdminActivityItem(
+        icon: Icons.auto_awesome_rounded,
+        color: Color(0xFF60A5FA),
+        title: 'AI Model Updated',
+        subtitle: 'Workout plan generation model rolled to v2.1.',
+        timestamp: '1 day ago',
+      ),
     ];
   }
 }
@@ -1408,6 +1494,7 @@ class _AdminGymRecord {
     required this.address,
     required this.isActive,
     required this.planTier,
+    required this.createdAt,
   });
 
   factory _AdminGymRecord.fromJson(Map<String, dynamic> json) {
@@ -1417,6 +1504,7 @@ class _AdminGymRecord {
       address: ((json['address'] ?? '') as String).trim(),
       isActive: json['is_active'] == true,
       planTier: ((json['plan_tier'] ?? 'basic') as String).trim(),
+      createdAt: ((json['created_at'] ?? '') as String).trim(),
     );
   }
 
@@ -1425,6 +1513,7 @@ class _AdminGymRecord {
   final String address;
   final bool isActive;
   final String planTier;
+  final String createdAt;
 
   String get locationLabel {
     if (address.isEmpty) return 'Unknown';
@@ -1437,6 +1526,13 @@ class _AdminGymRecord {
       return '${segments.first}, ${segments[1]}';
     }
     return segments.first;
+  }
+
+  String get dateLabel {
+    if (createdAt.isEmpty) return '-';
+    final parsed = DateTime.tryParse(createdAt);
+    if (parsed == null) return '-';
+    return '${parsed.day}/${parsed.month}/${parsed.year.toString().substring(2)}';
   }
 
   String get planLabel =>

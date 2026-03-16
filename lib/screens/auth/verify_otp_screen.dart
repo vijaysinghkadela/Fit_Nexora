@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../config/theme.dart';
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/fit_auth_scaffold.dart';
 
 class VerifyOtpScreen extends ConsumerStatefulWidget {
   const VerifyOtpScreen({super.key, this.initialEmail});
@@ -30,8 +32,15 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
   @override
   void initState() {
     super.initState();
-    _controllers = List.generate(_digitCount, (_) => TextEditingController());
+    _controllers =
+        List.generate(_digitCount, (_) => TextEditingController());
     _focusNodes = List.generate(_digitCount, (_) => FocusNode());
+    // Rebuild on focus change to animate box borders
+    for (final node in _focusNodes) {
+      node.addListener(() {
+        if (mounted) setState(() {});
+      });
+    }
     _startTimer();
   }
 
@@ -60,7 +69,8 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
     });
   }
 
-  String get _code => _controllers.map((controller) => controller.text).join();
+  String get _code =>
+      _controllers.map((c) => c.text).join();
 
   Future<void> _submit() async {
     if (_code.length != _digitCount) {
@@ -70,7 +80,8 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
 
     final email = widget.initialEmail?.trim();
     if (email == null || email.isEmpty) {
-      _showMessage('Start the recovery flow again so we know which account to verify.');
+      _showMessage(
+          'Start the recovery flow again so we know which account to verify.');
       return;
     }
 
@@ -90,9 +101,7 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
     } catch (error) {
       _showMessage(_friendlyError(error));
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -140,7 +149,8 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
   Future<void> _resendCode() async {
     final email = widget.initialEmail?.trim();
     if (email == null || email.isEmpty) {
-      _showMessage('Start the recovery flow again so we know which account to verify.');
+      _showMessage(
+          'Start the recovery flow again so we know which account to verify.');
       return;
     }
 
@@ -148,7 +158,7 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
       await ref.read(currentUserProvider.notifier).resetPassword(email);
       if (!mounted) return;
       _startTimer();
-      _showMessage('A new recovery code has been requested.');
+      _showMessage('A new recovery code has been sent.');
     } catch (error) {
       _showMessage(_friendlyError(error));
     }
@@ -156,290 +166,241 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = FitNexoraThemeTokens.dark();
+    final t = context.fitTheme;
     final email = (widget.initialEmail ?? '').trim();
+    final timerExpired = _secondsRemaining == 0;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      body: Stack(
+    return FitAuthScaffold(
+      title: 'Verify Code',
+      subtitle: 'Enter the 4-digit code sent to your email.',
+      heroIcon: Icons.lock_outline_rounded,
+      heroLabel: 'Secure account recovery',
+      showBack: true,
+      child: Column(
         children: [
-          Positioned(
-            top: -90,
-            right: -90,
-            child: _OtpGlow(color: colors.brand.withValues(alpha: 0.18), size: 260),
-          ),
-          Positioned(
-            bottom: -120,
-            left: -100,
-            child: _OtpGlow(color: colors.brand.withValues(alpha: 0.12), size: 240),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          // Email confirmation chip
+          if (email.isNotEmpty) ...[
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+              decoration: BoxDecoration(
+                color: t.brand.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: t.brand.withValues(alpha: 0.22)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.arrow_back_rounded),
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 26),
+                  Icon(Icons.mail_outline_rounded,
+                      color: t.brand, size: 16),
+                  const SizedBox(width: 8),
                   Text(
-                    'Verify Code',
+                    email,
                     style: GoogleFonts.inter(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
-                      color: colors.textPrimary,
-                      letterSpacing: -1,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.inter(
-                        fontSize: 17,
-                        height: 1.5,
-                        color: colors.textSecondary,
-                      ),
-                      children: [
-                        const TextSpan(text: 'We\'ve sent a 4-digit code to '),
-                        TextSpan(
-                          text: email.isEmpty ? 'your email address' : email,
-                          style: TextStyle(
-                            color: colors.brand,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 34),
-                  Row(
-                    children: List.generate(_digitCount, (index) {
-                      final isFocused = _focusNodes[index].hasFocus;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: index == _digitCount - 1 ? 0 : 12),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 180),
-                            height: 86,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(22),
-                              border: Border.all(
-                                color: isFocused ? colors.brand : Colors.transparent,
-                                width: isFocused ? 2.2 : 1,
-                              ),
-                              boxShadow: [
-                                if (isFocused)
-                                  BoxShadow(
-                                    color: colors.brand.withValues(alpha: 0.18),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 8),
-                                  ),
-                              ],
-                            ),
-                            child: Center(
-                              child: TextField(
-                                controller: _controllers[index],
-                                focusNode: _focusNodes[index],
-                                autofocus: index == 0,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
-                                style: GoogleFonts.inter(
-                                  fontSize: 34,
-                                  fontWeight: FontWeight.w800,
-                                  color: const Color(0xFF2A2240),
-                                ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  counterText: '',
-                                  hintText: '-',
-                                ),
-                                onChanged: (value) => _handleChanged(value, index),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 26),
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          'Didn\'t receive the code?',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: colors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        InkWell(
-                          onTap: _secondsRemaining == 0
-                              ? _resendCode
-                              : null,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Resend Code',
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: _secondsRemaining == 0
-                                      ? colors.brand
-                                      : colors.brand.withValues(alpha: 0.55),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                                child: Text(
-                                  '00:${_secondsRemaining.toString().padLeft(2, '0')}',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: colors.textSecondary,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [colors.brand, colors.brandSecondary],
-                        ),
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: [
-                          BoxShadow(
-                            color: colors.brand.withValues(alpha: 0.34),
-                            blurRadius: 22,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(58),
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: _isLoading ? null : _submit,
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                'Verify & Proceed',
-                                style: GoogleFonts.inter(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                            color: colors.brand,
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          child: const Icon(Icons.bolt_rounded, color: Colors.white, size: 16),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'FitNexora',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: colors.textPrimary.withValues(alpha: 0.5),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'PREMIUM FITNESS ECOSYSTEM',
-                          style: GoogleFonts.inter(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.6,
-                            color: colors.textMuted.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: t.brand,
                     ),
                   ),
                 ],
               ),
+            ).animate().fadeIn(duration: 300.ms),
+            const SizedBox(height: 24),
+          ],
+
+          // OTP boxes
+          Row(
+            children: List.generate(_digitCount, (index) {
+              final isFocused = _focusNodes[index].hasFocus;
+              final isFilled = _controllers[index].text.isNotEmpty;
+
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      right: index == _digitCount - 1 ? 0 : 12),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: isFilled
+                          ? t.brand.withValues(alpha: 0.10)
+                          : t.surfaceAlt,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isFocused
+                            ? t.brand
+                            : isFilled
+                                ? t.brand.withValues(alpha: 0.45)
+                                : t.border,
+                        width: isFocused ? 2 : 1.2,
+                      ),
+                      boxShadow: isFocused
+                          ? [
+                              BoxShadow(
+                                color: t.brand.withValues(alpha: 0.22),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Center(
+                      child: TextField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        autofocus: index == 0,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        style: GoogleFonts.inter(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                          color: isFilled ? t.brand : t.textPrimary,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          counterText: '',
+                          hintText: '–',
+                          filled: false,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        onChanged: (value) => _handleChanged(value, index),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.1, end: 0),
+
+          const SizedBox(height: 28),
+
+          // Timer + resend
+          Column(
+            children: [
+              // Countdown display
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: timerExpired
+                    ? const SizedBox.shrink()
+                    : Container(
+                        key: const ValueKey('timer'),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: t.surfaceAlt,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: t.border),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.timer_outlined,
+                                size: 15, color: t.textMuted),
+                            const SizedBox(width: 6),
+                            Text(
+                              '00:${_secondsRemaining.toString().padLeft(2, '0')}',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: t.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Didn't receive the code? ",
+                    style: GoogleFonts.inter(
+                        fontSize: 14, color: t.textSecondary),
+                  ),
+                  TextButton(
+                    onPressed: timerExpired ? _resendCode : null,
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          timerExpired ? t.brand : t.textMuted,
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Resend',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: timerExpired ? t.brand : t.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ).animate().fadeIn(duration: 400.ms, delay: 100.ms),
+
+          const SizedBox(height: 28),
+
+          // Verify button with gradient
+          SizedBox(
+            width: double.infinity,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [t.brand, t.accent],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: t.brand.withValues(alpha: 0.38),
+                    blurRadius: 22,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18)),
+                ),
+                onPressed: _isLoading ? null : _submit,
+                child: _isLoading
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2.2, color: Colors.white),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Verify & Proceed',
+                            style: GoogleFonts.inter(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.verified_rounded, size: 18),
+                        ],
+                      ),
+              ),
             ),
-          ),
+          ).animate().fadeIn(duration: 400.ms, delay: 150.ms),
         ],
-      ),
-    );
-  }
-}
-
-class _OtpGlow extends StatelessWidget {
-  const _OtpGlow({
-    required this.color,
-    required this.size,
-  });
-
-  final Color color;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, Colors.transparent],
-          ),
-        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/pagination.dart';
+import '../core/dev_bypass.dart';
 import '../models/membership_model.dart';
 import '../models/workout_plan_model.dart';
 import '../models/diet_plan_model.dart';
@@ -16,6 +17,10 @@ final memberMembershipProvider =
     FutureProvider.autoDispose<Membership?>((ref) async {
   final user = ref.watch(currentUserProvider).value;
   if (user == null) return null;
+
+  // Developer Bypass: Unlock Master plan for testing all features
+  if (isDevUser(user.email)) return devMembership();
+
   final db = ref.watch(databaseServiceProvider);
   return db.getActiveMembershipForUser(user.id);
 });
@@ -35,6 +40,10 @@ final memberWorkoutPlanProvider =
     FutureProvider.autoDispose<WorkoutPlan?>((ref) async {
   final user = ref.watch(currentUserProvider).value;
   if (user == null) return null;
+
+  // Developer Bypass: Return mock workout plan
+  if (isDevUser(user.email)) return devWorkoutPlan();
+
   final db = ref.watch(databaseServiceProvider);
   final raw = await db.getWorkoutPlanForClient(user.id);
   if (raw == null) return null;
@@ -48,6 +57,10 @@ final memberDietPlanProvider =
     FutureProvider.autoDispose<DietPlan?>((ref) async {
   final user = ref.watch(currentUserProvider).value;
   if (user == null) return null;
+
+  // Developer Bypass: Return mock diet plan
+  if (isDevUser(user.email)) return devDietPlan();
+
   final db = ref.watch(databaseServiceProvider);
   final raw = await db.getDietPlanForClient(user.id);
   if (raw == null) return null;
@@ -61,6 +74,10 @@ final memberProgressProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   final user = ref.watch(currentUserProvider).value;
   if (user == null) return [];
+
+  // Developer Bypass: Return mock progress data
+  if (isDevUser(user.email)) return devProgressData();
+
   final db = ref.watch(databaseServiceProvider);
   return db.getProgressCheckIns(user.id);
 });
@@ -70,8 +87,13 @@ final memberProgressProvider =
 /// Number of gym check-ins this calendar month.
 final memberAttendanceProvider = FutureProvider.autoDispose<int>((ref) async {
   final user = ref.watch(currentUserProvider).value;
+  if (user == null) return 0;
+
+  // Developer Bypass: Return mock attendance
+  if (isDevUser(user.email)) return devAttendanceThisMonth;
+
   final gym = ref.watch(selectedGymProvider);
-  if (user == null || gym == null) return 0;
+  if (gym == null) return 0;
   final db = ref.watch(databaseServiceProvider);
   return db.getAttendanceThisMonth(gymId: gym.id, userId: user.id);
 });
@@ -81,6 +103,13 @@ final memberAttendanceProvider = FutureProvider.autoDispose<int>((ref) async {
 /// Real-time stream of gym announcements.
 final memberAnnouncementsProvider =
     StreamProvider.autoDispose<List<Announcement>>((ref) {
+  final user = ref.watch(currentUserProvider).value;
+
+  // Developer Bypass: Return mock announcements
+  if (user != null && isDevUser(user.email)) {
+    return Stream.value(devAnnouncements());
+  }
+
   final gym = ref.watch(selectedGymProvider);
   if (gym == null) return const Stream.empty();
   final db = ref.watch(databaseServiceProvider);

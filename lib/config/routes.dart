@@ -44,6 +44,21 @@ import '../screens/member/member_progress_screen.dart';
 import '../screens/member/member_workout_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
+import '../screens/nutrition/barcode_scanner_screen.dart';
+import '../screens/nutrition/manual_nutrition_log_screen.dart';
+import '../screens/nutrition/daily_calorie_goal_screen.dart';
+import '../screens/workouts/active_workout_screen.dart';
+import '../screens/workouts/rest_timer_screen.dart';
+import '../screens/workouts/workout_completion_screen.dart';
+import '../screens/workouts/workout_history_screen.dart';
+import '../screens/workouts/search_exercise_screen.dart';
+import '../screens/workouts/exercise_progress_screen.dart';
+import '../screens/workouts/compare_exercises_screen.dart';
+import '../screens/master/master_profile_screen.dart';
+import '../screens/master/master_perks_screen.dart';
+import '../screens/master/master_transformation_screen.dart';
+import '../screens/support/support_screen.dart';
+import '../screens/clients/log_checkin_screen.dart';
 import '../screens/pro/pro_ai_screen.dart';
 import '../screens/pro/pro_home_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
@@ -392,6 +407,84 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/nutrition',
         name: 'nutrition',
         pageBuilder: (context, state) => _fadePage(state, const NutritionScreen()),
+      ),
+      GoRoute(
+        path: '/nutrition/scan',
+        name: 'nutrition-scan',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const BarcodeScannerScreen()),
+      ),
+      GoRoute(
+        path: '/nutrition/log',
+        name: 'nutrition-log',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const ManualNutritionLogScreen()),
+      ),
+      GoRoute(
+        path: '/nutrition/goal',
+        name: 'nutrition-goal',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const DailyCalorieGoalScreen()),
+      ),
+      GoRoute(
+        path: '/workout/active',
+        name: 'workout-active',
+        builder: (context, state) => const ActiveWorkoutScreen(),
+      ),
+      GoRoute(
+        path: '/workout/timer',
+        name: 'workout-timer',
+        builder: (context, state) => const RestTimerScreen(),
+      ),
+      GoRoute(
+        path: '/workout/done',
+        name: 'workout-done',
+        builder: (context, state) => const WorkoutCompletionScreen(),
+      ),
+      GoRoute(
+        path: '/workout/history',
+        name: 'workout-history',
+        builder: (context, state) => const WorkoutHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/workout/exercise-search',
+        name: 'workout-exercise-search',
+        builder: (context, state) => const SearchExerciseScreen(),
+      ),
+      GoRoute(
+        path: '/workout/exercise-progress',
+        name: 'workout-exercise-progress',
+        builder: (context, state) => const ExerciseProgressScreen(),
+      ),
+      GoRoute(
+        path: '/workout/compare',
+        name: 'workout-compare',
+        builder: (context, state) => const CompareExercisesScreen(),
+      ),
+      GoRoute(
+        path: '/master/profile',
+        name: 'master-profile',
+        builder: (context, state) => const MasterProfileScreen(),
+      ),
+      GoRoute(
+        path: '/master/perks',
+        name: 'master-perks',
+        builder: (context, state) => const MasterPerksScreen(),
+      ),
+      GoRoute(
+        path: '/master/transformation',
+        name: 'master-transformation',
+        builder: (context, state) => const MasterTransformationScreen(),
+      ),
+      GoRoute(
+        path: '/support',
+        name: 'support',
+        builder: (context, state) => const SupportScreen(),
+      ),
+      GoRoute(
+        path: '/clients/checkin',
+        name: 'clients-checkin',
+        builder: (context, state) => const LogCheckinScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

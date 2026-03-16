@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants.dart';
+import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../models/announcement_model.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/error_widgets.dart';
@@ -17,7 +19,41 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider).value;
     final gym = ref.watch(selectedGymProvider);
+
+    // Developer Bypass: Show mock announcements when no gym
+    if (gym == null && user != null && isDevUser(user.email)) {
+      final announcements = devAnnouncements();
+      return Scaffold(
+        backgroundColor: AppColors.bgDark,
+        appBar: AppBar(
+          backgroundColor: AppColors.bgDark,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+            onPressed: () => context.pop(),
+          ),
+          title: Text(
+            'Announcements',
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+        body: ListView.separated(
+          padding: const EdgeInsets.all(20),
+          itemCount: announcements.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) => _AnnouncementCard(
+            announcement: announcements[index],
+            delay: index * 60,
+          ),
+        ),
+      );
+    }
+
     if (gym == null) {
       return Scaffold(
         backgroundColor: AppColors.bgDark,

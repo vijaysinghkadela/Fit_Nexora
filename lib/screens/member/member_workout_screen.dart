@@ -177,7 +177,7 @@ class _DayCard extends StatelessWidget {
             title: Row(
               children: [
                 Text(
-                  day.name as String,
+                  day.dayName as String,
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
