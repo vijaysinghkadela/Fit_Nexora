@@ -10,6 +10,7 @@ import '../../core/responsive.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
+import '../../providers/notifications_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/loading_widgets.dart';
 import 'member_paywall_screen.dart';
@@ -105,6 +106,41 @@ class _MemberDashboard extends ConsumerWidget {
               ],
             ),
             actions: [
+              // Notification bell with unread badge
+              Consumer(builder: (context, ref, _) {
+                final unread = ref.watch(unreadCountProvider);
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.notifications_rounded),
+                      color: AppColors.textPrimary,
+                      onPressed: () => context.push('/notifications'),
+                    ),
+                    if (unread > 0)
+                      Positioned(
+                        right: 6,
+                        top: 6,
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '$unread',
+                            style: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.only(right: 16),
                 child: Column(
@@ -225,6 +261,90 @@ class _MemberDashboard extends ConsumerWidget {
               child: _DietCard(
                 async: dietAsync,
                 onTap: () => context.go('/member/diet'),
+              ),
+            ),
+          ),
+
+          // ─── Section: Health ──────────────────────────────────────────
+          _sectionHeader('HEALTH TRACKING'),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _QuickNavCard(
+                      label: 'Steps',
+                      value: '8,420',
+                      sublabel: 'today',
+                      icon: Icons.directions_walk_rounded,
+                      color: AppColors.accent,
+                      onTap: () => context.push('/health/steps'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _QuickNavCard(
+                      label: 'Sleep',
+                      value: '7h 23m',
+                      sublabel: 'last night',
+                      icon: Icons.bedtime_rounded,
+                      color: AppColors.info,
+                      onTap: () => context.push('/health/sleep'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ─── Section: Notes ───────────────────────────────────────────
+          _sectionHeader('NOTES & JOURNAL'),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            sliver: SliverToBoxAdapter(
+              child: GestureDetector(
+                onTap: () => context.push('/notes'),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.bgCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.edit_note_rounded,
+                            color: AppColors.primary, size: 20),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Notes & Journal',
+                                style: GoogleFonts.inter(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary)),
+                            Text('Tap to view your notes',
+                                style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary)),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right_rounded,
+                          color: AppColors.textMuted),
+                    ],
+                  ),
+                ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.04),
               ),
             ),
           ),
@@ -772,6 +892,70 @@ class _DietCard extends StatelessWidget {
           ),
         ),
       );
+}
+
+// ─── Quick Nav Card ───────────────────────────────────────────────────────────
+
+class _QuickNavCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final String sublabel;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickNavCard({
+    required this.label,
+    required this.value,
+    required this.sublabel,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.bgCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color, size: 18),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(label,
+                style: GoogleFonts.inter(
+                    fontSize: 12, color: AppColors.textSecondary)),
+            Text(sublabel,
+                style: GoogleFonts.inter(
+                    fontSize: 10, color: AppColors.textMuted)),
+          ],
+        ),
+      ).animate(delay: 80.ms).fadeIn().slideY(begin: 0.04),
+    );
+  }
 }
 
 // ─── Announcements Card ───────────────────────────────────────────────────────

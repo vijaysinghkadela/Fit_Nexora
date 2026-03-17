@@ -243,8 +243,12 @@ Gym: ${gymName ?? 'Unknown'}''';
         'adherence_percent': adherencePercent,
         'last_gym_visit': lastGymVisit?.toIso8601String(),
         'assigned_trainer_id': assignedTrainerId,
+        'assigned_trainer_name': assignedTrainerName,
         'current_plan_name': currentPlanName,
         'language_preference': languagePreference.value,
+        // v2.0 additions below are excluded from direct table persistence 
+        // until the schema is explicitly expanded to include them.
+        /*
         'secondary_goal': secondaryGoal?.value,
         'session_duration_mins': sessionDurationMins,
         'cuisine': cuisine.value,
@@ -256,6 +260,7 @@ Gym: ${gymName ?? 'Unknown'}''';
         'gym_plan': gymPlan,
         'ai_quota_remaining': aiQuotaRemaining,
         'gym_name': gymName,
+        */
         'created_at': createdAt.toIso8601String(),
         'updated_at': updatedAt.toIso8601String(),
       };

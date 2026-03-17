@@ -11,15 +11,22 @@ import '../models/membership_model.dart';
 import '../models/workout_plan_model.dart';
 import '../models/diet_plan_model.dart';
 import '../models/announcement_model.dart';
+import '../models/gym_model.dart';
+import '../models/client_profile_model.dart';
+import '../models/membership_counts.dart';
+import 'pagination.dart';
 import 'enums.dart';
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-/// The developer email that triggers all bypasses.
-const String devEmail = 'vijaysinghfitness@gmail.com';
+/// The developer emails that trigger all bypasses.
+const List<String> devEmails = [
+  'vijaysinghfitness@gmail.com',
+  'rohit@gmail.com',
+];
 
 /// Quick check used by every provider.
-bool isDevUser(String? email) => email == devEmail;
+bool isDevUser(String? email) => devEmails.contains(email);
 
 // ─── Membership (Master — unlocks ALL features) ─────────────────────────────
 
@@ -244,3 +251,128 @@ List<Announcement> devAnnouncements() => [
         createdAt: DateTime.now().subtract(const Duration(days: 3)),
       ),
     ];
+// ─── Gyms & Dashboard (Owner Bypass) ─────────────────────────────────────────
+
+List<Gym> devGyms() => [
+      Gym(
+        id: 'dev-mock-gym',
+        ownerId: 'dev-mock-owner',
+        name: 'Fit Nexora Dev Gym',
+        address: '123 AI Avenue, Silicon Valley',
+        phone: '+91 98765 43210',
+        planTier: PlanTier.elite,
+        maxClients: 500,
+        maxTrainers: 10,
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        updatedAt: DateTime.now(),
+      ),
+    ];
+
+Map<String, dynamic> devDashboardStats() => {
+      'total_clients': 150,
+      'active_members': 142,
+      'expired_members': 8,
+      'expiring_soon': 12,
+    };
+
+// ─── Clients (Paged) ─────────────────────────────────────────────────────────
+
+PagedResult<ClientProfile> devClientsPaged({
+  int limit = 20,
+  int offset = 0,
+  String? search,
+  FitnessGoal? goalFilter,
+  String? sort = 'name_asc',
+}) {
+  List<ClientProfile> allClients = List.generate(45, (i) {
+    return ClientProfile(
+      id: 'dev-client-${100 + i}',
+      gymId: 'dev-mock-gym',
+      fullName: 'Dev Client ${i + 1}',
+      email: 'client$i@example.com',
+      phone: '+91 90000 000${i.toString().padLeft(2, '0')}',
+      goal: i % 3 == 0
+          ? FitnessGoal.fatLoss
+          : (i % 3 == 1 ? FitnessGoal.muscleGain : FitnessGoal.maintenance),
+      sex: i % 2 == 0 ? 'male' : 'female',
+      createdAt: DateTime.now().subtract(Duration(days: i)),
+      updatedAt: DateTime.now(),
+    );
+  });
+
+  // Apply filters
+  if (goalFilter != null) {
+    allClients = allClients.where((c) => c.goal == goalFilter).toList();
+  }
+
+  if (search != null && search.isNotEmpty) {
+    final query = search.toLowerCase();
+    allClients = allClients.where((c) =>
+        (c.fullName?.toLowerCase().contains(query) ?? false) ||
+        (c.email?.toLowerCase().contains(query) ?? false)).toList();
+  }
+
+  // Apply sorting
+  if (sort == 'name_asc') {
+    allClients.sort((a, b) => (a.fullName ?? '').compareTo(b.fullName ?? ''));
+  } else if (sort == 'name_desc') {
+    allClients.sort((a, b) => (b.fullName ?? '').compareTo(a.fullName ?? ''));
+  } else if (sort == 'recent') {
+    allClients.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  }
+
+  final items = allClients.skip(offset).take(limit).toList();
+  return PagedResult<ClientProfile>(
+    items: items,
+    hasMore: offset + items.length < allClients.length,
+    nextOffset: offset + items.length,
+    totalCount: allClients.length,
+  );
+}
+
+// ─── Memberships (Paged) ─────────────────────────────────────────────────────
+
+PagedResult<Membership> devMembershipsPaged({
+  int limit = 12,
+  int offset = 0,
+}) {
+  final List<Membership> allMemberships = List.generate(35, (i) {
+    final status = i % 5 == 0 ? MembershipStatus.expired : MembershipStatus.active;
+    return Membership(
+      id: 'dev-mem-${200 + i}',
+      clientId: 'dev-client-${100 + i}',
+      gymId: 'dev-mock-gym',
+      planName: i % 2 == 0 ? 'Elite' : 'Pro',
+      amount: i % 2 == 0 ? 25000 : 15000,
+      startDate: DateTime.now().subtract(Duration(days: 30 + i)),
+      endDate: status == MembershipStatus.expired
+          ? DateTime.now().subtract(Duration(days: 1))
+          : DateTime.now().add(Duration(days: 30 + i)),
+      status: status,
+      createdAt: DateTime.now().subtract(Duration(days: 35 + i)),
+      updatedAt: DateTime.now(),
+    );
+  });
+
+  final items = allMemberships.skip(offset).take(limit).toList();
+  return PagedResult<Membership>(
+    items: items,
+    hasMore: offset + items.length < allMemberships.length,
+    nextOffset: offset + items.length,
+    totalCount: allMemberships.length,
+  );
+}
+
+MembershipCounts devMembershipCounts() => const MembershipCounts(
+      total: 35,
+      active: 28,
+      expiring: 7,
+    );
+
+List<Map<String, dynamic>> devRecentCheckInsOwner() => List.generate(24, (i) {
+      return {
+        'checked_in_at': DateTime.now().subtract(Duration(hours: i)).toIso8601String(),
+        'checked_out_at':
+            DateTime.now().subtract(Duration(hours: i - 1)).toIso8601String(),
+      };
+    });

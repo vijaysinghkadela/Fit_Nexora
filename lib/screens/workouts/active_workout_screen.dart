@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -79,7 +80,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
             backgroundColor: t.surface,
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-              onPressed: () => Navigator.maybePop(context),
+              onPressed: () => context.pop(),
             ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +341,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                     Expanded(
                       child: FilledButton.icon(
                         onPressed: () =>
-                            Navigator.pushNamed(context, '/workout/timer'),
+                            context.push('/workout/timer'),
                         icon: const Icon(Icons.timer_outlined, size: 16),
                         label: Text(
                           'START REST',
@@ -389,7 +390,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                     const SizedBox(width: 8),
                     OutlinedButton(
                       onPressed: () =>
-                          Navigator.pushNamed(context, '/workout/done'),
+                          context.push('/workout/done'),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: t.danger),
                         foregroundColor: t.danger,

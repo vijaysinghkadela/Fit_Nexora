@@ -14,7 +14,7 @@ import '../../widgets/fit_management_scaffold.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../clients/add_client_screen.dart';
 
-const _trainerDestinations = [
+const trainerDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
     label: 'Trainer',
@@ -51,8 +51,8 @@ class TrainerDashboardScreen extends ConsumerWidget {
 
     return FitManagementScaffold(
       currentRoute: '/trainer',
-      destinations: _trainerDestinations,
-      mobileDestinations: _trainerDestinations,
+      destinations: trainerDestinations,
+      mobileDestinations: trainerDestinations,
       userName: userName,
       userEmail: userEmail,
       onSignOut: () {

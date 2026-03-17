@@ -33,7 +33,7 @@ final dashboardMembershipPreviewProvider =
   return memberships.take(4).toList();
 });
 
-const _managementDestinations = [
+const managementDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
     label: 'Dashboard',
@@ -66,7 +66,7 @@ const _managementDestinations = [
   ),
 ];
 
-const _managementMobileDestinations = [
+const managementMobileDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
     label: 'Dashboard',
@@ -103,8 +103,8 @@ class DashboardScreen extends ConsumerWidget {
 
     return FitManagementScaffold(
       currentRoute: '/dashboard',
-      destinations: _managementDestinations,
-      mobileDestinations: _managementMobileDestinations,
+      destinations: managementDestinations,
+      mobileDestinations: managementMobileDestinations,
       userName: userName,
       userEmail: userEmail,
       centerAction: FitShellCenterAction(
@@ -208,7 +208,7 @@ class _DashboardBody extends ConsumerWidget {
               const SizedBox(width: 8),
               _NotificationIcon(
                 dotColor: colors.accent,
-                onTap: () => context.go('/settings'),
+                onTap: () => context.push('/notifications'),
               ),
               const SizedBox(width: 8),
               Padding(

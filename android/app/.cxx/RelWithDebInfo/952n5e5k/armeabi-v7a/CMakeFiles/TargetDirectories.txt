@@ -1,0 +1,2 @@
+C:/Users/Vinay Pal/Documents/GYMOS_AI/GYMOS_AI/GymOS_AI-main/android/app/.cxx/RelWithDebInfo/952n5e5k/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Vinay Pal/Documents/GYMOS_AI/GYMOS_AI/GymOS_AI-main/android/app/.cxx/RelWithDebInfo/952n5e5k/armeabi-v7a/CMakeFiles/rebuild_cache.dir

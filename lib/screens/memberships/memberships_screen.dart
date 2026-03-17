@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants.dart';
@@ -44,6 +45,9 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
         slivers: [
           SliverAppBar(
             floating: true,
+            leading: BackButton(
+              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+            ),
             backgroundColor: AppColors.bgDark,
             toolbarHeight: 72,
             title: Text(

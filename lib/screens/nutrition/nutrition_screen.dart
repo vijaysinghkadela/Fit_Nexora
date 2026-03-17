@@ -101,7 +101,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
             backgroundColor: t.background,
             elevation: 0,
             scrolledUnderElevation: 0,
-            automaticallyImplyLeading: false,
+            leading: BackButton(
+              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+            ),
+            automaticallyImplyLeading: true,
             title: Text(
               'Nutrition',
               style: GoogleFonts.inter(

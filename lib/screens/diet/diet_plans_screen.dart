@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../config/theme.dart';
@@ -97,7 +98,10 @@ class _DietPlansScreenState extends ConsumerState<DietPlansScreen> {
             backgroundColor: t.background,
             elevation: 0,
             scrolledUnderElevation: 0,
-            automaticallyImplyLeading: false,
+            leading: BackButton(
+              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+            ),
+            automaticallyImplyLeading: true,
             title: Text(
               'Diet Plans',
               style: GoogleFonts.inter(

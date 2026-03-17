@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/chart_buckets.dart';
 import '../../core/constants.dart';
+import '../../core/extensions.dart';
 import '../../core/responsive.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -28,9 +29,11 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
     final gym = ref.watch(selectedGymProvider);
     final currentUser = ref.watch(currentUserProvider).value;
 
+    final t = context.fitTheme;
+
     if (gym == null || currentUser == null) {
       return Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         body: SafeArea(
           child: ListView(
             padding: const EdgeInsets.all(20),
@@ -50,15 +53,23 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
     final userId = currentUser.id;
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: BackButton(
+          onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+        ),
+      ),
       body: SafeArea(
+        top: false,
         child: Stack(
           children: [
             _buildBgGlow(),
             RefreshIndicator(
               onRefresh: () => _refreshTraffic(gymId, userId),
-              backgroundColor: AppColors.bgElevated,
-              color: AppColors.primary,
+              backgroundColor: t.surfaceAlt,
+              color: t.brand,
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [

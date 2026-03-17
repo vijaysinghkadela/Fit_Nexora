@@ -25,7 +25,10 @@ class _TodosScreenState extends State<TodosScreen> {
   }
 
   void _fetchTodos() {
-    _future = Supabase.instance.client.from('todos').select();
+    _future = Supabase.instance.client.from('todos').select().catchError((error) {
+      debugPrint('Todos error: $error');
+      return <Map<String, dynamic>>[];
+    });
   }
 
   Future<void> _handleRefresh() async {

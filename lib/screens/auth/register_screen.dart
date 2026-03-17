@@ -89,6 +89,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   String _friendlyError(String error) {
+    debugPrint('Registration Error: $error');
     if (error.contains('already registered') ||
         error.contains('already exists')) {
       return 'An account with this email already exists.';
@@ -96,10 +97,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (error.contains('weak password')) {
       return 'Password is too weak. Use at least 8 characters.';
     }
-    if (error.contains('network')) {
-      return 'Network error. Please check your connection.';
+    if (error.contains('network') || error.contains('SocketException')) {
+      return 'Network error. Please check your internet connection.';
     }
-    return 'Registration failed. Please try again.';
+    if (error.contains('configuration') || error.contains('dotenv')) {
+      return 'Server configuration error. Please contact support.';
+    }
+    return 'Registration failed: ${error.replaceAll('Exception:', '').trim()}';
   }
 
   @override

@@ -98,6 +98,7 @@ class FitManagementScaffold extends StatelessWidget {
             ),
             SafeArea(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (useSidebar)
                     SidebarNav(

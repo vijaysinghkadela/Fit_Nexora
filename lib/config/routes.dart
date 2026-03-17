@@ -71,13 +71,28 @@ import '../screens/todos/todos_screen.dart';
 import '../screens/trainer/trainer_dashboard_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
+import '../screens/health/steps_tracking_screen.dart';
+import '../screens/health/sleep_tracking_screen.dart';
+import '../screens/notes/notes_screen.dart';
+import '../screens/workouts/workout_calendar_screen.dart';
+import '../screens/notifications/notifications_screen.dart';
+import '../widgets/shared_management_wrapper.dart';
 
 Page<void> _fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (_, animation, __, child) =>
-          FadeTransition(opacity: animation, child: child),
+      transitionsBuilder: (_, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: FadeTransition(
+            opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
+            child: child,
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+      reverseTransitionDuration: const Duration(milliseconds: 300),
     );
 
 const _publicRoutes = [
@@ -236,22 +251,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/clients',
         name: 'clients',
-        builder: (context, state) => const ClientsScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/clients',
+          child: ClientsScreen(),
+        ),
       ),
       GoRoute(
         path: '/memberships',
         name: 'memberships',
-        builder: (context, state) => const MembershipsScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/memberships',
+          child: MembershipsScreen(),
+        ),
       ),
       GoRoute(
         path: '/workouts',
         name: 'workouts',
-        builder: (context, state) => const WorkoutsScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/workouts',
+          child: WorkoutsScreen(),
+        ),
       ),
       GoRoute(
         path: '/diet-plans',
         name: 'diet-plans',
-        builder: (context, state) => const DietPlansScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/diet-plans',
+          child: DietPlansScreen(),
+        ),
       ),
       GoRoute(
         path: '/settings',
@@ -401,12 +428,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/traffic',
         name: 'traffic',
-        pageBuilder: (context, state) => _fadePage(state, const GymTrafficScreen()),
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          const SharedManagementWrapper(
+            currentRoute: '/traffic',
+            child: GymTrafficScreen(),
+          ),
+        ),
       ),
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
-        pageBuilder: (context, state) => _fadePage(state, const NutritionScreen()),
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          const SharedManagementWrapper(
+            currentRoute: '/nutrition',
+            child: NutritionScreen(),
+          ),
+        ),
       ),
       GoRoute(
         path: '/nutrition/scan',
@@ -485,6 +524,31 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/clients/checkin',
         name: 'clients-checkin',
         builder: (context, state) => const LogCheckinScreen(),
+      ),
+      GoRoute(
+        path: '/health/steps',
+        name: 'steps-tracking',
+        pageBuilder: (c, s) => _fadePage(s, const StepsTrackingScreen()),
+      ),
+      GoRoute(
+        path: '/health/sleep',
+        name: 'sleep-tracking',
+        pageBuilder: (c, s) => _fadePage(s, const SleepTrackingScreen()),
+      ),
+      GoRoute(
+        path: '/notes',
+        name: 'notes',
+        pageBuilder: (c, s) => _fadePage(s, const NotesScreen()),
+      ),
+      GoRoute(
+        path: '/workout/calendar',
+        name: 'workout-calendar',
+        pageBuilder: (c, s) => _fadePage(s, const WorkoutCalendarScreen()),
+      ),
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        pageBuilder: (c, s) => _fadePage(s, const NotificationsScreen()),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../core/constants.dart';
+import '../core/extensions.dart';
 
 class SkeletonBox extends StatelessWidget {
   const SkeletonBox({
@@ -19,17 +19,18 @@ class SkeletonBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       width: width,
       height: height,
       margin: margin,
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(radius),
       ),
     ).animate(onPlay: (controller) => controller.repeat()).shimmer(
           duration: 1200.ms,
-          color: AppColors.bgElevated.withValues(alpha: 0.5),
+          color: t.surfaceAlt.withValues(alpha: 0.5),
         );
   }
 }
@@ -46,17 +47,18 @@ class CardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
+        children: [
           SkeletonBox(height: 16, width: 140),
           SkeletonBox(height: 12, width: 220, radius: 8),
           SkeletonBox(height: 12, width: 180, radius: 8),
@@ -71,13 +73,14 @@ class ListTileSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Row(
         children: const [
@@ -111,12 +114,13 @@ class ChartSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,12 +164,12 @@ class LoadingFooter extends StatelessWidget {
                 label: const Text('Retry'),
               )
             : isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.primary,
+                      color: context.fitTheme.brand,
                     ),
                   )
                 : TextButton(
@@ -182,8 +186,9 @@ class DashboardSkeletonScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),

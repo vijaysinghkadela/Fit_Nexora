@@ -1,10 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/performance_provider.dart';
+import '../config/theme.dart';
 import '../core/constants.dart';
 import '../core/extensions.dart';
 
 /// Reusable glassmorphic card with frosted-glass effect and subtle animated transitions.
-class GlassmorphicCard extends StatelessWidget {
+class GlassmorphicCard extends ConsumerWidget {
   final Widget child;
   final double borderRadius;
   final EdgeInsets? margin;
@@ -21,34 +24,32 @@ class GlassmorphicCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.fitTheme;
+    final isLowPerformance = ref.watch(performanceProvider);
+
     Widget content = AnimatedContainer(
       duration: AppConstants.normalAnimation,
       curve: AppConstants.smoothCurve,
       margin: margin,
       decoration: BoxDecoration(
+        color: isLowPerformance ? colors.surface : Colors.transparent,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(color: colors.glassBorder, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: colors.glow.withValues(alpha: 0.2),
-            blurRadius: 32,
-            offset: const Offset(0, 12),
-          ),
-        ],
+        boxShadow: isLowPerformance
+            ? null
+            : [
+                BoxShadow(
+                  color: colors.glow.withValues(alpha: 0.2),
+                  blurRadius: 32,
+                  offset: const Offset(0, 12),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colors.glassFill,
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            child: child,
-          ),
+        child: RepaintBoundary(
+          child: _buildBackground(context, isLowPerformance, colors),
         ),
       ),
     );
@@ -66,5 +67,29 @@ class GlassmorphicCard extends StatelessWidget {
       );
     }
     return content;
+  }
+
+  Widget _buildBackground(
+      BuildContext context, bool isLowPerformance, FitNexoraThemeTokens colors) {
+    if (isLowPerformance) {
+      return Container(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: child,
+      );
+    }
+
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.glassFill,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: child,
+      ),
+    );
   }
 }

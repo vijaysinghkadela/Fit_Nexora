@@ -31,8 +31,9 @@ The system utilizes a **Tier-Aware Model Router** (`claude_service.dart`) that m
 
 ### Frontend Architecture
 Built with **Flutter 3.6.1**, following a **Feature-First Layered Architecture**:
-- **State Management**: `Riverpod 2.6` for reactive, compile-safe state providers.
-- **Routing**: `GoRouter` for deep-linking and hierarchical navigation.
+- **State Management**: `Riverpod 2.6` for reactive, compile-safe state providers and mock-data injection for offline developer by-pass testing.
+- **Routing**: `GoRouter` for deep-linking, hierarchical navigation, and role-based redirect interception.
+- **Theming & UI**: Complete systemic Dark Mode and Light Mode support via a custom `ThemeProvider`.
 - **Animations**: `flutter_animate` for high-end micro-interactions and glassmorphism UI.
 - **Charts**: `fl_chart` for real-time traffic and revenue visualization.
 
@@ -43,7 +44,7 @@ Built with **Flutter 3.6.1**, following a **Feature-First Layered Architecture**
 FitNexora implements a **Hard Isolation Strategy** using PostgreSQL Row-Level Security (RLS). 
 
 ### Database Schema Overview
-The system is built on 10+ core migration modules:
+The system is built on 12+ core migration modules:
 1.  **`gyms`**: Master tenant records.
 2.  **`gym_members`**: Link table with role-based permissions (`owner`, `trainer`, `client`).
 3.  **`clients`**: Detailed profiles including injury history, metrics, and goals.
@@ -53,6 +54,9 @@ The system is built on 10+ core migration modules:
 7.  **`gym_checkins`**: Real-time traffic logging for heatmaps.
 8.  **`food_logs`**: Detailed nutrition tracking with macro calculation boundaries.
 9.  **`workout_plans` / `diet_plans`**: Versioned, AI-generated plans.
+10. **`health_tracking`**: Daily aggregates for Steps, Sleep, and Activity metrics.
+11. **`journals`**: Encrypted daily notes and progress markers.
+12. **`notifications`**: Personalized push and in-app alert tracking.
 
 ### RLS Enforcement
 Every single SQL query is appended with a `gym_id` check at the database level. Even if a user attempts to manually query an ID from another gym, the database returns zero results.
@@ -71,6 +75,7 @@ The application logic is driven by a comprehensive set of domain enums:
 | **Dietary Types** | `Veg`, `Non-Veg`, `Jain`, `Keto`, `Vegan`, `Intermittent Fasting` |
 | **Experience** | `Beginner`, `Intermediate`, `Advanced`, `Athlete` |
 | **Trends** | `Losing Fast`, `On Track`, `Stalling`, `Fluctuating` |
+| **Theme Modes** | `Light`, `Dark`, `System` |
 
 ---
 
@@ -84,7 +89,20 @@ FitNexora is natively built for the Indian ecosystem:
 
 ---
 
-## 06 — Developer & DevOps Guide
+## 06 — Core Features & Modules
+
+The platform is divided into comprehensive modules designed to drive member engagement and retention:
+- **AI-Driven Workouts & Diet**: Elite-tier contextual coaching powered by Claude 4.5.
+- **Interactive Workout Calendars**: Visual progress and session tracking.
+- **Health Tracking**: Dedicated modules for **Step Tracking**, **Sleep Analysis**, and aggregate performance.
+- **Notes & Journaling**: Secure, encrypted private journaling for members to track mental and physical progress.
+- **Real-Time Notifications**: Push notifications and in-app alerts with unread badge tracking.
+- **Systemic Theming**: Fully responsive **Dark Mode** & Light Mode interfaces customized securely via user preferences.
+- **Offline Development & Bypasses**: Advanced developer bypass endpoints loaded with intelligent mock data for high-speed local development without constant network access.
+
+---
+
+## 07 — Developer & DevOps Guide
 
 ### Deployment & Configuration
 - **Supabase Edge Functions**: Handles high-security operations (payment webhooks, token management).
@@ -112,17 +130,17 @@ flutter pub run flutter_launcher_icons
 
 ---
 
-## 07 — Future Roadmap (v3.0)
+## 08 — Future Roadmap (v3.0)
 - [ ] **AI Video Analysis**: Real-time form correction using device camera.
 - [ ] **WhatsApp Bot**: Command-line interface for members to log food via WhatsApp.
 - [ ] **Trainer Marketplace**: Platform-wide hiring for certified specialists.
 
 ---
 
-## 08 — Contributors & Contact
+## 09 — Contributors & Contact
 
 - **Lead Developer**: Vinay Pal / Vijay Singh Kadela
 - **Architecture**: Fit_Nexora Core Team
 - **Support**: dev@fitnexora.com
 
-*This documentation is strictly based on the FitNexora v2.0 Production Specifications.*
+*This documentation is strictly based on the FitNexora v2.1 Production Specifications.*

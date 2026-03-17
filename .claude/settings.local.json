@@ -19,7 +19,10 @@
       "Bash(xargs -I{} basename {} __NEW_LINE_2680ebd4005a737d__ echo echo '=== OTHER NEW SCREENS ===' ls lib/screens/support/support_screen.dart lib/screens/clients/log_checkin_screen.dart)",
       "Bash(cmd.exe /c \"flutter --version\" 2>&1 | head -5)",
       "Bash(cmd.exe /c \"where flutter 2>&1\" 2>&1\npowershell.exe -Command \"Get-Command flutter -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\" 2>&1)",
-      "Bash(powershell.exe -Command \"\nSet-Location 'C:\\\\Users\\\\Vinay Pal\\\\Documents\\\\GYMOS_AI\\\\GYMOS_AI\\\\GymOS_AI-main'\n& 'C:\\\\flutter_sdk\\\\flutter\\\\bin\\\\flutter.bat' analyze --no-fatal-infos 2>&1\n\" 2>&1)"
+      "Bash(powershell.exe -Command \"\nSet-Location 'C:\\\\Users\\\\Vinay Pal\\\\Documents\\\\GYMOS_AI\\\\GYMOS_AI\\\\GymOS_AI-main'\n& 'C:\\\\flutter_sdk\\\\flutter\\\\bin\\\\flutter.bat' analyze --no-fatal-infos 2>&1\n\" 2>&1)",
+      "Bash(ls /home/*/.pub-cache/bin/)",
+      "Read(//usr/**)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

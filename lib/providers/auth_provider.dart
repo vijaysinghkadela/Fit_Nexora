@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../services/storage_service.dart';
 import '../core/enums.dart';
+import '../core/dev_bypass.dart';
 
 // ─── Core Service Providers ───────────────────────────────────────
 
@@ -62,10 +63,25 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
 
     if (user != null) {
       try {
-        final profile = await authService.getProfile(user.id);
+        var profile = await authService.getProfile(user.id);
+        if (isDevUser(profile.email)) {
+          profile = profile.copyWith(globalRole: UserRole.gymOwner);
+        }
         state = AsyncValue.data(profile);
       } catch (e) {
-        state = const AsyncValue.data(null);
+        // Fallback for dev users even if profile fetch fails
+        if (isDevUser(user.email)) {
+          state = AsyncValue.data(AppUser(
+            id: user.id,
+            email: user.email!,
+            fullName: user.userMetadata?['full_name'] ?? 'Dev Owner',
+            globalRole: UserRole.gymOwner,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ));
+        } else {
+          state = const AsyncValue.data(null);
+        }
       }
     } else {
       state = const AsyncValue.data(null);
@@ -90,12 +106,27 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
     }
 
     if (authState.session?.user != null) {
+      final user = authState.session!.user;
       try {
-        final profile =
-            await authService.getProfile(authState.session!.user.id);
+        var profile = await authService.getProfile(user.id);
+        if (isDevUser(profile.email)) {
+          profile = profile.copyWith(globalRole: UserRole.gymOwner);
+        }
         state = AsyncValue.data(profile);
       } catch (e) {
-        state = AsyncValue.error(e, StackTrace.current);
+        // Fallback for dev users even if profile fetch fails
+        if (isDevUser(user.email)) {
+          state = AsyncValue.data(AppUser(
+            id: user.id,
+            email: user.email!,
+            fullName: user.userMetadata?['full_name'] ?? 'Dev Owner',
+            globalRole: UserRole.gymOwner,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ));
+        } else {
+          state = AsyncValue.error(e, StackTrace.current);
+        }
       }
     }
   }
@@ -154,7 +185,10 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
     final user = authService.currentUser;
     if (user != null) {
       try {
-        final profile = await authService.getProfile(user.id);
+        var profile = await authService.getProfile(user.id);
+        if (isDevUser(profile.email)) {
+          profile = profile.copyWith(globalRole: UserRole.gymOwner);
+        }
         state = AsyncValue.data(profile);
       } catch (e, st) {
         state = AsyncValue.error(e, st);

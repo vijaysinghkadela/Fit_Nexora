@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
 import '../../core/enums.dart';
@@ -13,6 +14,7 @@ import '../../widgets/error_widgets.dart';
 import '../../widgets/loading_widgets.dart';
 import 'add_client_screen.dart';
 import 'client_detail_screen.dart';
+import '../../config/theme.dart';
 
 /// Client list screen with search, filters, and CRUD.
 class ClientsScreen extends ConsumerStatefulWidget {
@@ -33,27 +35,32 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final clientsState = ref.watch(pagedClientsControllerProvider);
     final goalFilter = ref.watch(clientGoalFilterProvider);
 
     return RefreshIndicator(
       onRefresh: () => ref.read(pagedClientsControllerProvider.notifier).refresh(),
-      backgroundColor: AppColors.bgElevated,
-      color: AppColors.primary,
+      backgroundColor: t.surfaceAlt,
+      color: t.brand,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           // Header
           SliverAppBar(
             floating: true,
-            backgroundColor: AppColors.bgDark,
+            leading: BackButton(
+              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+              color: t.textPrimary,
+            ),
+            backgroundColor: t.background,
             toolbarHeight: 72,
             title: Text(
               'Clients',
               style: GoogleFonts.inter(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
             actions: [
@@ -64,7 +71,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.12),
+                    color: t.brand.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -72,15 +79,15 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: t.brand,
                     ),
                   ),
                 ),
               // Sort button
               IconButton(
-                icon: const Icon(Icons.sort_rounded,
-                    color: AppColors.textSecondary, size: 22),
-                onPressed: () => _showSortSheet(context),
+                icon: Icon(Icons.sort_rounded,
+                    color: t.textSecondary, size: 22),
+                onPressed: () => _showSortSheet(context, t),
                 tooltip: 'Sort',
               ),
               // Add client button
@@ -94,7 +101,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                     style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                   ),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: t.brand,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -109,7 +116,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
           sliver: SliverToBoxAdapter(
-            child: _buildSearchBar(),
+            child: _buildSearchBar(t),
           ),
         ),
 
@@ -117,7 +124,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
           sliver: SliverToBoxAdapter(
-            child: _buildGoalFilterChips(goalFilter),
+            child: _buildGoalFilterChips(goalFilter, t),
           ),
         ),
 
@@ -144,7 +151,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
           else if (clientsState.items.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,
-              child: _buildEmptyState(),
+              child: _buildEmptyState(t),
             )
           else
             SliverPadding(
@@ -178,6 +185,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                               snapshot.connectionState == ConnectionState.waiting,
                           delay: index * 50,
                           onTap: () => _navigateToDetail(client),
+                          themeTokens: t,
                         );
                       },
                     );
@@ -194,17 +202,17 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
    );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(FitNexoraThemeTokens t) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bgInput,
+        color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
+          color: t.brand.withValues(alpha: 0.15),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.bgDark.withValues(alpha: 0.5),
+            color: t.background.withValues(alpha: 0.5),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -212,17 +220,17 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
       ),
       child: TextField(
         controller: _searchController,
-        style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 15),
+        style: GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
         decoration: InputDecoration(
           hintText: 'Search by name, email, or phone…',
           hintStyle:
-              GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 14),
-          prefixIcon: const Icon(Icons.search_rounded,
-              color: AppColors.textMuted, size: 20),
+              GoogleFonts.inter(color: t.textSecondary, fontSize: 14),
+          prefixIcon: Icon(Icons.search_rounded,
+              color: t.textMuted, size: 20),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.close_rounded,
-                      color: AppColors.textSecondary, size: 18),
+                  icon: Icon(Icons.close_rounded,
+                      color: t.textSecondary, size: 18),
                   onPressed: () {
                     _searchController.clear();
                     ref.read(clientSearchQueryProvider.notifier).state = '';
@@ -241,7 +249,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.05, end: 0);
   }
 
-  Widget _buildGoalFilterChips(FitnessGoal? currentFilter) {
+  Widget _buildGoalFilterChips(FitnessGoal? currentFilter, FitNexoraThemeTokens t) {
     final goals = <FitnessGoal?>[
       null, // All
       FitnessGoal.fatLoss,
@@ -257,7 +265,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         children: goals.map((goal) {
           final isSelected = currentFilter == goal;
           final label = goal == null ? 'All Clients' : goal.label;
-          final color = goal == null ? AppColors.primary : _goalColor(goal);
+          final color = goal == null ? t.brand : _goalColor(goal, t);
 
           return Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -270,14 +278,14 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                 labelStyle: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  color: isSelected ? color : AppColors.textSecondary,
+                  color: isSelected ? color : t.textSecondary,
                 ),
-                backgroundColor: AppColors.bgElevated,
+                backgroundColor: t.surfaceAlt,
                 selectedColor: color.withValues(alpha: 0.15),
                 side: BorderSide(
                   color: isSelected
                       ? color.withValues(alpha: 0.5)
-                      : AppColors.border,
+                      : t.border,
                   width: isSelected ? 1.5 : 1.0,
                 ),
                 shape: RoundedRectangleBorder(
@@ -300,24 +308,24 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         .slideX(begin: 0.05, end: 0);
   }
 
-  Color _goalColor(FitnessGoal goal) {
+  Color _goalColor(FitnessGoal goal, FitNexoraThemeTokens t) {
     switch (goal) {
       case FitnessGoal.fatLoss:
-        return AppColors.error;
+        return t.danger;
       case FitnessGoal.muscleGain:
-        return AppColors.primary;
+        return t.brand;
       case FitnessGoal.generalFitness:
-        return AppColors.success;
+        return t.success;
       case FitnessGoal.athleticPerformance:
-        return AppColors.warning;
+        return t.warning;
       case FitnessGoal.maintenance:
       case FitnessGoal.rehabilitation:
       case FitnessGoal.sportSpecific:
-        return AppColors.info;
+        return t.info;
     }
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(FitNexoraThemeTokens t) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -328,14 +336,14 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withValues(alpha: 0.15),
-                  AppColors.accent.withValues(alpha: 0.08),
+                  t.brand.withValues(alpha: 0.15),
+                  t.accent.withValues(alpha: 0.08),
                 ],
               ),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Icon(Icons.people_outline_rounded,
-                size: 40, color: AppColors.primary.withValues(alpha: 0.6)),
+                size: 40, color: t.brand.withValues(alpha: 0.6)),
           ),
           const SizedBox(height: 24),
           Text(
@@ -343,7 +351,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -351,7 +359,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             'Add your first client to get started',
             style: GoogleFonts.inter(
               fontSize: 15,
-              color: AppColors.textSecondary,
+              color: t.textSecondary,
             ),
           ),
           const SizedBox(height: 28),
@@ -363,7 +371,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               style: GoogleFonts.inter(fontWeight: FontWeight.w600),
             ),
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: t.brand,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               shape: RoundedRectangleBorder(
@@ -376,15 +384,15 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     ).animate().fadeIn(duration: 400.ms);
   }
 
-  void _showSortSheet(BuildContext context) {
+  void _showSortSheet(BuildContext context, FitNexoraThemeTokens t) {
     final currentSort = ref.read(clientSortProvider);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.bgCard,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: t.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -396,7 +404,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.3),
+                  color: t.textMuted.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -407,13 +415,13 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
             const SizedBox(height: 16),
-            _buildSortOption('Name A → Z', 'name_asc', currentSort),
-            _buildSortOption('Name Z → A', 'name_desc', currentSort),
-            _buildSortOption('Recently Added', 'recent', currentSort),
+            _buildSortOption('Name A → Z', 'name_asc', currentSort, t),
+            _buildSortOption('Name Z → A', 'name_desc', currentSort, t),
+            _buildSortOption('Recently Added', 'recent', currentSort, t),
             const SizedBox(height: 8),
           ],
         ),
@@ -421,7 +429,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     );
   }
 
-  Widget _buildSortOption(String label, String value, String current) {
+  Widget _buildSortOption(String label, String value, String current, FitNexoraThemeTokens t) {
     final isSelected = current == value;
     return ListTile(
       title: Text(
@@ -429,11 +437,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         style: GoogleFonts.inter(
           fontSize: 15,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+          color: isSelected ? t.brand : t.textPrimary,
         ),
       ),
       trailing: isSelected
-          ? const Icon(Icons.check_rounded, color: AppColors.primary, size: 20)
+          ? Icon(Icons.check_rounded, color: t.brand, size: 20)
           : null,
       contentPadding: EdgeInsets.zero,
       onTap: () {
@@ -468,11 +476,13 @@ class _ClientCard extends StatefulWidget {
   final bool isMembershipLoading;
   final int delay;
   final VoidCallback onTap;
+  final FitNexoraThemeTokens themeTokens;
 
   const _ClientCard({
     required this.client,
     required this.delay,
     required this.onTap,
+    required this.themeTokens,
     this.activeMembership,
     this.isMembershipLoading = false,
   });
@@ -504,18 +514,18 @@ class _ClientCardState extends State<_ClientCard> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: _isPressed
-                  ? AppColors.bgElevated.withValues(alpha: 0.8)
-                  : AppColors.bgCard,
+                  ? widget.themeTokens.surfaceAlt.withValues(alpha: 0.8)
+                  : widget.themeTokens.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: _isPressed
-                    ? AppColors.primary.withValues(alpha: 0.3)
-                    : AppColors.border,
+                    ? widget.themeTokens.brand.withValues(alpha: 0.3)
+                    : widget.themeTokens.border,
               ),
               boxShadow: _isPressed
                   ? [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: widget.themeTokens.brand.withValues(alpha: 0.1),
                         blurRadius: 15,
                         spreadRadius: 1,
                       )
@@ -538,7 +548,7 @@ class _ClientCardState extends State<_ClientCard> {
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: widget.themeTokens.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -546,14 +556,14 @@ class _ClientCardState extends State<_ClientCard> {
                         children: [
                           if (widget.client.email != null) ...[
                             Icon(Icons.email_rounded,
-                                size: 14, color: AppColors.textMuted),
+                                size: 14, color: widget.themeTokens.textMuted),
                             const SizedBox(width: 6),
                             Flexible(
                               child: Text(
                                 widget.client.email!,
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary,
+                                  color: widget.themeTokens.textSecondary,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -568,12 +578,12 @@ class _ClientCardState extends State<_ClientCard> {
                         runSpacing: 8,
                         children: [
                           _buildTag(
-                              widget.client.goal.label, AppColors.primary),
+                              widget.client.goal.label, widget.themeTokens.brand),
                           _buildTag(widget.client.trainingLevel.label,
-                              AppColors.accent),
+                              widget.themeTokens.accent),
                           if (widget.client.dietType.label != 'Other')
                             _buildTag(widget.client.dietType.label,
-                                AppColors.warning),
+                                widget.themeTokens.warning),
                         ],
                       ),
                     ],
@@ -587,7 +597,7 @@ class _ClientCardState extends State<_ClientCard> {
                       Matrix4.translationValues(_isPressed ? 4.0 : 0.0, 0, 0),
                   child: Icon(
                     Icons.chevron_right_rounded,
-                    color: _isPressed ? AppColors.primary : AppColors.textMuted,
+                    color: _isPressed ? widget.themeTokens.brand : widget.themeTokens.textMuted,
                     size: 24,
                   ),
                 ),
@@ -619,13 +629,13 @@ class _ClientCardState extends State<_ClientCard> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.primary.withValues(alpha: 0.2),
-                AppColors.accent.withValues(alpha: 0.1),
+                widget.themeTokens.brand.withValues(alpha: 0.2),
+                widget.themeTokens.accent.withValues(alpha: 0.1),
               ],
             ),
             shape: BoxShape.circle,
             border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: widget.themeTokens.brand.withValues(alpha: 0.1),
             ),
           ),
           child: Center(
@@ -634,7 +644,7 @@ class _ClientCardState extends State<_ClientCard> {
               style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.primary,
+                color: widget.themeTokens.brand,
               ),
             ),
           ),
@@ -659,7 +669,7 @@ class _ClientCardState extends State<_ClientCard> {
               decoration: BoxDecoration(
                 color: membershipColor,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.bgCard, width: 2.5),
+                border: Border.all(color: widget.themeTokens.surface, width: 2.5),
                 boxShadow: [
                   BoxShadow(
                     color: membershipColor.withValues(alpha: 0.4),
@@ -675,9 +685,9 @@ class _ClientCardState extends State<_ClientCard> {
 
   Color? _getMembershipStatusColor() {
     if (widget.activeMembership == null) return null;
-    if (widget.activeMembership!.isExpired) return AppColors.error;
-    if (widget.activeMembership!.expiresWithin(7)) return AppColors.warning;
-    return AppColors.success;
+    if (widget.activeMembership!.isExpired) return widget.themeTokens.danger;
+    if (widget.activeMembership!.expiresWithin(7)) return widget.themeTokens.warning;
+    return widget.themeTokens.success;
   }
 
   Widget _buildTag(String label, Color color) {

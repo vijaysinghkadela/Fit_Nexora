@@ -1,9 +1,11 @@
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
 import '../../core/enums.dart';
+import '../../providers/gym_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Workout plan list + quick builder screen.
@@ -53,10 +55,16 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final subscriptionAsync = ref.watch(currentGymSubscriptionProvider);
+    final hasAiAccess = subscriptionAsync.value?.hasAiAccess ?? false;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           floating: true,
+          leading: BackButton(
+            onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+          ),
           backgroundColor: AppColors.bgDark,
           title: Text(
             'Workout Plans',
@@ -67,6 +75,12 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             ),
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.calendar_month_rounded),
+              color: AppColors.textPrimary,
+              tooltip: 'Workout Calendar',
+              onPressed: () => context.push('/workout/calendar'),
+            ),
             FilledButton.icon(
               onPressed: _showCreatePlanSheet,
               icon: const Icon(Icons.add_rounded, size: 18),
@@ -99,14 +113,18 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               title: 'Generate AI Workout Plan',
               subtitle:
                   'Claude creates a personalized plan based on client goals, level & equipment',
-              isLocked: true, // Replace with actual plan tier check
+              isLocked: !hasAiAccess,
               color: AppColors.primary,
               icon: Icons.fitness_center_rounded,
               onGenerate: () {
+                if (!hasAiAccess) {
+                  context.push('/pricing');
+                  return;
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(
-                        'AI workout generation — upgrade to Pro to unlock'),
+                        'AI workout generation started…'),
                     backgroundColor: AppColors.primary,
                   ),
                 );

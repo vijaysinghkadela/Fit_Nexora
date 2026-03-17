@@ -13,6 +13,7 @@ import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
+import '../../providers/performance_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -186,6 +187,12 @@ class SettingsScreen extends ConsumerWidget {
                             title: 'Theme',
                             subtitle: _themeLabel(themeMode),
                             onTap: () => _showThemePicker(context, ref),
+                          ),
+                          _PerformanceSwitch(
+                            value: ref.watch(performanceProvider),
+                            onChanged: (val) => ref
+                                .read(performanceProvider.notifier)
+                                .setLowPerformanceMode(val),
                           ),
                         ],
                       ),
@@ -668,6 +675,53 @@ class _SettingsRow extends StatelessWidget {
         ),
       ),
       trailing: Icon(Icons.chevron_right_rounded, color: colors.textMuted),
+    );
+  }
+}
+
+class _PerformanceSwitch extends StatelessWidget {
+  const _PerformanceSwitch({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      leading: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          color: colors.accent.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(Icons.speed_rounded, color: colors.accent),
+      ),
+      title: Text(
+        'Low-End Device Mode',
+        style: GoogleFonts.inter(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          color: colors.textPrimary,
+        ),
+      ),
+      subtitle: Text(
+        'Disable blurs & shadows for better performance',
+        style: GoogleFonts.inter(
+          fontSize: 12,
+          color: colors.textSecondary,
+        ),
+      ),
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: colors.accent,
+      ),
     );
   }
 }

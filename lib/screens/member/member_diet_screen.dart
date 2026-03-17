@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants.dart';
@@ -18,7 +19,17 @@ class MemberDietScreen extends ConsumerWidget {
       backgroundColor: AppColors.bgDark,
       appBar: AppBar(
         backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: AppColors.textSecondary,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/member');
+            }
+          },
+        ),
         title: Text(
           'My Diet Plan',
           style: GoogleFonts.inter(

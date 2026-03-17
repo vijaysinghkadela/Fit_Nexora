@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/plan_limits.dart';
 import '../../core/enums.dart';
+import '../../models/subscription_model.dart';
 import '../../core/extensions.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/gym_provider.dart';
+import '../../providers/payment_provider.dart';
 import '../../widgets/fit_pricing.dart';
 
-class PricingScreen extends StatelessWidget {
+class PricingScreen extends ConsumerWidget {
   const PricingScreen({super.key});
 
   static const _basicPalette = FitPlanPalette(
@@ -26,7 +31,7 @@ class PricingScreen extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final plans = [
       FitPricingPlanData(
         title: 'Basic',
@@ -115,18 +120,86 @@ class PricingScreen extends StatelessWidget {
       plans: plans,
       comparisonRows: comparisonRows,
       onHeaderAction: () {
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).maybePop();
+        if (context.canPop()) {
+          context.pop();
           return;
         }
         context.go('/');
       },
-      onPlanSelected: (plan) {
-        context.showSnackBar(
-          '${plan.title} checkout is not wired yet. Connect Stripe or Razorpay to complete billing.',
+      onPlanSelected: (planData) async {
+        final tier = _tierFromTitle(planData.title);
+        if (tier == PlanTier.basic) {
+          context.showSnackBar('Basic plan selected. You are already on this plan or it is free.');
+          return;
+        }
+
+        final user = ref.read(currentUserProvider).value;
+        final gym = ref.read(selectedGymProvider);
+
+        if (user == null || gym == null) {
+          context.showSnackBar('Please sign in to upgrade your plan.');
+          return;
+        }
+
+        final paymentService = ref.read(paymentServiceProvider);
+        final amount = PlanLimits.monthlyPrice[tier] ?? 0;
+
+        // Initiate Razorpay
+        paymentService.startRazorpayCheckout(
+          options: {
+            'amount': (amount * 100).toInt(), // Razorpay expects amount in paise
+            'name': 'FitNexora ${planData.title}',
+            'description': 'Monthly subscription for ${gym.name}',
+            'prefill': {
+              'contact': user.phone ?? '',
+              'email': user.email,
+            },
+            'external': {
+              'wallets': ['paytm']
+            }
+          },
+          onSuccess: (response) async {
+            context.showSnackBar('Payment successful! Upgrading your plan...');
+            try {
+              await paymentService.handleRazorpaySuccess(
+                gymId: gym.id,
+                plan: tier,
+                interval: BillingInterval.monthly,
+                paymentId: response.paymentId ?? '',
+                signature: response.signature,
+                orderId: response.orderId,
+              );
+              // Refresh subscription state
+              ref.invalidate(gymSubscriptionProvider(gym.id));
+              if (context.mounted) {
+                context.showSnackBar('Plan upgraded to ${planData.title}!');
+              }
+            } catch (e) {
+              if (context.mounted) {
+                context.showSnackBar('Error updating subscription: $e');
+              }
+            }
+          },
+          onError: (response) {
+            context.showSnackBar('Payment failed: ${response.message}');
+          },
+          onExternalWallet: (response) {
+            context.showSnackBar('External wallet selected: ${response.walletName}');
+          },
         );
       },
     );
+  }
+
+  static PlanTier _tierFromTitle(String title) {
+    switch (title.toLowerCase()) {
+      case 'pro':
+        return PlanTier.pro;
+      case 'elite':
+        return PlanTier.elite;
+      default:
+        return PlanTier.basic;
+    }
   }
 
   static String _priceFor(PlanTier tier) {

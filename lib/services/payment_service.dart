@@ -1,3 +1,4 @@
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
 import '../config/plan_limits.dart';
@@ -234,4 +235,64 @@ class PaymentService {
     }
     return PaymentGateway.none;
   }
+
+  // ─── RAZORPAY INTEGRATION ──────────────────────────────────────────
+
+  /// Initialize and open Razorpay checkout.
+  ///
+  /// [options] should contain amount, name, description, etc.
+  /// [onSuccess], [onError], and [onExternalWallet] are callbacks for Razorpay events.
+  void startRazorpayCheckout({
+    required Map<String, dynamic> options,
+    required void Function(PaymentSuccessResponse) onSuccess,
+    required void Function(PaymentFailureResponse) onError,
+    required void Function(ExternalWalletResponse) onExternalWallet,
+  }) {
+    final razorpay = Razorpay();
+
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (PaymentSuccessResponse response) {
+      onSuccess(response);
+      razorpay.clear();
+    });
+
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, (PaymentFailureResponse response) {
+      onError(response);
+      razorpay.clear();
+    });
+
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, (ExternalWalletResponse response) {
+      onExternalWallet(response);
+      razorpay.clear();
+    });
+
+    // Add API Key from config
+    final fullOptions = {
+      ...options,
+      'key': AppConfig.razorpayKeyId,
+    };
+
+    razorpay.open(fullOptions);
+  }
+
+  /// Process a successful Razorpay payment and update the subscription.
+  Future<Subscription> handleRazorpaySuccess({
+    required String gymId,
+    required PlanTier plan,
+    required BillingInterval interval,
+    required String paymentId,
+    String? signature,
+    String? orderId,
+  }) async {
+    // 1. In a real app, you'd verify the signature on the backend.
+    // 2. Here we'll trust the client for the mock/demo and update the DB.
+
+    return createSubscription(
+      gymId: gymId,
+      plan: plan,
+      interval: interval,
+      gateway: PaymentGateway.razorpay,
+      withTrial: false,
+    );
+  }
 }
+

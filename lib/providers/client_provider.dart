@@ -4,6 +4,7 @@ import '../core/pagination.dart';
 import '../models/client_profile_model.dart';
 import '../models/membership_model.dart';
 import 'auth_provider.dart';
+import '../core/dev_bypass.dart';
 import 'gym_provider.dart';
 
 const _clientsPageSize = 12;
@@ -51,6 +52,17 @@ final pagedClientsControllerProvider = StateNotifierProvider.autoDispose<
     CallbackPagedController<ClientProfile>, PagedListState<ClientProfile>>(
   (ref) {
     final controller = CallbackPagedController<ClientProfile>((offset) async {
+      final user = ref.read(currentUserProvider).value;
+      if (user != null && isDevUser(user.email)) {
+        return devClientsPaged(
+          limit: _clientsPageSize,
+          offset: offset,
+          search: ref.read(clientSearchQueryProvider),
+          goalFilter: ref.read(clientGoalFilterProvider),
+          sort: ref.read(clientSortProvider),
+        );
+      }
+
       final gym = ref.read(selectedGymProvider);
       if (gym == null) {
         return const PagedResult<ClientProfile>(

@@ -20,6 +20,14 @@ class DatabaseService {
   final SupabaseClient _client;
 
   DatabaseService(this._client);
+ 
+  static const String _clientColumns =
+      'id, user_id, gym_id, full_name, email, phone, age, sex, weight_kg, '
+      'height_cm, goal, training_level, days_per_week, equipment, diet_type, '
+      'restrictions, injuries, assigned_trainer_id, created_at, updated_at, '
+      'training_time, medical_conditions, current_plan_phase, last_checkin_weight, '
+      'weight_trend, sleep_quality, energy_level, adherence_percent, '
+      'last_gym_visit, current_plan_name, assigned_trainer_name, language_preference';
 
   // ─── GYMS ─────────────────────────────────────────────────────────
 
@@ -102,7 +110,7 @@ class DatabaseService {
     final data = await _client
         .from(AppConstants.clientsTable)
         .insert(client.toJson()..remove('id'))
-        .select()
+        .select(_clientColumns)
         .single();
 
     return ClientProfile.fromJson(data);
@@ -112,7 +120,7 @@ class DatabaseService {
   Future<List<ClientProfile>> getClientsForGym(String gymId) async {
     final data = await _client
         .from(AppConstants.clientsTable)
-        .select()
+        .select(_clientColumns)
         .eq('gym_id', gymId)
         .order('created_at', ascending: false);
 
@@ -149,10 +157,10 @@ class DatabaseService {
     }
 
     var dataQuery = applyFilters(
-      _client.from(AppConstants.clientsTable).select(),
+      _client.from(AppConstants.clientsTable).select(_clientColumns),
     );
     var countQuery = applyFilters(
-      _client.from(AppConstants.clientsTable).select(),
+      _client.from(AppConstants.clientsTable).select('id'),
     );
 
     if (sort == 'name_desc') {
@@ -182,7 +190,7 @@ class DatabaseService {
   ) async {
     final data = await _client
         .from(AppConstants.clientsTable)
-        .select()
+        .select(_clientColumns)
         .eq('gym_id', gymId)
         .eq('assigned_trainer_id', trainerId)
         .order('created_at', ascending: false);
@@ -196,7 +204,7 @@ class DatabaseService {
         .from(AppConstants.clientsTable)
         .update(client.toJson())
         .eq('id', client.id)
-        .select()
+        .select(_clientColumns)
         .single();
 
     return ClientProfile.fromJson(data);
@@ -393,7 +401,7 @@ class DatabaseService {
   Future<Map<String, dynamic>> getDashboardStats(String gymId) async {
     final totalClients = await _client
         .from(AppConstants.clientsTable)
-        .select()
+        .select('id')
         .eq('gym_id', gymId)
         .count(CountOption.exact);
 

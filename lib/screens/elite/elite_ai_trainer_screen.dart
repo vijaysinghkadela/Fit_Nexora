@@ -56,7 +56,7 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
             decoration: BoxDecoration(
               gradient: const LinearGradient(colors: [_purple, _indigo]),
               borderRadius: BorderRadius.circular(6),
-              boxShadow: [BoxShadow(color: _purple.withValues(alpha:0.4), blurRadius: 8)],
+              boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.4), blurRadius: 8)],
             ),
             child: Text('ELITE AI', style: GoogleFonts.inter(
                 fontSize: 10, fontWeight: FontWeight.w900,
