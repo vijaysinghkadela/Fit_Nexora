@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/constants.dart';
+
 import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../models/announcement_model.dart';
@@ -19,6 +19,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final user = ref.watch(currentUserProvider).value;
     final gym = ref.watch(selectedGymProvider);
 
@@ -26,11 +27,11 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
     if (gym == null && user != null && isDevUser(user.email)) {
       final announcements = devAnnouncements();
       return Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         appBar: AppBar(
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: t.background,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+            icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
             onPressed: () => context.pop(),
           ),
           title: Text(
@@ -38,7 +39,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
         ),
@@ -56,11 +57,11 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
 
     if (gym == null) {
       return Scaffold(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         appBar: AppBar(
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: t.background,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+            icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
             onPressed: () => context.pop(),
           ),
           title: Text(
@@ -68,14 +69,14 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
         ),
         body: Center(
           child: Text(
             'No gym selected',
-            style: GoogleFonts.inter(color: AppColors.textMuted),
+            style: GoogleFonts.inter(color: t.textMuted),
           ),
         ),
       );
@@ -85,11 +86,11 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
         ref.watch(pagedAnnouncementsControllerProvider(gym.id));
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -97,7 +98,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
       ),
@@ -105,8 +106,8 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
         onRefresh: () => ref
             .read(pagedAnnouncementsControllerProvider(gym.id).notifier)
             .refresh(),
-        backgroundColor: AppColors.bgElevated,
-        color: AppColors.primary,
+        backgroundColor: t.surface,
+        color: t.brand,
         child: Builder(
           builder: (context) {
             if (announcementsState.isInitialLoading) {
@@ -144,16 +145,16 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.campaign_rounded,
                           size: 56,
-                          color: AppColors.textMuted,
+                          color: t.textMuted,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'No announcements yet',
                           style: GoogleFonts.inter(
-                            color: AppColors.textSecondary,
+                            color: t.textSecondary,
                             fontSize: 16,
                           ),
                         ),
@@ -161,7 +162,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
                         Text(
                           'Your gym will post updates here.',
                           style: GoogleFonts.inter(
-                            color: AppColors.textMuted,
+                            color: t.textMuted,
                             fontSize: 13,
                           ),
                         ),
@@ -216,18 +217,19 @@ class _AnnouncementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final isPinned = announcement.isPinned;
-    final color = isPinned ? AppColors.warning : AppColors.info;
+    final color = isPinned ? t.warning : t.info;
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isPinned
-              ? AppColors.warning.withValues(alpha: 0.3)
-              : AppColors.border,
+              ? t.warning.withOpacity(0.3)
+              : t.border,
           width: isPinned ? 1.5 : 1,
         ),
       ),
@@ -239,7 +241,7 @@ class _AnnouncementCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
+                  color: color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -253,10 +255,10 @@ class _AnnouncementCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.12),
+                    color: t.warning.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: AppColors.warning.withValues(alpha: 0.3),
+                      color: t.warning.withOpacity(0.3),
                     ),
                   ),
                   child: Text(
@@ -264,7 +266,7 @@ class _AnnouncementCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.warning,
+                      color: t.warning,
                       letterSpacing: 1,
                     ),
                   ),
@@ -274,7 +276,7 @@ class _AnnouncementCard extends StatelessWidget {
                 announcement.createdAt.dayMonth,
                 style: GoogleFonts.inter(
                   fontSize: 11,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                 ),
               ),
             ],
@@ -285,7 +287,7 @@ class _AnnouncementCard extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
           if (announcement.body != null && announcement.body!.isNotEmpty) ...[
@@ -294,7 +296,7 @@ class _AnnouncementCard extends StatelessWidget {
               announcement.body!,
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: t.textSecondary,
                 height: 1.5,
               ),
             ),

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/constants.dart';
+
 import '../../core/extensions.dart';
 import '../../core/pagination.dart';
 import '../../models/client_profile_model.dart';
@@ -32,14 +32,15 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final gym = ref.watch(selectedGymProvider);
     final membershipsState = ref.watch(pagedMembershipsControllerProvider);
     final countsAsync = ref.watch(membershipCountsProvider);
 
     return RefreshIndicator(
       onRefresh: _handleRefresh,
-      backgroundColor: AppColors.bgElevated,
-      color: AppColors.primary,
+      backgroundColor: t.surface,
+      color: t.brand,
       child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -48,14 +49,14 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
             leading: BackButton(
               onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
             ),
-            backgroundColor: AppColors.bgDark,
+            backgroundColor: t.background,
             toolbarHeight: 72,
             title: Text(
               'Memberships',
               style: GoogleFonts.inter(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
             actions: [
@@ -69,7 +70,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                     style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                   ),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.accent,
+                    backgroundColor: t.accent,
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -93,7 +94,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
               child: Center(
                 child: Text(
                   'No gym selected',
-                  style: GoogleFonts.inter(color: AppColors.textMuted),
+                  style: GoogleFonts.inter(color: t.textMuted),
                 ),
               ),
             ),
@@ -104,6 +105,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
   }
 
   Widget _buildFilterChips() {
+    final t = context.fitTheme;
     final filters = {
       'all': 'All',
       'active': 'Active',
@@ -126,12 +128,12 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
               labelStyle: GoogleFonts.inter(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? color : AppColors.textSecondary,
+                color: isSelected ? color : t.textSecondary,
               ),
-              backgroundColor: AppColors.bgCard,
-              selectedColor: color.withValues(alpha: 0.15),
+              backgroundColor: t.surfaceAlt,
+              selectedColor: color.withOpacity(0.15),
               side: BorderSide(
-                color: isSelected ? color : AppColors.border,
+                color: isSelected ? color : t.border,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -147,15 +149,16 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
   }
 
   Color _filterColor(String filter) {
+    final t = context.fitTheme;
     switch (filter) {
       case 'active':
-        return AppColors.success;
+        return t.success;
       case 'expiring':
-        return AppColors.warning;
+        return t.warning;
       case 'expired':
-        return AppColors.error;
+        return t.danger;
       default:
-        return AppColors.primary;
+        return t.brand;
     }
   }
 
@@ -163,6 +166,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
     PagedListState<Membership> membershipsState,
     AsyncValue<MembershipCounts> countsAsync,
   ) {
+    final t = context.fitTheme;
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(
@@ -216,7 +220,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                   Icon(
                     Icons.card_membership_outlined,
                     size: 56,
-                    color: AppColors.textMuted.withValues(alpha: 0.4),
+                    color: t.textMuted.withOpacity(0.4),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -224,7 +228,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: t.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -232,7 +236,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                     'Add a membership from a client profile.',
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: AppColors.textMuted,
+                      color: t.textMuted,
                     ),
                   ),
                 ],
@@ -272,13 +276,14 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
   }
 
   Widget _buildCountChips(int total, int active, int expiring) {
+    final t = context.fitTheme;
     return Row(
       children: [
-        _CountChip(label: 'Total', count: total, color: AppColors.primary),
+        _CountChip(label: 'Total', count: total, color: t.brand),
         const SizedBox(width: 10),
-        _CountChip(label: 'Active', count: active, color: AppColors.success),
+        _CountChip(label: 'Active', count: active, color: t.success),
         const SizedBox(width: 10),
-        _CountChip(label: 'Expiring', count: expiring, color: AppColors.warning),
+        _CountChip(label: 'Expiring', count: expiring, color: t.warning),
       ],
     );
   }
@@ -323,9 +328,9 @@ class _CountChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -343,7 +348,7 @@ class _CountChip extends StatelessWidget {
             label,
             style: GoogleFonts.inter(
               fontSize: 12,
-              color: color.withValues(alpha: 0.8),
+              color: color.withOpacity(0.8),
             ),
           ),
         ],
@@ -363,16 +368,17 @@ class _MembershipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor();
+    final t = context.fitTheme;
+    final statusColor = _getStatusColor(t);
     final progress = _getProgress();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -387,7 +393,7 @@ class _MembershipCard extends StatelessWidget {
                   color: statusColor,
                   boxShadow: [
                     BoxShadow(
-                      color: statusColor.withValues(alpha: 0.4),
+                      color: statusColor.withOpacity(0.4),
                       blurRadius: 6,
                     ),
                   ],
@@ -403,7 +409,7 @@ class _MembershipCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: t.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -411,7 +417,7 @@ class _MembershipCard extends StatelessWidget {
                       '${membership.startDate.dayMonth} -> ${membership.endDate.dayMonth}',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: AppColors.textMuted,
+                        color: t.textMuted,
                       ),
                     ),
                   ],
@@ -426,14 +432,14 @@ class _MembershipCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: t.textPrimary,
                       ),
                     ),
                   const SizedBox(height: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.1),
+                      color: statusColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -456,9 +462,9 @@ class _MembershipCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 5,
-                backgroundColor: AppColors.bgElevated,
+                backgroundColor: t.surface,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  progress < 0.3 ? AppColors.warning : AppColors.success,
+                  progress < 0.3 ? t.warning : t.success,
                 ),
               ),
             ),
@@ -469,7 +475,7 @@ class _MembershipCard extends StatelessWidget {
                   : 'Expired',
               style: GoogleFonts.inter(
                 fontSize: 10,
-                color: AppColors.textMuted,
+                color: t.textMuted,
               ),
             ),
           ],
@@ -489,10 +495,10 @@ class _MembershipCard extends StatelessWidget {
     return remaining / total;
   }
 
-  Color _getStatusColor() {
-    if (membership.isExpired) return AppColors.error;
-    if (membership.expiresWithin(7)) return AppColors.warning;
-    return AppColors.success;
+  Color _getStatusColor(dynamic t) {
+    if (membership.isExpired) return t.danger;
+    if (membership.expiresWithin(7)) return t.warning;
+    return t.success;
   }
 
   String _getStatusLabel() {
@@ -514,15 +520,16 @@ class _ClientPickerSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: t.surfaceAlt,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border(
-          top: BorderSide(color: AppColors.glassBorder, width: 1),
+          top: BorderSide(color: t.glassBorder, width: 1),
         ),
       ),
       child: Column(
@@ -534,7 +541,7 @@ class _ClientPickerSheet extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted.withValues(alpha: 0.3),
+                color: t.textMuted.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -546,11 +553,11 @@ class _ClientPickerSheet extends ConsumerWidget {
               style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
           ),
-          const Divider(color: AppColors.divider, height: 1),
+          Divider(color: t.divider, height: 1),
           Expanded(
             child: FutureBuilder<List<ClientProfile>>(
               future: ref.read(databaseServiceProvider).getClientsForGym(gymId),
@@ -578,7 +585,7 @@ class _ClientPickerSheet extends ConsumerWidget {
                       padding: const EdgeInsets.all(24),
                       child: Text(
                         'No clients found. Add a client first.',
-                        style: GoogleFonts.inter(color: AppColors.textMuted),
+                        style: GoogleFonts.inter(color: t.textMuted),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -594,11 +601,11 @@ class _ClientPickerSheet extends ConsumerWidget {
                         : '?';
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                        backgroundColor: t.brand.withOpacity(0.15),
                         child: Text(
                           initial,
                           style: GoogleFonts.inter(
-                            color: AppColors.primary,
+                            color: t.brand,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -608,7 +615,7 @@ class _ClientPickerSheet extends ConsumerWidget {
                         style: GoogleFonts.inter(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: t.textPrimary,
                         ),
                       ),
                       subtitle: client.email != null
@@ -616,13 +623,13 @@ class _ClientPickerSheet extends ConsumerWidget {
                               client.email!,
                               style: GoogleFonts.inter(
                                 fontSize: 12,
-                                color: AppColors.textMuted,
+                                color: t.textMuted,
                               ),
                             )
                           : null,
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: AppColors.textMuted,
+                        color: t.textMuted,
                       ),
                       onTap: () => onClientSelected(client),
                     );

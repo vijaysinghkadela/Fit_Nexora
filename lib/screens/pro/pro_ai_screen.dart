@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../core/enums.dart';
 import '../../models/client_profile_model.dart';
 import '../../providers/auth_provider.dart';
@@ -40,11 +41,12 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Row(
           children: [
             Container(
@@ -69,7 +71,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
               style: GoogleFonts.inter(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary),
+                  color: t.textPrimary),
             ),
           ],
         ),
@@ -77,7 +79,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
           controller: _tabs,
           indicatorColor: const Color(0xFFFFD700),
           labelColor: const Color(0xFFFFD700),
-          unselectedLabelColor: AppColors.textMuted,
+          unselectedLabelColor: t.textMuted,
           tabs: const [
             Tab(text: '💪 Workout'),
             Tab(text: '🥗 Diet'),
@@ -92,7 +94,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
             subtitle:
                 'Get a personalised workout plan based on your fitness goal, experience level, and available equipment.',
             icon: Icons.fitness_center_rounded,
-            color: AppColors.primary,
+            color: t.brand,
             result: _workoutResult,
             loading: _workoutLoading,
             onGenerate: _generateWorkout,
@@ -107,7 +109,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
             subtitle:
                 'Get personalised Indian meal ideas and macro targets based on your fitness goal.',
             icon: Icons.restaurant_rounded,
-            color: AppColors.accent,
+            color: t.accent,
             result: _dietResult,
             loading: _dietLoading,
             onGenerate: _generateDiet,
@@ -223,6 +225,7 @@ class _AiTabState extends State<_AiTab> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -233,12 +236,12 @@ class _AiTabState extends State<_AiTab> {
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
-                widget.color.withValues(alpha: 0.12),
-                widget.color.withValues(alpha: 0.04),
+                widget.color.withOpacity(0.12),
+                widget.color.withOpacity(0.04),
               ]),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: widget.color.withValues(alpha: 0.25)),
+                  color: widget.color.withOpacity(0.25)),
             ),
             child: Row(
               children: [
@@ -252,12 +255,12 @@ class _AiTabState extends State<_AiTab> {
                           style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimary)),
+                              color: t.textPrimary)),
                       const SizedBox(height: 4),
                       Text(widget.subtitle,
                           style: GoogleFonts.inter(
                               fontSize: 12,
-                              color: AppColors.textSecondary,
+                              color: t.textSecondary,
                               height: 1.4)),
                     ],
                   ),
@@ -273,7 +276,7 @@ class _AiTabState extends State<_AiTab> {
               style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                   letterSpacing: 1.2)),
           const SizedBox(height: 10),
           ...widget.presets.asMap().entries.map((entry) {
@@ -286,23 +289,23 @@ class _AiTabState extends State<_AiTab> {
                 child: Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.bgCard,
+                    color: t.surfaceAlt,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: t.border),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.bolt_rounded,
-                          color: AppColors.primary, size: 16),
+                      Icon(Icons.bolt_rounded,
+                          color: t.brand, size: 16),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(p,
                             style: GoogleFonts.inter(
                                 fontSize: 13,
-                                color: AppColors.textSecondary)),
+                                color: t.textSecondary)),
                       ),
-                      const Icon(Icons.play_arrow_rounded,
-                          color: AppColors.textMuted, size: 18),
+                      Icon(Icons.play_arrow_rounded,
+                          color: t.textMuted, size: 18),
                     ],
                   ),
                 ).animate(delay: (i * 60).ms).fadeIn(),
@@ -317,24 +320,24 @@ class _AiTabState extends State<_AiTab> {
               style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                   letterSpacing: 1.2)),
           const SizedBox(height: 10),
           TextFormField(
             controller: _ctrl,
             maxLines: 3,
             style: GoogleFonts.inter(
-                color: AppColors.textPrimary, fontSize: 14),
+                color: t.textPrimary, fontSize: 14),
             decoration: InputDecoration(
               hintText: 'Ask anything about your workout or diet...',
               hintStyle:
-                  GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
+                  GoogleFonts.inter(color: t.textMuted, fontSize: 13),
               filled: true,
-              fillColor: AppColors.bgCard,
+              fillColor: t.surfaceAlt,
               contentPadding: const EdgeInsets.all(14),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.border),
+                borderSide: BorderSide(color: t.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -343,7 +346,7 @@ class _AiTabState extends State<_AiTab> {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.border),
+                borderSide: BorderSide(color: t.border),
               ),
             ),
           ),
@@ -401,18 +404,18 @@ class _AiTabState extends State<_AiTab> {
                             style: GoogleFonts.inter(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                              color: t.textPrimary,
                             )),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    const Divider(color: AppColors.divider),
+                    Divider(color: t.divider),
                     const SizedBox(height: 12),
                     Text(
                       widget.result!,
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: AppColors.textSecondary,
+                        color: t.textSecondary,
                         height: 1.6,
                       ),
                     ),

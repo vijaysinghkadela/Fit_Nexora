@@ -3,7 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../models/food_log_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -54,6 +55,7 @@ class _ProDashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final user = ref.watch(currentUserProvider).value;
     final _ = ref.watch(selectedGymProvider); // gym data used by sub-widgets
     final membershipAsync = ref.watch(memberMembershipProvider);
@@ -82,19 +84,19 @@ class _ProDashboard extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshAll,
-          backgroundColor: AppColors.bgElevated,
-          color: AppColors.primary,
+          backgroundColor: t.surface,
+          color: t.brand,
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
           // ─── Header ─────────────────────────────────────────────
           SliverAppBar(
             floating: true,
-            backgroundColor: AppColors.bgDark,
+            backgroundColor: t.background,
             toolbarHeight: 80,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +106,7 @@ class _ProDashboard extends ConsumerWidget {
                     Text(
                       'Welcome, ',
                       style: GoogleFonts.inter(
-                        fontSize: 13, color: AppColors.textSecondary),
+                        fontSize: 13, color: t.textSecondary),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -131,15 +133,15 @@ class _ProDashboard extends ConsumerWidget {
                   style: GoogleFonts.inter(
                     fontSize: rs.sp(24),
                     fontWeight: FontWeight.w900,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.smart_toy_rounded,
-                    color: AppColors.primary),
+                icon: Icon(Icons.smart_toy_rounded,
+                    color: t.brand),
                 tooltip: 'AI Suggestions',
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -166,7 +168,7 @@ class _ProDashboard extends ConsumerWidget {
                       loading: () => '...',
                       error: (_, __) => '—',
                     ),
-                    color: AppColors.info,
+                    color: t.info,
                   ),
                 ],
               ),
@@ -178,7 +180,7 @@ class _ProDashboard extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             sliver: SliverToBoxAdapter(
               child: nutritionAsync.when(
-                loading: () => _shimmer(context, height: 180),
+                loading: () => _shimmer(context, height: 180, t: t),
                 error: (_, __) => const SizedBox.shrink(),
 
                 data: (summary) => _CaloriesCard(
@@ -193,12 +195,12 @@ class _ProDashboard extends ConsumerWidget {
           ),
 
           // ─── 7-Day Calorie Chart ──────────────────────────────────
-          _sectionHeader('WEEKLY CALORIES'),
+          _sectionHeader('WEEKLY CALORIES', t),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             sliver: SliverToBoxAdapter(
               child: weeklyAsync.when(
-                loading: () => _shimmer(context, height: 140),
+                loading: () => _shimmer(context, height: 140, t: t),
                 error: (_, __) => const SizedBox.shrink(),
 
                 data: (days) => _WeeklyCaloriesChart(days: days),
@@ -207,12 +209,12 @@ class _ProDashboard extends ConsumerWidget {
           ),
 
           // ─── Body Measurements ───────────────────────────────────
-          _sectionHeader('BODY MEASUREMENTS'),
+          _sectionHeader('BODY MEASUREMENTS', t),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             sliver: SliverToBoxAdapter(
               child: measurementsAsync.when(
-                loading: () => _shimmer(context, height: 100),
+                loading: () => _shimmer(context, height: 100, t: t),
                 error: (_, __) => const SizedBox.shrink(),
 
                 data: (m) => _MeasurementsCard(
@@ -227,7 +229,7 @@ class _ProDashboard extends ConsumerWidget {
           ),
 
           // ─── Quick Actions ────────────────────────────────────────
-          _sectionHeader('QUICK ACTIONS'),
+          _sectionHeader('QUICK ACTIONS', t),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
             sliver: SliverToBoxAdapter(
@@ -241,7 +243,7 @@ class _ProDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _sectionHeader(String title) => SliverPadding(
+  Widget _sectionHeader(String title, dynamic t) => SliverPadding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         sliver: SliverToBoxAdapter(
           child: Text(
@@ -249,24 +251,24 @@ class _ProDashboard extends ConsumerWidget {
             style: GoogleFonts.inter(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: AppColors.textMuted,
+              color: t.textMuted,
               letterSpacing: 1.2,
             ),
           ),
         ),
       );
 
-  Widget _shimmer(BuildContext context, {required double height}) {
+  Widget _shimmer(BuildContext context, {required double height, required dynamic t}) {
     final rs = ResponsiveSize.of(context);
     return Container(
       height: rs.sp(height),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
       ),
     ).animate(onPlay: (c) => c.repeat()).shimmer(
         duration: 1200.ms,
-        color: AppColors.bgElevated.withValues(alpha: 0.5));
+        color: t.surface.withOpacity(0.5));
   }
 }
 
@@ -279,6 +281,7 @@ class _CaloriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final consumed = summary.calories;
     final target = DailyTargets.calories;
     final progress = (consumed / target).clamp(0.0, 1.0);
@@ -294,13 +297,13 @@ class _CaloriesCard extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withValues(alpha: 0.15),
-              AppColors.accent.withValues(alpha: 0.06),
+              t.brand.withOpacity(0.15),
+              t.accent.withOpacity(0.06),
             ],
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.25)),
+              color: t.brand.withOpacity(0.25)),
         ),
         child: Row(
           children: [
@@ -314,7 +317,7 @@ class _CaloriesCard extends StatelessWidget {
                   CustomPaint(
                     size: Size(rs.sp(110), rs.sp(110)),
                     painter:
-                        _RingPainter(progress: progress, color: AppColors.primary),
+                        _RingPainter(progress: progress, color: t.brand),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -324,13 +327,13 @@ class _CaloriesCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: rs.sp(22),
                           fontWeight: FontWeight.w900,
-                          color: AppColors.textPrimary,
+                          color: t.textPrimary,
                         ),
                       ),
                       Text(
                         'kcal',
                         style: GoogleFonts.inter(
-                            fontSize: 10, color: AppColors.textMuted),
+                            fontSize: 10, color: t.textMuted),
                       ),
                     ],
                   ),
@@ -344,25 +347,25 @@ class _CaloriesCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _MacroRow('Protein', summary.protein, DailyTargets.protein,
-                      AppColors.primary),
+                      t.brand),
                   const SizedBox(height: 8),
                   _MacroRow('Carbs', summary.carbs, DailyTargets.carbs,
-                      AppColors.accent),
+                      t.accent),
                   const SizedBox(height: 8),
                   _MacroRow(
-                      'Fat', summary.fat, DailyTargets.fat, AppColors.warning),
+                      'Fat', summary.fat, DailyTargets.fat, t.warning),
                   const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.bgElevated,
+                      color: t.surface,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       '${remaining.toStringAsFixed(0)} kcal remaining · Tap to log',
                       style: GoogleFonts.inter(
-                          fontSize: 11, color: AppColors.textSecondary),
+                          fontSize: 11, color: t.textSecondary),
                     ),
                   ),
                 ],
@@ -384,6 +387,7 @@ class _MacroRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final pct = (current / target).clamp(0.0, 1.0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +397,7 @@ class _MacroRow extends StatelessWidget {
           children: [
             Text(label,
                 style: GoogleFonts.inter(
-                    fontSize: 11, color: AppColors.textSecondary)),
+                    fontSize: 11, color: t.textSecondary)),
             Text('${current.toStringAsFixed(0)}g',
                 style: GoogleFonts.inter(
                     fontSize: 11,
@@ -406,7 +410,7 @@ class _MacroRow extends StatelessWidget {
           borderRadius: BorderRadius.circular(3),
           child: LinearProgressIndicator(
             value: pct,
-            backgroundColor: color.withValues(alpha: 0.12),
+            backgroundColor: color.withOpacity(0.12),
             valueColor: AlwaysStoppedAnimation(color),
             minHeight: 5,
           ),
@@ -428,7 +432,7 @@ class _RingPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - 12) / 2;
     final bgPaint = Paint()
-      ..color = color.withValues(alpha: 0.12)
+      ..color = color.withOpacity(0.12)
       ..strokeWidth = 10
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -436,7 +440,7 @@ class _RingPainter extends CustomPainter {
       ..shader = SweepGradient(
         startAngle: -math.pi / 2,
         endAngle: -math.pi / 2 + 2 * math.pi * progress,
-        colors: [color.withValues(alpha: 0.6), color],
+        colors: [color.withOpacity(0.6), color],
         tileMode: TileMode.clamp,
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..strokeWidth = 10
@@ -465,6 +469,7 @@ class _WeeklyCaloriesChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final maxKcal = days.fold(0.0, (m, d) => d.kcal > m ? d.kcal : m);
     final target = DailyTargets.calories;
     final chartMax = math.max(maxKcal, target) * 1.15;
@@ -481,24 +486,24 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                   width: 10,
                   height: 10,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: t.brand,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
                 const SizedBox(width: 6),
                 Text('Calories',
                     style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textSecondary)),
+                        fontSize: 12, color: t.textSecondary)),
                 const SizedBox(width: 16),
                 Container(
                   width: 10,
                   height: 2,
-                  color: AppColors.warning.withValues(alpha: 0.6),
+                  color: t.warning.withOpacity(0.6),
                 ),
                 const SizedBox(width: 6),
                 Text('Target',
                     style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textMuted)),
+                        fontSize: 12, color: t.textMuted)),
               ],
             ),
             const SizedBox(height: 16),
@@ -526,8 +531,8 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                               style: GoogleFonts.inter(
                                   fontSize: 8,
                                   color: isToday
-                                      ? AppColors.primary
-                                      : AppColors.textMuted),
+                                      ? t.brand
+                                      : t.textMuted),
                             ),
                           ),
                         Container(
@@ -538,10 +543,10 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: isToday
-                                  ? [AppColors.primary, AppColors.accent]
+                                  ? [t.brand, t.accent]
                                   : [
-                                      AppColors.primary.withValues(alpha: 0.5),
-                                      AppColors.primary.withValues(alpha: 0.2),
+                                      t.brand.withOpacity(0.5),
+                                      t.brand.withOpacity(0.2),
                                     ],
                             ),
                             borderRadius: BorderRadius.circular(5),
@@ -556,8 +561,8 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                                 ? FontWeight.w800
                                 : FontWeight.w400,
                             color: isToday
-                                ? AppColors.primary
-                                : AppColors.textMuted,
+                                ? t.brand
+                                : t.textMuted,
                           ),
                         ),
                       ],
@@ -588,6 +593,7 @@ class _MeasurementsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     if (measurement == null) {
       return GestureDetector(
         onTap: onTap,
@@ -596,15 +602,15 @@ class _MeasurementsCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.straighten_rounded, color: AppColors.accent),
+                Icon(Icons.straighten_rounded, color: t.accent),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text('No measurements yet — tap to log',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 14)),
+                          color: t.textSecondary, fontSize: 14)),
                 ),
-                const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textMuted),
+                Icon(Icons.chevron_right_rounded,
+                    color: t.textMuted),
               ],
             ),
           ),
@@ -631,19 +637,19 @@ class _MeasurementsCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.straighten_rounded,
-                      color: AppColors.accent, size: 18),
+                  Icon(Icons.straighten_rounded,
+                      color: t.accent, size: 18),
                   const SizedBox(width: 8),
                   Text('Latest Measurements',
                       style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary)),
+                          color: t.textPrimary)),
                   const Spacer(),
                   Text(
                     _formatDate(m.checkInDate as DateTime),
                     style: GoogleFonts.inter(
-                        fontSize: 11, color: AppColors.textMuted),
+                        fontSize: 11, color: t.textMuted),
                   ),
                 ],
               ),
@@ -680,12 +686,13 @@ class _MeasChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.08),
+        color: t.accent.withOpacity(0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+        border: Border.all(color: t.accent.withOpacity(0.2)),
       ),
       child: Column(
         children: [
@@ -694,12 +701,12 @@ class _MeasChip extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w800,
-              color: AppColors.accent,
+              color: t.accent,
             ),
           ),
           Text(label,
               style: GoogleFonts.inter(
-                  fontSize: 10, color: AppColors.textSecondary)),
+                  fontSize: 10, color: t.textSecondary)),
         ],
       ),
     );
@@ -714,6 +721,7 @@ class _MiniMembershipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return async.when(
       loading: () => const SizedBox(height: 60),
       error: (_, __) => const SizedBox.shrink(),
@@ -724,12 +732,12 @@ class _MiniMembershipCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              const Color(0xFFFFD700).withValues(alpha: 0.12),
-              AppColors.primary.withValues(alpha: 0.06),
+              const Color(0xFFFFD700).withOpacity(0.12),
+              t.brand.withOpacity(0.06),
             ]),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-                color: const Color(0xFFFFD700).withValues(alpha: 0.3)),
+                color: const Color(0xFFFFD700).withOpacity(0.3)),
           ),
           child: Row(
             children: [
@@ -743,10 +751,10 @@ class _MiniMembershipCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary)),
+                          color: t.textPrimary)),
                   Text('$daysLeft days left',
                       style: GoogleFonts.inter(
-                          fontSize: 10, color: AppColors.textSecondary)),
+                          fontSize: 10, color: t.textSecondary)),
                 ],
               ),
             ],
@@ -772,12 +780,13 @@ class _StatChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -794,7 +803,7 @@ class _StatChip extends StatelessWidget {
                       color: color)),
               Text(label,
                   style: GoogleFonts.inter(
-                      fontSize: 10, color: AppColors.textSecondary)),
+                      fontSize: 10, color: t.textSecondary)),
             ],
           ),
         ],
@@ -811,17 +820,18 @@ class _QuickActionsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final actions = [
-      (Icons.add_circle_rounded, 'Log Food', AppColors.primary,
+      (Icons.add_circle_rounded, 'Log Food', t.brand,
           () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ProNutritionScreen()))),
-      (Icons.qr_code_scanner_rounded, 'Scan Barcode', AppColors.accent,
+      (Icons.qr_code_scanner_rounded, 'Scan Barcode', t.accent,
           () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ProNutritionScreen()))),
-      (Icons.straighten_rounded, 'Measurements', AppColors.info,
+      (Icons.straighten_rounded, 'Measurements', t.info,
           () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ProMeasurementsScreen()))),
-      (Icons.smart_toy_rounded, 'AI Advice', AppColors.warning,
+      (Icons.smart_toy_rounded, 'AI Advice', t.warning,
           () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ProAiScreen()))),
     ];
@@ -840,9 +850,9 @@ class _QuickActionsGrid extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
+              color: color.withOpacity(0.08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: color.withValues(alpha: 0.22)),
+              border: Border.all(color: color.withOpacity(0.22)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -854,7 +864,7 @@ class _QuickActionsGrid extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],

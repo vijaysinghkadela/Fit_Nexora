@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+import '../../config/theme.dart';
+
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/elite_member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -47,23 +49,24 @@ class _EliteSupplementScreenState
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final logsAsync = ref.watch(eliteSupplementsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Text('Supplement Tracker',
             style: GoogleFonts.inter(
                 fontSize: 20, fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
         actions: [
           TextButton.icon(
             onPressed: () => _showLogSheet(context),
             icon: const Icon(Icons.add_rounded, size: 18),
             label: const Text('Log'),
-            style: TextButton.styleFrom(foregroundColor: AppColors.accent),
+            style: TextButton.styleFrom(foregroundColor: t.accent),
           ),
           const SizedBox(width: 8),
         ],
@@ -77,7 +80,7 @@ class _EliteSupplementScreenState
               child: Text("TODAY'S LOG",
                   style: GoogleFonts.inter(
                       fontSize: 11, fontWeight: FontWeight.w700,
-                      color: AppColors.textMuted, letterSpacing: 1.2)),
+                      color: t.textMuted, letterSpacing: 1.2)),
             ),
           ),
 
@@ -85,21 +88,21 @@ class _EliteSupplementScreenState
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
             sliver: SliverToBoxAdapter(
               child: logsAsync.when(
-                loading: () => const Center(
-                    child: CircularProgressIndicator(color: AppColors.primary)),
+                loading: () => Center(
+                    child: CircularProgressIndicator(color: t.brand)),
                 error: (e, _) => Text('$e',
-                    style: GoogleFonts.inter(color: AppColors.error)),
+                    style: GoogleFonts.inter(color: t.danger)),
                 data: (logs) => logs.isEmpty
                     ? GlassmorphicCard(
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(children: [
-                            const Icon(Icons.medication_rounded,
-                                size: 40, color: AppColors.textMuted),
+                            Icon(Icons.medication_rounded,
+                                size: 40, color: t.textMuted),
                             const SizedBox(height: 12),
                             Text('No supplements logged today',
                                 style: GoogleFonts.inter(
-                                    color: AppColors.textSecondary,
+                                    color: t.textSecondary,
                                     fontSize: 14)),
                           ]),
                         ),
@@ -116,33 +119,33 @@ class _EliteSupplementScreenState
                                   leading: Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: AppColors.accent
-                                          .withValues(alpha: 0.12),
+                                      color: t.accent
+                                          .withOpacity(0.12),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Icon(Icons.medication_rounded,
-                                        color: AppColors.accent, size: 20),
+                                    child: Icon(Icons.medication_rounded,
+                                        color: t.accent, size: 20),
                                   ),
                                   title: Text(
                                     s['supplement_name'] as String? ?? '',
                                     style: GoogleFonts.inter(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary),
+                                        color: t.textPrimary),
                                   ),
                                   subtitle: Text(
                                     '${s['dose_mg'] ?? ''}mg · ${s['timing'] ?? ''}',
                                     style: GoogleFonts.inter(
                                         fontSize: 12,
-                                        color: AppColors.textSecondary),
+                                        color: t.textSecondary),
                                   ),
-                                  trailing: const Icon(
+                                  trailing: Icon(
                                       Icons.check_circle_rounded,
-                                      color: AppColors.success),
+                                      color: t.success),
                                 ),
                                 if (i < logs.length - 1)
-                                  const Divider(
-                                      color: AppColors.divider, height: 1),
+                                  Divider(
+                                      color: t.divider, height: 1),
                               ]);
                             }).toList(),
                           ),
@@ -159,7 +162,7 @@ class _EliteSupplementScreenState
               child: Text('COMMON SUPPLEMENTS',
                   style: GoogleFonts.inter(
                       fontSize: 11, fontWeight: FontWeight.w700,
-                      color: AppColors.textMuted, letterSpacing: 1.2)),
+                      color: t.textMuted, letterSpacing: 1.2)),
             ),
           ),
 
@@ -183,32 +186,32 @@ class _EliteSupplementScreenState
                               style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary)),
+                                  color: t.textPrimary)),
                           subtitle: Text('$timing · ${int.parse(dose) >= 1000 ? '${(int.parse(dose) / 1000).toStringAsFixed(0)}g' : '${dose}mg'}',
                               style: GoogleFonts.inter(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary)),
+                                  color: t.textSecondary)),
                           trailing: GestureDetector(
                             onTap: () => _quickLog(name, dose, timing),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: AppColors.accent.withValues(alpha: 0.12),
+                                color: t.accent.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                    color: AppColors.accent.withValues(alpha: 0.3)),
+                                    color: t.accent.withOpacity(0.3)),
                               ),
                               child: Text('+ Log',
                                   style: GoogleFonts.inter(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.accent)),
+                                      color: t.accent)),
                             ),
                           ),
                         ),
                         if (i < _presets.length - 1)
-                          const Divider(color: AppColors.divider, height: 1),
+                          Divider(color: t.divider, height: 1),
                       ]);
                     }).toList(),
                   ),
@@ -233,17 +236,19 @@ class _EliteSupplementScreenState
     });
     ref.invalidate(eliteSupplementsProvider);
     if (mounted) {
+      final tt = context.fitTheme;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('$name logged!'),
-          backgroundColor: AppColors.success));
+          backgroundColor: tt.success));
     }
   }
 
   void _showLogSheet(BuildContext context) {
+    final tt = context.fitTheme;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: tt.surfaceAlt,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => Padding(
@@ -257,35 +262,35 @@ class _EliteSupplementScreenState
             Center(child: Container(
               width: 40, height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.3),
+                  color: tt.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2)),
             )),
             const SizedBox(height: 20),
             Text('Log Supplement',
                 style: GoogleFonts.inter(
                     fontSize: 20, fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary)),
+                    color: tt.textPrimary)),
             const SizedBox(height: 16),
-            _field(_nameCtrl, 'Supplement name', TextInputType.text),
+            _field(_nameCtrl, 'Supplement name', TextInputType.text, tt),
             const SizedBox(height: 10),
-            _field(_doseCtrl, 'Dose (mg)', TextInputType.number),
+            _field(_doseCtrl, 'Dose (mg)', TextInputType.number, tt),
             const SizedBox(height: 10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: _timings.map((t) => Padding(
+                children: _timings.map((timing) => Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: Text(t,
+                    label: Text(timing,
                         style: GoogleFonts.inter(
                             fontSize: 12,
-                            color: t == _timing
+                            color: timing == _timing
                                 ? Colors.white
-                                : AppColors.textSecondary)),
-                    selected: t == _timing,
-                    selectedColor: AppColors.accent,
-                    backgroundColor: AppColors.bgCard,
-                    onSelected: (_) => setState(() => _timing = t),
+                                : tt.textSecondary)),
+                    selected: timing == _timing,
+                    selectedColor: tt.accent,
+                    backgroundColor: tt.surfaceAlt,
+                    onSelected: (_) => setState(() => _timing = timing),
                   ),
                 )).toList(),
               ),
@@ -296,7 +301,7 @@ class _EliteSupplementScreenState
               child: FilledButton(
                 onPressed: _saving ? null : () => _saveLog(context),
                 style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.accent,
+                    backgroundColor: tt.accent,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14))),
                 child: Text('Save Supplement',
@@ -310,24 +315,24 @@ class _EliteSupplementScreenState
     );
   }
 
-  Widget _field(TextEditingController c, String hint, TextInputType type) {
+  Widget _field(TextEditingController c, String hint, TextInputType type, FitNexoraThemeTokens tt) {
     return TextFormField(
       controller: c, keyboardType: type,
-      style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+      style: GoogleFonts.inter(color: tt.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
-        filled: true, fillColor: AppColors.bgInput,
+        hintStyle: GoogleFonts.inter(color: tt.textMuted, fontSize: 13),
+        filled: true, fillColor: tt.surfaceMuted,
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.border)),
+            borderSide: BorderSide(color: tt.border)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.accent, width: 2)),
+            borderSide: BorderSide(color: tt.accent, width: 2)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.border)),
+            borderSide: BorderSide(color: tt.border)),
       ),
     );
   }
@@ -351,10 +356,11 @@ class _EliteSupplementScreenState
       ref.invalidate(eliteSupplementsProvider);
       _nameCtrl.clear(); _doseCtrl.clear();
       if (context.mounted) {
+        final tt = context.fitTheme;
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Supplement logged!'),
-            backgroundColor: AppColors.success));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text('Supplement logged!'),
+            backgroundColor: tt.success));
       }
     } finally {
       if (mounted) setState(() => _saving = false);

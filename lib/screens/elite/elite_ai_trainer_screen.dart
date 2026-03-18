@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
 import '../../core/enums.dart';
+import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/member_provider.dart';
@@ -45,18 +46,19 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Row(children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               gradient: const LinearGradient(colors: [_purple, _indigo]),
               borderRadius: BorderRadius.circular(6),
-              boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.4), blurRadius: 8)],
+              boxShadow: [BoxShadow(color: _purple.withOpacity(0.4), blurRadius: 8)],
             ),
             child: Text('ELITE AI', style: GoogleFonts.inter(
                 fontSize: 10, fontWeight: FontWeight.w900,
@@ -65,13 +67,13 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
           const SizedBox(width: 10),
           Text('Personal Trainer', style: GoogleFonts.inter(
               fontSize: 18, fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary)),
+              color: t.textPrimary)),
         ]),
         actions: [
           if (_messages.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.clear_all_rounded,
-                  color: AppColors.textSecondary),
+              icon: Icon(Icons.clear_all_rounded,
+                  color: t.textSecondary),
               tooltip: 'Clear chat',
               onPressed: () => setState(() => _messages.clear()),
             ),
@@ -105,8 +107,8 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
             decoration: BoxDecoration(
-              color: AppColors.bgCard,
-              border: Border(top: BorderSide(color: AppColors.border)),
+              color: t.surfaceAlt,
+              border: Border(top: BorderSide(color: t.border)),
             ),
             child: Row(
               children: [
@@ -114,13 +116,13 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
                   child: TextField(
                     controller: _ctrl,
                     style: GoogleFonts.inter(
-                        color: AppColors.textPrimary, fontSize: 14),
+                        color: t.textPrimary, fontSize: 14),
                     decoration: InputDecoration(
                       hintText: 'Ask your AI trainer...',
                       hintStyle: GoogleFonts.inter(
-                          color: AppColors.textMuted, fontSize: 13),
+                          color: t.textMuted, fontSize: 13),
                       filled: true,
-                      fillColor: AppColors.bgInput,
+                      fillColor: t.surfaceMuted,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -143,7 +145,7 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                            color: _purple.withValues(alpha: 0.4),
+                            color: _purple.withOpacity(0.4),
                             blurRadius: 12)
                       ],
                     ),
@@ -255,6 +257,7 @@ class _WelcomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -276,20 +279,20 @@ class _WelcomeView extends StatelessWidget {
               style: GoogleFonts.inter(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary)),
+                  color: t.textPrimary)),
           const SizedBox(height: 6),
           Text(
             'Powered by Claude Opus — your dedicated fitness intelligence',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-                fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+                fontSize: 13, color: t.textSecondary, height: 1.5),
           ),
           const SizedBox(height: 28),
           Text('QUICK STARTS',
               style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                   letterSpacing: 1.2)),
           const SizedBox(height: 12),
           ...prompts.asMap().entries.map((e) {
@@ -302,9 +305,9 @@ class _WelcomeView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: AppColors.bgCard,
+                    color: t.surfaceAlt,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: t.border),
                   ),
                   child: Row(children: [
                     const Icon(Icons.bolt_rounded,
@@ -314,10 +317,10 @@ class _WelcomeView extends StatelessWidget {
                       child: Text(e.value,
                           style: GoogleFonts.inter(
                               fontSize: 13,
-                              color: AppColors.textSecondary)),
+                              color: t.textSecondary)),
                     ),
-                    const Icon(Icons.play_arrow_rounded,
-                        color: AppColors.textMuted, size: 18),
+                    Icon(Icons.play_arrow_rounded,
+                        color: t.textMuted, size: 18),
                   ]),
                 ).animate(delay: (e.key * 60).ms).fadeIn(),
               ),
@@ -335,6 +338,7 @@ class _ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final isUser = msg.isUser;
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -348,7 +352,7 @@ class _ChatBubble extends StatelessWidget {
               ? const LinearGradient(
                   colors: [Color(0xFF9C27B0), Color(0xFF3F51B5)])
               : null,
-          color: isUser ? null : AppColors.bgCard,
+          color: isUser ? null : t.surfaceAlt,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
@@ -357,7 +361,7 @@ class _ChatBubble extends StatelessWidget {
           ),
           border: isUser
               ? null
-              : Border.all(color: AppColors.border),
+              : Border.all(color: t.border),
         ),
         child: Text(msg.text,
             style: GoogleFonts.inter(
@@ -365,8 +369,8 @@ class _ChatBubble extends StatelessWidget {
                 color: isUser
                     ? Colors.white
                     : msg.isError
-                        ? AppColors.error
-                        : AppColors.textPrimary,
+                        ? t.danger
+                        : t.textPrimary,
                 height: 1.5)),
       ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.03),
     );
@@ -376,15 +380,16 @@ class _ChatBubble extends StatelessWidget {
 class _TypingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
+          color: t.surfaceAlt,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: t.border),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(
@@ -394,7 +399,7 @@ class _TypingIndicator extends StatelessWidget {
           const SizedBox(width: 10),
           Text('AI is thinking...',
               style: GoogleFonts.inter(
-                  fontSize: 12, color: AppColors.textMuted)),
+                  fontSize: 12, color: t.textMuted)),
         ]),
       ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 1200.ms),
     );

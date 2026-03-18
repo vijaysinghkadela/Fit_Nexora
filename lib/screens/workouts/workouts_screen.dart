@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+import '../../config/theme.dart';
+
 import '../../core/enums.dart';
+import '../../core/extensions.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -17,46 +19,47 @@ class WorkoutsScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
-  // Preview / template data
-  final _templates = const [
-    _PlanTemplate(
-      name: 'PPL — Push Pull Legs',
-      days: 6,
-      goal: 'Muscle Gain',
-      level: 'Intermediate',
-      icon: Icons.fitness_center_rounded,
-      color: AppColors.primary,
-    ),
-    _PlanTemplate(
-      name: 'Upper/Lower Split',
-      days: 4,
-      goal: 'Strength',
-      level: 'Intermediate',
-      icon: Icons.sports_gymnastics_rounded,
-      color: AppColors.accent,
-    ),
-    _PlanTemplate(
-      name: 'Full Body 3x',
-      days: 3,
-      goal: 'General Fitness',
-      level: 'Beginner',
-      icon: Icons.accessibility_new_rounded,
-      color: AppColors.info,
-    ),
-    _PlanTemplate(
-      name: 'Body Recomp',
-      days: 5,
-      goal: 'Fat Loss + Muscle',
-      level: 'Advanced',
-      icon: Icons.local_fire_department_rounded,
-      color: AppColors.warning,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final subscriptionAsync = ref.watch(currentGymSubscriptionProvider);
     final hasAiAccess = subscriptionAsync.value?.hasAiAccess ?? false;
+
+    // Template data defined here so colors resolve from theme
+    final templates = [
+      _PlanTemplate(
+        name: 'PPL — Push Pull Legs',
+        days: 6,
+        goal: 'Muscle Gain',
+        level: 'Intermediate',
+        icon: Icons.fitness_center_rounded,
+        color: t.brand,
+      ),
+      _PlanTemplate(
+        name: 'Upper/Lower Split',
+        days: 4,
+        goal: 'Strength',
+        level: 'Intermediate',
+        icon: Icons.sports_gymnastics_rounded,
+        color: t.accent,
+      ),
+      _PlanTemplate(
+        name: 'Full Body 3x',
+        days: 3,
+        goal: 'General Fitness',
+        level: 'Beginner',
+        icon: Icons.accessibility_new_rounded,
+        color: t.info,
+      ),
+      _PlanTemplate(
+        name: 'Body Recomp',
+        days: 5,
+        goal: 'Fat Loss + Muscle',
+        level: 'Advanced',
+        icon: Icons.local_fire_department_rounded,
+        color: t.warning,
+      ),
+    ];
 
     return CustomScrollView(
       slivers: [
@@ -65,19 +68,19 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           leading: BackButton(
             onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
           ),
-          backgroundColor: AppColors.bgDark,
+          backgroundColor: t.background,
           title: Text(
             'Workout Plans',
             style: GoogleFonts.inter(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.calendar_month_rounded),
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
               tooltip: 'Workout Calendar',
               onPressed: () => context.push('/workout/calendar'),
             ),
@@ -92,7 +95,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 ),
               ),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: t.brand,
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -114,7 +117,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               subtitle:
                   'Claude creates a personalized plan based on client goals, level & equipment',
               isLocked: !hasAiAccess,
-              color: AppColors.primary,
+              color: t.brand,
               icon: Icons.fitness_center_rounded,
               onGenerate: () {
                 if (!hasAiAccess) {
@@ -122,10 +125,9 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   return;
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'AI workout generation started…'),
-                    backgroundColor: AppColors.primary,
+                  SnackBar(
+                    content: const Text('AI workout generation started…'),
+                    backgroundColor: t.brand,
                   ),
                 );
               },
@@ -142,7 +144,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ).animate().fadeIn(),
           ),
@@ -158,8 +160,8 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               childAspectRatio: 1.55,
             ),
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildTemplateCard(_templates[index], index),
-              childCount: _templates.length,
+              (context, index) => _buildTemplateCard(templates[index], index, t),
+              childCount: templates.length,
             ),
           ),
         ),
@@ -176,7 +178,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 TextButton(
@@ -200,13 +202,13 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.bgElevated,
+                        color: t.surface,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Icon(
                         Icons.fitness_center_rounded,
                         size: 36,
-                        color: AppColors.textMuted.withValues(alpha: 0.5),
+                        color: t.textMuted.withOpacity(0.5),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -215,7 +217,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
+                        color: t.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -224,7 +226,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                         fontSize: 13,
-                        color: AppColors.textMuted,
+                        color: t.textMuted,
                       ),
                     ),
                   ],
@@ -239,7 +241,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     );
   }
 
-  Widget _buildTemplateCard(_PlanTemplate template, int index) {
+  Widget _buildTemplateCard(_PlanTemplate template, int index, FitNexoraThemeTokens t) {
     final color = template.color;
     return GestureDetector(
       onTap: () {
@@ -252,9 +254,9 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
+          color: t.surfaceAlt,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          border: Border.all(color: color.withOpacity(0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,8 +267,8 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    color.withValues(alpha: 0.2),
-                    color.withValues(alpha: 0.06),
+                    color.withOpacity(0.2),
+                    color.withOpacity(0.06),
                   ],
                 ),
                 borderRadius:
@@ -282,7 +284,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: t.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -298,9 +300,9 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 spacing: 6,
                 runSpacing: 4,
                 children: [
-                  _buildTag('${template.days}d/wk', color),
-                  _buildTag(template.goal, AppColors.textMuted),
-                  _buildTag(template.level, AppColors.textMuted),
+                  _buildTag('${template.days}d/wk', color, t),
+                  _buildTag(template.goal, t.textMuted, t),
+                  _buildTag(template.level, t.textMuted, t),
                 ],
               ),
             ),
@@ -313,11 +315,11 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
         .slideY(begin: 0.08, end: 0);
   }
 
-  Widget _buildTag(String text, Color color) {
+  Widget _buildTag(String text, Color color, FitNexoraThemeTokens t) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
@@ -325,7 +327,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
         style: GoogleFonts.inter(
           fontSize: 10,
           fontWeight: FontWeight.w500,
-          color: color == AppColors.textMuted ? AppColors.textSecondary : color,
+          color: color == t.textMuted ? t.textSecondary : color,
         ),
       ),
     );
@@ -361,7 +363,8 @@ class _AiGenerationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = isLocked ? AppColors.textMuted : color;
+    final t = context.fitTheme;
+    final effectiveColor = isLocked ? t.textMuted : color;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -371,17 +374,17 @@ class _AiGenerationBanner extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: isLocked
               ? [
-                  AppColors.bgElevated,
-                  AppColors.bgCard,
+                  t.surface,
+                  t.surfaceAlt,
                 ]
               : [
-                  color.withValues(alpha: 0.16),
-                  color.withValues(alpha: 0.06),
+                  color.withOpacity(0.16),
+                  color.withOpacity(0.06),
                 ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isLocked ? AppColors.border : color.withValues(alpha: 0.35),
+          color: isLocked ? t.border : color.withOpacity(0.35),
         ),
       ),
       child: Row(
@@ -389,7 +392,7 @@ class _AiGenerationBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: effectiveColor.withValues(alpha: 0.12),
+              color: effectiveColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -408,9 +411,7 @@ class _AiGenerationBanner extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: isLocked
-                        ? AppColors.textSecondary
-                        : AppColors.textPrimary,
+                    color: isLocked ? t.textSecondary : t.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -420,7 +421,7 @@ class _AiGenerationBanner extends StatelessWidget {
                       : subtitle,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: t.textMuted,
                   ),
                 ),
               ],
@@ -431,8 +432,8 @@ class _AiGenerationBanner extends StatelessWidget {
               ? OutlinedButton(
                   onPressed: onGenerate,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: const BorderSide(color: AppColors.primary),
+                    foregroundColor: t.brand,
+                    side: BorderSide(color: t.brand),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     shape: RoundedRectangleBorder(
@@ -492,15 +493,16 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.75,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: t.surfaceAlt,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border(
-          top: BorderSide(color: AppColors.glassBorder, width: 1),
+          top: BorderSide(color: t.glassBorder, width: 1),
         ),
       ),
       child: SingleChildScrollView(
@@ -514,7 +516,7 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.3),
+                  color: t.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -526,7 +528,7 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
               style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
             const SizedBox(height: 20),
@@ -534,25 +536,23 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
             // Plan name
             TextFormField(
               controller: _nameController,
-              style:
-                  GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
               decoration: InputDecoration(
                 labelText: 'Plan Name',
                 hintText: 'e.g., Hypertrophy Phase 1',
                 filled: true,
-                fillColor: AppColors.bgInput,
+                fillColor: t.surfaceMuted,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: t.border),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: t.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: AppColors.primary, width: 2),
+                  borderSide: BorderSide(color: t.brand, width: 2),
                 ),
               ),
             ),
@@ -566,20 +566,20 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                         value: g,
                         child: Text(g.label,
                             style: GoogleFonts.inter(
-                                color: AppColors.textPrimary, fontSize: 14)),
+                                color: t.textPrimary, fontSize: 14)),
                       ))
                   .toList(),
               onChanged: (v) => setState(() => _goal = v!),
               decoration: InputDecoration(
                 labelText: 'Primary Goal',
                 filled: true,
-                fillColor: AppColors.bgInput,
+                fillColor: t.surfaceMuted,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: t.border),
                 ),
               ),
-              dropdownColor: AppColors.bgElevated,
+              dropdownColor: t.surface,
             ),
             const SizedBox(height: 16),
 
@@ -589,7 +589,7 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
               children: [
                 Text('Duration',
                     style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textMuted)),
+                        fontSize: 12, color: t.textMuted)),
                 const SizedBox(height: 8),
                 Row(
                   children: [4, 6, 8, 12]
@@ -602,14 +602,13 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                                     const EdgeInsets.symmetric(vertical: 10),
                                 decoration: BoxDecoration(
                                   color: _durationWeeks == w
-                                      ? AppColors.primary
-                                          .withValues(alpha: 0.15)
-                                      : AppColors.bgInput,
+                                      ? t.brand.withOpacity(0.15)
+                                      : t.surfaceMuted,
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                     color: _durationWeeks == w
-                                        ? AppColors.primary
-                                        : AppColors.border,
+                                        ? t.brand
+                                        : t.border,
                                   ),
                                 ),
                                 alignment: Alignment.center,
@@ -621,8 +620,8 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                                         ? FontWeight.w700
                                         : FontWeight.w400,
                                     color: _durationWeeks == w
-                                        ? AppColors.primary
-                                        : AppColors.textSecondary,
+                                        ? t.brand
+                                        : t.textSecondary,
                                   ),
                                 ),
                               ),
@@ -640,7 +639,7 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
               children: [
                 Text('Training Days / Week',
                     style: GoogleFonts.inter(
-                        fontSize: 12, color: AppColors.textMuted)),
+                        fontSize: 12, color: t.textMuted)),
                 const SizedBox(height: 8),
                 Row(
                   children: List.generate(6, (i) {
@@ -653,13 +652,13 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: _daysPerWeek == d
-                                ? AppColors.primary.withValues(alpha: 0.15)
-                                : AppColors.bgInput,
+                                ? t.brand.withOpacity(0.15)
+                                : t.surfaceMuted,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: _daysPerWeek == d
-                                  ? AppColors.primary
-                                  : AppColors.border,
+                                  ? t.brand
+                                  : t.border,
                             ),
                           ),
                           alignment: Alignment.center,
@@ -671,8 +670,8 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                                   ? FontWeight.w700
                                   : FontWeight.w400,
                               color: _daysPerWeek == d
-                                  ? AppColors.primary
-                                  : AppColors.textSecondary,
+                                  ? t.brand
+                                  : t.textSecondary,
                             ),
                           ),
                         ),
@@ -690,17 +689,18 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
               height: 50,
               child: FilledButton(
                 onPressed: () {
+                  final snackColor = t.brand;
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                           'Created "${_nameController.text}" — ${_daysPerWeek}d/wk, $_durationWeeks weeks'),
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: snackColor,
                     ),
                   );
                 },
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: t.brand,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

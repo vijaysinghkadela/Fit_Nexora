@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
 import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
@@ -32,62 +32,61 @@ class _MemberProgressScreenState
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final progressAsync = ref.watch(memberProgressProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
           onPressed: () => context.pop(),
         ),
         title: Text('Weight Progress',
             style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
         actions: [
           TextButton.icon(
             onPressed: () => _showLogSheet(context),
-            icon: const Icon(Icons.add_rounded,
-                size: 18, color: AppColors.primary),
+            icon: Icon(Icons.add_rounded, size: 18, color: t.brand),
             label: Text('Log Weight',
-                style:
-                    GoogleFonts.inter(color: AppColors.primary, fontSize: 13)),
+                style: GoogleFonts.inter(color: t.brand, fontSize: 13)),
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: progressAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
             child: Text('Error: $e',
-                style: GoogleFonts.inter(color: AppColors.error))),
+                style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.monitor_weight_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.monitor_weight_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No weight entries yet',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 16)),
+                          color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 8),
                   Text('Tap "Log Weight" to start tracking',
                       style: GoogleFonts.inter(
-                          color: AppColors.textMuted, fontSize: 13)),
+                          color: t.textMuted, fontSize: 13)),
                   const SizedBox(height: 24),
                   FilledButton.icon(
                     onPressed: () => _showLogSheet(context),
                     icon: const Icon(Icons.add_rounded),
                     label: const Text('Log First Entry'),
                     style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary),
+                        backgroundColor: t.brand),
                   ),
                 ],
               ),
@@ -116,21 +115,21 @@ class _MemberProgressScreenState
                           child: _StatCard(
                         label: 'Current',
                         value: '${current.toStringAsFixed(1)} kg',
-                        color: AppColors.primary,
+                        color: t.brand,
                       )),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _StatCard(
                         label: change <= 0 ? '▼ Lost' : '▲ Gained',
                         value: '${change.abs().toStringAsFixed(1)} kg',
-                        color: change <= 0 ? AppColors.success : AppColors.warning,
+                        color: change <= 0 ? t.success : t.warning,
                       )),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _StatCard(
                         label: 'Entries',
                         value: '${withWeight.length}',
-                        color: AppColors.info,
+                        color: t.info,
                       )),
                     ],
                   ).animate().fadeIn(),
@@ -151,7 +150,7 @@ class _MemberProgressScreenState
                               style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary)),
+                                  color: t.textPrimary)),
                           const SizedBox(height: 16),
                           SizedBox(
                             height: 160,
@@ -172,7 +171,7 @@ class _MemberProgressScreenState
                       style: GoogleFonts.inter(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textMuted,
+                          color: t.textMuted,
                           letterSpacing: 1.2)),
                 ),
               ),
@@ -206,7 +205,7 @@ class _MemberProgressScreenState
                                   _formatDate(date),
                                   style: GoogleFonts.inter(
                                       fontSize: 14,
-                                      color: AppColors.textSecondary),
+                                      color: t.textSecondary),
                                 ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -221,10 +220,10 @@ class _MemberProgressScreenState
                                         style: GoogleFonts.inter(
                                           fontSize: 12,
                                           color: diff < 0
-                                              ? AppColors.success
+                                              ? t.success
                                               : diff > 0
-                                                  ? AppColors.warning
-                                                  : AppColors.textMuted,
+                                                  ? t.warning
+                                                  : t.textMuted,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -234,14 +233,13 @@ class _MemberProgressScreenState
                                       style: GoogleFonts.inter(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w800,
-                                          color: AppColors.textPrimary),
+                                          color: t.textPrimary),
                                     ),
                                   ],
                                 ),
                               ),
                               if (i < withWeight.length - 1)
-                                const Divider(
-                                    color: AppColors.divider, height: 1),
+                                Divider(color: t.divider, height: 1),
                             ],
                           );
                         }).toList(),
@@ -266,11 +264,12 @@ class _MemberProgressScreenState
   }
 
   void _showLogSheet(BuildContext context) {
+    final t = context.fitTheme;
     _weightController.clear();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: t.surfaceAlt,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -290,7 +289,7 @@ class _MemberProgressScreenState
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.3),
+                  color: t.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -300,31 +299,30 @@ class _MemberProgressScreenState
                 style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary)),
+                    color: t.textPrimary)),
             const SizedBox(height: 20),
             TextFormField(
               controller: _weightController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               style:
-                  GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 24),
+                  GoogleFonts.inter(color: t.textPrimary, fontSize: 24),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hintText: '75.0',
-                hintStyle: GoogleFonts.inter(color: AppColors.textMuted),
+                hintStyle: GoogleFonts.inter(color: t.textMuted),
                 suffix: Text(' kg',
                     style: GoogleFonts.inter(
-                        color: AppColors.textSecondary, fontSize: 18)),
+                        color: t.textSecondary, fontSize: 18)),
                 filled: true,
-                fillColor: AppColors.bgInput,
+                fillColor: t.surfaceMuted,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: t.border),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                      color: AppColors.primary, width: 2),
+                  borderSide: BorderSide(color: t.brand, width: 2),
                 ),
               ),
             ),
@@ -335,7 +333,7 @@ class _MemberProgressScreenState
               child: FilledButton(
                 onPressed: () => _saveWeight(context),
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: t.brand,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14)),
                 ),
@@ -351,6 +349,7 @@ class _MemberProgressScreenState
   }
 
   Future<void> _saveWeight(BuildContext context) async {
+    final t = context.fitTheme;
     final val = double.tryParse(_weightController.text);
     if (val == null || val <= 0) return;
 
@@ -365,7 +364,7 @@ class _MemberProgressScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Weight logged: ${val.toStringAsFixed(1)} kg'),
-            backgroundColor: AppColors.success,
+            backgroundColor: t.success,
           ),
         );
       }
@@ -388,7 +387,7 @@ class _MemberProgressScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Weight logged: ${val.toStringAsFixed(1)} kg'),
-            backgroundColor: AppColors.success,
+            backgroundColor: t.success,
           ),
         );
       }
@@ -397,7 +396,7 @@ class _MemberProgressScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text('Failed: $e'),
-              backgroundColor: AppColors.error),
+              backgroundColor: t.danger),
         );
       }
     }
@@ -415,12 +414,13 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Column(
         children: [
@@ -432,7 +432,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(label,
               style: GoogleFonts.inter(
-                  fontSize: 11, color: AppColors.textSecondary)),
+                  fontSize: 11, color: t.textSecondary)),
         ],
       ),
     );
@@ -447,11 +447,12 @@ class _WeightChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
+    final brandColor = context.fitTheme.brand;
     final weights = entries
         .map((e) => (e['weight_kg'] as num).toDouble())
         .toList();
     return CustomPaint(
-      painter: _ChartPainter(weights: weights),
+      painter: _ChartPainter(weights: weights, brandColor: brandColor),
       size: const Size(double.infinity, 160),
     );
   }
@@ -459,7 +460,8 @@ class _WeightChart extends StatelessWidget {
 
 class _ChartPainter extends CustomPainter {
   final List<double> weights;
-  _ChartPainter({required this.weights});
+  final Color brandColor;
+  _ChartPainter({required this.weights, required this.brandColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -470,13 +472,13 @@ class _ChartPainter extends CustomPainter {
     final range = maxW - minW;
 
     final linePaint = Paint()
-      ..color = AppColors.primary
+      ..color = brandColor
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     final dotPaint = Paint()
-      ..color = AppColors.primary
+      ..color = brandColor
       ..style = PaintingStyle.fill;
 
     final fillPaint = Paint()
@@ -484,8 +486,8 @@ class _ChartPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          AppColors.primary.withValues(alpha: 0.3),
-          AppColors.primary.withValues(alpha: 0.0),
+          brandColor.withOpacity(0.3),
+          brandColor.withOpacity(0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../providers/member_provider.dart';
 
 /// Full workout plan detail screen for members.
@@ -11,28 +12,29 @@ class MemberWorkoutScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final planAsync = ref.watch(memberWorkoutPlanProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Text(
           'My Workout Plan',
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
       ),
       body: planAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
           child: Text('Error: $e',
-              style: GoogleFonts.inter(color: AppColors.error)),
+              style: GoogleFonts.inter(color: t.danger)),
         ),
         data: (plan) {
           if (plan == null) {
@@ -40,19 +42,19 @@ class MemberWorkoutScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.fitness_center_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.fitness_center_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text(
                     'No workout plan assigned yet',
                     style: GoogleFonts.inter(
-                        color: AppColors.textSecondary, fontSize: 16),
+                        color: t.textSecondary, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Ask your trainer to assign a workout plan',
                     style: GoogleFonts.inter(
-                        color: AppColors.textMuted, fontSize: 13),
+                        color: t.textMuted, fontSize: 13),
                   ),
                 ],
               ),
@@ -75,14 +77,14 @@ class MemberWorkoutScreen extends ConsumerWidget {
                         style: GoogleFonts.inter(
                           fontSize: 22,
                           fontWeight: FontWeight.w900,
-                          color: AppColors.textPrimary,
+                          color: t.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${days.length} training days · ${plan.durationWeeks} weeks',
                         style: GoogleFonts.inter(
-                            color: AppColors.textSecondary, fontSize: 14),
+                            color: t.textSecondary, fontSize: 14),
                       ),
                     ],
                   ).animate().fadeIn(),
@@ -127,19 +129,20 @@ class _DayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final exercises = day.exercises as List;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
       child: Container(
         decoration: BoxDecoration(
           color: isToday
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : AppColors.bgCard,
+              ? t.brand.withOpacity(0.08)
+              : t.surfaceAlt,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isToday
-                ? AppColors.primary.withValues(alpha: 0.4)
-                : AppColors.border,
+                ? t.brand.withOpacity(0.4)
+                : t.border,
             width: isToday ? 1.5 : 1,
           ),
         ),
@@ -155,10 +158,10 @@ class _DayCard extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 gradient: isToday
-                    ? const LinearGradient(
-                        colors: [AppColors.primary, AppColors.accent])
+                    ? LinearGradient(
+                        colors: [t.brand, t.accent])
                     : null,
-                color: isToday ? null : AppColors.bgElevated,
+                color: isToday ? null : t.surface,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
@@ -169,7 +172,7 @@ class _DayCard extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     color: isToday
                         ? Colors.white
-                        : AppColors.textSecondary,
+                        : t.textSecondary,
                   ),
                 ),
               ),
@@ -181,7 +184,7 @@ class _DayCard extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 if (isToday) ...[
@@ -190,7 +193,7 @@ class _DayCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.2),
+                      color: t.brand.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -198,7 +201,7 @@ class _DayCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                         fontSize: 9,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
+                        color: t.brand,
                         letterSpacing: 1,
                       ),
                     ),
@@ -209,7 +212,7 @@ class _DayCard extends StatelessWidget {
             subtitle: Text(
               '${exercises.length} exercises',
               style: GoogleFonts.inter(
-                  fontSize: 12, color: AppColors.textSecondary),
+                  fontSize: 12, color: t.textSecondary),
             ),
             children: exercises.asMap().entries.map((entry) {
               final idx = entry.key;
@@ -223,7 +226,7 @@ class _DayCard extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.12),
+                        color: t.brand.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Center(
@@ -232,7 +235,7 @@ class _DayCard extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
+                            color: t.brand,
                           ),
                         ),
                       ),
@@ -244,7 +247,7 @@ class _DayCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: t.textPrimary,
                         ),
                       ),
                     ),
@@ -252,7 +255,7 @@ class _DayCard extends StatelessWidget {
                       '${ex.sets} × ${ex.reps}',
                       style: GoogleFonts.inter(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: t.textSecondary,
                           fontWeight: FontWeight.w600),
                     ),
                   ],

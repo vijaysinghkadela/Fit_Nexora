@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
 import '../../providers/auth_provider.dart';
@@ -67,6 +68,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
   }
 
   Future<void> _selectDate(bool isStart) async {
+    final t = context.fitTheme;
     final date = await showDatePicker(
       context: context,
       initialDate: isStart ? _startDate : _endDate,
@@ -75,9 +77,9 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: AppColors.primary,
-              surface: AppColors.bgCard,
+            colorScheme: ColorScheme.dark(
+              primary: t.brand,
+              surface: t.surfaceAlt,
             ),
           ),
           child: child!,
@@ -125,7 +127,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Membership created for ${widget.client.fullName}'),
-            backgroundColor: AppColors.success,
+            backgroundColor: context.fitTheme.success,
           ),
         );
       }
@@ -133,7 +135,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Error: $e'), backgroundColor: AppColors.error),
+              content: Text('Error: $e'), backgroundColor: context.fitTheme.danger),
         );
       }
     } finally {
@@ -143,19 +145,20 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: t.surfaceAlt,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border(
-          top: BorderSide(color: AppColors.glassBorder, width: 1),
-          left: BorderSide(color: AppColors.glassBorder, width: 1),
-          right: BorderSide(color: AppColors.glassBorder, width: 1),
+          top: BorderSide(color: t.glassBorder, width: 1),
+          left: BorderSide(color: t.glassBorder, width: 1),
+          right: BorderSide(color: t.glassBorder, width: 1),
         ),
       ),
       child: Column(
@@ -167,7 +170,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textMuted.withValues(alpha: 0.3),
+              color: t.textMuted.withOpacity(0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -186,7 +189,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: t.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -194,21 +197,21 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                       'For ${widget.client.fullName ?? 'client'}',
                       style: GoogleFonts.inter(
                         fontSize: 13,
-                        color: AppColors.textSecondary,
+                        color: t.textSecondary,
                       ),
                     ),
                   ],
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded,
-                      color: AppColors.textMuted),
+                  icon: Icon(Icons.close_rounded,
+                      color: t.textMuted),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
           ),
 
-          const Divider(color: AppColors.divider, height: 1),
+          Divider(color: t.divider, height: 1),
 
           // Form
           Expanded(
@@ -222,26 +225,26 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                     // Plan Name
                     TextFormField(
                       controller: _planNameController,
-                      style: GoogleFonts.inter(color: AppColors.textPrimary),
+                      style: GoogleFonts.inter(color: t.textPrimary),
                       decoration: InputDecoration(
                         labelText: 'Plan Name *',
                         hintText: 'Monthly Premium, Annual Gold…',
-                        prefixIcon: const Icon(Icons.card_membership_rounded,
-                            color: AppColors.textMuted, size: 18),
+                        prefixIcon: Icon(Icons.card_membership_rounded,
+                            color: t.textMuted, size: 18),
                         filled: true,
-                        fillColor: AppColors.bgInput,
+                        fillColor: t.surfaceMuted,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: t.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: t.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                              color: AppColors.primary, width: 2),
+                          borderSide: BorderSide(
+                              color: t.brand, width: 2),
                         ),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty
@@ -255,26 +258,26 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                     TextFormField(
                       controller: _amountController,
                       keyboardType: TextInputType.number,
-                      style: GoogleFonts.inter(color: AppColors.textPrimary),
+                      style: GoogleFonts.inter(color: t.textPrimary),
                       decoration: InputDecoration(
                         labelText: 'Amount (₹)',
                         hintText: '1500',
-                        prefixIcon: const Icon(Icons.currency_rupee_rounded,
-                            color: AppColors.textMuted, size: 18),
+                        prefixIcon: Icon(Icons.currency_rupee_rounded,
+                            color: t.textMuted, size: 18),
                         filled: true,
-                        fillColor: AppColors.bgInput,
+                        fillColor: t.surfaceMuted,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: t.border),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.border),
+                          borderSide: BorderSide(color: t.border),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                              color: AppColors.primary, width: 2),
+                          borderSide: BorderSide(
+                              color: t.brand, width: 2),
                         ),
                       ),
                     ),
@@ -287,7 +290,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: t.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -306,13 +309,13 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                                 horizontal: 16, vertical: 10),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? AppColors.primary.withValues(alpha: 0.15)
-                                  : AppColors.bgInput,
+                                  ? t.brand.withOpacity(0.15)
+                                  : t.surfaceMuted,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: isSelected
-                                    ? AppColors.primary
-                                    : AppColors.border,
+                                    ? t.brand
+                                    : t.border,
                               ),
                             ),
                             child: Text(
@@ -323,8 +326,8 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                                     ? FontWeight.w600
                                     : FontWeight.w400,
                                 color: isSelected
-                                    ? AppColors.primary
-                                    : AppColors.textSecondary,
+                                    ? t.brand
+                                    : t.textSecondary,
                               ),
                             ),
                           ),
@@ -362,23 +365,23 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.bgInput,
+                        color: t.surfaceMuted,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: t.border),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.autorenew_rounded,
-                                  color: AppColors.textMuted, size: 20),
+                              Icon(Icons.autorenew_rounded,
+                                  color: t.textMuted, size: 20),
                               const SizedBox(width: 10),
                               Text(
                                 'Auto-renew',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
-                                  color: AppColors.textPrimary,
+                                  color: t.textPrimary,
                                 ),
                               ),
                             ],
@@ -386,7 +389,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                           Switch(
                             value: _autoRenew,
                             onChanged: (v) => setState(() => _autoRenew = v),
-                            activeColor: AppColors.primary,
+                            activeColor: t.brand,
                           ),
                         ],
                       ),
@@ -401,7 +404,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                       child: FilledButton(
                         onPressed: _isLoading ? null : _handleSubmit,
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.accent,
+                          backgroundColor: t.accent,
                           foregroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -436,14 +439,15 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
   }
 
   Widget _buildDateField(String label, DateTime date, VoidCallback onTap) {
+    final t = context.fitTheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.bgInput,
+          color: t.surfaceMuted,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: t.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,21 +456,21 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
               label,
               style: GoogleFonts.inter(
                 fontSize: 11,
-                color: AppColors.textMuted,
+                color: t.textMuted,
               ),
             ),
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.calendar_today_rounded,
-                    size: 14, color: AppColors.textMuted),
+                Icon(Icons.calendar_today_rounded,
+                    size: 14, color: t.textMuted),
                 const SizedBox(width: 6),
                 Text(
                   '${date.day}/${date.month}/${date.year}',
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],

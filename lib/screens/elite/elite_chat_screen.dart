@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
 import '../../core/database_values.dart';
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/elite_member_provider.dart';
@@ -32,18 +33,19 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final user = ref.watch(currentUserProvider).value;
     final chatAsync = ref.watch(eliteTrainerChatProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgCard,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.surfaceAlt,
+        leading: BackButton(color: t.textSecondary),
         title: Row(children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: _purple.withValues(alpha: 0.2),
+            backgroundColor: _purple.withOpacity(0.2),
             child: const Icon(Icons.person_rounded, color: _purple, size: 20),
           ),
           const SizedBox(width: 10),
@@ -51,24 +53,24 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
             Text('Your Trainer',
                 style: GoogleFonts.inter(
                     fontSize: 15, fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary)),
+                    color: t.textPrimary)),
             Row(children: [
               Container(
                 width: 8, height: 8,
-                decoration: const BoxDecoration(
-                    color: AppColors.success, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                    color: t.success, shape: BoxShape.circle),
               ),
               const SizedBox(width: 4),
               Text('Elite Support',
                   style: GoogleFonts.inter(
-                      fontSize: 11, color: AppColors.success)),
+                      fontSize: 11, color: t.success)),
             ]),
           ]),
         ]),
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: AppColors.border),
+          child: Container(height: 1, color: t.border),
         ),
       ),
       body: Column(
@@ -76,11 +78,11 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
           // ─── Messages list
           Expanded(
             child: chatAsync.when(
-              loading: () => const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary)),
+              loading: () => Center(
+                  child: CircularProgressIndicator(color: t.brand)),
               error: (e, _) => Center(
                   child: Text('$e',
-                      style: GoogleFonts.inter(color: AppColors.error))),
+                      style: GoogleFonts.inter(color: t.danger))),
               data: (msgs) {
                 if (msgs.isEmpty) {
                   return Center(
@@ -90,7 +92,7 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: _purple.withValues(alpha: 0.1),
+                            color: _purple.withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(Icons.chat_rounded,
@@ -102,12 +104,12 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                         Text('Start the conversation!',
                             style: GoogleFonts.inter(
                                 fontSize: 16, fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary)),
+                                color: t.textPrimary)),
                         const SizedBox(height: 6),
                         Text('Your trainer will respond as soon as possible',
                             style: GoogleFonts.inter(
                                 fontSize: 13,
-                                color: AppColors.textSecondary)),
+                                color: t.textSecondary)),
                       ],
                     ),
                   );
@@ -138,9 +140,9 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 20),
             decoration: BoxDecoration(
-              color: AppColors.bgCard,
+              color: t.surfaceAlt,
               border: Border(
-                  top: BorderSide(color: AppColors.border)),
+                  top: BorderSide(color: t.border)),
             ),
             child: SafeArea(
               top: false,
@@ -149,16 +151,16 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                   child: TextField(
                     controller: _ctrl,
                     style: GoogleFonts.inter(
-                        color: AppColors.textPrimary, fontSize: 14),
+                        color: t.textPrimary, fontSize: 14),
                     maxLines: 4,
                     minLines: 1,
                     textInputAction: TextInputAction.newline,
                     decoration: InputDecoration(
                       hintText: 'Message your trainer...',
                       hintStyle: GoogleFonts.inter(
-                          color: AppColors.textMuted, fontSize: 13),
+                          color: t.textMuted, fontSize: 13),
                       filled: true,
-                      fillColor: AppColors.bgInput,
+                      fillColor: t.surfaceMuted,
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -179,11 +181,11 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                           ? null
                           : const LinearGradient(
                               colors: [_purple, Color(0xFF3F51B5)]),
-                      color: _sending ? AppColors.bgElevated : null,
+                      color: _sending ? t.surface : null,
                       shape: BoxShape.circle,
                       boxShadow: _sending ? null : [
                         BoxShadow(
-                            color: _purple.withValues(alpha: 0.4),
+                            color: _purple.withOpacity(0.4),
                             blurRadius: 12),
                       ],
                     ),
@@ -239,6 +241,7 @@ class _MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final text = msg['message'] as String? ?? '';
     final createdAt = msg['created_at'] != null
         ? DateTime.tryParse(msg['created_at'] as String)
@@ -257,7 +260,7 @@ class _MessageBubble extends StatelessWidget {
           if (!isMe) ...[
             CircleAvatar(
               radius: 14,
-              backgroundColor: _purple.withValues(alpha: 0.15),
+              backgroundColor: _purple.withOpacity(0.15),
               child: const Icon(Icons.person_rounded,
                   color: _purple, size: 16),
             ),
@@ -277,7 +280,7 @@ class _MessageBubble extends StatelessWidget {
                       ? const LinearGradient(
                           colors: [_purple, Color(0xFF3F51B5)])
                       : null,
-                  color: isMe ? null : AppColors.bgCard,
+                  color: isMe ? null : t.surfaceAlt,
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(16),
                     topRight: const Radius.circular(16),
@@ -285,27 +288,27 @@ class _MessageBubble extends StatelessWidget {
                     bottomRight: Radius.circular(isMe ? 4 : 16),
                   ),
                   border:
-                      isMe ? null : Border.all(color: AppColors.border),
+                      isMe ? null : Border.all(color: t.border),
                 ),
                 child: Text(text,
                     style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: isMe ? Colors.white : AppColors.textPrimary,
+                        color: isMe ? Colors.white : t.textPrimary,
                         height: 1.4)),
               ),
               const SizedBox(height: 3),
               Text(timeStr,
                   style: GoogleFonts.inter(
-                      fontSize: 10, color: AppColors.textMuted)),
+                      fontSize: 10, color: t.textMuted)),
             ],
           ),
           if (isMe) ...[
             const SizedBox(width: 8),
             CircleAvatar(
               radius: 14,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-              child: const Icon(Icons.face_rounded,
-                  color: AppColors.primary, size: 16),
+              backgroundColor: t.brand.withOpacity(0.15),
+              child: Icon(Icons.face_rounded,
+                  color: t.brand, size: 16),
             ),
           ],
         ],

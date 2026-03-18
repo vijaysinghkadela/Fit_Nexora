@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
 import '../../core/database_values.dart';
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/elite_member_provider.dart';
 import '../../providers/member_provider.dart';
@@ -66,6 +67,7 @@ class _EliteDashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final user = ref.watch(currentUserProvider).value;
     final membershipAsync = ref.watch(memberMembershipProvider);
     final supplementsAsync = ref.watch(eliteSupplementsProvider);
@@ -82,19 +84,19 @@ class _EliteDashboard extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshAll,
-          backgroundColor: AppColors.bgElevated,
-          color: AppColors.primary,
+          backgroundColor: t.surface,
+          color: t.brand,
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
           // ─── AppBar ────────────────────────────────────────────────
           SliverAppBar(
             floating: true,
-            backgroundColor: AppColors.bgDark,
+            backgroundColor: t.background,
             toolbarHeight: 86,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +104,7 @@ class _EliteDashboard extends ConsumerWidget {
                 Row(children: [
                   Text('Welcome, ',
                       style: GoogleFonts.inter(
-                          fontSize: 13, color: AppColors.textSecondary)),
+                          fontSize: 13, color: t.textSecondary)),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
@@ -112,7 +114,7 @@ class _EliteDashboard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
-                            color: _purple.withValues(alpha: 0.4),
+                            color: _purple.withOpacity(0.4),
                             blurRadius: 10)
                       ],
                     ),
@@ -136,7 +138,7 @@ class _EliteDashboard extends ConsumerWidget {
                     style: GoogleFonts.inter(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary)),
+                        color: t.textPrimary)),
               ],
             ),
             actions: [
@@ -159,14 +161,14 @@ class _EliteDashboard extends ConsumerWidget {
                     return Badge(
                       isLabelVisible: unread > 0,
                       label: Text('$unread'),
-                      child: const Icon(Icons.chat_rounded,
-                          color: AppColors.accent),
+                      child: Icon(Icons.chat_rounded,
+                          color: t.accent),
                     );
                   },
-                  loading: () => const Icon(Icons.chat_rounded,
-                      color: AppColors.accent),
-                  error: (_, __) => const Icon(Icons.chat_rounded,
-                      color: AppColors.accent),
+                  loading: () => Icon(Icons.chat_rounded,
+                      color: t.accent),
+                  error: (_, __) => Icon(Icons.chat_rounded,
+                      color: t.accent),
                 ),
                 onPressed: () => Navigator.push(context,
                     MaterialPageRoute(
@@ -210,11 +212,11 @@ class _EliteDashboard extends ConsumerWidget {
                 data: (logs) => GlassmorphicCard(
                   child: logs.isEmpty
                       ? ListTile(
-                          leading: const Icon(Icons.medication_rounded,
-                              color: AppColors.accent),
+                          leading: Icon(Icons.medication_rounded,
+                              color: t.accent),
                           title: Text('No supplements logged today',
                               style: GoogleFonts.inter(
-                                  color: AppColors.textSecondary,
+                                  color: t.textSecondary,
                                   fontSize: 14)),
                           trailing: TextButton(
                             onPressed: () => Navigator.push(
@@ -228,22 +230,22 @@ class _EliteDashboard extends ConsumerWidget {
                       : Column(
                           children: logs.take(3).map((s) {
                             return ListTile(
-                              leading: const Icon(Icons.medication_rounded,
-                                  color: AppColors.accent, size: 20),
+                              leading: Icon(Icons.medication_rounded,
+                                  color: t.accent, size: 20),
                               title: Text(
                                 s['supplement_name'] as String? ?? '',
                                 style: GoogleFonts.inter(
                                     fontSize: 14,
-                                    color: AppColors.textPrimary),
+                                    color: t.textPrimary),
                               ),
                               subtitle: Text(
                                 '${s['dose_mg'] ?? ''} mg · ${s['timing'] ?? ''}',
                                 style: GoogleFonts.inter(
                                     fontSize: 11,
-                                    color: AppColors.textSecondary),
+                                    color: t.textSecondary),
                               ),
-                              trailing: const Icon(Icons.check_circle_rounded,
-                                  color: AppColors.success, size: 20),
+                              trailing: Icon(Icons.check_circle_rounded,
+                                  color: t.success, size: 20),
                             );
                           }).toList(),
                         ),
@@ -279,14 +281,14 @@ class _EliteDashboard extends ConsumerWidget {
                             ),
                             title: Text('Start chatting with your trainer',
                                 style: GoogleFonts.inter(
-                                    color: AppColors.textPrimary,
+                                    color: t.textPrimary,
                                     fontSize: 14)),
                             subtitle: Text('Real-time messaging → 24/7',
                                 style: GoogleFonts.inter(
-                                    color: AppColors.textSecondary,
+                                    color: t.textSecondary,
                                     fontSize: 12)),
-                            trailing: const Icon(Icons.chevron_right_rounded,
-                                color: AppColors.textMuted),
+                            trailing: Icon(Icons.chevron_right_rounded,
+                                color: t.textMuted),
                           )
                         : _ChatPreviewTile(
                             last: msgs.last, total: msgs.length),
@@ -302,26 +304,39 @@ class _EliteDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _sectionHeader(String title) => SliverPadding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-        sliver: SliverToBoxAdapter(
-          child: Text(title,
+  Widget _sectionHeader(String title) {
+    // NOTE: these helper methods are called from build() which has `t` in scope,
+    // but since these are non-static methods on ConsumerWidget they don't receive context.
+    // We use a Builder approach here — keeping the label style minimal without t.
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+      sliver: SliverToBoxAdapter(
+        child: Builder(builder: (ctx) {
+          final tt = ctx.fitTheme;
+          return Text(title,
               style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
-                  letterSpacing: 1.2)),
-        ),
-      );
+                  color: tt.textMuted,
+                  letterSpacing: 1.2));
+        }),
+      ),
+    );
+  }
 
-  Widget _shimmer(double h) => Container(
+  Widget _shimmer(double h) {
+    return Builder(builder: (ctx) {
+      final tt = ctx.fitTheme;
+      return Container(
         height: h,
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
+          color: tt.surfaceAlt,
           borderRadius: BorderRadius.circular(16),
         ),
       ).animate(onPlay: (c) => c.repeat()).shimmer(
-          duration: 1200.ms, color: AppColors.bgElevated.withValues(alpha: 0.5));
+          duration: 1200.ms, color: tt.surface.withOpacity(0.5));
+    });
+  }
 }
 
 // ─── Feature Grid ─────────────────────────────────────────────────────────────
@@ -334,17 +349,18 @@ class _EliteFeatureGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final items = [
       (Icons.psychology_rounded, 'AI Trainer', _purple,
           () => Navigator.push(context, MaterialPageRoute(
               builder: (_) => const EliteAiTrainerScreen()))),
-      (Icons.medication_rounded, 'Supplements', AppColors.accent,
+      (Icons.medication_rounded, 'Supplements', t.accent,
           () => Navigator.push(context, MaterialPageRoute(
               builder: (_) => const EliteSupplementScreen()))),
-      (Icons.fitness_center_rounded, 'Muscle Progress', AppColors.primary,
+      (Icons.fitness_center_rounded, 'Muscle Progress', t.brand,
           () => Navigator.push(context, MaterialPageRoute(
               builder: (_) => const EliteMuscleProgressScreen()))),
-      (Icons.compare_rounded, 'Transformation', AppColors.warning,
+      (Icons.compare_rounded, 'Transformation', t.warning,
           () => Navigator.push(context, MaterialPageRoute(
               builder: (_) => const EliteTransformationScreen()))),
     ];
@@ -363,9 +379,9 @@ class _EliteFeatureGrid extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
+              color: color.withOpacity(0.08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: color.withValues(alpha: 0.25)),
+              border: Border.all(color: color.withOpacity(0.25)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -376,7 +392,7 @@ class _EliteFeatureGrid extends StatelessWidget {
                     style: GoogleFonts.inter(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
+                        color: t.textPrimary)),
               ],
             ),
           ).animate(delay: (i * 60).ms).fadeIn().slideY(begin: 0.04),
@@ -397,15 +413,16 @@ class _MembershipBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final daysLeft = membership.daysRemaining as int;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [_purple.withValues(alpha: 0.15),
-                _indigo.withValues(alpha: 0.08)]),
+            colors: [_purple.withOpacity(0.15),
+                _indigo.withOpacity(0.08)]),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _purple.withValues(alpha: 0.3)),
+        border: Border.all(color: _purple.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -419,26 +436,26 @@ class _MembershipBanner extends StatelessWidget {
                     style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary)),
+                        color: t.textPrimary)),
                 Text('$daysLeft days remaining · Elite Access',
                     style: GoogleFonts.inter(
-                        fontSize: 11, color: AppColors.textSecondary)),
+                        fontSize: 11, color: t.textSecondary)),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.15),
+              color: t.success.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                  color: AppColors.success.withValues(alpha: 0.3)),
+                  color: t.success.withOpacity(0.3)),
             ),
             child: Text('ACTIVE',
                 style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.success,
+                    color: t.success,
                     letterSpacing: 1)),
           ),
         ],
@@ -456,6 +473,7 @@ class _ChatPreviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final isTrainer =
         last['sender_role'] == DatabaseValues.trainerChatTrainerRole;
     return ListTile(
@@ -463,11 +481,11 @@ class _ChatPreviewTile extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       leading: CircleAvatar(
         backgroundColor: isTrainer
-            ? const Color(0xFF9C27B0).withValues(alpha: 0.2)
-            : AppColors.primary.withValues(alpha: 0.2),
+            ? const Color(0xFF9C27B0).withOpacity(0.2)
+            : t.brand.withOpacity(0.2),
         child: Icon(
           isTrainer ? Icons.person_rounded : Icons.face_rounded,
-          color: isTrainer ? const Color(0xFF9C27B0) : AppColors.primary,
+          color: isTrainer ? const Color(0xFF9C27B0) : t.brand,
           size: 20,
         ),
       ),
@@ -476,23 +494,23 @@ class _ChatPreviewTile extends StatelessWidget {
         style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary),
+            color: t.textPrimary),
       ),
       subtitle: Text(
         last['message'] as String? ?? '',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: GoogleFonts.inter(
-            fontSize: 12, color: AppColors.textSecondary),
+            fontSize: 12, color: t.textSecondary),
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('$total msgs',
               style: GoogleFonts.inter(
-                  fontSize: 10, color: AppColors.textMuted)),
-          const Icon(Icons.chevron_right_rounded,
-              color: AppColors.textMuted, size: 18),
+                  fontSize: 10, color: t.textMuted)),
+          Icon(Icons.chevron_right_rounded,
+              color: t.textMuted, size: 18),
         ],
       ),
     );

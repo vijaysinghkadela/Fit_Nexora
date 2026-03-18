@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/pro_member_provider.dart';
@@ -40,18 +41,19 @@ class _ProMeasurementsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final allAsync = ref.watch(proAllMeasurementsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Text('Body Measurements',
             style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
         actions: [
           TextButton.icon(
             onPressed: () => _showLogSheet(context),
@@ -59,36 +61,36 @@ class _ProMeasurementsScreenState
             label: Text('Log',
                 style: GoogleFonts.inter(fontSize: 13)),
             style: TextButton.styleFrom(
-                foregroundColor: AppColors.accent),
+                foregroundColor: t.accent),
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: allAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
             child: Text('$e',
-                style: GoogleFonts.inter(color: AppColors.error))),
+                style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.straighten_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.straighten_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No measurements logged yet',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 16)),
+                          color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 24),
                   FilledButton.icon(
                     onPressed: () => _showLogSheet(context),
                     icon: const Icon(Icons.add_rounded),
                     label: const Text('Log First Measurement'),
                     style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.accent),
+                        backgroundColor: t.accent),
                   ),
                 ],
               ),
@@ -111,7 +113,7 @@ class _ProMeasurementsScreenState
                           style: GoogleFonts.inter(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textMuted,
+                              color: t.textMuted,
                               letterSpacing: 1.2)),
                       const SizedBox(height: 12),
                       Wrap(
@@ -121,27 +123,27 @@ class _ProMeasurementsScreenState
                           if (latest.weightKg != null)
                             _MeasCard('Weight',
                                 latest.weightKg!, 'kg',
-                                prev?.weightKg, AppColors.primary),
+                                prev?.weightKg, t.brand),
                           if (latest.bodyFatPercent != null)
                             _MeasCard('Body Fat',
                                 latest.bodyFatPercent!, '%',
-                                prev?.bodyFatPercent, AppColors.warning),
+                                prev?.bodyFatPercent, t.warning),
                           if (latest.waistCm != null)
                             _MeasCard('Waist',
                                 latest.waistCm!, 'cm',
-                                prev?.waistCm, AppColors.error),
+                                prev?.waistCm, t.danger),
                           if (latest.chestCm != null)
                             _MeasCard('Chest',
                                 latest.chestCm!, 'cm',
-                                prev?.chestCm, AppColors.accent),
+                                prev?.chestCm, t.accent),
                           if (latest.armCm != null)
                             _MeasCard('Arms',
                                 latest.armCm!, 'cm',
-                                prev?.armCm, AppColors.info),
+                                prev?.armCm, t.info),
                           if (latest.hipsCm != null)
                             _MeasCard('Hips',
                                 latest.hipsCm!, 'cm',
-                                prev?.hipsCm, AppColors.success),
+                                prev?.hipsCm, t.success),
                         ],
                       ),
                     ],
@@ -157,7 +159,7 @@ class _ProMeasurementsScreenState
                       style: GoogleFonts.inter(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textMuted,
+                          color: t.textMuted,
                           letterSpacing: 1.2)),
                 ),
               ),
@@ -184,12 +186,12 @@ class _ProMeasurementsScreenState
                                     style: GoogleFonts.inter(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary)),
+                                        color: t.textPrimary)),
                                 subtitle: Text(
                                   _buildSubtitle(m),
                                   style: GoogleFonts.inter(
                                       fontSize: 11,
-                                      color: AppColors.textSecondary),
+                                      color: t.textSecondary),
                                 ),
                                 trailing: m.weightKg != null
                                     ? Text(
@@ -197,13 +199,13 @@ class _ProMeasurementsScreenState
                                         style: GoogleFonts.inter(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w800,
-                                            color: AppColors.primary),
+                                            color: t.brand),
                                       )
                                     : null,
                               ),
                               if (i < entries.length - 1)
-                                const Divider(
-                                    color: AppColors.divider, height: 1),
+                                Divider(
+                                    color: t.divider, height: 1),
                             ],
                           );
                         }).toList(),
@@ -242,10 +244,11 @@ class _ProMeasurementsScreenState
   }
 
   void _showLogSheet(BuildContext context) {
+    final t = context.fitTheme;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: t.surfaceAlt,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => Padding(
@@ -262,7 +265,7 @@ class _ProMeasurementsScreenState
                 child: Container(
                   width: 40, height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textMuted.withValues(alpha: 0.3),
+                    color: t.textMuted.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -272,24 +275,24 @@ class _ProMeasurementsScreenState
                   style: GoogleFonts.inter(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary)),
+                      color: t.textPrimary)),
               const SizedBox(height: 20),
               Row(children: [
-                Expanded(child: _sheetField(_weightCtrl, 'Weight (kg)')),
+                Expanded(child: _sheetField(_weightCtrl, 'Weight (kg)', t)),
                 const SizedBox(width: 12),
-                Expanded(child: _sheetField(_bodyFatCtrl, 'Body Fat (%)')),
+                Expanded(child: _sheetField(_bodyFatCtrl, 'Body Fat (%)', t)),
               ]),
               const SizedBox(height: 12),
               Row(children: [
-                Expanded(child: _sheetField(_waistCtrl, 'Waist (cm)')),
+                Expanded(child: _sheetField(_waistCtrl, 'Waist (cm)', t)),
                 const SizedBox(width: 12),
-                Expanded(child: _sheetField(_chestCtrl, 'Chest (cm)')),
+                Expanded(child: _sheetField(_chestCtrl, 'Chest (cm)', t)),
               ]),
               const SizedBox(height: 12),
               Row(children: [
-                Expanded(child: _sheetField(_armsCtrl, 'Arms (cm)')),
+                Expanded(child: _sheetField(_armsCtrl, 'Arms (cm)', t)),
                 const SizedBox(width: 12),
-                Expanded(child: _sheetField(_hipsCtrl, 'Hips (cm)')),
+                Expanded(child: _sheetField(_hipsCtrl, 'Hips (cm)', t)),
               ]),
               const SizedBox(height: 20),
               SizedBox(
@@ -298,7 +301,7 @@ class _ProMeasurementsScreenState
                 child: FilledButton(
                   onPressed: _saving ? null : () => _saveMeasurement(context),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.accent,
+                    backgroundColor: t.accent,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
                   ),
@@ -314,30 +317,31 @@ class _ProMeasurementsScreenState
     );
   }
 
-  Widget _sheetField(TextEditingController c, String hint) {
+  Widget _sheetField(TextEditingController c, String hint, dynamic t) {
     return TextFormField(
       controller: c,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+      style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 12),
-        filled: true, fillColor: AppColors.bgInput,
+        hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
+        filled: true, fillColor: t.surfaceMuted,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.border)),
+            borderSide: BorderSide(color: t.border)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.accent, width: 2)),
+            borderSide: BorderSide(color: t.accent, width: 2)),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.border)),
+            borderSide: BorderSide(color: t.border)),
       ),
     );
   }
 
   Future<void> _saveMeasurement(BuildContext context) async {
+    final t = context.fitTheme;
     final user = ref.read(currentUserProvider).value;
     final gym = ref.read(selectedGymProvider);
     if (user == null || gym == null) return;
@@ -369,14 +373,14 @@ class _ProMeasurementsScreenState
 
       if (context.mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Measurements saved!'),
-            backgroundColor: AppColors.success));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text('Measurements saved!'),
+            backgroundColor: t.success));
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed: $e'), backgroundColor: AppColors.error));
+            content: Text('Failed: $e'), backgroundColor: t.danger));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -397,6 +401,7 @@ class _MeasCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final diff =
         prevValue != null ? value - prevValue! : null;
     final isGood = diff != null &&
@@ -407,16 +412,16 @@ class _MeasCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.22)),
+        border: Border.all(color: color.withOpacity(0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
               style: GoogleFonts.inter(
-                  fontSize: 11, color: AppColors.textSecondary)),
+                  fontSize: 11, color: t.textSecondary)),
           const SizedBox(height: 2),
           Text('${value.toStringAsFixed(1)} $unit',
               style: GoogleFonts.inter(
@@ -428,7 +433,7 @@ class _MeasCard extends StatelessWidget {
               '${diff > 0 ? '+' : ''}${diff.toStringAsFixed(1)} $unit',
               style: GoogleFonts.inter(
                 fontSize: 10,
-                color: isGood ? AppColors.success : AppColors.error,
+                color: isGood ? t.success : t.danger,
                 fontWeight: FontWeight.w600,
               ),
             ),

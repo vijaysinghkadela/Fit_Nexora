@@ -3,7 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -13,15 +14,16 @@ class MemberDietScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final planAsync = ref.watch(memberDietPlanProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          color: AppColors.textSecondary,
+          color: t.textSecondary,
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -35,31 +37,31 @@ class MemberDietScreen extends ConsumerWidget {
           style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary),
+              color: t.textPrimary),
         ),
       ),
       body: planAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
             child:
-                Text('Error: $e', style: GoogleFonts.inter(color: AppColors.error))),
+                Text('Error: $e', style: GoogleFonts.inter(color: t.danger))),
         data: (plan) {
           if (plan == null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.restaurant_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.restaurant_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No diet plan assigned yet',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 16)),
+                          color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 8),
                   Text('Ask your trainer to assign a diet plan',
                       style: GoogleFonts.inter(
-                          color: AppColors.textMuted, fontSize: 13)),
+                          color: t.textMuted, fontSize: 13)),
                 ],
               ),
             );
@@ -80,11 +82,11 @@ class MemberDietScreen extends ConsumerWidget {
                           style: GoogleFonts.inter(
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
-                              color: AppColors.textPrimary)),
+                              color: t.textPrimary)),
                       const SizedBox(height: 4),
                       Text('Goal: ${plan.goal.replaceAll('_', ' ')}',
                           style: GoogleFonts.inter(
-                              color: AppColors.textSecondary, fontSize: 14)),
+                              color: t.textSecondary, fontSize: 14)),
                     ],
                   ).animate().fadeIn(),
                 ),
@@ -97,16 +99,16 @@ class MemberDietScreen extends ConsumerWidget {
                   child: Row(
                     children: [
                       _MacroChip('${plan.targetCalories}', 'kcal',
-                          AppColors.warning),
+                          t.warning),
                       const SizedBox(width: 8),
                       _MacroChip('${plan.targetProtein}g', 'protein',
-                          AppColors.primary),
+                          t.brand),
                       const SizedBox(width: 8),
                       _MacroChip(
-                          '${plan.targetCarbs}g', 'carbs', AppColors.accent),
+                          '${plan.targetCarbs}g', 'carbs', t.accent),
                       const SizedBox(width: 8),
                       _MacroChip(
-                          '${plan.targetFat}g', 'fat', AppColors.info),
+                          '${plan.targetFat}g', 'fat', t.info),
                     ],
                   ).animate(delay: 100.ms).fadeIn(),
                 ),
@@ -120,7 +122,7 @@ class MemberDietScreen extends ConsumerWidget {
                       style: GoogleFonts.inter(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textMuted,
+                          color: t.textMuted,
                           letterSpacing: 1.2)),
                 ),
               ),
@@ -154,9 +156,9 @@ class _MacroChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          border: Border.all(color: color.withOpacity(0.25)),
         ),
         child: Column(
           children: [
@@ -167,7 +169,7 @@ class _MacroChip extends StatelessWidget {
                     color: color)),
             Text(label,
                 style: GoogleFonts.inter(
-                    fontSize: 10, color: AppColors.textSecondary)),
+                    fontSize: 10, color: context.fitTheme.textSecondary)),
           ],
         ),
       ),
@@ -184,6 +186,7 @@ class _MealCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final foods = meal.foods as List;
     final mealIcons = [
       Icons.wb_sunny_rounded,
@@ -193,11 +196,11 @@ class _MealCard extends StatelessWidget {
       Icons.restaurant_rounded,
     ];
     final mealColors = [
-      AppColors.warning,
-      AppColors.primary,
-      AppColors.info,
-      AppColors.accent,
-      AppColors.error,
+      t.warning,
+      t.brand,
+      t.info,
+      t.accent,
+      t.danger,
     ];
     final icon = mealIcons[index % mealIcons.length];
     final color = mealColors[index % mealColors.length];
@@ -215,7 +218,7 @@ class _MealCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
+                      color: color.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(icon, color: color, size: 18),
@@ -229,12 +232,12 @@ class _MealCard extends StatelessWidget {
                             style: GoogleFonts.inter(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary)),
+                                color: t.textPrimary)),
                         if ((meal.timing as String).isNotEmpty)
                           Text(meal.timing as String,
                               style: GoogleFonts.inter(
                                   fontSize: 11,
-                                  color: AppColors.textMuted)),
+                                  color: t.textMuted)),
                       ],
                     ),
                   ),
@@ -264,12 +267,12 @@ class _MealCard extends StatelessWidget {
                             child: Text(food.name as String,
                                 style: GoogleFonts.inter(
                                     fontSize: 13,
-                                    color: AppColors.textPrimary)),
+                                    color: t.textPrimary)),
                           ),
                           Text(food.quantity as String,
                               style: GoogleFonts.inter(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary)),
+                                  color: t.textSecondary)),
                         ],
                       ),
                     )),

@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
-import '../../core/constants.dart';
+
 import '../../core/database_values.dart';
+import '../../core/extensions.dart';
 import '../../models/food_log_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -42,26 +43,27 @@ class _ProNutritionScreenState extends ConsumerState<ProNutritionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final nutritionAsync = ref.watch(proTodayNutritionProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
+        backgroundColor: t.background,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
           onPressed: () => context.pop(),
         ),
         title: Text('Nutrition Tracker',
             style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
         bottom: TabBar(
           controller: _tabs,
-          indicatorColor: AppColors.primary,
-          labelColor: AppColors.primary,
-          unselectedLabelColor: AppColors.textMuted,
+          indicatorColor: t.brand,
+          labelColor: t.brand,
+          unselectedLabelColor: t.textMuted,
           tabs: const [
             Tab(text: 'Today'),
             Tab(text: 'Log Food'),
@@ -89,6 +91,7 @@ class _TodaySummaryTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final user = ref.watch(currentUserProvider).value;
     final pagedLogs =
         user != null ? ref.watch(pagedTodayFoodLogsProvider(user.id)) : null;
@@ -124,8 +127,8 @@ class _TodaySummaryTab extends ConsumerWidget {
           }
           await ref.read(proTodayNutritionProvider.future);
         },
-        backgroundColor: AppColors.bgElevated,
-        color: AppColors.primary,
+        backgroundColor: t.surface,
+        color: t.brand,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -145,15 +148,15 @@ class _TodaySummaryTab extends ConsumerWidget {
                 children: [
                   Expanded(
                       child: _MacroCard('Protein', s.protein,
-                          DailyTargets.protein, 'g', AppColors.primary)),
+                          DailyTargets.protein, 'g', t.brand)),
                   const SizedBox(width: 10),
                   Expanded(
                       child: _MacroCard('Carbs', s.carbs,
-                          DailyTargets.carbs, 'g', AppColors.accent)),
+                          DailyTargets.carbs, 'g', t.accent)),
                   const SizedBox(width: 10),
                   Expanded(
                       child: _MacroCard('Fat', s.fat,
-                          DailyTargets.fat, 'g', AppColors.warning)),
+                          DailyTargets.fat, 'g', t.warning)),
                 ],
               ),
             ),
@@ -173,14 +176,14 @@ class _TodaySummaryTab extends ConsumerWidget {
                           style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary)),
+                              color: t.textPrimary)),
                       const SizedBox(height: 12),
                       _NutrientRow('Sugar', s.sugar, DailyTargets.sugar,
-                          'g', AppColors.error),
+                          'g', t.danger),
                       _NutrientRow('Fiber', s.fiber, DailyTargets.fiber,
-                          'g', AppColors.success),
+                          'g', t.success),
                       _NutrientRow('Sodium', s.sodium,
-                          DailyTargets.sodiumMg, 'mg', AppColors.info),
+                          DailyTargets.sodiumMg, 'mg', t.info),
                     ],
                   ),
                 ),
@@ -197,7 +200,7 @@ class _TodaySummaryTab extends ConsumerWidget {
                     style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted,
+                        color: t.textMuted,
                         letterSpacing: 1.2)),
               ),
             ),
@@ -233,8 +236,8 @@ class _TodaySummaryTab extends ConsumerWidget {
                               children: [
                                 _FoodLogTile(log: log, ref: ref),
                                 if (i < pagedLogs.items.length - 1)
-                                  const Divider(
-                                      color: AppColors.divider, height: 1),
+                                  Divider(
+                                      color: t.divider, height: 1),
                               ],
                             );
                           }),
@@ -269,6 +272,7 @@ class _BigCaloriesRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final consumed = summary.calories;
     final target = DailyTargets.calories;
     final progress = (consumed / target).clamp(0.0, 1.0);
@@ -284,7 +288,7 @@ class _BigCaloriesRing extends StatelessWidget {
             children: [
               CustomPaint(
                 size: const Size(150, 150),
-                painter: _ProRingPainter(progress: progress),
+                painter: _ProRingPainter(progress: progress, brand: t.brand),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -294,11 +298,11 @@ class _BigCaloriesRing extends StatelessWidget {
                     style: GoogleFonts.inter(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary),
+                        color: t.textPrimary),
                   ),
                   Text('/ ${target.toStringAsFixed(0)} kcal',
                       style: GoogleFonts.inter(
-                          fontSize: 11, color: AppColors.textMuted)),
+                          fontSize: 11, color: t.textMuted)),
                 ],
               ),
             ],
@@ -310,15 +314,15 @@ class _BigCaloriesRing extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _SummaryRow('Consumed', '${consumed.toStringAsFixed(0)} kcal',
-                  AppColors.primary),
+                  t.brand),
               const SizedBox(height: 8),
               _SummaryRow(
                   remaining == 0 ? 'Over by' : 'Remaining',
                   '${remaining == 0 ? (consumed - target).abs().toStringAsFixed(0) : remaining.toStringAsFixed(0)} kcal',
-                  remaining == 0 ? AppColors.error : AppColors.success),
+                  remaining == 0 ? t.danger : t.success),
               const SizedBox(height: 8),
               _SummaryRow(
-                  'Foods logged', '${summary.count} items', AppColors.info),
+                  'Foods logged', '${summary.count} items', t.info),
             ],
           ),
         ),
@@ -335,12 +339,13 @@ class _SummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
             style: GoogleFonts.inter(
-                fontSize: 12, color: AppColors.textSecondary)),
+                fontSize: 12, color: t.textSecondary)),
         Text(value,
             style: GoogleFonts.inter(
                 fontSize: 14,
@@ -361,13 +366,14 @@ class _MacroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final pct = (current / target).clamp(0.0, 1.0);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.22)),
+        border: Border.all(color: color.withOpacity(0.22)),
       ),
       child: Column(
         children: [
@@ -379,13 +385,13 @@ class _MacroCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(label,
               style: GoogleFonts.inter(
-                  fontSize: 11, color: AppColors.textSecondary)),
+                  fontSize: 11, color: t.textSecondary)),
           const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: pct,
-              backgroundColor: color.withValues(alpha: 0.15),
+              backgroundColor: color.withOpacity(0.15),
               valueColor: AlwaysStoppedAnimation(color),
               minHeight: 5,
             ),
@@ -393,7 +399,7 @@ class _MacroCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text('/ ${target.toStringAsFixed(0)}$unit',
               style: GoogleFonts.inter(
-                  fontSize: 9, color: AppColors.textMuted)),
+                  fontSize: 9, color: t.textMuted)),
         ],
       ),
     );
@@ -411,6 +417,7 @@ class _NutrientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final pct = (current / target).clamp(0.0, 1.0);
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -421,7 +428,7 @@ class _NutrientRow extends StatelessWidget {
             children: [
               Text(label,
                   style: GoogleFonts.inter(
-                      fontSize: 13, color: AppColors.textSecondary)),
+                      fontSize: 13, color: t.textSecondary)),
               Text(
                 '${current.toStringAsFixed(0)} / ${target.toStringAsFixed(0)} $unit',
                 style: GoogleFonts.inter(
@@ -436,7 +443,7 @@ class _NutrientRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
             child: LinearProgressIndicator(
               value: pct,
-              backgroundColor: color.withValues(alpha: 0.12),
+              backgroundColor: color.withOpacity(0.12),
               valueColor: AlwaysStoppedAnimation(color),
               minHeight: 5,
             ),
@@ -454,36 +461,38 @@ class _FoodLogTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       title: Text(log.productName,
           style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary)),
+              color: t.textPrimary)),
       subtitle: Text(
           '${log.mealType.toUpperCase()} · P:${log.proteinG.toStringAsFixed(0)}g  C:${log.carbsG.toStringAsFixed(0)}g  F:${log.fatG.toStringAsFixed(0)}g',
           style: GoogleFonts.inter(
-              fontSize: 11, color: AppColors.textSecondary)),
+              fontSize: 11, color: t.textSecondary)),
       trailing: Text('${log.caloriesKcal.toStringAsFixed(0)} kcal',
           style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: AppColors.primary)),
+              color: t.brand)),
     );
   }
 }
 
 class _ProRingPainter extends CustomPainter {
   final double progress;
-  _ProRingPainter({required this.progress});
+  final Color brand;
+  _ProRingPainter({required this.progress, required this.brand});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = (size.width - 16) / 2;
     final bgPaint = Paint()
-      ..color = AppColors.primary.withValues(alpha: 0.12)
+      ..color = brand.withOpacity(0.12)
       ..strokeWidth = 12
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -491,7 +500,7 @@ class _ProRingPainter extends CustomPainter {
       ..shader = SweepGradient(
         startAngle: -math.pi / 2,
         endAngle: -math.pi / 2 + 2 * math.pi * progress,
-        colors: [AppColors.primary.withValues(alpha: 0.5), AppColors.primary],
+        colors: [brand.withOpacity(0.5), brand],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..strokeWidth = 12
       ..style = PaintingStyle.stroke
@@ -546,6 +555,7 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -559,8 +569,8 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
               leading: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                      colors: [AppColors.accent, AppColors.primary]),
+                  gradient: LinearGradient(
+                      colors: [t.accent, t.brand]),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.qr_code_scanner_rounded,
@@ -570,24 +580,24 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
                   style: GoogleFonts.inter(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary)),
+                      color: t.textPrimary)),
               subtitle: Text('Auto-fill nutrition from product barcode',
                   style: GoogleFonts.inter(
-                      fontSize: 12, color: AppColors.textSecondary)),
+                      fontSize: 12, color: t.textSecondary)),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.15),
+                  color: t.accent.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                      color: AppColors.accent.withValues(alpha: 0.3)),
+                      color: t.accent.withOpacity(0.3)),
                 ),
                 child: Text('SCAN',
                     style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.accent,
+                        color: t.accent,
                         letterSpacing: 1)),
               ),
               onTap: () => _showBarcodeInfo(context),
@@ -599,11 +609,11 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
               style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                   letterSpacing: 1.2)),
           const SizedBox(height: 12),
 
-          _field(_nameCtrl, 'Food name', TextInputType.text),
+          _field(_nameCtrl, 'Food name', TextInputType.text, t),
           const SizedBox(height: 10),
 
           // Meal type picker
@@ -620,11 +630,11 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
                             fontSize: 12,
                             color: sel
                                 ? Colors.white
-                                : AppColors.textSecondary,
+                                : t.textSecondary,
                             fontWeight: FontWeight.w600)),
                     selected: sel,
-                    selectedColor: AppColors.primary,
-                    backgroundColor: AppColors.bgCard,
+                    selectedColor: t.brand,
+                    backgroundColor: t.surfaceAlt,
                     onSelected: (_) => setState(() => _mealType = m),
                   ),
                 );
@@ -636,20 +646,20 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
           Row(
             children: [
               Expanded(child: _field(_calCtrl, 'Calories (kcal)',
-                  TextInputType.number)),
+                  TextInputType.number, t)),
               const SizedBox(width: 10),
               Expanded(child: _field(_protCtrl, 'Protein (g)',
-                  TextInputType.number)),
+                  TextInputType.number, t)),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(child: _field(_carbCtrl, 'Carbs (g)',
-                  TextInputType.number)),
+                  TextInputType.number, t)),
               const SizedBox(width: 10),
               Expanded(child: _field(_fatCtrl, 'Fat (g)',
-                  TextInputType.number)),
+                  TextInputType.number, t)),
             ],
           ),
           const SizedBox(height: 20),
@@ -660,7 +670,7 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
             child: FilledButton.icon(
               onPressed: _saving ? null : _saveLog,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: t.brand,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
               ),
@@ -681,35 +691,36 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
     );
   }
 
-  Widget _field(TextEditingController c, String hint, TextInputType type) {
+  Widget _field(TextEditingController c, String hint, TextInputType type, dynamic t) {
     return TextFormField(
       controller: c,
       keyboardType: type,
-      style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+      style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
+        hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 13),
         filled: true,
-        fillColor: AppColors.bgCard,
+        fillColor: t.surfaceAlt,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: t.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: t.brand, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: t.border),
         ),
       ),
     );
   }
 
   Future<void> _saveLog() async {
+    final t = context.fitTheme;
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) return;
     final cal = double.tryParse(_calCtrl.text) ?? 0;
@@ -753,9 +764,9 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
         _carbCtrl.clear();
         _fatCtrl.clear();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Food logged!'),
-              backgroundColor: AppColors.success),
+          SnackBar(
+              content: const Text('Food logged!'),
+              backgroundColor: t.success),
         );
       }
     } finally {
@@ -764,9 +775,10 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
   }
 
   void _showBarcodeInfo(BuildContext context) {
+    final t = context.fitTheme;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.bgCard,
+      backgroundColor: t.surfaceAlt,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => Padding(
@@ -778,39 +790,39 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted.withValues(alpha: 0.3),
+                color: t.textMuted.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
             const SizedBox(height: 20),
-            const Icon(Icons.qr_code_scanner_rounded,
-                size: 48, color: AppColors.accent),
+            Icon(Icons.qr_code_scanner_rounded,
+                size: 48, color: t.accent),
             const SizedBox(height: 16),
             Text('Barcode Scanner',
                 style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary)),
+                    color: t.textPrimary)),
             const SizedBox(height: 8),
             Text(
               'To enable the barcode scanner, add the flutter_barcode_scanner package to your pubspec.yaml and connect it to the OpenFoodFacts API for nutrition lookup.',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: t.textSecondary,
                   height: 1.5),
             ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.bgElevated,
+                color: t.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 '# pubspec.yaml\nflutter_barcode_scanner: ^2.0.0\nhttp: ^1.0.0  # For OpenFoodFacts API',
                 style: GoogleFonts.sourceCodePro(
-                    fontSize: 12, color: AppColors.accent),
+                    fontSize: 12, color: t.accent),
               ),
             ),
             const SizedBox(height: 20),

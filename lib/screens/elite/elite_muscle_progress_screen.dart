@@ -3,7 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
-import '../../core/constants.dart';
+
+import '../../core/extensions.dart';
 import '../../models/progress_checkin_model.dart';
 import '../../providers/elite_member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -14,41 +15,42 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final allAsync = ref.watch(eliteMuscleProgressProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Text('Muscle & Body Progress',
             style: GoogleFonts.inter(
                 fontSize: 19, fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
       ),
       body: allAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
             child: Text('$e',
-                style: GoogleFonts.inter(color: AppColors.error))),
+                style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.fitness_center_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.fitness_center_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No progress data yet',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 16)),
+                          color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 8),
                   Text('Log measurements in Body Measurements\nto see your progress here',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                          color: AppColors.textMuted, fontSize: 13, height: 1.5)),
+                          color: t.textMuted, fontSize: 13, height: 1.5)),
                 ],
               ),
             );
@@ -81,14 +83,14 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                                   style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.textPrimary)),
+                                      color: t.textPrimary)),
                               const Spacer(),
                               Text(
                                 '${fatData.first.bodyFatPercent!.toStringAsFixed(1)}%',
                                 style: GoogleFonts.inter(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900,
-                                    color: AppColors.warning),
+                                    color: t.warning),
                               ),
                             ]),
                             const SizedBox(height: 16),
@@ -101,7 +103,7 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                                       .reversed
                                       .map((e) => e.bodyFatPercent!)
                                       .toList(),
-                                  color: AppColors.warning,
+                                  color: t.warning,
                                 ),
                               ),
                             ),
@@ -130,14 +132,14 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                                   style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.textPrimary)),
+                                      color: t.textPrimary)),
                               const Spacer(),
                               Text(
                                 '${weightData.first.weightKg!.toStringAsFixed(1)} kg',
                                 style: GoogleFonts.inter(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900,
-                                    color: AppColors.primary),
+                                    color: t.brand),
                               ),
                             ]),
                             const SizedBox(height: 16),
@@ -150,7 +152,7 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                                       .reversed
                                       .map((e) => e.weightKg!)
                                       .toList(),
-                                  color: AppColors.primary,
+                                  color: t.brand,
                                 ),
                               ),
                             ),
@@ -176,18 +178,18 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                           Text('Latest measurements',
                               style: GoogleFonts.inter(
                                   fontSize: 13,
-                                  color: AppColors.textSecondary)),
+                                  color: t.textSecondary)),
                           const SizedBox(height: 14),
                           _muscleRow('Chest', entries.first.chestCm,
-                              AppColors.primary),
+                              t.brand),
                           _muscleRow('Waist', entries.first.waistCm,
-                              AppColors.error),
+                              t.danger),
                           _muscleRow('Arms', entries.first.armCm,
-                              AppColors.accent),
+                              t.accent),
                           _muscleRow('Thigh', entries.first.thighCm,
-                              AppColors.info),
+                              t.info),
                           _muscleRow('Hips', entries.first.hipsCm,
-                              AppColors.warning),
+                              t.warning),
                         ],
                       ),
                     ),
@@ -216,23 +218,23 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                                   style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: AppColors.textPrimary)),
+                                      color: t.textPrimary)),
                               subtitle: Text(_buildSub(m),
                                   style: GoogleFonts.inter(
                                       fontSize: 11,
-                                      color: AppColors.textSecondary)),
+                                      color: t.textSecondary)),
                               trailing: m.weightKg != null
                                   ? Text(
                                       '${m.weightKg!.toStringAsFixed(1)} kg',
                                       style: GoogleFonts.inter(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w800,
-                                          color: AppColors.primary))
+                                          color: t.brand))
                                   : null,
                             ),
                             if (i < entries.length - 1)
-                              const Divider(
-                                  color: AppColors.divider, height: 1),
+                              Divider(
+                                  color: t.divider, height: 1),
                           ]);
                         }).toList(),
                       ),
@@ -251,12 +253,14 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
     if (value == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Row(children: [
+      child: Builder(builder: (ctx) {
+        final tt = ctx.fitTheme;
+        return Row(children: [
         SizedBox(
           width: 70,
           child: Text(label,
               style: GoogleFonts.inter(
-                  fontSize: 13, color: AppColors.textSecondary)),
+                  fontSize: 13, color: tt.textSecondary)),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -264,7 +268,7 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: (value / 120).clamp(0.0, 1.0),
-              backgroundColor: color.withValues(alpha: 0.12),
+              backgroundColor: color.withOpacity(0.12),
               valueColor: AlwaysStoppedAnimation(color),
               minHeight: 8,
             ),
@@ -276,19 +280,23 @@ class EliteMuscleProgressScreen extends ConsumerWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 color: color)),
-      ]),
+      ]);
+      }),
     );
   }
 
   Widget _header(String title) => SliverPadding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         sliver: SliverToBoxAdapter(
-          child: Text(title,
-              style: GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textMuted,
-                  letterSpacing: 1.2)),
+          child: Builder(builder: (ctx) {
+            final tt = ctx.fitTheme;
+            return Text(title,
+                style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: tt.textMuted,
+                    letterSpacing: 1.2));
+          }),
         ),
       );
 
@@ -337,7 +345,7 @@ class _LineChartPainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [color.withValues(alpha: 0.25), color.withValues(alpha: 0.0)],
+        colors: [color.withOpacity(0.25), color.withOpacity(0.0)],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
     final dotPaint = Paint()..color = color;
@@ -374,7 +382,7 @@ class _LineChartPainter extends CustomPainter {
     for (final p in points) {
       canvas.drawCircle(p, 4, dotPaint);
       canvas.drawCircle(
-          p, 4, Paint()..color = AppColors.bgDark..style = PaintingStyle.stroke..strokeWidth = 2);
+          p, 4, Paint()..color = Colors.transparent..style = PaintingStyle.stroke..strokeWidth = 2);
     }
   }
 
