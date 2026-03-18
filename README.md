@@ -23,14 +23,15 @@
 2. [SaaS Tiers & Pricing](#02--saas-tiers--pricing)
 3. [Architecture](#03--architecture)
 4. [AI Engine](#04--ai-engine)
-5. [Database Schema](#05--database-schema)
-6. [Screen Modules](#06--screen-modules)
-7. [Role-Based Access](#07--role-based-access)
-8. [Indian Market Features](#08--indian-market-features)
-9. [Domain Model (Enums)](#09--domain-model-enums)
-10. [Developer Guide](#10--developer-guide)
-11. [Roadmap](#11--roadmap)
-12. [Team](#12--team)
+5. [AI Agent (Full Report Pipeline)](#05--ai-agent-full-report-pipeline)
+6. [Database Schema](#06--database-schema)
+7. [Screen Modules](#07--screen-modules)
+8. [Role-Based Access](#08--role-based-access)
+9. [Indian Market Features](#09--indian-market-features)
+10. [Domain Model (Enums)](#10--domain-model-enums)
+11. [Developer Guide](#11--developer-guide)
+12. [Roadmap](#12--roadmap)
+13. [Team](#13--team)
 
 ---
 
@@ -128,7 +129,8 @@ lib/
 │   ├── plan_limits.dart       # Single source of truth for SaaS limits
 │   ├── routes.dart            # GoRouter config, role-based guards
 │   ├── theme.dart             # Design tokens, color palettes
-│   └── ai_system_prompt.txt   # Master Claude system prompt
+│   ├── ai_system_prompt.txt   # Master Claude system prompt
+│   └── ai_agent_prompts.dart  # AI Agent structured prompt builders
 ├── core/
 │   ├── enums.dart             # All domain enums (15+ enums)
 │   ├── access_control.dart    # Feature gate logic
@@ -136,10 +138,10 @@ lib/
 │   ├── pagination.dart        # Cursor-based paginated controllers
 │   ├── dev_bypass.dart        # Mock data for offline dev
 │   └── extensions.dart        # Dart extension methods
-├── models/                    # 18 data models
-├── providers/                 # 21 Riverpod providers
-├── screens/                   # 24 screen modules
-├── services/                  # 9 backend services
+├── models/                    # 20 data models
+├── providers/                 # 22 Riverpod providers
+├── screens/                   # 25 screen modules
+├── services/                  # 10 backend services
 └── widgets/                   # 18 shared UI components
 ```
 
@@ -184,12 +186,58 @@ Every AI call is enriched with a **4,000+ token context window** synthesized fro
 | Diet Plan | Custom macro-based meal plans | Pro + Elite |
 | Progress | AI-driven trend analysis & adjustment | Elite |
 | Pro AI Screen | Haiku-based quick coaching suggestions | Pro |
+| **AI Agent** | Full body analysis + 4-week workout + diet + monthly report | Elite (Opus) |
 
 ---
 
-## 05 — Database Schema
+## 05 — AI Agent (Full Report Pipeline)
 
-FitNexora uses **18 PostgreSQL migration modules** on Supabase with full Row-Level Security (RLS) enforcement at the database layer:
+The **AI Agent** is a server-side intelligence layer that generates comprehensive member reports by orchestrating multiple Claude API calls in a single pipeline:
+
+### Pipeline Architecture
+
+```
+Member ID → Fetch Fitness Profile → Fetch Visit Stats
+  → Step 1: Claude Opus → Body Type Analysis (somatotype, BMI, risk flags)
+  → Step 2: Claude Opus → 4-Week Progressive Workout Plan  ┐ (parallel)
+  → Step 3: Claude Opus → Indian-Context Diet Plan          ┘
+  → Step 4: Claude Opus → Monthly Progress Report
+  → Save all outputs to Supabase → Display in 4-tab UI
+```
+
+### What the Agent Generates
+
+| Module | Output | Details |
+|---|---|---|
+| **Body Analysis** | Somatotype classification | Ectomorph / Mesomorph / Endomorph, BMI interpretation, risk flags, recommended focus |
+| **Workout Plan** | 4-week periodized program | Weekly themes, progressive intensity, exercise-level sets/reps/rest, cardio, warm-up/cool-down |
+| **Diet Plan** | TDEE-based Indian meal plan | 7 meals/day template, macro targets, supplements, hydration, foods to avoid |
+| **Monthly Report** | Executive fitness summary | Attendance verdict, progress rating (1-10), next month priorities, motivational message |
+
+### AI Agent Files
+
+| File | Purpose |
+|---|---|
+| `lib/config/ai_agent_prompts.dart` | 4 structured prompt builders (body, workout, diet, report) |
+| `lib/services/ai_agent_service.dart` | Claude API orchestrator with rate limiting |
+| `lib/models/fitness_profile_model.dart` | Member body metrics and fitness context |
+| `lib/models/ai_generated_plan_model.dart` | AI output storage model |
+| `lib/providers/ai_agent_provider.dart` | Riverpod state management |
+| `lib/screens/master/ai_agent_screen.dart` | 4-tab dashboard (Body / Workout / Diet / Report) |
+| `supabase/migrations/019_ai_agent_tables.sql` | Database tables + RLS policies |
+
+### Safeguards
+
+- **Rate limiting** — max 1 report per member per day
+- **Plan gating** — only Elite/Master plan gyms can access the AI Agent
+- **RLS enforcement** — gym-isolated data at the database level
+- **JSON sanitization** — strips markdown fences from Claude responses before parsing
+
+---
+
+## 06 — Database Schema
+
+FitNexora uses **19 PostgreSQL migration modules** on Supabase with full Row-Level Security (RLS) enforcement at the database layer:
 
 ### Core Tables
 
@@ -220,11 +268,19 @@ FitNexora uses **18 PostgreSQL migration modules** on Supabase with full Row-Lev
 | 18 | `equipment_status` | Gym equipment inventory (units, in-use, out-of-service) |
 | 19 | `todos` | Role-based task management for trainers and owners |
 
+### AI Agent Tables (Migration 019)
+
+| # | Table | Purpose |
+|---|---|---|
+| 20 | `member_fitness_profiles` | Body metrics, goals, injuries, diet context — input to AI Agent |
+| 21 | `ai_generated_plans` | Stores all AI outputs (body analysis, workout, diet, report, PDF URL) |
+
 ### Views
 
 | View | Purpose |
 |---|---|
 | `gym_current_occupancy` | Real-time member count per gym (checked in, not checked out, last 12h) |
+| `member_visit_summary` | Aggregated visit stats per member (total, last 30d, last 7d, avg session hours) |
 
 ### RLS Strategy
 
@@ -232,9 +288,9 @@ Every query is enforced at the **database level** with `gym_id` isolation. Even 
 
 ---
 
-## 06 — Screen Modules
+## 07 — Screen Modules
 
-FitNexora has **24 screen modules** organised by role and feature:
+FitNexora has **25 screen modules** organised by role and feature:
 
 ### 🔐 Auth
 Login, Register, Forgot Password, Onboarding wizard.
@@ -301,6 +357,9 @@ Gamified milestone system with badges and streak tracking.
 ### 🏗️ Gym Operations
 - **Equipment Status** — Live equipment availability board
 
+### 🤖 AI Agent (Master/Elite)
+- **AI Agent Screen** — Generate comprehensive body analysis, 4-week workout plan, Indian diet plan, and monthly progress report via Claude Opus — all in one pipeline
+
 ### 📝 Notes & Journals
 Private encrypted member notes and journaling.
 
@@ -327,7 +386,7 @@ In-app support request flow.
 
 ---
 
-## 07 — Role-Based Access
+## 08 — Role-Based Access
 
 The app has **4 user roles** with fully segregated navigation and feature access:
 
@@ -345,7 +404,7 @@ Role detection drives:
 
 ---
 
-## 08 — Indian Market Features
+## 09 — Indian Market Features
 
 FitNexora is natively built for the Indian fitness market:
 
@@ -360,7 +419,7 @@ FitNexora is natively built for the Indian fitness market:
 
 ---
 
-## 09 — Domain Model (Enums)
+## 10 — Domain Model (Enums)
 
 The application logic is driven by type-safe Dart enums (`lib/core/enums.dart`):
 
@@ -384,7 +443,7 @@ The application logic is driven by type-safe Dart enums (`lib/core/enums.dart`):
 
 ---
 
-## 10 — Developer Guide
+## 11 — Developer Guide
 
 ### Prerequisites
 
@@ -444,6 +503,7 @@ The `dev_bypass.dart` module provides full mock data injection. Set the bypass f
 | `auth_service.dart` | Supabase Auth (login, register, session management) |
 | `database_service.dart` | All Supabase CRUD operations |
 | `claude_service.dart` | Claude API calls with tier routing |
+| `ai_agent_service.dart` | **AI Agent pipeline** — body analysis, plans, reports via Claude Opus |
 | `ai_prompt_builder.dart` | Context enrichment for AI prompts |
 | `plan_enforcement_service.dart` | Feature gate checks at runtime |
 | `payment_service.dart` | Razorpay & Stripe integration |
@@ -459,7 +519,7 @@ flutter test
 
 ---
 
-## 11 — Roadmap
+## 12 — Roadmap
 
 ### v2.1 (Current)
 - [x] Achievements & gamification
@@ -469,6 +529,7 @@ flutter test
 - [x] Trainer task management (todos)
 - [x] Equipment status board
 - [x] Real-time gym occupancy view
+- [x] **AI Agent** — full pipeline: body analysis → workout → diet → monthly report
 
 ### v3.0 (Planned)
 - [ ] **AI Video Form Analysis** — real-time posture & form correction using device camera
@@ -480,7 +541,7 @@ flutter test
 
 ---
 
-## 12 — Team
+## 13 — Team
 
 | Role | Contact |
 |---|---|
