@@ -57,6 +57,12 @@ The system is built on 12+ core migration modules:
 10. **`health_tracking`**: Daily aggregates for Steps, Sleep, and Activity metrics.
 11. **`journals`**: Encrypted daily notes and progress markers.
 12. **`notifications`**: Personalized push and in-app alert tracking.
+13. **`body_measurements`**: Tracking metrics like BMI, Body Fat, and Muscle Mass.
+14. **`water_logs`**: Hydration tracking and goal enforcement.
+15. **`personal_records`**: Exercise-specific PR logging (Weight, Reps, Notes).
+16. **`notification_preferences`**: User-specific opt-ins for multiple alert categories.
+17. **`equipment_status`**: Material tracking for gym facilities.
+18. **`todos`**: Role-based task management for trainers and owners.
 
 ### RLS Enforcement
 Every single SQL query is appended with a `gym_id` check at the database level. Even if a user attempts to manually query an ID from another gym, the database returns zero results.
@@ -93,12 +99,18 @@ FitNexora is natively built for the Indian ecosystem:
 
 The platform is divided into comprehensive modules designed to drive member engagement and retention:
 - **AI-Driven Workouts & Diet**: Elite-tier contextual coaching powered by Claude 4.5.
-- **Interactive Workout Calendars**: Visual progress and session tracking.
-- **Health Tracking**: Dedicated modules for **Step Tracking**, **Sleep Analysis**, and aggregate performance.
-- **Notes & Journaling**: Secure, encrypted private journaling for members to track mental and physical progress.
-- **Real-Time Notifications**: Push notifications and in-app alerts with unread badge tracking.
+- **Achievements Hub**: Gamified milestone tracking and performance rewards.
+- **Interactive Workout Calendars**: Visual progress and session history tracking.
+- **Active Session Tracking**: Real-time workout mode with integrated rest timers and PR alerts.
+- **Health & Vit Stats**: Comprehensive modules for **Step Tracking**, **Sleep Analysis**, **Hydration**, and **Body Measurements (BMI/Body Fat)**.
+- **Performance Record (PR) System**: Benchmarking exercise-specific milestones across all training cycles.
+- **Elite Training Tools**: Specialized calculators for **1RM (One Rep Max)** and **Nutrient Macros**.
+- **Trainer Task Management**: Contextual todo lists for owners and trainers to manage gym operations.
+- **Live Gym Intelligence**: Real-time traffic heatmaps and **Equipment Status** monitoring.
+- **Notes & Journaling**: Secure, encrypted private journaling for members.
+- **Real-Time Notifications**: Multi-channel alerts with granular unread badge tracking.
 - **Systemic Theming**: Fully responsive **Dark Mode** & Light Mode interfaces customized securely via user preferences.
-- **Offline Development & Bypasses**: Advanced developer bypass endpoints loaded with intelligent mock data for high-speed local development without constant network access.
+- **Offline Development & Bypasses**: Advanced developer bypass endpoints with intelligent mock data injection.
 
 ---
 
