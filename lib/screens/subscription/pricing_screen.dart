@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/plan_limits.dart';
 import '../../core/enums.dart';
@@ -11,8 +12,15 @@ import '../../providers/gym_provider.dart';
 import '../../providers/payment_provider.dart';
 import '../../widgets/fit_pricing.dart';
 
-class PricingScreen extends ConsumerWidget {
+class PricingScreen extends ConsumerStatefulWidget {
   const PricingScreen({super.key});
+
+  @override
+  ConsumerState<PricingScreen> createState() => _PricingScreenState();
+}
+
+class _PricingScreenState extends ConsumerState<PricingScreen> {
+  bool _isAnnual = false;
 
   static const _basicPalette = FitPlanPalette(
     primary: Color(0xFF6E6489),
@@ -30,17 +38,34 @@ class PricingScreen extends ConsumerWidget {
     secondary: Color(0xFFB895FF),
   );
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final plans = [
+  String _priceFor(PlanTier tier) {
+    if (_isAnnual) {
+      final perMonth = PlanLimits.annualPrice[tier]! / 12;
+      return '₹${perMonth.toStringAsFixed(0)}';
+    }
+    return '₹${PlanLimits.monthlyPrice[tier]!.toInt()}';
+  }
+
+  BillingInterval get _interval =>
+      _isAnnual ? BillingInterval.annual : BillingInterval.monthly;
+
+  double _checkoutAmount(PlanTier tier) {
+    return _isAnnual
+        ? PlanLimits.annualPrice[tier]!
+        : PlanLimits.monthlyPrice[tier]!;
+  }
+
+  List<FitPricingPlanData> _buildPlans() {
+    return [
       FitPricingPlanData(
         title: 'Basic',
         price: _priceFor(PlanTier.basic),
-        period: '/mo',
+        period: _isAnnual ? '/mo • billed ₹7,999/yr' : '/mo',
         description:
             'A focused starter plan for independent studios building a clean digital operation.',
         ctaLabel: 'Get Started',
         palette: _basicPalette,
+        badge: _isAnnual ? PlanLimits.formatAnnualSavings(PlanTier.basic) : null,
         features: const [
           FitPricingFeatureData(label: '50 clients capacity'),
           FitPricingFeatureData(label: '1 trainer seat'),
@@ -52,11 +77,12 @@ class PricingScreen extends ConsumerWidget {
       FitPricingPlanData(
         title: 'Pro',
         price: _priceFor(PlanTier.pro),
-        period: '/mo',
+        period: _isAnnual ? '/mo • billed ₹14,999/yr' : '/mo',
         description:
             'Built for growing gyms that want better analytics and guided AI automation.',
         ctaLabel: 'Go Pro',
         palette: _proPalette,
+        badge: _isAnnual ? PlanLimits.formatAnnualSavings(PlanTier.pro) : null,
         features: const [
           FitPricingFeatureData(label: '200 clients capacity'),
           FitPricingFeatureData(label: '5 trainer seats'),
@@ -68,13 +94,15 @@ class PricingScreen extends ConsumerWidget {
       FitPricingPlanData(
         title: 'Elite',
         price: _priceFor(PlanTier.elite),
-        period: '/mo',
+        period: _isAnnual ? '/mo • billed ₹24,999/yr' : '/mo',
         description:
             'The premium command center for ambitious fitness brands and high-volume teams.',
         ctaLabel: 'Go Elite',
         palette: _elitePalette,
         highlighted: true,
-        badge: 'Most Popular',
+        badge: _isAnnual
+            ? PlanLimits.formatAnnualSavings(PlanTier.elite)
+            : 'Most Popular',
         features: const [
           FitPricingFeatureData(label: '500 clients capacity'),
           FitPricingFeatureData(label: 'Unlimited trainer seats'),
@@ -84,6 +112,11 @@ class PricingScreen extends ConsumerWidget {
         ],
       ),
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final plans = _buildPlans();
 
     final comparisonRows = [
       const FitComparisonRowData(
@@ -105,6 +138,23 @@ class PricingScreen extends ConsumerWidget {
         values: ['1', '5', 'Unlimited'],
         highlightedIndex: 2,
       ),
+      FitComparisonRowData(
+        label: 'Monthly price',
+        values: [
+          '₹${PlanLimits.monthlyPrice[PlanTier.basic]!.toInt()}',
+          '₹${PlanLimits.monthlyPrice[PlanTier.pro]!.toInt()}',
+          '₹${PlanLimits.monthlyPrice[PlanTier.elite]!.toInt()}',
+        ],
+      ),
+      FitComparisonRowData(
+        label: 'Annual price',
+        values: [
+          '₹${PlanLimits.annualPrice[PlanTier.basic]!.toInt()}/yr',
+          '₹${PlanLimits.annualPrice[PlanTier.pro]!.toInt()}/yr',
+          '₹${PlanLimits.annualPrice[PlanTier.elite]!.toInt()}/yr',
+        ],
+        highlightedIndex: 2,
+      ),
       const FitComparisonRowData(
         label: 'Branding and support',
         values: ['Email support', 'Priority email', 'White-label + concierge'],
@@ -119,6 +169,10 @@ class PricingScreen extends ConsumerWidget {
       headerActionLabel: 'Back to App',
       plans: plans,
       comparisonRows: comparisonRows,
+      billingToggle: _BillingToggle(
+        isAnnual: _isAnnual,
+        onChanged: (val) => setState(() => _isAnnual = val),
+      ),
       onHeaderAction: () {
         if (context.canPop()) {
           context.pop();
@@ -142,14 +196,15 @@ class PricingScreen extends ConsumerWidget {
         }
 
         final paymentService = ref.read(paymentServiceProvider);
-        final amount = PlanLimits.monthlyPrice[tier] ?? 0;
+        final amount = _checkoutAmount(tier);
 
         // Initiate Razorpay
         paymentService.startRazorpayCheckout(
           options: {
             'amount': (amount * 100).toInt(), // Razorpay expects amount in paise
             'name': 'FitNexora ${planData.title}',
-            'description': 'Monthly subscription for ${gym.name}',
+            'description':
+                '${_interval.label} subscription for ${gym.name}',
             'prefill': {
               'contact': user.phone ?? '',
               'email': user.email,
@@ -164,7 +219,7 @@ class PricingScreen extends ConsumerWidget {
               await paymentService.handleRazorpaySuccess(
                 gymId: gym.id,
                 plan: tier,
-                interval: BillingInterval.monthly,
+                interval: _interval,
                 paymentId: response.paymentId ?? '',
                 signature: response.signature,
                 orderId: response.orderId,
@@ -184,7 +239,8 @@ class PricingScreen extends ConsumerWidget {
             context.showSnackBar('Payment failed: ${response.message}');
           },
           onExternalWallet: (response) {
-            context.showSnackBar('External wallet selected: ${response.walletName}');
+            context.showSnackBar(
+                'External wallet selected: ${response.walletName}');
           },
         );
       },
@@ -201,9 +257,113 @@ class PricingScreen extends ConsumerWidget {
         return PlanTier.basic;
     }
   }
+}
 
-  static String _priceFor(PlanTier tier) {
-    final price = PlanLimits.monthlyPrice[tier] ?? 0;
-    return '\$${price.toStringAsFixed(2)}';
+// ─── Billing Toggle Widget ──────────────────────────────────────────
+
+class _BillingToggle extends StatelessWidget {
+  const _BillingToggle({
+    required this.isAnnual,
+    required this.onChanged,
+  });
+
+  final bool isAnnual;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: colors.surfaceAlt,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _toggleOption(
+            context,
+            label: 'Monthly',
+            isSelected: !isAnnual,
+            onTap: () => onChanged(false),
+          ),
+          _toggleOption(
+            context,
+            label: 'Annual',
+            isSelected: isAnnual,
+            onTap: () => onChanged(true),
+            badge: 'Save 17%',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _toggleOption(
+    BuildContext context, {
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+    String? badge,
+  }) {
+    final colors = context.fitTheme;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? colors.brand : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: colors.brand.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color:
+                    isSelected ? Colors.white : colors.textSecondary,
+              ),
+            ),
+            if (badge != null && isSelected) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: colors.accent,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  badge,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

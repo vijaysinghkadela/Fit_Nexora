@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gymos_ai/config/theme.dart';
 import 'package:gymos_ai/widgets/dashboard_more_sheet.dart';
 
 void main() {
@@ -9,6 +10,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        theme: AppTheme.darkTheme,
         home: Scaffold(
           body: DashboardMoreSheet(
             onSelect: selections.add,

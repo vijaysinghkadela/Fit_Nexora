@@ -116,6 +116,7 @@ class FitPricingLandingPage extends StatelessWidget {
   final List<FitComparisonRowData> comparisonRows;
   final VoidCallback? onHeaderAction;
   final ValueChanged<FitPricingPlanData>? onPlanSelected;
+  final Widget? billingToggle;
 
   const FitPricingLandingPage({
     super.key,
@@ -126,6 +127,7 @@ class FitPricingLandingPage extends StatelessWidget {
     required this.comparisonRows,
     this.onHeaderAction,
     this.onPlanSelected,
+    this.billingToggle,
   });
 
   @override
@@ -196,6 +198,13 @@ class FitPricingLandingPage extends StatelessWidget {
               ),
             ),
           ),
+          if (billingToggle != null)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: Center(child: billingToggle!),
+              ),
+            ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 36, 20, 0),
             sliver: SliverToBoxAdapter(

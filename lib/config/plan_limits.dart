@@ -7,17 +7,17 @@ import '../core/enums.dart';
 class PlanLimits {
   PlanLimits._();
 
-  // ─── MONTHLY PRICING ──────────────────────────────────────────────
+  // ─── MONTHLY PRICING (INR) ─────────────────────────────────────────
   static const Map<PlanTier, double> monthlyPrice = {
-    PlanTier.basic: 9.99,
-    PlanTier.pro: 19.99,
-    PlanTier.elite: 29.99,
+    PlanTier.basic: 799,
+    PlanTier.pro: 1499,
+    PlanTier.elite: 2499,
   };
 
   static const Map<PlanTier, double> annualPrice = {
-    PlanTier.basic: 99.99, // 2 months free
-    PlanTier.pro: 199.99, // 2 months free
-    PlanTier.elite: 299.99, // 2 months free
+    PlanTier.basic: 7999, // Save ~₹1,589 (17%)
+    PlanTier.pro: 14999, // Save ~₹2,989 (17%)
+    PlanTier.elite: 24999, // Save ~₹4,989 (17%)
   };
 
   // ─── CLIENT CAPS (hard limits, backend-enforced) ───────────────────
@@ -251,16 +251,51 @@ class PlanLimits {
     return AiCallDecision.allowed(model: 'haiku');
   }
 
-  /// Format price display.
+  /// Format price display (INR).
   static String formatMonthly(PlanTier tier) =>
-      '\$${monthlyPrice[tier]!.toStringAsFixed(2)}/mo';
+      '₹${_formatInr(monthlyPrice[tier]!)}/mo';
 
   static String formatAnnual(PlanTier tier) =>
-      '\$${annualPrice[tier]!.toStringAsFixed(2)}/yr';
+      '₹${_formatInr(annualPrice[tier]!)}/yr';
 
-  static String formatAnnualMonthly(PlanTier tier) {
+  /// Monthly equivalent when billed annually.
+  static String formatAnnualPerMonth(PlanTier tier) {
     final monthly = annualPrice[tier]! / 12;
-    return '\$${monthly.toStringAsFixed(2)}/mo';
+    return '₹${monthly.toStringAsFixed(0)}/mo';
+  }
+
+  /// Savings when picking annual over 12× monthly.
+  static double annualSavings(PlanTier tier) {
+    return (monthlyPrice[tier]! * 12) - annualPrice[tier]!;
+  }
+
+  /// Format savings as a display string.
+  static String formatAnnualSavings(PlanTier tier) {
+    return 'Save ₹${_formatInr(annualSavings(tier))}';
+  }
+
+  /// Indian number formatting (e.g. 14999 → "14,999").
+  static String _formatInr(double value) {
+    final intVal = value.toInt();
+    final str = intVal.toString();
+    if (str.length <= 3) return str;
+    final last3 = str.substring(str.length - 3);
+    final rest = str.substring(0, str.length - 3);
+    final buffer = StringBuffer();
+    for (var i = rest.length - 1; i >= 0; i--) {
+      buffer.write(rest[rest.length - 1 - i]);
+    }
+    // Re-do: proper Indian grouping (pairs from right after first 3)
+    final restReversed = rest.split('').reversed.toList();
+    final groups = <String>[];
+    for (var i = 0; i < restReversed.length; i += 2) {
+      if (i + 1 < restReversed.length) {
+        groups.add('${restReversed[i + 1]}${restReversed[i]}');
+      } else {
+        groups.add(restReversed[i]);
+      }
+    }
+    return '${groups.reversed.join(',')},$last3';
   }
 }
 
