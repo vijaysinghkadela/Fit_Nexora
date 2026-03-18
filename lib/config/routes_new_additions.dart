@@ -62,3 +62,28 @@
 //  context.go('/achievements');
 //  context.go('/tools/macro-calculator');
 //  context.go('/tools/one-rep-max');
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AI AGENT ROUTE — add this import + route for the AI Agent screen:
+// ══════════════════════════════════════════════════════════════════════════════
+//
+// import '../screens/master/ai_agent_screen.dart';
+//
+/*
+      GoRoute(
+        path: '/master/ai-agent/:memberId',
+        name: 'ai-agent',
+        pageBuilder: (c, s) {
+          final memberId = s.pathParameters['memberId'] ?? '';
+          final gymId = s.uri.queryParameters['gymId'] ?? '';
+          final name = s.uri.queryParameters['name'] ?? 'Member';
+          return _fadePage(
+            s,
+            AiAgentScreen(memberId: memberId, gymId: gymId, memberName: name),
+          );
+        },
+      ),
+*/
+//
+//  Navigate with:
+//  context.go('/master/ai-agent/$memberId?gymId=$gymId&name=$memberName');
