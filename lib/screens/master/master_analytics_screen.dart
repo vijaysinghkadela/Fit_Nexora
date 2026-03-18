@@ -147,7 +147,7 @@ class MasterAnalyticsScreen extends ConsumerWidget {
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: (total < 0 ? AppColors.success : AppColors.error)
-                                  .withValues(alpha: 0.12),
+                                  .withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -196,7 +196,7 @@ class MasterAnalyticsScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(16)),
       ).animate(onPlay: (c) => c.repeat())
           .shimmer(duration: 1200.ms,
-              color: AppColors.bgElevated.withValues(alpha: 0.5));
+              color: AppColors.bgElevated.withOpacity(0.5));
 }
 
 // ─── Body Composition Card ────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ class _BodyCompositionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: 0.6,
-            backgroundColor: c.withValues(alpha: 0.1),
+            backgroundColor: c.withOpacity(0.1),
             valueColor: AlwaysStoppedAnimation(c),
             minHeight: 6,
           ),
@@ -302,9 +302,9 @@ class _MetricsGrid extends StatelessWidget {
         final (label, val, color, icon) = e.value;
         return Container(
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.06),
+            color: color.withOpacity(0.06),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: color.withValues(alpha: 0.2)),
+            border: Border.all(color: color.withOpacity(0.2)),
           ),
           padding: const EdgeInsets.all(14),
           child: Row(children: [
@@ -355,7 +355,7 @@ class _BarChart extends StatelessWidget {
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [color, color.withValues(alpha: 0.4)]),
+                  colors: [color, color.withOpacity(0.4)]),
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -386,7 +386,7 @@ class _LineChart extends CustomPainter {
     final fill = Paint()
       ..shader = LinearGradient(begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [color.withValues(alpha: 0.25), color.withValues(alpha: 0)])
+          colors: [color.withOpacity(0.25), color.withOpacity(0)])
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
     final pts = <Offset>[for (var i = 0; i < data.length; i++)

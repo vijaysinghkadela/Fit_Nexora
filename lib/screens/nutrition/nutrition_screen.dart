@@ -203,8 +203,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                       borderRadius: BorderRadius.circular(20),
                       gradient: LinearGradient(
                         colors: [
-                          t.brand.withValues(alpha: 0.12),
-                          t.brand.withValues(alpha: 0.03),
+                          t.brand.withOpacity(0.12),
+                          t.brand.withOpacity(0.03),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -215,7 +215,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: t.brand.withValues(alpha: 0.15),
+                            color: t.brand.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(Icons.auto_awesome_rounded,
@@ -307,7 +307,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: t.info.withValues(alpha: 0.12),
+                            color: t.info.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(Icons.water_drop_rounded,
@@ -362,10 +362,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: t.info.withValues(alpha: 0.12),
+                              color: t.info.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  color: t.info.withValues(alpha: 0.3)),
+                                  color: t.info.withOpacity(0.3)),
                             ),
                             child: Text(
                               '+1',
@@ -735,7 +735,7 @@ class _MealSectionWidgetState extends State<_MealSectionWidget> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: t.brand.withValues(alpha: 0.12),
+                        color: t.brand.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(section.icon, color: t.brand, size: 18),
@@ -767,7 +767,7 @@ class _MealSectionWidgetState extends State<_MealSectionWidget> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: t.brand.withValues(alpha: 0.1),
+                        color: t.brand.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(

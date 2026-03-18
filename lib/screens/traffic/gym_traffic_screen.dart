@@ -128,7 +128,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(colors: [
-              AppColors.primary.withValues(alpha: 0.08),
+              AppColors.primary.withOpacity(0.08),
               Colors.transparent,
             ]),
           ),
@@ -143,7 +143,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(colors: [
-              AppColors.accent.withValues(alpha: 0.07),
+              AppColors.accent.withOpacity(0.07),
               Colors.transparent,
             ]),
           ),
@@ -369,9 +369,9 @@ class _TrafficLevelPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
+        border: Border.all(color: color.withOpacity(0.4)),
       ),
       child: Text(
         label,
@@ -486,7 +486,7 @@ class _CheckedInView extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.accent.withValues(alpha: 0.15),
+            color: AppColors.accent.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
           child: const Icon(Icons.fitness_center_rounded,
@@ -522,12 +522,12 @@ class _CheckedInView extends StatelessWidget {
                 ? null
                 : () => onCheckOut(checkin['id'] as String),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error.withValues(alpha: 0.2),
+              backgroundColor: AppColors.error.withOpacity(0.2),
               foregroundColor: AppColors.error,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(
-                      color: AppColors.error.withValues(alpha: 0.4))),
+                      color: AppColors.error.withOpacity(0.4))),
               elevation: 0,
             ),
             child: loading
@@ -559,7 +559,7 @@ class _CheckedOutView extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.15),
+            color: AppColors.primary.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
           child: const Icon(Icons.login_rounded,
@@ -694,16 +694,16 @@ class _TimeSlotChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.12),
+        color: AppColors.accent.withOpacity(0.12),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-            color: AppColors.accent.withValues(alpha: isDefault ? 0.2 : 0.4)),
+            color: AppColors.accent.withOpacity(isDefault ? 0.2 : 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.access_time_rounded,
-              color: AppColors.accent.withValues(alpha: isDefault ? 0.5 : 1),
+              color: AppColors.accent.withOpacity(isDefault ? 0.5 : 1),
               size: 15),
           const SizedBox(width: 6),
           Text(
@@ -712,7 +712,7 @@ class _TimeSlotChip extends StatelessWidget {
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: AppColors.accent
-                  .withValues(alpha: isDefault ? 0.5 : 1),
+                  .withOpacity(isDefault ? 0.5 : 1),
             ),
           ),
         ],
@@ -854,7 +854,7 @@ class _TrafficBarChart extends StatelessWidget {
                   ? AppColors.warning
                   : isQuietest
                       ? AppColors.accent
-                      : AppColors.primary.withValues(alpha: 0.45 + frac * 0.45);
+                      : AppColors.primary.withOpacity(0.45 + frac * 0.45);
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: isNarrow ? 2 : 1.5),
@@ -917,7 +917,7 @@ class _TrafficBarChart extends StatelessWidget {
             _LegendItem(color: AppColors.accent, label: 'Quietest'),
             _LegendItem(color: AppColors.warning, label: 'Right now'),
             _LegendItem(
-                color: AppColors.primary.withValues(alpha: 0.9),
+                color: AppColors.primary.withOpacity(0.9),
                 label: isNarrow ? 'Busiest windows' : 'Busy hours'),
           ],
         ),

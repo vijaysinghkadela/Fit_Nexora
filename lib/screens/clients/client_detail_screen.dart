@@ -130,7 +130,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             // Avatar
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+              backgroundColor: AppColors.primary.withOpacity(0.15),
               child: Text(
                 initial,
                 style: GoogleFonts.inter(
@@ -327,7 +327,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                           Icon(Icons.card_membership_outlined,
                               size: 36,
                               color:
-                                  AppColors.textMuted.withValues(alpha: 0.4)),
+                                  AppColors.textMuted.withOpacity(0.4)),
                           const SizedBox(height: 8),
                           Text(
                             'No active membership',
@@ -399,9 +399,9 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
+        color: color.withOpacity(0.06),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        border: Border.all(color: color.withOpacity(0.15)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,9 +457,9 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Text(
         label,

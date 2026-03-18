@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
 import '../models/user_model.dart';
+import '../models/gym_model.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../services/storage_service.dart';
@@ -34,6 +35,18 @@ final databaseServiceProvider = Provider<DatabaseService>((ref) {
 /// Storage service provider.
 final storageServiceProvider = Provider<StorageService>((ref) {
   return StorageService(ref.read(supabaseClientProvider));
+});
+
+// ─── Data Providers ────────────────────────────────────────────────
+
+/// Provides the list of unique cities.
+final citiesProvider = FutureProvider<List<String>>((ref) {
+  return ref.read(databaseServiceProvider).getCities();
+});
+
+/// Provides the list of gyms for a given city.
+final gymsByCityProvider = FutureProvider.family<List<Gym>, String>((ref, city) {
+  return ref.read(databaseServiceProvider).getGymsByCity(city);
 });
 
 // ─── Auth State ────────────────────────────────────────────────────
@@ -138,6 +151,7 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
     required String fullName,
     String? phone,
     UserRole role = UserRole.gymOwner,
+    String? gymId,
   }) async {
     state = const AsyncValue.loading();
     try {
@@ -147,6 +161,7 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
             fullName: fullName,
             phone: phone,
             role: role,
+            gymId: gymId,
           );
       state = AsyncValue.data(user);
     } catch (e, st) {

@@ -30,7 +30,7 @@ class SkeletonBox extends StatelessWidget {
       ),
     ).animate(onPlay: (controller) => controller.repeat()).shimmer(
           duration: 1200.ms,
-          color: t.surfaceAlt.withValues(alpha: 0.5),
+          color: t.surfaceAlt.withOpacity(0.5),
         );
   }
 }

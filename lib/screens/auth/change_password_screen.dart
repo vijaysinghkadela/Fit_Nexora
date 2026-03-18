@@ -124,10 +124,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: colors.danger.withValues(alpha: 0.08),
+                      color: colors.danger.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: colors.danger.withValues(alpha: 0.24),
+                        color: colors.danger.withOpacity(0.24),
                       ),
                     ),
                     child: Text(

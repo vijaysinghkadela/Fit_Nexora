@@ -131,7 +131,7 @@ class _GaugePainter extends CustomPainter {
     final tipY = center.dy + radius * math.sin(tipAngle);
 
     final glowPaint = Paint()
-      ..color = gradientColors.last.withValues(alpha: 0.6)
+      ..color = gradientColors.last.withOpacity(0.6)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
 
     canvas.drawCircle(Offset(tipX, tipY), strokeWidth / 2, glowPaint);

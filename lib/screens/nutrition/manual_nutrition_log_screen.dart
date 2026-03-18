@@ -286,14 +286,14 @@ class _ManualNutritionLogScreenState
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [t.accent, t.accent.withValues(alpha: 0.8)],
+                  colors: [t.accent, t.accent.withOpacity(0.8)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: t.accent.withValues(alpha: 0.35),
+                    color: t.accent.withOpacity(0.35),
                     blurRadius: 18,
                     offset: const Offset(0, 6),
                   ),
@@ -382,7 +382,7 @@ class _MealTypeChips extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? t.brand.withValues(alpha: 0.15)
+                    ? t.brand.withOpacity(0.15)
                     : t.surfaceAlt,
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
@@ -433,7 +433,7 @@ class _MacroInput extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
+            color: color.withOpacity(0.08),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
           ),
           child: Row(
@@ -456,7 +456,7 @@ class _MacroInput extends StatelessWidget {
             color: t.surfaceAlt,
             borderRadius:
                 const BorderRadius.vertical(bottom: Radius.circular(14)),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
+            border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: TextFormField(
             controller: controller,
@@ -477,7 +477,7 @@ class _MacroInput extends StatelessWidget {
               hintStyle: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: t.textMuted.withValues(alpha: 0.5),
+                color: t.textMuted.withOpacity(0.5),
               ),
               suffix: Text(
                 unit,

@@ -26,6 +26,7 @@ class AuthService {
     required String fullName,
     String? phone,
     UserRole role = UserRole.gymOwner,
+    String? gymId,
   }) async {
     final response = await _client.auth.signUp(
       email: email,
@@ -45,6 +46,30 @@ class AuthService {
     // The DB trigger handle_new_user() already creates the profile row.
     // Wait briefly then fetch it so we return a fully-populated AppUser.
     await Future.delayed(const Duration(milliseconds: 500));
+
+    if (gymId != null && gymId.isNotEmpty) {
+      try {
+        final memberRole = role == UserRole.gymOwner ? 'owner' : role.value;
+        await _client.from(AppConstants.gymMembersTable).insert({
+          'gym_id': gymId,
+          'user_id': user.id,
+          'role': memberRole,
+        });
+
+        if (role == UserRole.client) {
+          await _client.from(AppConstants.clientsTable).insert({
+            'gym_id': gymId,
+            'user_id': user.id,
+            'full_name': fullName,
+            'email': email,
+            'phone': phone,
+          });
+        }
+      } catch (e) {
+        debugPrint('Failed to link user to gym: $e');
+      }
+    }
+
     try {
       return await getProfile(user.id);
     } catch (_) {

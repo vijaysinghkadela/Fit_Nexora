@@ -85,7 +85,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.85),
+                      color: Colors.white.withOpacity(0.85),
                     ),
                   ).animate(key: ValueKey(_isScanning)).fadeIn(duration: 300.ms),
                   const SizedBox(height: 8),
@@ -93,7 +93,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     'Align the barcode within the frame',
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: Colors.white.withOpacity(0.5),
                     ),
                   ),
                 ],
@@ -135,7 +135,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     icon: Icons.close_rounded,
                     onTap: () => Navigator.of(context).maybePop(),
                     color: Colors.white,
-                    bgColor: Colors.white.withValues(alpha: 0.12),
+                    bgColor: Colors.white.withOpacity(0.12),
                   ),
                   const Spacer(),
                   Text(
@@ -151,7 +151,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     icon: Icons.flashlight_on_rounded,
                     onTap: () {},
                     color: Colors.white,
-                    bgColor: Colors.white.withValues(alpha: 0.12),
+                    bgColor: Colors.white.withOpacity(0.12),
                   ),
                 ],
               ),
@@ -179,7 +179,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                             backgroundColor: t.brand,
                             foregroundColor: Colors.white,
                             disabledBackgroundColor:
-                                t.brand.withValues(alpha: 0.5),
+                                t.brand.withOpacity(0.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -255,7 +255,7 @@ class _ViewfinderBox extends StatelessWidget {
             height: size,
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: Colors.white.withOpacity(0.15),
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(12),
@@ -464,15 +464,15 @@ class _ScanLine extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  color.withValues(alpha: 0),
+                  color.withOpacity(0),
                   color,
-                  color.withValues(alpha: 0),
+                  color.withOpacity(0),
                 ],
               ),
               borderRadius: BorderRadius.circular(2),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.6),
+                  color: color.withOpacity(0.6),
                   blurRadius: 8,
                   spreadRadius: 1,
                 ),
@@ -529,7 +529,7 @@ class _FoodResultCard extends StatelessWidget {
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: t.brand.withValues(alpha: 0.12),
+                        color: t.brand.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(Icons.restaurant_rounded,
@@ -563,7 +563,7 @@ class _FoodResultCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: t.brand.withValues(alpha: 0.14),
+                        color: t.brand.withOpacity(0.14),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -696,9 +696,9 @@ class _MacroChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          border: Border.all(color: color.withOpacity(0.25)),
         ),
         child: Column(
           children: [
@@ -713,7 +713,7 @@ class _MacroChip extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: GoogleFonts.inter(fontSize: 11, color: color.withValues(alpha: 0.8)),
+              style: GoogleFonts.inter(fontSize: 11, color: color.withOpacity(0.8)),
             ),
           ],
         ),

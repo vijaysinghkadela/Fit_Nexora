@@ -90,10 +90,10 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 5),
                               decoration: BoxDecoration(
-                                color: qualityColor.withValues(alpha: 0.15),
+                                color: qualityColor.withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                    color: qualityColor.withValues(alpha: 0.4)),
+                                    color: qualityColor.withOpacity(0.4)),
                               ),
                               child: Text(
                                 (latest.quality).toUpperCase(),
@@ -223,7 +223,7 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: cellColor.withValues(alpha: 0.55),
+                                    color: cellColor.withOpacity(0.55),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                 ),
@@ -324,7 +324,7 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: t.textMuted.withValues(alpha: 0.3),
+                      color: t.textMuted.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -402,7 +402,7 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? c.withValues(alpha: 0.15)
+                                  ? c.withOpacity(0.15)
                                   : t.surfaceAlt,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(

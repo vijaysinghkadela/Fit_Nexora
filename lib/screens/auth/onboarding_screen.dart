@@ -25,6 +25,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   // Gym workspace controllers (step 3 / completion)
   final _gymNameController = TextEditingController();
   final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
   final _phoneController = TextEditingController();
 
   // Metrics controllers (step 2)
@@ -52,6 +53,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void dispose() {
     _gymNameController.dispose();
     _addressController.dispose();
+    _cityController.dispose();
     _phoneController.dispose();
     _weightController.dispose();
     _heightController.dispose();
@@ -73,6 +75,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             : _gymNameController.text.trim(),
         ownerId: userId,
         address: _addressController.text.trim(),
+        city: _cityController.text.trim(),
         phone: _phoneController.text.trim(),
       );
 
@@ -107,12 +110,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Positioned(
             top: -120,
             right: -100,
-            child: _GlowOrb(color: t.brand.withValues(alpha: 0.15), size: 300),
+            child: _GlowOrb(color: t.brand.withOpacity(0.15), size: 300),
           ),
           Positioned(
             bottom: -140,
             left: -100,
-            child: _GlowOrb(color: t.accent.withValues(alpha: 0.10), size: 320),
+            child: _GlowOrb(color: t.accent.withOpacity(0.10), size: 320),
           ),
           SafeArea(
             child: Column(
@@ -177,10 +180,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                 decoration: BoxDecoration(
-                  color: t.brand.withValues(alpha: 0.12),
+                  color: t.brand.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(999),
                   border:
-                      Border.all(color: t.brand.withValues(alpha: 0.28)),
+                      Border.all(color: t.brand.withOpacity(0.28)),
                 ),
                 child: Text(
                   'Step ${_step + 1} of $_totalSteps',
@@ -240,7 +243,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 boxShadow: isCurrent
                     ? [
                         BoxShadow(
-                          color: t.brand.withValues(alpha: 0.5),
+                          color: t.brand.withOpacity(0.5),
                           blurRadius: 8,
                         )
                       ]
@@ -300,7 +303,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       decoration: BoxDecoration(
-        color: t.background.withValues(alpha: 0.95),
+        color: t.background.withOpacity(0.95),
         border: Border(top: BorderSide(color: t.border)),
       ),
       child: SizedBox(
@@ -313,7 +316,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: t.brand.withValues(alpha: 0.35),
+                color: t.brand.withOpacity(0.35),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -423,7 +426,7 @@ class _GoalStep extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
               color: isSelected
-                  ? cardColor.withValues(alpha: 0.13)
+                  ? cardColor.withOpacity(0.13)
                   : t.surfaceAlt,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
@@ -433,7 +436,7 @@ class _GoalStep extends StatelessWidget {
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: cardColor.withValues(alpha: 0.22),
+                        color: cardColor.withOpacity(0.22),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       )
@@ -452,7 +455,7 @@ class _GoalStep extends StatelessWidget {
                         width: 46,
                         height: 46,
                         decoration: BoxDecoration(
-                          color: cardColor.withValues(alpha: 0.15),
+                          color: cardColor.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Icon(opt.icon, color: cardColor, size: 24),
@@ -580,7 +583,7 @@ class _MetricsStep extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? t.brand.withValues(alpha: 0.14)
+                            ? t.brand.withOpacity(0.14)
                             : t.surfaceAlt,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
@@ -678,9 +681,9 @@ class _MetricField extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: t.brand.withValues(alpha: 0.12),
+              color: t.brand.withOpacity(0.12),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: t.brand.withValues(alpha: 0.3)),
+              border: Border.all(color: t.brand.withOpacity(0.3)),
             ),
             child: Text(
               unit,
@@ -748,7 +751,7 @@ class _ExperienceStep extends StatelessWidget {
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               color: isSelected
-                  ? opt.color.withValues(alpha: 0.10)
+                  ? opt.color.withOpacity(0.10)
                   : t.surfaceAlt,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
@@ -758,7 +761,7 @@ class _ExperienceStep extends StatelessWidget {
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: opt.color.withValues(alpha: 0.18),
+                        color: opt.color.withOpacity(0.18),
                         blurRadius: 14,
                         offset: const Offset(0, 5),
                       )
@@ -771,7 +774,7 @@ class _ExperienceStep extends StatelessWidget {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: opt.color.withValues(alpha: 0.15),
+                    color: opt.color.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Icon(opt.icon, color: opt.color, size: 26),
@@ -908,14 +911,14 @@ class _SummaryStep extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                t.brand.withValues(alpha: 0.16),
-                t.accent.withValues(alpha: 0.10),
+                t.brand.withOpacity(0.16),
+                t.accent.withOpacity(0.10),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: t.brand.withValues(alpha: 0.22)),
+            border: Border.all(color: t.brand.withOpacity(0.22)),
           ),
           child: Column(
             children: [
@@ -928,7 +931,7 @@ class _SummaryStep extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: t.brand.withValues(alpha: 0.4),
+                      color: t.brand.withOpacity(0.4),
                       blurRadius: 22,
                       offset: const Offset(0, 8),
                     ),
@@ -979,7 +982,7 @@ class _SummaryStep extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: t.brand.withValues(alpha: 0.10),
+                            color: t.brand.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(item.icon,

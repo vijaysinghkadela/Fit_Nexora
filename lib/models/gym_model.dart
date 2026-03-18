@@ -7,6 +7,7 @@ class Gym extends Equatable {
   final String name;
   final String ownerId;
   final String? address;
+  final String? city;
   final String? phone;
   final String? logoUrl;
   final PlanTier planTier;
@@ -21,6 +22,7 @@ class Gym extends Equatable {
     required this.name,
     required this.ownerId,
     this.address,
+    this.city,
     this.phone,
     this.logoUrl,
     this.planTier = PlanTier.basic,
@@ -37,6 +39,7 @@ class Gym extends Equatable {
       name: json['name'] as String,
       ownerId: json['owner_id'] as String,
       address: json['address'] as String?,
+      city: json['city'] as String?,
       phone: json['phone'] as String?,
       logoUrl: json['logo_url'] as String?,
       planTier: PlanTier.fromString(json['plan_tier'] as String? ?? 'basic'),
@@ -54,6 +57,7 @@ class Gym extends Equatable {
       'name': name,
       'owner_id': ownerId,
       'address': address,
+      'city': city,
       'phone': phone,
       'logo_url': logoUrl,
       'plan_tier': planTier.value,
@@ -66,6 +70,7 @@ class Gym extends Equatable {
   Gym copyWith({
     String? name,
     String? address,
+    String? city,
     String? phone,
     String? logoUrl,
     PlanTier? planTier,
@@ -78,6 +83,7 @@ class Gym extends Equatable {
       name: name ?? this.name,
       ownerId: ownerId,
       address: address ?? this.address,
+      city: city ?? this.city,
       phone: phone ?? this.phone,
       logoUrl: logoUrl ?? this.logoUrl,
       planTier: planTier ?? this.planTier,

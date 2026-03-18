@@ -79,7 +79,16 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Future<void> _handleSubmit() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please correct the errors in the form'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
 
@@ -122,8 +131,26 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
 
       if (_isEditMode) {
         await db.updateClient(clientData);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Client profile updated successfully'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       } else {
         await db.addClient(clientData);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('New client added successfully'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       }
 
       if (mounted) {
@@ -137,6 +164,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
           SnackBar(
             content: Text('Error: $e'),
             backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
           ),
         );
       }
@@ -171,7 +199,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textMuted.withValues(alpha: 0.3),
+              color: AppColors.textMuted.withOpacity(0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -441,7 +469,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         labelStyle: GoogleFonts.inter(color: AppColors.textMuted),
         hintText: hint,
         hintStyle: GoogleFonts.inter(
-            color: AppColors.textMuted.withValues(alpha: 0.5)),
+            color: AppColors.textMuted.withOpacity(0.5)),
         prefixIcon: Icon(icon, color: AppColors.textMuted, size: 18),
         filled: true,
         fillColor: AppColors.bgInput,
@@ -452,7 +480,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide:
-              BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
+              BorderSide(color: AppColors.border.withOpacity(0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -506,7 +534,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide:
-              BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
+              BorderSide(color: AppColors.border.withOpacity(0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -564,17 +592,17 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                 onTap: () => setState(() => _daysPerWeek = day),
                 child: AnimatedContainer(
                   duration: 200.ms,
-                  margin: EdgeInsets.only(right: i < 6 ? 6 : 0),
+                  margin: EdgeInsets.only(right: i < 6 ? 4 : 0),
                   height: 42,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primary.withValues(alpha: 0.15)
+                        ? AppColors.primary.withOpacity(0.15)
                         : AppColors.bgInput,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary
-                          : AppColors.border.withValues(alpha: 0.5),
+                          : AppColors.border.withOpacity(0.5),
                       width: isSelected ? 1.5 : 1.0,
                     ),
                   ),
@@ -643,13 +671,13 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.15)
+              ? AppColors.primary.withOpacity(0.15)
               : AppColors.bgInput,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
-                : AppColors.border.withValues(alpha: 0.5),
+                : AppColors.border.withOpacity(0.5),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),

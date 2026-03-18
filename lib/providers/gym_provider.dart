@@ -6,11 +6,17 @@ import '../core/enums.dart';
 import '../core/dev_bypass.dart';
 
 /// Currently selected gym (for multi-gym owners).
+/// Auto-selects the first gym for real users once userGymsProvider loads.
 final selectedGymProvider = StateProvider<Gym?>((ref) {
   final user = ref.watch(currentUserProvider).value;
-  if (user != null && isDevUser(user.email)) {
-    return devGyms().first;
-  }
+  if (user == null) return null;
+
+  if (isDevUser(user.email)) return devGyms().first;
+
+  // Auto-select the first gym when real user's gyms are loaded
+  final gyms = ref.watch(userGymsProvider).value;
+  if (gyms != null && gyms.isNotEmpty) return gyms.first;
+
   return null;
 });
 

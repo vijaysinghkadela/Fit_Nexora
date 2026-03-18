@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
+import '../../models/gym_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/fit_auth_scaffold.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -31,6 +32,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isLoading = false;
   bool _agreedToTerms = false;
   String? _errorMessage;
+  String? _selectedCity;
+  Gym? _selectedGym;
 
   @override
   void dispose() {
@@ -62,6 +65,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             fullName: _nameController.text.trim(),
             phone: _phoneController.text.trim(),
             role: _selectedRole,
+            gymId: _selectedGym?.id,
           );
 
       if (!mounted) return;
@@ -139,15 +143,121 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
 
+                // City selection
+                Consumer(
+                  builder: (context, ref, child) {
+                    final citiesAsync = ref.watch(citiesProvider);
+                    return citiesAsync.when(
+                      data: (cities) {
+                        if (cities.isEmpty) {
+                          return Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: t.surfaceAlt,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: t.border),
+                            ),
+                            child: Column(
+                              children: [
+                                Icon(Icons.location_off_rounded, color: t.textSecondary, size: 32),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'No cities available in the database yet.',
+                                  style: TextStyle(color: t.textSecondary),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+
+                        return DropdownButtonFormField<String>(
+                          value: _selectedCity,
+                          decoration: const InputDecoration(
+                            labelText: 'Select City',
+                            prefixIcon: Icon(Icons.location_city_rounded),
+                          ),
+                          items: cities.map((city) {
+                            return DropdownMenuItem(value: city, child: Text(city));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCity = value;
+                              _selectedGym = null;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a city first';
+                            }
+                            return null;
+                          },
+                        );
+                      },
+                      loading: () => const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      error: (err, st) => Text('Error loading cities', style: TextStyle(color: t.danger)),
+                    );
+                  },
+                ),
+                const SizedBox(height: 14),
+
+                // Gym selection
+                if (_selectedCity != null)
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final gymsAsync = ref.watch(gymsByCityProvider(_selectedCity!));
+                      return gymsAsync.when(
+                        data: (gyms) {
+                          if (gyms.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text('No gyms found in this city.', style: TextStyle(color: t.textSecondary)),
+                            );
+                          }
+                          return DropdownButtonFormField<Gym>(
+                            value: _selectedGym,
+                            decoration: const InputDecoration(
+                              labelText: 'Select Gym',
+                              prefixIcon: Icon(Icons.storefront_rounded),
+                            ),
+                            items: gyms.map((gym) {
+                              return DropdownMenuItem(value: gym, child: Text(gym.name));
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedGym = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please select a gym';
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                        loading: () => const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        error: (err, st) => Text('Error loading gyms', style: TextStyle(color: t.danger)),
+                      );
+                    },
+                  ),
+                if (_selectedCity != null) const SizedBox(height: 14),
+
                 // Error banner
                 if (_errorMessage != null) ...[
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: t.danger.withValues(alpha: 0.08),
+                      color: t.danger.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                          color: t.danger.withValues(alpha: 0.22)),
+                          color: t.danger.withOpacity(0.22)),
                     ),
                     child: Row(
                       children: [
@@ -339,7 +449,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: t.brand.withValues(alpha: 0.36),
+                          color: t.brand.withOpacity(0.36),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -451,7 +561,7 @@ class _RoleSelector extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? t.brand.withValues(alpha: 0.13)
+                        ? t.brand.withOpacity(0.13)
                         : t.surfaceAlt,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(

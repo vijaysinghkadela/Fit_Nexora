@@ -87,7 +87,7 @@ class _SearchExerciseScreenState extends ConsumerState<SearchExerciseScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: t.textMuted.withValues(alpha: 0.3),
+                color: t.textMuted.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -285,7 +285,7 @@ class _ExerciseListItem extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: t.brand.withValues(alpha: 0.12),
+                color: t.brand.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(exercise.icon, color: t.brand, size: 20),
@@ -308,7 +308,7 @@ class _ExerciseListItem extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
-                      color: t.accent.withValues(alpha: 0.12),
+                      color: t.accent.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text(
@@ -326,7 +326,7 @@ class _ExerciseListItem extends StatelessWidget {
             TextButton(
               onPressed: onAdd,
               style: TextButton.styleFrom(
-                backgroundColor: t.brand.withValues(alpha: 0.12),
+                backgroundColor: t.brand.withOpacity(0.12),
                 foregroundColor: t.brand,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 6),

@@ -33,8 +33,8 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    t.brand.withValues(alpha: 0.25),
-                    t.accent.withValues(alpha: 0.15),
+                    t.brand.withOpacity(0.25),
+                    t.accent.withOpacity(0.15),
                   ],
                 ),
               ),
@@ -48,7 +48,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: t.brand.withValues(alpha: 0.4),
+                          color: t.brand.withOpacity(0.4),
                           blurRadius: 24,
                           spreadRadius: 4,
                         ),
@@ -149,7 +149,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: t.brand.withValues(alpha: 0.2),
+                                    color: t.brand.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -176,10 +176,10 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: t.accent.withValues(alpha: 0.2),
+                                color: t.accent.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                    color: t.accent.withValues(alpha: 0.4)),
+                                    color: t.accent.withOpacity(0.4)),
                               ),
                               child: Text(
                                 'Level Up!',
@@ -254,11 +254,11 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        t.brand.withValues(alpha: 0.2),
-                        t.brand.withValues(alpha: 0.06),
+                        t.brand.withOpacity(0.2),
+                        t.brand.withOpacity(0.06),
                       ],
                     ),
-                    border: Border.all(color: t.brand.withValues(alpha: 0.3)),
+                    border: Border.all(color: t.brand.withOpacity(0.3)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -270,7 +270,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: t.brand.withValues(alpha: 0.2),
+                                color: t.brand.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(Icons.auto_awesome,
@@ -411,7 +411,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                           boxShadow: [
                             BoxShadow(
                               color: const Color(0xFFFFD700)
-                                  .withValues(alpha: 0.4),
+                                  .withOpacity(0.4),
                               blurRadius: 8,
                             ),
                           ],
@@ -449,7 +449,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
-                          color: t.accent.withValues(alpha: 0.15),
+                          color: t.accent.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -490,9 +490,9 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Column(
         children: [

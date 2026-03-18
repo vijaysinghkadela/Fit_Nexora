@@ -177,7 +177,7 @@ class _BeforeAfterSection extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.55),
+                    color: Colors.black.withOpacity(0.55),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -214,15 +214,15 @@ class _BeforeAfterSection extends StatelessWidget {
               Container(
                 height: 200,
                 decoration: BoxDecoration(
-                  color: t.brand.withValues(alpha: 0.12),
+                  color: t.brand.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                    color: t.brand.withValues(alpha: 0.40),
+                    color: t.brand.withOpacity(0.40),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: t.brand.withValues(alpha: 0.15),
+                      color: t.brand.withOpacity(0.15),
                       blurRadius: 16,
                     ),
                   ],
@@ -231,7 +231,7 @@ class _BeforeAfterSection extends StatelessWidget {
                   child: Icon(
                     Icons.person_rounded,
                     size: 64,
-                    color: t.brand.withValues(alpha: 0.7),
+                    color: t.brand.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -242,7 +242,7 @@ class _BeforeAfterSection extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.7),
+                    color: t.brand.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -390,11 +390,11 @@ class _AiPredictorCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: t.brand.withValues(alpha: 0.10),
-        border: Border.all(color: t.brand.withValues(alpha: 0.30)),
+        color: t.brand.withOpacity(0.10),
+        border: Border.all(color: t.brand.withOpacity(0.30)),
         boxShadow: [
           BoxShadow(
-            color: t.brand.withValues(alpha: 0.10),
+            color: t.brand.withOpacity(0.10),
             blurRadius: 16,
           ),
         ],
@@ -408,7 +408,7 @@ class _AiPredictorCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: t.brand.withValues(alpha: 0.20),
+                  color: t.brand.withOpacity(0.20),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Row(
@@ -637,7 +637,7 @@ class _MilestoneRowState extends State<_MilestoneRow>
             height: 10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.85 + _pulse.value * 0.15),
+              color: Colors.white.withOpacity(0.85 + _pulse.value * 0.15),
             ),
           ),
         );
@@ -664,7 +664,7 @@ class _MilestoneRowState extends State<_MilestoneRow>
                 boxShadow: m.status == _MilestoneStatus.current
                     ? [
                         BoxShadow(
-                          color: t.brand.withValues(alpha: 0.4),
+                          color: t.brand.withOpacity(0.4),
                           blurRadius: 12,
                           spreadRadius: 2,
                         ),
@@ -678,7 +678,7 @@ class _MilestoneRowState extends State<_MilestoneRow>
                 width: 2,
                 height: 44,
                 color: m.status == _MilestoneStatus.completed
-                    ? t.accent.withValues(alpha: 0.4)
+                    ? t.accent.withOpacity(0.4)
                     : t.border,
               ),
           ],
@@ -718,7 +718,7 @@ class _MilestoneRowState extends State<_MilestoneRow>
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: t.brand.withValues(alpha: 0.15),
+                      color: t.brand.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(

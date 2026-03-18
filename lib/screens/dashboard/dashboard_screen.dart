@@ -173,6 +173,9 @@ class _DashboardBody extends ConsumerWidget {
       ]);
     }
 
+    // Show setup prompt if gym is still loading/not configured
+    final userGymsAsync = ref.watch(userGymsProvider);
+
     return RefreshIndicator(
       onRefresh: refreshAll,
       color: colors.brand,
@@ -184,7 +187,7 @@ class _DashboardBody extends ConsumerWidget {
           SliverAppBar(
             pinned: true,
             floating: true,
-            backgroundColor: colors.background.withValues(alpha: 0.92),
+            backgroundColor: colors.background.withOpacity(0.92),
             toolbarHeight: 82,
             titleSpacing: 20,
             title: _BrandHeader(
@@ -218,13 +221,29 @@ class _DashboardBody extends ConsumerWidget {
             ],
           ),
 
+          // ── No gym banner ────────────────────────────────────────────────
+          if (gym == null && userGymsAsync.isLoading)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: _NoGymBanner(isLoading: true),
+              ),
+            )
+          else if (gym == null && !userGymsAsync.isLoading)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: _NoGymBanner(isLoading: false),
+              ),
+            ),
+
           // ── Quick stats 2x2 grid ─────────────────────────────────────────
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             sliver: SliverToBoxAdapter(
               child: statsAsync.when(
                 loading: () => const _StatsShimmer(),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (e, _) => _StatsErrorBanner(message: e.toString()),
                 data: (stats) => _StatsGrid(
                   stats: stats,
                   subscriptionAsync: subscriptionAsync,
@@ -471,7 +490,7 @@ class _NotificationIconState extends State<_NotificationIcon>
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: widget.dotColor.withValues(alpha: _opacity.value),
+                            color: widget.dotColor.withOpacity(_opacity.value),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -512,7 +531,7 @@ class _UserBadge extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: colors.brand.withValues(alpha: 0.26),
+          color: colors.brand.withOpacity(0.26),
           width: 2,
         ),
         gradient: LinearGradient(
@@ -539,21 +558,165 @@ class _StatsShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
+    final cardLabels = ['Active Members', 'Total Clients', 'AI Queries', 'Est. Revenue'];
     return Wrap(
       spacing: 12,
       runSpacing: 12,
       children: List.generate(
         4,
-        (_) => SizedBox(
+        (i) => SizedBox(
           width: context.isMobile
               ? (context.screenSize.width - 52) / 2
               : (context.screenSize.width -
                       (context.isDesktop ? 380 : 200)) /
                   4,
-          child: GlassmorphicCard(
-            child: const SizedBox(height: 112),
+          child: Container(
+            height: 112,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: t.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: t.border),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: t.brand.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: t.brand,
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  height: 20,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: t.surfaceAlt,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  cardLabels[i],
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: t.textMuted,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─── No gym banner ─────────────────────────────────────────────────────────────
+
+class _NoGymBanner extends StatelessWidget {
+  const _NoGymBanner({required this.isLoading});
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.fitTheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: t.brand.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: t.brand.withOpacity(0.25)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: t.brand.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: isLoading
+                ? Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: t.brand),
+                  )
+                : Icon(Icons.storefront_rounded, color: t.brand, size: 22),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isLoading ? 'Loading your gym…' : 'No gym found',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: t.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  isLoading
+                      ? 'Setting up your dashboard'
+                      : 'Create or join a gym to get started',
+                  style: GoogleFonts.inter(
+                      fontSize: 12, color: t.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Stats error banner ────────────────────────────────────────────────────────
+
+class _StatsErrorBanner extends StatelessWidget {
+  const _StatsErrorBanner({required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.fitTheme;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: t.danger.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: t.danger.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.wifi_off_rounded, color: t.danger, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Could not load stats. Check your connection.',
+              style: GoogleFonts.inter(fontSize: 13, color: t.textSecondary),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -708,40 +871,56 @@ class _DashboardStatCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: accent.withValues(alpha: 0.12),
+                    color: accent.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Icon(card.icon, size: 18, color: accent),
                 ),
-                const Spacer(),
-                Text(
-                  card.label,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: colors.textMuted,
-                    letterSpacing: 1.1,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        card.label,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: colors.textMuted,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            Text(
-              card.value,
-              style: GoogleFonts.inter(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                color: colors.textPrimary,
-                letterSpacing: -0.8,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                card.value,
+                style: GoogleFonts.inter(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  color: colors.textPrimary,
+                  letterSpacing: -0.8,
+                ),
               ),
             ),
             const SizedBox(height: 6),
-            Text(
-              card.footnote,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: noteColor,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                card.footnote,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: noteColor,
+                ),
               ),
             ),
           ],
@@ -750,8 +929,6 @@ class _DashboardStatCard extends StatelessWidget {
     );
   }
 }
-
-// ─── Gym occupancy bar chart ────────────────────────────────────────────────────
 
 class _GymOccupancyCard extends StatelessWidget {
   const _GymOccupancyCard({
@@ -797,9 +974,9 @@ class _GymOccupancyCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: colors.accent.withValues(alpha: 0.14),
+                    color: colors.accent.withOpacity(0.14),
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: colors.accent.withValues(alpha: 0.3)),
+                    border: Border.all(color: colors.accent.withOpacity(0.3)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -895,7 +1072,7 @@ class _OccupancyBarChart extends StatelessWidget {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  colors.brand.withValues(alpha: 0.6),
+                  colors.brand.withOpacity(0.6),
                   colors.brand,
                 ],
               ),
@@ -916,7 +1093,7 @@ class _OccupancyBarChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 5,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: colors.border.withValues(alpha: 0.35),
+            color: colors.border.withOpacity(0.35),
             strokeWidth: 1,
           ),
         ),
@@ -984,7 +1161,7 @@ class _InfoChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: colors.surfaceAlt.withValues(alpha: 0.76),
+          color: colors.surfaceAlt.withOpacity(0.76),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: colors.border),
         ),
@@ -1070,7 +1247,7 @@ class _AiInsightsCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: colors.brand.withValues(alpha: 0.12),
+                        color: colors.brand.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(
@@ -1148,7 +1325,7 @@ class _AiInsightsCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: colors.surface.withValues(alpha: 0.9),
+              color: colors.surface.withOpacity(0.9),
               borderRadius: BorderRadius.circular(999),
               border: Border.all(color: colors.border),
             ),
@@ -1403,7 +1580,7 @@ class _MembershipTableRow extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundColor: colors.brand.withValues(alpha: 0.18),
+                  backgroundColor: colors.brand.withOpacity(0.18),
                   child: Text(
                     initials,
                     style: GoogleFonts.inter(
@@ -1446,7 +1623,7 @@ class _MembershipTableRow extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.12),
+                color: statusColor.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
@@ -1589,6 +1766,16 @@ class _DashboardQuickActions extends StatelessWidget {
         label: 'Billing',
         onTap: () => context.go('/pricing'),
       ),
+      _QuickActionData(
+        icon: Icons.fitness_center_rounded,
+        label: 'Equipment',
+        onTap: () => context.go('/gym/equipment'),
+      ),
+      _QuickActionData(
+        icon: Icons.qr_code_scanner_rounded,
+        label: 'Check-In',
+        onTap: () => context.go('/clients/checkin'),
+      ),
     ];
 
     return Column(
@@ -1654,7 +1841,7 @@ class _QuickActionCard extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 22),
           decoration: BoxDecoration(
-            color: colors.surface.withValues(alpha: 0.88),
+            color: colors.surface.withOpacity(0.88),
             borderRadius: BorderRadius.circular(22),
             border: Border.all(color: colors.border),
           ),

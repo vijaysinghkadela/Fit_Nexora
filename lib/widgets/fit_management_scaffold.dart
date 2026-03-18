@@ -73,18 +73,19 @@ class FitManagementScaffold extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              colors.backgroundAlt.withValues(alpha: 0.9),
+              colors.backgroundAlt.withOpacity(0.9),
               colors.background,
             ],
           ),
         ),
         child: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned(
               top: -140,
               left: -60,
               child: _GlowOrb(
-                color: colors.brand.withValues(alpha: 0.16),
+                color: colors.brand.withOpacity(0.16),
                 size: 300,
               ),
             ),
@@ -92,34 +93,36 @@ class FitManagementScaffold extends StatelessWidget {
               top: 180,
               right: -110,
               child: _GlowOrb(
-                color: colors.accent.withValues(alpha: 0.09),
+                color: colors.accent.withOpacity(0.09),
                 size: 260,
               ),
             ),
             SafeArea(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (useSidebar)
-                    SidebarNav(
-                      items: destinations
-                          .map(
-                            (destination) => SidebarItem(
-                              icon: destination.icon,
-                              label: destination.label,
-                            ),
-                          )
-                          .toList(),
-                      selectedIndex: _selectedIndex(destinations),
-                      onItemTap: (index) => _goTo(context, destinations[index]),
-                      isCollapsed: context.isTablet && !context.isDesktop,
-                      userName: userName,
-                      userEmail: userEmail,
-                      onSignOut: onSignOut ?? () {},
-                    ),
-                  Expanded(child: child),
-                ],
-              ),
+              child: useSidebar
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SidebarNav(
+                          items: destinations
+                              .map(
+                                (destination) => SidebarItem(
+                                  icon: destination.icon,
+                                  label: destination.label,
+                                ),
+                              )
+                              .toList(),
+                          selectedIndex: _selectedIndex(destinations),
+                          onItemTap: (index) =>
+                              _goTo(context, destinations[index]),
+                          isCollapsed: context.isTablet && !context.isDesktop,
+                          userName: userName,
+                          userEmail: userEmail,
+                          onSignOut: onSignOut ?? () {},
+                        ),
+                        Expanded(child: child),
+                      ],
+                    )
+                  : child,
             ),
           ],
         ),
@@ -162,11 +165,11 @@ class _FitMobileNavigationBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colors.surface.withValues(alpha: 0.94),
+        color: colors.surface.withOpacity(0.94),
         border: Border(top: BorderSide(color: colors.border)),
         boxShadow: [
           BoxShadow(
-            color: colors.background.withValues(alpha: 0.35),
+            color: colors.background.withOpacity(0.35),
             blurRadius: 28,
             offset: const Offset(0, -10),
           ),
@@ -295,7 +298,7 @@ class _CenterActionButton extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: colors.glow.withValues(alpha: 0.34),
+                  color: colors.glow.withOpacity(0.34),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),

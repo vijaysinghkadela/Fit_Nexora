@@ -349,10 +349,10 @@ class _DietCalorieGauge extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.12),
+                    color: t.brand.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: t.brand.withValues(alpha: 0.3)),
+                        color: t.brand.withOpacity(0.3)),
                   ),
                   child: Text(
                     '${(progress * 100).round()}% achieved',
@@ -502,13 +502,13 @@ class _MacroBarChart extends StatelessWidget {
                     end: Alignment.topCenter,
                     colors: [
                       color,
-                      color.withValues(alpha: 0.6),
+                      color.withOpacity(0.6),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withValues(alpha: 0.4),
+                      color: color.withOpacity(0.4),
                       blurRadius: 8,
                       offset: const Offset(0, -2),
                     ),
@@ -525,7 +525,7 @@ class _MacroBarChart extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: Colors.white.withOpacity(0.9),
                   ),
                 ),
               ),
@@ -566,7 +566,7 @@ class _MealTimelineCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = themeTokens;
     final completed = item.completed;
-    final mealColor = completed ? t.accent : t.textMuted.withValues(alpha: 0.5);
+    final mealColor = completed ? t.accent : t.textMuted.withOpacity(0.5);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -589,7 +589,7 @@ class _MealTimelineCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: mealColor.withValues(alpha: 0.12),
+                    color: mealColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(item.icon, color: mealColor, size: 20),
@@ -616,7 +616,7 @@ class _MealTimelineCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: t.warning.withValues(alpha: 0.12),
+                                color: t.warning.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -670,7 +670,7 @@ class _MealTimelineCard extends StatelessWidget {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: t.accent.withValues(alpha: 0.12),
+                      color: t.accent.withOpacity(0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(Icons.check_rounded,
@@ -739,7 +739,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: t.textMuted.withValues(alpha: 0.3),
+                  color: t.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -770,7 +770,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
                           horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: selected
-                            ? t.brand.withValues(alpha: 0.14)
+                            ? t.brand.withOpacity(0.14)
                             : t.surfaceAlt,
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(

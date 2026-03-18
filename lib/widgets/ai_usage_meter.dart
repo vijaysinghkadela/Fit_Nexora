@@ -80,10 +80,10 @@ class AiUsageMeter extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: colors.warning.withValues(alpha: 0.08),
+                color: colors.warning.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: colors.warning.withValues(alpha: 0.2),
+                  color: colors.warning.withOpacity(0.2),
                 ),
               ),
               child: Row(
@@ -131,7 +131,7 @@ class AiUsageMeter extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: colors.textMuted.withValues(alpha: 0.1),
+              color: colors.textMuted.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(

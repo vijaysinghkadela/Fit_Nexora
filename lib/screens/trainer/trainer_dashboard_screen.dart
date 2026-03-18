@@ -158,7 +158,7 @@ class _TrainerContent extends StatelessWidget {
         SliverAppBar(
           pinned: true,
           floating: true,
-          backgroundColor: colors.background.withValues(alpha: 0.92),
+          backgroundColor: colors.background.withOpacity(0.92),
           toolbarHeight: 84,
           titleSpacing: 20,
           title: _TrainerBrandHeader(gymName: gymName),
@@ -214,9 +214,9 @@ class _TrainerContent extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: colors.brand.withValues(alpha: 0.12),
+                    color: colors.brand.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: colors.brand.withValues(alpha: 0.22)),
+                    border: Border.all(color: colors.brand.withOpacity(0.22)),
                   ),
                   child: Text(
                     clients.length >= 10 ? 'Elite Tier Trainer' : 'Trainer Pro',
@@ -884,7 +884,7 @@ class _GrowthTrendCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: isHighlight
                                 ? colors.accent
-                                : colors.brand.withValues(alpha: 0.28),
+                                : colors.brand.withOpacity(0.28),
                             borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(6),
                             ),

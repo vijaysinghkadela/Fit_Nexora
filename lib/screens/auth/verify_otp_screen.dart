@@ -184,9 +184,9 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               decoration: BoxDecoration(
-                color: t.brand.withValues(alpha: 0.10),
+                color: t.brand.withOpacity(0.10),
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: t.brand.withValues(alpha: 0.22)),
+                border: Border.all(color: t.brand.withOpacity(0.22)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -223,21 +223,21 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
                     height: 80,
                     decoration: BoxDecoration(
                       color: isFilled
-                          ? t.brand.withValues(alpha: 0.10)
+                          ? t.brand.withOpacity(0.10)
                           : t.surfaceAlt,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isFocused
                             ? t.brand
                             : isFilled
-                                ? t.brand.withValues(alpha: 0.45)
+                                ? t.brand.withOpacity(0.45)
                                 : t.border,
                         width: isFocused ? 2 : 1.2,
                       ),
                       boxShadow: isFocused
                           ? [
                               BoxShadow(
-                                color: t.brand.withValues(alpha: 0.22),
+                                color: t.brand.withOpacity(0.22),
                                 blurRadius: 16,
                                 offset: const Offset(0, 6),
                               ),
@@ -360,7 +360,7 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: t.brand.withValues(alpha: 0.38),
+                    color: t.brand.withOpacity(0.38),
                     blurRadius: 22,
                     offset: const Offset(0, 10),
                   ),

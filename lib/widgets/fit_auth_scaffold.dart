@@ -100,7 +100,7 @@ class FitAuthScaffold extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             colors.backgroundAlt,
-            colors.brand.withValues(alpha: 0.22),
+            colors.brand.withOpacity(0.22),
             colors.backgroundAlt,
           ],
           begin: Alignment.topCenter,
@@ -144,7 +144,7 @@ class FitAuthScaffold extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: colors.glow.withValues(alpha: 0.35),
+                        color: colors.glow.withOpacity(0.35),
                         blurRadius: 24,
                         offset: const Offset(0, 14),
                       ),
@@ -198,8 +198,8 @@ class _GlowOrb extends StatelessWidget {
           shape: BoxShape.circle,
           gradient: RadialGradient(
             colors: [
-              color.withValues(alpha: 0.18),
-              color.withValues(alpha: 0),
+              color.withOpacity(0.18),
+              color.withOpacity(0),
             ],
           ),
         ),

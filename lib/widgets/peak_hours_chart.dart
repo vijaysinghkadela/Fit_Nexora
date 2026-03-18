@@ -84,7 +84,7 @@ class PeakHoursChart extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: color.withValues(alpha: 0.3),
+                          color: color.withOpacity(0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -94,7 +94,7 @@ class PeakHoursChart extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           color,
-                          color.withValues(alpha: 0.7),
+                          color.withOpacity(0.7),
                         ],
                       ),
                     ),

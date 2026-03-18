@@ -140,8 +140,8 @@ class _DailyCalorieGoalScreenState
                   borderRadius: BorderRadius.circular(20),
                   gradient: LinearGradient(
                     colors: [
-                      t.brand.withValues(alpha: 0.12),
-                      t.brand.withValues(alpha: 0.04),
+                      t.brand.withOpacity(0.12),
+                      t.brand.withOpacity(0.04),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -153,7 +153,7 @@ class _DailyCalorieGoalScreenState
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: t.brand.withValues(alpha: 0.15),
+                        color: t.brand.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(Icons.auto_awesome_rounded,
@@ -240,12 +240,12 @@ class _DailyCalorieGoalScreenState
                             height: 44,
                             decoration: BoxDecoration(
                               color: filled
-                                  ? t.info.withValues(alpha: 0.15)
+                                  ? t.info.withOpacity(0.15)
                                   : t.surfaceAlt,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: filled
-                                    ? t.info.withValues(alpha: 0.5)
+                                    ? t.info.withOpacity(0.5)
                                     : t.border,
                               ),
                             ),
@@ -255,7 +255,7 @@ class _DailyCalorieGoalScreenState
                                   : Icons.water_drop_outlined,
                               color: filled
                                   ? t.info
-                                  : t.textMuted.withValues(alpha: 0.4),
+                                  : t.textMuted.withOpacity(0.4),
                               size: 18,
                             ),
                           ),
@@ -409,7 +409,7 @@ class _CalorieGaugeWidget extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: t.accent.withValues(alpha: 0.12),
+                      color: t.accent.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -578,7 +578,7 @@ class _CalorieGaugePainter extends CustomPainter {
       final dotY = center.dy + radius * math.sin(endAngle);
 
       final glowPaint = Paint()
-        ..color = endColor.withValues(alpha: 0.5)
+        ..color = endColor.withOpacity(0.5)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
       canvas.drawCircle(Offset(dotX, dotY), strokeWidth / 2 + 2, glowPaint);
 
@@ -626,7 +626,7 @@ class _MacroCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+                color: color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(

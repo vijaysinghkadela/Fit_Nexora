@@ -163,7 +163,7 @@ class _StepsTrackingScreenState extends ConsumerState<StepsTrackingScreen> {
                                       decoration: BoxDecoration(
                                         color: isToday
                                             ? barColor
-                                            : barColor.withValues(alpha: 0.55),
+                                            : barColor.withOpacity(0.55),
                                         borderRadius: BorderRadius.circular(5),
                                         border: isToday
                                             ? Border.all(color: barColor, width: 1.5)
@@ -285,7 +285,7 @@ class _StepsTrackingScreenState extends ConsumerState<StepsTrackingScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: t.textMuted.withValues(alpha: 0.3),
+                    color: t.textMuted.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -376,7 +376,7 @@ class _MiniStatCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
+                color: color.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, color: color, size: 16),

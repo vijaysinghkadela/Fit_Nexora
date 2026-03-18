@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../core/constants.dart';
+import '../core/extensions.dart';
 
 class DashboardMoreSheet extends StatelessWidget {
   const DashboardMoreSheet({
@@ -13,10 +13,11 @@ class DashboardMoreSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: t.surfaceAlt,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       child: Column(
@@ -28,7 +29,7 @@ class DashboardMoreSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textMuted.withValues(alpha: 0.3),
+                color: t.textMuted.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -39,7 +40,7 @@ class DashboardMoreSheet extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -72,21 +73,22 @@ class _DashboardMoreSheetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return ListTile(
       onTap: onTap,
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: AppColors.textSecondary),
+      leading: Icon(icon, color: t.textSecondary),
       title: Text(
         label,
         style: GoogleFonts.inter(
           fontSize: 15,
           fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
+          color: t.textPrimary,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right_rounded,
-        color: AppColors.textMuted,
+        color: t.textMuted,
       ),
     );
   }

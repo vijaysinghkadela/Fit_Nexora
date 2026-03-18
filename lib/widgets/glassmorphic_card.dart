@@ -12,6 +12,7 @@ class GlassmorphicCard extends ConsumerWidget {
   final double borderRadius;
   final EdgeInsets? margin;
   final bool isAnimated;
+  final bool applyBlur;
   final VoidCallback? onTap;
 
   const GlassmorphicCard({
@@ -20,13 +21,14 @@ class GlassmorphicCard extends ConsumerWidget {
     this.borderRadius = 20,
     this.margin,
     this.isAnimated = true,
+    this.applyBlur = true,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.fitTheme;
-    final isLowPerformance = ref.watch(performanceProvider);
+    final isLowPerformance = ref.watch(performanceProvider) || !applyBlur;
 
     Widget content = AnimatedContainer(
       duration: AppConstants.normalAnimation,
@@ -40,7 +42,7 @@ class GlassmorphicCard extends ConsumerWidget {
             ? null
             : [
                 BoxShadow(
-                  color: colors.glow.withValues(alpha: 0.2),
+                  color: colors.glow.withOpacity(0.2),
                   blurRadius: 32,
                   offset: const Offset(0, 12),
                 ),
@@ -61,7 +63,7 @@ class GlassmorphicCard extends ConsumerWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
           highlightColor: colors.glassFill,
-          splashColor: colors.glassFill.withValues(alpha: 0.5),
+          splashColor: colors.glassFill.withOpacity(0.5),
           child: content,
         ),
       );

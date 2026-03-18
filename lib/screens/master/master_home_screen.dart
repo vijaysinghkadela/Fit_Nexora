@@ -87,7 +87,7 @@ class _MasterDashboard extends ConsumerWidget {
             SliverAppBar(
               pinned: true,
               floating: true,
-              backgroundColor: colors.background.withValues(alpha: 0.96),
+              backgroundColor: colors.background.withOpacity(0.96),
               title: Row(
                 children: [
                   Container(
@@ -281,7 +281,7 @@ class _MasterDashboard extends ConsumerWidget {
                                 vertical: 5,
                               ),
                               decoration: BoxDecoration(
-                                color: colors.accent.withValues(alpha: 0.12),
+                                color: colors.accent.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
@@ -421,6 +421,11 @@ class _MasterDashboard extends ConsumerWidget {
                       label: 'Recovery',
                       onTap: () => context.go('/master/recovery'),
                     ),
+                    _FeatureChip(
+                      icon: Icons.star_rounded,
+                      label: 'Perks',
+                      onTap: () => context.go('/master/perks'),
+                    ),
                   ],
                 ),
               ),
@@ -463,7 +468,7 @@ class _MasterDashboard extends ConsumerWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: colors.brand.withValues(alpha: 0.12),
+                          color: colors.brand.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
@@ -605,7 +610,7 @@ class _FeatureChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: selected ? colors.brand.withValues(alpha: 0.12) : colors.surface,
+          color: selected ? colors.brand.withOpacity(0.12) : colors.surface,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
             color: selected ? colors.brand : colors.border,

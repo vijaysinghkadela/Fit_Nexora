@@ -128,7 +128,7 @@ class _ExerciseProgressScreenState
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+                      color: const Color(0xFFFFD700).withOpacity(0.3),
                       blurRadius: 8,
                     ),
                   ],
@@ -211,7 +211,7 @@ class _ExerciseProgressScreenState
                             drawVerticalLine: false,
                             horizontalInterval: 10,
                             getDrawingHorizontalLine: (value) => FlLine(
-                              color: t.border.withValues(alpha: 0.5),
+                              color: t.border.withOpacity(0.5),
                               strokeWidth: 1,
                               dashArray: [4, 4],
                             ),
@@ -286,8 +286,8 @@ class _ExerciseProgressScreenState
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    t.brand.withValues(alpha: 0.2),
-                                    t.brand.withValues(alpha: 0.0),
+                                    t.brand.withOpacity(0.2),
+                                    t.brand.withOpacity(0.0),
                                   ],
                                 ),
                               ),
@@ -372,9 +372,9 @@ class _ProgressStatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Column(
         children: [

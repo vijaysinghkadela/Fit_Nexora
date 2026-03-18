@@ -46,7 +46,7 @@ class SidebarNav extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: colors.glow.withValues(alpha: 0.08),
+            color: colors.glow.withOpacity(0.08),
             blurRadius: 28,
             offset: const Offset(12, 0),
           ),
@@ -87,7 +87,7 @@ class SidebarNav extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: colors.glow.withValues(alpha: 0.28),
+                  color: colors.glow.withOpacity(0.28),
                   blurRadius: 18,
                   offset: const Offset(0, 10),
                 ),
@@ -139,12 +139,12 @@ class SidebarNav extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? colors.brand.withValues(alpha: 0.12)
+                    ? colors.brand.withOpacity(0.12)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isSelected
-                      ? colors.brand.withValues(alpha: 0.24)
+                      ? colors.brand.withOpacity(0.24)
                       : Colors.transparent,
                 ),
               ),
@@ -187,7 +187,7 @@ class SidebarNav extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: colors.brand.withValues(alpha: 0.18),
+            backgroundColor: colors.brand.withOpacity(0.18),
             child: Text(
               userName.isNotEmpty ? userName[0].toUpperCase() : '?',
               style: GoogleFonts.inter(

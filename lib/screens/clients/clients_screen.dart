@@ -71,7 +71,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.12),
+                    color: t.brand.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -208,11 +208,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: t.brand.withValues(alpha: 0.15),
+          color: t.brand.withOpacity(0.15),
         ),
         boxShadow: [
           BoxShadow(
-            color: t.background.withValues(alpha: 0.5),
+            color: t.background.withOpacity(0.5),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -281,10 +281,10 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                   color: isSelected ? color : t.textSecondary,
                 ),
                 backgroundColor: t.surfaceAlt,
-                selectedColor: color.withValues(alpha: 0.15),
+                selectedColor: color.withOpacity(0.15),
                 side: BorderSide(
                   color: isSelected
-                      ? color.withValues(alpha: 0.5)
+                      ? color.withOpacity(0.5)
                       : t.border,
                   width: isSelected ? 1.5 : 1.0,
                 ),
@@ -336,14 +336,14 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  t.brand.withValues(alpha: 0.15),
-                  t.accent.withValues(alpha: 0.08),
+                  t.brand.withOpacity(0.15),
+                  t.accent.withOpacity(0.08),
                 ],
               ),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Icon(Icons.people_outline_rounded,
-                size: 40, color: t.brand.withValues(alpha: 0.6)),
+                size: 40, color: t.brand.withOpacity(0.6)),
           ),
           const SizedBox(height: 24),
           Text(
@@ -404,7 +404,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: t.textMuted.withValues(alpha: 0.3),
+                  color: t.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -514,18 +514,18 @@ class _ClientCardState extends State<_ClientCard> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: _isPressed
-                  ? widget.themeTokens.surfaceAlt.withValues(alpha: 0.8)
+                  ? widget.themeTokens.surfaceAlt.withOpacity(0.8)
                   : widget.themeTokens.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: _isPressed
-                    ? widget.themeTokens.brand.withValues(alpha: 0.3)
+                    ? widget.themeTokens.brand.withOpacity(0.3)
                     : widget.themeTokens.border,
               ),
               boxShadow: _isPressed
                   ? [
                       BoxShadow(
-                        color: widget.themeTokens.brand.withValues(alpha: 0.1),
+                        color: widget.themeTokens.brand.withOpacity(0.1),
                         blurRadius: 15,
                         spreadRadius: 1,
                       )
@@ -629,13 +629,13 @@ class _ClientCardState extends State<_ClientCard> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                widget.themeTokens.brand.withValues(alpha: 0.2),
-                widget.themeTokens.accent.withValues(alpha: 0.1),
+                widget.themeTokens.brand.withOpacity(0.2),
+                widget.themeTokens.accent.withOpacity(0.1),
               ],
             ),
             shape: BoxShape.circle,
             border: Border.all(
-              color: widget.themeTokens.brand.withValues(alpha: 0.1),
+              color: widget.themeTokens.brand.withOpacity(0.1),
             ),
           ),
           child: Center(
@@ -672,7 +672,7 @@ class _ClientCardState extends State<_ClientCard> {
                 border: Border.all(color: widget.themeTokens.surface, width: 2.5),
                 boxShadow: [
                   BoxShadow(
-                    color: membershipColor.withValues(alpha: 0.4),
+                    color: membershipColor.withOpacity(0.4),
                     blurRadius: 6,
                   ),
                 ],
@@ -694,10 +694,10 @@ class _ClientCardState extends State<_ClientCard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: color.withValues(alpha: 0.2),
+          color: color.withOpacity(0.2),
         ),
       ),
       child: Text(

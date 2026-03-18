@@ -188,10 +188,10 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: t.accent.withValues(alpha: 0.12),
+                          color: t.accent.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: t.accent.withValues(alpha: 0.35)),
+                              color: t.accent.withOpacity(0.35)),
                         ),
                         child: Row(
                           children: [
@@ -269,7 +269,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: isSelected
-                                              ? t.accent.withValues(alpha: 0.2)
+                                              ? t.accent.withOpacity(0.2)
                                               : t.surfaceMuted,
                                           border: isSelected
                                               ? Border.all(
@@ -311,7 +311,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                                                       vertical: 2),
                                               decoration: BoxDecoration(
                                                 color: memberColor
-                                                    .withValues(alpha: 0.13),
+                                                    .withOpacity(0.13),
                                                 borderRadius:
                                                     BorderRadius.circular(999),
                                               ),
@@ -523,7 +523,7 @@ class _CheckInTimeRow extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.13),
+                    color: t.brand.withOpacity(0.13),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(Icons.access_time_rounded,
@@ -586,7 +586,7 @@ class _ConfirmButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: t.accent.withValues(alpha: 0.4),
+              color: t.accent.withOpacity(0.4),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),

@@ -59,7 +59,7 @@ class _AccessDeniedPage extends StatelessWidget {
               top: -120,
               left: -90,
               child: _AdminGlowOrb(
-                color: colors.brand.withValues(alpha: 0.18),
+                color: colors.brand.withOpacity(0.18),
                 size: 260,
               ),
             ),
@@ -67,7 +67,7 @@ class _AccessDeniedPage extends StatelessWidget {
               bottom: -140,
               right: -120,
               child: _AdminGlowOrb(
-                color: colors.accent.withValues(alpha: 0.12),
+                color: colors.accent.withOpacity(0.12),
                 size: 300,
               ),
             ),
@@ -83,7 +83,7 @@ class _AccessDeniedPage extends StatelessWidget {
                         color: const Color(0x991B1432),
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(
-                          color: colors.brand.withValues(alpha: 0.18),
+                          color: colors.brand.withOpacity(0.18),
                         ),
                       ),
                       child: Column(
@@ -93,10 +93,10 @@ class _AccessDeniedPage extends StatelessWidget {
                             width: 78,
                             height: 78,
                             decoration: BoxDecoration(
-                              color: colors.danger.withValues(alpha: 0.14),
+                              color: colors.danger.withOpacity(0.14),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: colors.danger.withValues(alpha: 0.26),
+                                color: colors.danger.withOpacity(0.26),
                               ),
                             ),
                             child: Icon(
@@ -247,7 +247,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
               top: -120,
               left: -70,
               child: _AdminGlowOrb(
-                color: _colors.brand.withValues(alpha: 0.18),
+                color: _colors.brand.withOpacity(0.18),
                 size: 260,
               ),
             ),
@@ -255,7 +255,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
               top: 260,
               right: -120,
               child: _AdminGlowOrb(
-                color: _colors.info.withValues(alpha: 0.1),
+                color: _colors.info.withOpacity(0.1),
                 size: 260,
               ),
             ),
@@ -263,7 +263,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
               bottom: -140,
               left: -80,
               child: _AdminGlowOrb(
-                color: _colors.accent.withValues(alpha: 0.1),
+                color: _colors.accent.withOpacity(0.1),
                 size: 320,
               ),
             ),
@@ -368,7 +368,7 @@ class _AdminHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0x991B1432),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.brand.withValues(alpha: 0.18)),
+        border: Border.all(color: colors.brand.withOpacity(0.18)),
       ),
       child: Row(
         children: [
@@ -428,11 +428,11 @@ class _AdminHeader extends StatelessWidget {
             height: 38,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: colors.brand.withValues(alpha: 0.3)),
+              border: Border.all(color: colors.brand.withOpacity(0.3)),
               gradient: LinearGradient(
                 colors: [
-                  colors.brand.withValues(alpha: 0.8),
-                  colors.brandSecondary.withValues(alpha: 0.85),
+                  colors.brand.withOpacity(0.8),
+                  colors.brandSecondary.withOpacity(0.85),
                 ],
               ),
             ),
@@ -478,7 +478,7 @@ class _HeaderActionButton extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
+              color: Colors.white.withOpacity(0.04),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 20, color: colors.textSecondary),
@@ -578,7 +578,7 @@ class _AdminMetricGrid extends StatelessWidget {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: colors.brand.withValues(alpha: 0.12),
+                      color: colors.brand.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(metric.icon, color: colors.brand, size: 20),
@@ -627,7 +627,7 @@ class _AdminMetricGrid extends StatelessWidget {
     return BoxDecoration(
       color: const Color(0x991B1432),
       borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: colors.brand.withValues(alpha: 0.14)),
+      border: Border.all(color: colors.brand.withOpacity(0.14)),
     );
   }
 
@@ -685,7 +685,7 @@ class _SubscriptionGrowthCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0x991B1432),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.brand.withValues(alpha: 0.14)),
+        border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -718,9 +718,9 @@ class _SubscriptionGrowthCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: Colors.white.withOpacity(0.04),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: colors.brand.withValues(alpha: 0.12)),
+                  border: Border.all(color: colors.brand.withOpacity(0.12)),
                 ),
                 child: Text(
                   'Past 6 Months',
@@ -739,7 +739,7 @@ class _SubscriptionGrowthCard extends StatelessWidget {
             child: loading
                 ? Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
+                      color: Colors.white.withOpacity(0.03),
                       borderRadius: BorderRadius.circular(18),
                     ),
                   )
@@ -788,7 +788,7 @@ class _GrowthLineChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: maxY / 4,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: colors.border.withValues(alpha: 0.3),
+            color: colors.border.withOpacity(0.3),
             strokeWidth: 1,
           ),
         ),
@@ -841,8 +841,8 @@ class _GrowthLineChart extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  colors.brand.withValues(alpha: 0.32),
-                  colors.brand.withValues(alpha: 0.0),
+                  colors.brand.withOpacity(0.32),
+                  colors.brand.withOpacity(0.0),
                 ],
               ),
             ),
@@ -890,7 +890,7 @@ class _RecentGymsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0x991B1432),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.brand.withValues(alpha: 0.14)),
+        border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,7 +932,7 @@ class _RecentGymsCard extends StatelessWidget {
             ),
           ),
           Divider(
-            color: colors.brand.withValues(alpha: 0.1),
+            color: colors.brand.withOpacity(0.1),
             height: 12,
             indent: 16,
             endIndent: 16,
@@ -1017,7 +1017,7 @@ class _GymTableRow extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: colors.brand.withValues(alpha: 0.08)),
+          top: BorderSide(color: colors.brand.withOpacity(0.08)),
         ),
       ),
       child: Row(
@@ -1034,8 +1034,8 @@ class _GymTableRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     gradient: LinearGradient(
                       colors: [
-                        colors.brand.withValues(alpha: 0.3),
-                        colors.info.withValues(alpha: 0.3),
+                        colors.brand.withOpacity(0.3),
+                        colors.info.withOpacity(0.3),
                       ],
                     ),
                   ),
@@ -1095,7 +1095,7 @@ class _GymTableRow extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.16),
+                color: statusColor.withOpacity(0.16),
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
@@ -1138,7 +1138,7 @@ class _GymRowPlaceholder extends StatelessWidget {
       height: 62,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: Colors.white.withOpacity(0.03),
         borderRadius: BorderRadius.circular(16),
       ),
     );
@@ -1165,7 +1165,7 @@ class _RecentActivityCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0x991B1432),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.brand.withValues(alpha: 0.14)),
+        border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1185,7 +1185,7 @@ class _RecentActivityCard extends StatelessWidget {
                 height: 66,
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.03),
+                  color: Colors.white.withOpacity(0.03),
                   borderRadius: BorderRadius.circular(16),
                 ),
               )
@@ -1218,7 +1218,7 @@ class _ActivityRow extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: item.color.withValues(alpha: 0.16),
+              color: item.color.withOpacity(0.16),
               shape: BoxShape.circle,
             ),
             child: Icon(item.icon, color: item.color, size: 20),
@@ -1230,7 +1230,7 @@ class _ActivityRow extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: colors.brand.withValues(alpha: 0.08),
+                    color: colors.brand.withOpacity(0.08),
                   ),
                 ),
               ),
@@ -1323,7 +1323,7 @@ class _AdminBottomBar extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(10, 8, 10, 10 + bottomInset),
       decoration: BoxDecoration(
         color: const Color(0xF20F0A1E),
-        border: Border(top: BorderSide(color: colors.brand.withValues(alpha: 0.16))),
+        border: Border(top: BorderSide(color: colors.brand.withOpacity(0.16))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

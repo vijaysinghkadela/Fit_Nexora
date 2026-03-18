@@ -45,18 +45,19 @@ class SettingsScreen extends ConsumerWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              colors.backgroundAlt.withValues(alpha: 0.7),
+              colors.backgroundAlt.withOpacity(0.7),
               colors.background,
             ],
           ),
         ),
         child: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned(
               top: -120,
               right: -90,
               child: _SettingsGlow(
-                color: colors.brand.withValues(alpha: 0.12),
+                color: colors.brand.withOpacity(0.12),
                 size: 240,
               ),
             ),
@@ -64,7 +65,7 @@ class SettingsScreen extends ConsumerWidget {
               bottom: -140,
               left: -120,
               child: _SettingsGlow(
-                color: colors.brandSecondary.withValues(alpha: 0.1),
+                color: colors.brandSecondary.withOpacity(0.1),
                 size: 300,
               ),
             ),
@@ -126,7 +127,7 @@ class SettingsScreen extends ConsumerWidget {
                             title: 'Personal Info',
                             subtitle: user?.email ?? 'Not signed in',
                             onTap: () {
-                              context.showSnackBar('Profile editing will be wired next.');
+                              _showEditProfileSheet(context, ref, user);
                             },
                           ),
                           _SettingsRow(
@@ -267,11 +268,11 @@ class SettingsScreen extends ConsumerWidget {
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),
                           side: BorderSide(
-                            color: colors.brand.withValues(alpha: 0.2),
+                            color: colors.brand.withOpacity(0.2),
                             width: 1.4,
                           ),
                           foregroundColor: colors.brand,
-                          backgroundColor: colors.surface.withValues(alpha: 0.85),
+                          backgroundColor: colors.surface.withOpacity(0.85),
                         ),
                         onPressed: signOut,
                         icon: const Icon(Icons.logout_rounded),
@@ -474,6 +475,148 @@ class SettingsScreen extends ConsumerWidget {
       },
     );
   }
+
+  static Future<void> _showEditProfileSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppUser? user,
+  ) async {
+    if (user == null) return;
+    final colors = context.fitTheme;
+    final nameCtrl = TextEditingController(text: user.fullName);
+    final phoneCtrl = TextEditingController(text: user.phone ?? '');
+    final formKey = GlobalKey<FormState>();
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: colors.surface,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetCtx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 8,
+            bottom: MediaQuery.viewInsetsOf(sheetCtx).bottom + 24,
+          ),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Edit Profile',
+                  style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: nameCtrl,
+                  style: GoogleFonts.inter(color: colors.textPrimary),
+                  decoration: InputDecoration(
+                    labelText: 'Full Name',
+                    labelStyle: GoogleFonts.inter(color: colors.textMuted),
+                    prefixIcon: Icon(Icons.person_rounded, color: colors.brand),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.brand, width: 2),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.danger),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.danger, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: colors.surfaceMuted,
+                  ),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                ),
+                const SizedBox(height: 14),
+                TextFormField(
+                  controller: phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  style: GoogleFonts.inter(color: colors.textPrimary),
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    labelStyle: GoogleFonts.inter(color: colors.textMuted),
+                    prefixIcon: Icon(Icons.phone_rounded, color: colors.brand),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: colors.brand, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: colors.surfaceMuted,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.brand,
+                      foregroundColor: colors.textPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: () async {
+                      if (!formKey.currentState!.validate()) return;
+                      final updated = user.copyWith(
+                        fullName: nameCtrl.text.trim(),
+                        phone: phoneCtrl.text.trim().isEmpty
+                            ? null
+                            : phoneCtrl.text.trim(),
+                      );
+                      try {
+                        await ref
+                            .read(authServiceProvider)
+                            .updateProfile(updated);
+                        ref.invalidate(currentUserProvider);
+                        if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
+                        if (context.mounted) {
+                          context.showSnackBar('Profile updated successfully');
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          context.showSnackBar('Update failed: $e',
+                              isError: true);
+                        }
+                      }
+                    },
+                    child: Text(
+                      'Save Changes',
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w700, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    nameCtrl.dispose();
+    phoneCtrl.dispose();
+  }
 }
 
 class _ProfileCard extends StatelessWidget {
@@ -564,7 +707,7 @@ class _ProfileCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: colors.brand.withValues(alpha: 0.12),
+                      color: colors.brand.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -654,7 +797,7 @@ class _SettingsRow extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: colors.brand.withValues(alpha: 0.1),
+          color: colors.brand.withOpacity(0.1),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Icon(icon, color: colors.brand),
@@ -697,7 +840,7 @@ class _PerformanceSwitch extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: colors.accent.withValues(alpha: 0.1),
+          color: colors.accent.withOpacity(0.1),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Icon(Icons.speed_rounded, color: colors.accent),
@@ -745,7 +888,7 @@ class _RoundIconButton extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: colors.surface.withValues(alpha: 0.88),
+          color: colors.surface.withOpacity(0.88),
           shape: BoxShape.circle,
           border: Border.all(color: colors.border),
         ),
@@ -803,7 +946,7 @@ class _SettingsBottomBar extends StatelessWidget {
         10 + MediaQuery.paddingOf(context).bottom,
       ),
       decoration: BoxDecoration(
-        color: colors.surface.withValues(alpha: 0.96),
+        color: colors.surface.withOpacity(0.96),
         border: Border(top: BorderSide(color: colors.divider)),
       ),
       child: Row(

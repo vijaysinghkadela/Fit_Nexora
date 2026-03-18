@@ -77,6 +77,14 @@ import '../screens/notes/notes_screen.dart';
 import '../screens/workouts/workout_calendar_screen.dart';
 import '../screens/notifications/notifications_screen.dart';
 import '../widgets/shared_management_wrapper.dart';
+import '../screens/health/body_measurements_screen.dart';
+import '../screens/health/water_tracker_screen.dart';
+import '../screens/workouts/personal_records_screen.dart';
+import '../screens/achievements/achievements_screen.dart';
+import '../screens/tools/macro_calculator_screen.dart';
+import '../screens/tools/one_rep_max_screen.dart';
+import '../screens/gym/equipment_status_screen.dart';
+import '../screens/gym/qr_checkin_screen.dart';
 
 Page<void> _fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage(
@@ -550,9 +558,57 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'notifications',
         pageBuilder: (c, s) => _fadePage(s, const NotificationsScreen()),
       ),
+      // ── New Feature Routes ─────────────────────────────────────────────────
+      GoRoute(
+        path: '/health/body-measurements',
+        name: 'body-measurements',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const BodyMeasurementsScreen()),
+      ),
+      GoRoute(
+        path: '/health/water',
+        name: 'water-tracker',
+        pageBuilder: (c, s) => _fadePage(s, const WaterTrackerScreen()),
+      ),
+      GoRoute(
+        path: '/workout/personal-records',
+        name: 'personal-records',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const PersonalRecordsScreen()),
+      ),
+      GoRoute(
+        path: '/achievements',
+        name: 'achievements',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const AchievementsScreen()),
+      ),
+      GoRoute(
+        path: '/tools/macro-calculator',
+        name: 'macro-calculator',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const MacroCalculatorScreen()),
+      ),
+      GoRoute(
+        path: '/tools/one-rep-max',
+        name: 'one-rep-max',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const OneRepMaxScreen()),
+      ),
+      GoRoute(
+        path: '/gym/equipment',
+        name: 'equipment-status',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const EquipmentStatusScreen()),
+      ),
+      GoRoute(
+        path: '/gym/checkin',
+        name: 'gym-checkin',
+        pageBuilder: (c, s) =>
+            _fadePage(s, const QrCheckinScreen()),
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

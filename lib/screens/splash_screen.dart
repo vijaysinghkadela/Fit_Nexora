@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   center: Alignment.center,
                   radius: 0.88,
                   colors: [
-                    colors.brand.withValues(alpha: 0.14),
+                    colors.brand.withOpacity(0.14),
                     const Color(0xFF0A0812),
                   ],
                 ),
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: 120,
             left: -120,
             child: _SplashGlow(
-              color: colors.brand.withValues(alpha: 0.24),
+              color: colors.brand.withOpacity(0.24),
               size: 260,
             ),
           ),
@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
             bottom: 90,
             right: -110,
             child: _SplashGlow(
-              color: colors.brandSecondary.withValues(alpha: 0.18),
+              color: colors.brandSecondary.withOpacity(0.18),
               size: 240,
             ),
           ),
@@ -71,13 +71,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     height: 210,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: colors.brand.withValues(alpha: 0.16),
+                      color: colors.brand.withOpacity(0.16),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
+                        color: Colors.white.withOpacity(0.08),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: colors.brand.withValues(alpha: 0.26),
+                          color: colors.brand.withOpacity(0.26),
                           blurRadius: 46,
                           spreadRadius: 6,
                         ),
@@ -182,7 +182,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         height: 6,
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
-                          color: colors.brand.withValues(alpha: activeOpacity),
+                          color: colors.brand.withOpacity(activeOpacity),
                           shape: BoxShape.circle,
                         ),
                       );

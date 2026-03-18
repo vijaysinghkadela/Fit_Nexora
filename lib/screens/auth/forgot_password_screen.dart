@@ -115,10 +115,10 @@ class _ForgotPasswordScreenState
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: t.danger.withValues(alpha: 0.08),
+                      color: t.danger.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                          color: t.danger.withValues(alpha: 0.24)),
+                          color: t.danger.withOpacity(0.24)),
                     ),
                     child: Row(
                       children: [
@@ -173,7 +173,7 @@ class _ForgotPasswordScreenState
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: t.brand.withValues(alpha: 0.35),
+                          color: t.brand.withOpacity(0.35),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -243,12 +243,12 @@ class _SuccessView extends StatelessWidget {
           Positioned(
             top: -130,
             right: -100,
-            child: _GlowOrb(color: t.accent.withValues(alpha: 0.15), size: 300),
+            child: _GlowOrb(color: t.accent.withOpacity(0.15), size: 300),
           ),
           Positioned(
             bottom: -120,
             left: -100,
-            child: _GlowOrb(color: t.brand.withValues(alpha: 0.12), size: 280),
+            child: _GlowOrb(color: t.brand.withOpacity(0.12), size: 280),
           ),
           SafeArea(
             child: Center(
@@ -270,7 +270,7 @@ class _SuccessView extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: t.accent.withValues(alpha: 0.4),
+                            color: t.accent.withOpacity(0.4),
                             blurRadius: 30,
                             offset: const Offset(0, 12),
                           ),

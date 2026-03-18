@@ -31,7 +31,7 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.fitTheme;
     // Generate a soft glow color based on the icon's color
-    final glowColor = color.withValues(alpha: 0.15);
+    final glowColor = color.withOpacity(0.15);
 
     return Stack(
       children: [
@@ -73,7 +73,7 @@ class StatCard extends StatelessWidget {
                           color: colors.surfaceAlt,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: color.withValues(alpha: 0.2),
+                            color: color.withOpacity(0.2),
                           ),
                         ),
                         child: Icon(icon, color: color, size: 22),
@@ -86,8 +86,8 @@ class StatCard extends StatelessWidget {
                             color: colors.surfaceAlt,
                             border: Border.all(
                               color: isTrendPositive == true
-                                  ? colors.success.withValues(alpha: 0.3)
-                                  : colors.danger.withValues(alpha: 0.3),
+                                  ? colors.success.withOpacity(0.3)
+                                  : colors.danger.withOpacity(0.3),
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -165,7 +165,7 @@ class StatCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.5),
+                  color: color.withOpacity(0.5),
                   blurRadius: 8,
                   offset: const Offset(2, 0),
                 ),

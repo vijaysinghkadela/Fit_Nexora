@@ -114,7 +114,7 @@ class _RestTimerScreenState extends ConsumerState<RestTimerScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: t.accent.withValues(alpha: 0.15),
+                              color: t.accent.withOpacity(0.15),
                               blurRadius: 48,
                               spreadRadius: 16,
                             ),

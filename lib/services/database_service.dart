@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/constants.dart';
 import '../core/database_values.dart';
@@ -36,6 +37,7 @@ class DatabaseService {
     required String name,
     required String ownerId,
     String? address,
+    String? city,
     String? phone,
   }) async {
     final data = await _client
@@ -44,6 +46,7 @@ class DatabaseService {
           'name': name,
           'owner_id': ownerId,
           'address': address,
+          'city': city,
           'phone': phone,
         })
         .select()
@@ -57,6 +60,31 @@ class DatabaseService {
     });
 
     return Gym.fromJson(data);
+  }
+
+  /// Get unique cities where active gyms exist.
+  Future<List<String>> getCities() async {
+    final data = await _client
+        .from(AppConstants.gymsTable)
+        .select('city')
+        .eq('is_active', true)
+        .not('city', 'is', null);
+
+    final cities = data.map((e) => e['city'] as String).toSet().toList();
+    cities.sort();
+    return cities;
+  }
+
+  /// Get active gyms in a specific city.
+  Future<List<Gym>> getGymsByCity(String city) async {
+    final data = await _client
+        .from(AppConstants.gymsTable)
+        .select()
+        .eq('city', city)
+        .eq('is_active', true)
+        .order('name');
+    
+    return data.map((json) => Gym.fromJson(json)).toList();
   }
 
   /// Get gyms owned by a user.
@@ -118,13 +146,19 @@ class DatabaseService {
 
   /// Get all clients for a gym.
   Future<List<ClientProfile>> getClientsForGym(String gymId) async {
-    final data = await _client
-        .from(AppConstants.clientsTable)
-        .select(_clientColumns)
-        .eq('gym_id', gymId)
-        .order('created_at', ascending: false);
+    try {
+      final data = await _client
+          .from(AppConstants.clientsTable)
+          .select(_clientColumns)
+          .eq('gym_id', gymId)
+          .order('created_at', ascending: false);
 
-    return data.map((json) => ClientProfile.fromJson(json)).toList();
+      return data.map((json) => ClientProfile.fromJson(json)).toList();
+    } catch (e, stack) {
+      debugPrint('❌ [getClientsForGym] ERROR for gym=$gymId: $e');
+      debugPrint(stack.toString());
+      rethrow;
+    }
   }
 
   /// Get paginated clients for a gym with server-side filters.
@@ -156,31 +190,37 @@ class DatabaseService {
       return filtered;
     }
 
-    var dataQuery = applyFilters(
-      _client.from(AppConstants.clientsTable).select(_clientColumns),
-    );
-    var countQuery = applyFilters(
-      _client.from(AppConstants.clientsTable).select('id'),
-    );
+    try {
+      var dataQuery = applyFilters(
+        _client.from(AppConstants.clientsTable).select(_clientColumns),
+      );
+      var countQuery = applyFilters(
+        _client.from(AppConstants.clientsTable).select('id'),
+      );
 
-    if (sort == 'name_desc') {
-      dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: false);
-    } else if (sort == 'recent') {
-      dataQuery = (dataQuery as PostgrestFilterBuilder).order('created_at', ascending: false);
-    } else {
-      dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: true);
+      if (sort == 'name_desc') {
+        dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: false);
+      } else if (sort == 'recent') {
+        dataQuery = (dataQuery as PostgrestFilterBuilder).order('created_at', ascending: false);
+      } else {
+        dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: true);
+      }
+
+      final count = await countQuery.count(CountOption.exact);
+      final data = await dataQuery.range(offset, offset + limit - 1);
+      final items = data.map(ClientProfile.fromJson).toList();
+
+      return PagedResult<ClientProfile>(
+        items: items,
+        hasMore: (offset + items.length) < (count.count as num),
+        nextOffset: (offset + items.length).toInt(),
+        totalCount: count.count.toInt(),
+      );
+    } catch (e, stack) {
+      debugPrint('❌ [getClientsForGymPaged] ERROR for gym=$gymId offset=$offset: $e');
+      debugPrint(stack.toString());
+      rethrow;
     }
-
-    final count = await countQuery.count(CountOption.exact);
-    final data = await dataQuery.range(offset, offset + limit - 1);
-    final items = data.map(ClientProfile.fromJson).toList();
-
-    return PagedResult<ClientProfile>(
-      items: items,
-      hasMore: (offset + items.length) < (count.count as num),
-      nextOffset: (offset + items.length).toInt(),
-      totalCount: count.count.toInt(),
-    );
   }
 
   /// Get clients assigned to a specific trainer.

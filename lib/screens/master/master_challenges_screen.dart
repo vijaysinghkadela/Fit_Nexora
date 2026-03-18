@@ -60,7 +60,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      _gold.withValues(alpha: 0.15),
+                      _gold.withOpacity(0.15),
                       AppColors.bgDark,
                     ],
                   ),
@@ -100,10 +100,10 @@ class MasterChallengesScreen extends ConsumerWidget {
                           leading: Container(
                             width: 36, height: 36,
                             decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.15),
+                              color: color.withOpacity(0.15),
                               shape: BoxShape.circle,
                               border: Border.all(
-                                  color: color.withValues(alpha: 0.4)),
+                                  color: color.withOpacity(0.4)),
                             ),
                             child: Center(child: Text(
                               i == 0 ? '🥇' : i == 1 ? '🥈' : i == 2 ? '🥉' : '${i + 1}',
@@ -121,7 +121,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.12),
+                              color: color.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text('$pts pts',
@@ -166,7 +166,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.warning.withValues(alpha: 0.12),
+                              color: AppColors.warning.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(remaining, style: GoogleFonts.inter(
@@ -180,7 +180,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(6),
                             child: LinearProgressIndicator(
                               value: progress / 100,
-                              backgroundColor: color.withValues(alpha: 0.12),
+                              backgroundColor: color.withOpacity(0.12),
                               valueColor: AlwaysStoppedAnimation(color),
                               minHeight: 8,
                             ),
@@ -214,9 +214,9 @@ class MasterChallengesScreen extends ConsumerWidget {
     return Expanded(child: Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: c.withValues(alpha: 0.08),
+        color: c.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: c.withValues(alpha: 0.25)),
+        border: Border.all(color: c.withOpacity(0.25)),
       ),
       child: Column(children: [
         Text(emoji, style: const TextStyle(fontSize: 20)),

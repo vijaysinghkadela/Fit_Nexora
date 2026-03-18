@@ -53,11 +53,11 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    _gold.withValues(alpha: 0.12),
-                    _orange.withValues(alpha: 0.06),
+                    _gold.withOpacity(0.12),
+                    _orange.withOpacity(0.06),
                   ]),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: _gold.withValues(alpha: 0.3)),
+                  border: Border.all(color: _gold.withOpacity(0.3)),
                 ),
                 child: Row(children: [
                   const Icon(Icons.video_call_rounded, color: _gold, size: 32),
@@ -83,9 +83,9 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.07),
+                  color: AppColors.accent.withOpacity(0.07),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.accent.withValues(alpha: 0.25)),
+                  border: Border.all(color: AppColors.accent.withOpacity(0.25)),
                 ),
                 child: Row(children: [
                   const Icon(Icons.support_agent_rounded,
@@ -133,7 +133,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.12),
+                              color: color.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text('Upcoming', style: GoogleFonts.inter(
@@ -162,7 +162,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
                             label: const Text('Join Session'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: color,
-                              side: BorderSide(color: color.withValues(alpha: 0.5)),
+                              side: BorderSide(color: color.withOpacity(0.5)),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                             ),
@@ -224,9 +224,9 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
         Container(
           width: 28, height: 28,
           decoration: BoxDecoration(
-            color: c.withValues(alpha: 0.15),
+            color: c.withOpacity(0.15),
             shape: BoxShape.circle,
-            border: Border.all(color: c.withValues(alpha: 0.4)),
+            border: Border.all(color: c.withOpacity(0.4)),
           ),
           child: Center(child: Text(num, style: GoogleFonts.inter(
               fontSize: 13, fontWeight: FontWeight.w900, color: c))),
@@ -249,7 +249,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.3),
+                  color: AppColors.textMuted.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 20),
           Text('Book a Session', style: GoogleFonts.inter(

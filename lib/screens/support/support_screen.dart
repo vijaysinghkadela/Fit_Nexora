@@ -204,7 +204,7 @@ class _ContactOptionsRow extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: opt.color.withValues(alpha: 0.15),
+                        color: opt.color.withOpacity(0.15),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(opt.icon, color: opt.color, size: 22),

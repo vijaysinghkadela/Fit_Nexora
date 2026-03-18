@@ -58,12 +58,12 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
           Positioned(
             top: 80,
             left: -80,
-            child: _SuccessGlow(color: primary.withValues(alpha: 0.16), size: 220),
+            child: _SuccessGlow(color: primary.withOpacity(0.16), size: 220),
           ),
           Positioned(
             bottom: -100,
             right: -90,
-            child: _SuccessGlow(color: primary.withValues(alpha: 0.1), size: 240),
+            child: _SuccessGlow(color: primary.withOpacity(0.1), size: 240),
           ),
           SafeArea(
             child: Padding(
@@ -76,7 +76,7 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
+                          color: Colors.white.withOpacity(0.05),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
@@ -108,8 +108,8 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
                     height: 132,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: primary.withValues(alpha: 0.1),
-                      border: Border.all(color: primary.withValues(alpha: 0.16)),
+                      color: primary.withOpacity(0.1),
+                      border: Border.all(color: primary.withOpacity(0.16)),
                     ),
                     child: Center(
                       child: Container(
@@ -154,17 +154,17 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
                     decoration: BoxDecoration(
                       color: panel,
                       borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: primary.withValues(alpha: 0.08)),
+                      border: Border.all(color: primary.withOpacity(0.08)),
                     ),
                     child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _DashBar(color: primary.withValues(alpha: 0.55)),
+                          _DashBar(color: primary.withOpacity(0.55)),
                           const SizedBox(width: 14),
-                          _DashBar(color: primary.withValues(alpha: 0.25)),
+                          _DashBar(color: primary.withOpacity(0.25)),
                           const SizedBox(width: 14),
-                          _DashBar(color: primary.withValues(alpha: 0.14)),
+                          _DashBar(color: primary.withOpacity(0.14)),
                         ],
                       ),
                     ),

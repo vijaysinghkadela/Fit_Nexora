@@ -172,10 +172,10 @@ class _ComparisonCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.1),
+                    color: AppColors.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                        color: AppColors.success.withValues(alpha: 0.3)),
+                        color: AppColors.success.withOpacity(0.3)),
                   ),
                   child: Text(
                     'Total change: ${((after.weightKg as double) - (before.weightKg as double)).toStringAsFixed(1)} kg',

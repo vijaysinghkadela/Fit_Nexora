@@ -29,16 +29,16 @@ class SubscriptionBanner extends StatelessWidget {
   Widget _buildNoPlanBanner() {
     return _buildContainer(
       gradient: [
-        AppColors.primary.withValues(alpha: 0.15),
-        AppColors.accent.withValues(alpha: 0.08),
+        AppColors.primary.withOpacity(0.15),
+        AppColors.accent.withOpacity(0.08),
       ],
-      borderColor: AppColors.primary.withValues(alpha: 0.3),
+      borderColor: AppColors.primary.withOpacity(0.3),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.15),
+              color: AppColors.primary.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.rocket_launch_rounded,
@@ -81,19 +81,19 @@ class SubscriptionBanner extends StatelessWidget {
     return _buildContainer(
       gradient: [
         (isUrgent ? AppColors.warning : AppColors.accent)
-            .withValues(alpha: 0.12),
+            .withOpacity(0.12),
         (isUrgent ? AppColors.error : AppColors.primary)
-            .withValues(alpha: 0.06),
+            .withOpacity(0.06),
       ],
       borderColor: (isUrgent ? AppColors.warning : AppColors.accent)
-          .withValues(alpha: 0.3),
+          .withOpacity(0.3),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: (isUrgent ? AppColors.warning : AppColors.accent)
-                  .withValues(alpha: 0.15),
+                  .withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
@@ -146,7 +146,7 @@ class SubscriptionBanner extends StatelessWidget {
     return _buildContainer(
       gradient: [
         AppColors.bgCard,
-        AppColors.bgElevated.withValues(alpha: 0.5),
+        AppColors.bgElevated.withOpacity(0.5),
       ],
       borderColor: AppColors.border,
       child: Row(
@@ -207,7 +207,7 @@ class SubscriptionBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -268,8 +268,8 @@ class RevenueCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.accent.withValues(alpha: 0.08),
-            AppColors.primary.withValues(alpha: 0.05),
+            AppColors.accent.withOpacity(0.08),
+            AppColors.primary.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -371,7 +371,7 @@ class RevenueCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: (isPositive ? AppColors.success : AppColors.error)
-                        .withValues(alpha: 0.12),
+                        .withOpacity(0.12),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(

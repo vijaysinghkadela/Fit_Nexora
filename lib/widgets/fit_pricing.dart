@@ -28,9 +28,9 @@ class FitPlanPalette {
     final colors = context.fitTheme;
     return LinearGradient(
       colors: [
-        primary.withValues(alpha: 0.18),
-        secondary.withValues(alpha: 0.08),
-        colors.surface.withValues(alpha: 0.96),
+        primary.withOpacity(0.18),
+        secondary.withOpacity(0.08),
+        colors.surface.withOpacity(0.96),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -138,7 +138,7 @@ class FitPricingLandingPage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: colors.background.withValues(alpha: 0.9),
+            backgroundColor: colors.background.withOpacity(0.9),
             surfaceTintColor: Colors.transparent,
             toolbarHeight: 76,
             titleSpacing: 20,
@@ -410,7 +410,7 @@ class FitPlanUpgradePage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: colors.background.withValues(alpha: 0.92),
+            backgroundColor: colors.background.withOpacity(0.92),
             surfaceTintColor: Colors.transparent,
             toolbarHeight: 76,
             leading: Navigator.of(context).canPop()
@@ -511,10 +511,10 @@ class FitPlanUpgradePage extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: offer.palette.surfaceGradient(context),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: offer.palette.primary.withValues(alpha: 0.38)),
+        border: Border.all(color: offer.palette.primary.withOpacity(0.38)),
         boxShadow: [
           BoxShadow(
-            color: offer.palette.primary.withValues(alpha: 0.14),
+            color: offer.palette.primary.withOpacity(0.14),
             blurRadius: 28,
             offset: const Offset(0, 18),
           ),
@@ -691,7 +691,7 @@ Widget _actionButton(
         ),
         decoration: BoxDecoration(
           gradient: filled ? palette.buttonGradient : null,
-          color: filled ? null : colors.surface.withValues(alpha: 0.8),
+          color: filled ? null : colors.surface.withOpacity(0.8),
           borderRadius: BorderRadius.circular(compact ? 999 : 18),
           border: Border.all(color: filled ? Colors.transparent : colors.border),
         ),
@@ -719,18 +719,18 @@ Widget _planCard(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
       gradient: plan.highlighted ? plan.palette.surfaceGradient(context) : null,
-      color: plan.highlighted ? null : colors.surface.withValues(alpha: 0.72),
+      color: plan.highlighted ? null : colors.surface.withOpacity(0.72),
       borderRadius: BorderRadius.circular(28),
       border: Border.all(
         color: plan.highlighted
-            ? plan.palette.primary.withValues(alpha: 0.7)
+            ? plan.palette.primary.withOpacity(0.7)
             : colors.border,
         width: plan.highlighted ? 1.8 : 1,
       ),
       boxShadow: [
         BoxShadow(
           color: (plan.highlighted ? plan.palette.primary : colors.glow)
-              .withValues(alpha: 0.18),
+              .withOpacity(0.18),
           blurRadius: plan.highlighted ? 34 : 24,
           offset: const Offset(0, 18),
         ),
@@ -883,7 +883,7 @@ Widget _upgradeItem(BuildContext context, FitUpgradeFeatureItemData item) {
       height: 42,
       decoration: BoxDecoration(
         gradient: item.accent ? item.palette.buttonGradient : null,
-        color: item.accent ? null : item.palette.primary.withValues(alpha: 0.12),
+        color: item.accent ? null : item.palette.primary.withOpacity(0.12),
         borderRadius: BorderRadius.circular(14),
       ),
       alignment: Alignment.center,
@@ -921,7 +921,7 @@ Widget _footer(BuildContext context) {
   return Container(
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
-      color: colors.surface.withValues(alpha: 0.72),
+      color: colors.surface.withOpacity(0.72),
       borderRadius: BorderRadius.circular(28),
       border: Border.all(color: colors.border),
     ),

@@ -16,6 +16,7 @@ class TodosScreen extends StatefulWidget {
 
 class _TodosScreenState extends State<TodosScreen> {
   late Future<List<Map<String, dynamic>>> _future;
+  List<Map<String, dynamic>> _rawRows = [];
   _TaskStatus _selectedTab = _TaskStatus.todo;
 
   @override
@@ -61,7 +62,7 @@ class _TodosScreenState extends State<TodosScreen> {
               top: -120,
               left: -100,
               child: _GlowOrb(
-                color: colors.brand.withValues(alpha: 0.16),
+                color: colors.brand.withOpacity(0.16),
                 size: 260,
               ),
             ),
@@ -69,7 +70,7 @@ class _TodosScreenState extends State<TodosScreen> {
               bottom: -140,
               right: -120,
               child: _GlowOrb(
-                color: colors.accent.withValues(alpha: 0.1),
+                color: colors.accent.withOpacity(0.1),
                 size: 320,
               ),
             ),
@@ -144,11 +145,7 @@ class _TodosScreenState extends State<TodosScreen> {
                 backgroundColor: colors.brand,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                onPressed: () {
-                  context.showSnackBar(
-                    'Task creation will connect here once the workflow is wired.',
-                  );
-                },
+                onPressed: () => _showCreateTaskSheet(context),
                 child: const Icon(Icons.add_rounded, size: 30),
               ),
             ),
@@ -240,6 +237,7 @@ class _TodosScreenState extends State<TodosScreen> {
   }
 
   List<_TaskViewModel> _buildTasks(List<Map<String, dynamic>> rows) {
+    _rawRows = rows;
     if (rows.isEmpty) {
       return _fallbackTasks;
     }
@@ -375,6 +373,45 @@ class _TodosScreenState extends State<TodosScreen> {
     ];
     return defaults[index % defaults.length];
   }
+  void _showCreateTaskSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _TaskFormSheet(
+        onSave: (data) async {
+          await Supabase.instance.client.from('todos').insert(data);
+          if (mounted) setState(_fetchTodos);
+        },
+      ),
+    );
+  }
+
+  void _showTaskDetail(BuildContext context, Map<String, dynamic> raw, _TaskViewModel vm) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _TaskDetailSheet(
+        raw: raw,
+        vm: vm,
+        onSave: (data) async {
+          await Supabase.instance.client
+              .from('todos')
+              .update(data)
+              .eq('id', vm.id);
+          if (mounted) setState(_fetchTodos);
+        },
+        onDelete: () async {
+          await Supabase.instance.client
+              .from('todos')
+              .delete()
+              .eq('id', vm.id);
+          if (mounted) setState(_fetchTodos);
+        },
+      ),
+    );
+  }
 }
 
 enum _TaskStatus { todo, inProgress, done }
@@ -424,7 +461,7 @@ class _TodosHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: colors.glow.withValues(alpha: 0.3),
+                color: colors.glow.withOpacity(0.3),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -520,7 +557,7 @@ class _StatusTabs extends StatelessWidget {
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: isSelected
-                          ? colors.brand.withValues(alpha: 0.85)
+                          ? colors.brand.withOpacity(0.85)
                           : colors.textMuted,
                     ),
                   ),
@@ -575,8 +612,8 @@ class _TaskSectionHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: emphasizeTrailing
-                ? colors.brand.withValues(alpha: 0.18)
-                : colors.surfaceAlt.withValues(alpha: 0.8),
+                ? colors.brand.withOpacity(0.18)
+                : colors.surfaceAlt.withOpacity(0.8),
             borderRadius: BorderRadius.circular(999),
           ),
           child: Text(
@@ -626,7 +663,14 @@ class _TaskCard extends StatelessWidget {
       opacity: isDone ? 0.7 : 1,
       child: GlassmorphicCard(
         onTap: () {
-          context.showSnackBar('Task detail editing will connect here.');
+          final state = context.findAncestorStateOfType<_TodosScreenState>();
+          if (state != null) {
+            final rawRow = state._rawRows.firstWhere(
+              (r) => (r['id'] ?? '').toString() == task.id,
+              orElse: () => <String, dynamic>{},
+            );
+            state._showTaskDetail(context, rawRow, task);
+          }
         },
         child: Padding(
           padding: const EdgeInsets.all(18),
@@ -644,7 +688,7 @@ class _TaskCard extends StatelessWidget {
                     width: isDone ? 1.6 : 1.2,
                   ),
                   color: isDone
-                      ? colors.brand.withValues(alpha: 0.16)
+                      ? colors.brand.withOpacity(0.16)
                       : Colors.transparent,
                 ),
                 child: isDone
@@ -748,13 +792,13 @@ class _TaskCard extends StatelessWidget {
         return _PriorityStyle(
           label: 'MEDIUM',
           foreground: colors.warning,
-          background: colors.warning.withValues(alpha: 0.18),
+          background: colors.warning.withOpacity(0.18),
         );
       case _TaskPriority.low:
         return _PriorityStyle(
           label: 'LOW',
           foreground: colors.accent,
-          background: colors.accent.withValues(alpha: 0.18),
+          background: colors.accent.withOpacity(0.18),
         );
     }
   }
@@ -863,7 +907,7 @@ class _TodosLoadingView extends StatelessWidget {
           Container(
             height: 138,
             decoration: BoxDecoration(
-              color: colors.surfaceAlt.withValues(alpha: 0.75),
+              color: colors.surfaceAlt.withOpacity(0.75),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: colors.border),
             ),
@@ -979,11 +1023,11 @@ class _TodosBottomBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(12, 10, 12, 10 + bottomInset),
       decoration: BoxDecoration(
-        color: colors.surface.withValues(alpha: 0.92),
+        color: colors.surface.withOpacity(0.92),
         border: Border(top: BorderSide(color: colors.divider)),
         boxShadow: [
           BoxShadow(
-            color: colors.background.withValues(alpha: 0.35),
+            color: colors.background.withOpacity(0.35),
             blurRadius: 20,
             offset: const Offset(0, -8),
           ),
@@ -1064,6 +1108,640 @@ class _GlowOrb extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ─── Task Form Sheet (Create new task) ──────────────────────────────────────
+
+class _TaskFormSheet extends StatefulWidget {
+  const _TaskFormSheet({required this.onSave});
+  final Future<void> Function(Map<String, dynamic>) onSave;
+
+  @override
+  State<_TaskFormSheet> createState() => _TaskFormSheetState();
+}
+
+class _TaskFormSheetState extends State<_TaskFormSheet> {
+  final _titleCtrl = TextEditingController();
+  final _descCtrl = TextEditingController();
+  String _priority = 'medium';
+  String _status = 'todo';
+  DateTime? _dueAt;
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    _descCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked == null || !mounted) return;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (!mounted) return;
+    setState(() {
+      _dueAt = time == null
+          ? picked
+          : DateTime(picked.year, picked.month, picked.day, time.hour, time.minute);
+    });
+  }
+
+  Future<void> _save() async {
+    if (_titleCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a task title.')),
+      );
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      await widget.onSave({
+        'title': _titleCtrl.text.trim(),
+        'description': _descCtrl.text.trim(),
+        'priority': _priority,
+        'status': _status,
+        if (_dueAt != null) 'due_at': _dueAt!.toIso8601String(),
+        if (userId != null) 'user_id': userId,
+      });
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return _SheetScaffold(
+      title: 'New Task',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SheetField(
+            label: 'Title',
+            child: TextField(
+              controller: _titleCtrl,
+              autofocus: true,
+              style: GoogleFonts.inter(color: colors.textPrimary),
+              decoration: _inputDecoration(colors, 'Task title...'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _SheetField(
+            label: 'Description (optional)',
+            child: TextField(
+              controller: _descCtrl,
+              maxLines: 3,
+              style: GoogleFonts.inter(color: colors.textPrimary),
+              decoration: _inputDecoration(colors, 'Add more details...'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _SheetField(
+                  label: 'Priority',
+                  child: _PriorityDropdown(
+                    value: _priority,
+                    colors: colors,
+                    onChanged: (v) => setState(() => _priority = v),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SheetField(
+                  label: 'Status',
+                  child: _StatusDropdown(
+                    value: _status,
+                    colors: colors,
+                    onChanged: (v) => setState(() => _status = v),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _SheetField(
+            label: 'Due Date & Time',
+            child: GestureDetector(
+              onTap: _pickDate,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: colors.surfaceAlt,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: colors.border),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today_rounded, size: 18, color: colors.textMuted),
+                    const SizedBox(width: 10),
+                    Text(
+                      _dueAt == null
+                          ? 'Tap to set due date'
+                          : '${_dueAt!.day}/${_dueAt!.month}/${_dueAt!.year}  ${_dueAt!.hour.toString().padLeft(2, '0')}:${_dueAt!.minute.toString().padLeft(2, '0')}',
+                      style: GoogleFonts.inter(
+                        color: _dueAt == null ? colors.textMuted : colors.textPrimary,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: FilledButton(
+              onPressed: _saving ? null : _save,
+              style: FilledButton.styleFrom(
+                backgroundColor: colors.brand,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+              child: _saving
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : Text(
+                      'Create Task',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Task Detail / Edit Sheet ────────────────────────────────────────────────
+
+class _TaskDetailSheet extends StatefulWidget {
+  const _TaskDetailSheet({
+    required this.raw,
+    required this.vm,
+    required this.onSave,
+    required this.onDelete,
+  });
+
+  final Map<String, dynamic> raw;
+  final _TaskViewModel vm;
+  final Future<void> Function(Map<String, dynamic>) onSave;
+  final Future<void> Function() onDelete;
+
+  @override
+  State<_TaskDetailSheet> createState() => _TaskDetailSheetState();
+}
+
+class _TaskDetailSheetState extends State<_TaskDetailSheet> {
+  late final TextEditingController _titleCtrl;
+  late final TextEditingController _descCtrl;
+  late String _priority;
+  late String _status;
+  DateTime? _dueAt;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleCtrl = TextEditingController(text: widget.vm.title);
+    _descCtrl = TextEditingController(text: widget.vm.subtitle);
+    final pRaw = (widget.raw['priority'] ?? '').toString().toLowerCase();
+    _priority = ['high', 'medium', 'low'].contains(pRaw) ? pRaw : 'medium';
+    final sRaw = (widget.raw['status'] ?? '').toString().toLowerCase();
+    _status = sRaw.contains('done') || sRaw.contains('complete')
+        ? 'done'
+        : sRaw.contains('progress')
+            ? 'in_progress'
+            : 'todo';
+    final dueRaw = widget.raw['due_at'] ?? widget.raw['due_date'];
+    if (dueRaw is String) _dueAt = DateTime.tryParse(dueRaw)?.toLocal();
+  }
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    _descCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dueAt ?? DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked == null || !mounted) return;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: _dueAt != null
+          ? TimeOfDay(hour: _dueAt!.hour, minute: _dueAt!.minute)
+          : TimeOfDay.now(),
+    );
+    if (!mounted) return;
+    setState(() {
+      _dueAt = time == null
+          ? picked
+          : DateTime(picked.year, picked.month, picked.day, time.hour, time.minute);
+    });
+  }
+
+  Future<void> _save() async {
+    if (_titleCtrl.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Title cannot be empty.')),
+      );
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      await widget.onSave({
+        'title': _titleCtrl.text.trim(),
+        'description': _descCtrl.text.trim(),
+        'priority': _priority,
+        'status': _status,
+        if (_dueAt != null) 'due_at': _dueAt!.toIso8601String(),
+      });
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _confirmDelete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Task?'),
+        content: const Text('This action cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      await widget.onDelete();
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    final isFallback = widget.raw.isEmpty;
+
+    return _SheetScaffold(
+      title: 'Task Detail',
+      trailing: isFallback
+          ? null
+          : IconButton(
+              icon: Icon(Icons.delete_outline_rounded, color: colors.danger),
+              onPressed: _saving ? null : _confirmDelete,
+            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isFallback)
+            Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: colors.warning.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: colors.warning.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: colors.warning, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'This is a sample task. Create real tasks using the + button.',
+                      style: GoogleFonts.inter(color: colors.warning, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          _SheetField(
+            label: 'Title',
+            child: TextField(
+              controller: _titleCtrl,
+              enabled: !isFallback,
+              style: GoogleFonts.inter(color: colors.textPrimary, fontSize: 16, fontWeight: FontWeight.w600),
+              decoration: _inputDecoration(colors, 'Task title...'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _SheetField(
+            label: 'Description',
+            child: TextField(
+              controller: _descCtrl,
+              enabled: !isFallback,
+              maxLines: 3,
+              style: GoogleFonts.inter(color: colors.textPrimary),
+              decoration: _inputDecoration(colors, 'Add more details...'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _SheetField(
+                  label: 'Priority',
+                  child: _PriorityDropdown(
+                    value: _priority,
+                    colors: colors,
+                    enabled: !isFallback,
+                    onChanged: (v) => setState(() => _priority = v),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SheetField(
+                  label: 'Status',
+                  child: _StatusDropdown(
+                    value: _status,
+                    colors: colors,
+                    enabled: !isFallback,
+                    onChanged: (v) => setState(() => _status = v),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _SheetField(
+            label: 'Due Date & Time',
+            child: GestureDetector(
+              onTap: isFallback ? null : _pickDate,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: colors.surfaceAlt,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: colors.border),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.calendar_today_rounded, size: 18, color: colors.textMuted),
+                    const SizedBox(width: 10),
+                    Text(
+                      _dueAt == null
+                          ? widget.vm.dueLabel
+                          : '${_dueAt!.day}/${_dueAt!.month}/${_dueAt!.year}  ${_dueAt!.hour.toString().padLeft(2, '0')}:${_dueAt!.minute.toString().padLeft(2, '0')}',
+                      style: GoogleFonts.inter(color: colors.textPrimary, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (!isFallback) ...[
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: FilledButton(
+                onPressed: _saving ? null : _save,
+                style: FilledButton.styleFrom(
+                  backgroundColor: colors.brand,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: _saving
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(
+                        'Save Changes',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shared Sheet Helpers ────────────────────────────────────────────────────
+
+class _SheetScaffold extends StatelessWidget {
+  const _SheetScaffold({required this.title, required this.child, this.trailing});
+
+  final String title;
+  final Widget child;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        border: Border.all(color: colors.border),
+      ),
+      padding: EdgeInsets.fromLTRB(24, 20, 24, 24 + bottomInset),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colors.divider,
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: colors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              if (trailing != null) trailing!,
+            ],
+          ),
+          const SizedBox(height: 20),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _SheetField extends StatelessWidget {
+  const _SheetField({required this.label, required this.child});
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: colors.textMuted,
+            letterSpacing: 0.8,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+      ],
+    );
+  }
+}
+
+InputDecoration _inputDecoration(FitNexoraThemeTokens colors, String hint) {
+  return InputDecoration(
+    hintText: hint,
+    hintStyle: GoogleFonts.inter(color: colors.textMuted),
+    filled: true,
+    fillColor: colors.surfaceAlt,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: colors.border),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: colors.border),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: colors.brand, width: 1.5),
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  );
+}
+
+class _PriorityDropdown extends StatelessWidget {
+  const _PriorityDropdown({
+    required this.value,
+    required this.colors,
+    required this.onChanged,
+    this.enabled = true,
+  });
+
+  final String value;
+  final FitNexoraThemeTokens colors;
+  final ValueChanged<String> onChanged;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      onChanged: enabled ? (v) => onChanged(v ?? value) : null,
+      dropdownColor: colors.surface,
+      style: GoogleFonts.inter(color: colors.textPrimary),
+      decoration: _inputDecoration(colors, ''),
+      items: const [
+        DropdownMenuItem(value: 'high', child: Text('High')),
+        DropdownMenuItem(value: 'medium', child: Text('Medium')),
+        DropdownMenuItem(value: 'low', child: Text('Low')),
+      ],
+    );
+  }
+}
+
+class _StatusDropdown extends StatelessWidget {
+  const _StatusDropdown({
+    required this.value,
+    required this.colors,
+    required this.onChanged,
+    this.enabled = true,
+  });
+
+  final String value;
+  final FitNexoraThemeTokens colors;
+  final ValueChanged<String> onChanged;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      onChanged: enabled ? (v) => onChanged(v ?? value) : null,
+      dropdownColor: colors.surface,
+      style: GoogleFonts.inter(color: colors.textPrimary),
+      decoration: _inputDecoration(colors, ''),
+      items: const [
+        DropdownMenuItem(value: 'todo', child: Text('To Do')),
+        DropdownMenuItem(value: 'in_progress', child: Text('In Progress')),
+        DropdownMenuItem(value: 'done', child: Text('Done')),
+      ],
     );
   }
 }

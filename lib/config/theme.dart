@@ -67,8 +67,8 @@ class FitNexoraThemeTokens extends ThemeExtension<FitNexoraThemeTokens> {
         textPrimary: Color(0xFFF8F7FD),
         textSecondary: Color(0xFFB3A9CC),
         textMuted: Color(0xFF7E7597),
-        glassFill: Color(0x1AF8F7FD),
-        glassBorder: Color(0x26FFFFFF),
+        glassFill: Color(0x2EF8F7FD),
+        glassBorder: Color(0x3DFFFFFF),
         glow: Color(0x40895AF6),
         ringTrack: Color(0xFF29203F),
       );
@@ -104,7 +104,7 @@ class FitNexoraThemeTokens extends ThemeExtension<FitNexoraThemeTokens> {
       );
 
   LinearGradient get heroGradient => LinearGradient(
-        colors: [brand.withValues(alpha: 0.24), accent.withValues(alpha: 0.14)],
+        colors: [brand.withOpacity(0.24), accent.withOpacity(0.14)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       );

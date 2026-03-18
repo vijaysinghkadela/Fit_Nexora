@@ -153,13 +153,13 @@ class _HeroSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
           colors: [
-            t.brand.withValues(alpha: 0.22),
-            t.info.withValues(alpha: 0.10),
+            t.brand.withOpacity(0.22),
+            t.info.withOpacity(0.10),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        border: Border.all(color: t.brand.withValues(alpha: 0.30)),
+        border: Border.all(color: t.brand.withOpacity(0.30)),
       ),
       child: Column(
         children: [
@@ -175,7 +175,7 @@ class _HeroSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(999),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFFD700).withValues(alpha: 0.45),
+                  color: const Color(0xFFFFD700).withOpacity(0.45),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -301,7 +301,7 @@ class _PerkCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: perk.color.withValues(alpha: 0.15),
+                color: perk.color.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(perk.icon, color: perk.color, size: 24),
@@ -360,7 +360,7 @@ class _CtaButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: t.brand.withValues(alpha: 0.4),
+              color: t.brand.withOpacity(0.4),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),

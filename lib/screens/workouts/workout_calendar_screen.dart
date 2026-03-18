@@ -156,7 +156,7 @@ class _WorkoutCalendarScreenState extends ConsumerState<WorkoutCalendarScreen> {
                           color: isSelected
                               ? t.brand
                               : isToday
-                                  ? t.brand.withValues(alpha: 0.1)
+                                  ? t.brand.withOpacity(0.1)
                                   : t.surfaceAlt,
                           borderRadius: BorderRadius.circular(8),
                           border: isToday && !isSelected
@@ -323,7 +323,7 @@ class _WorkoutCalendarScreenState extends ConsumerState<WorkoutCalendarScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: t.textMuted.withValues(alpha: 0.3),
+                    color: t.textMuted.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -463,7 +463,7 @@ class _ChipLabel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

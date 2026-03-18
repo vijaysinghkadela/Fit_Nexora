@@ -117,7 +117,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                               borderRadius: BorderRadius.circular(12),
                               border: isToday && !isSelected
                                   ? Border.all(
-                                      color: t.brand.withValues(alpha: 0.4))
+                                      color: t.brand.withOpacity(0.4))
                                   : null,
                             ),
                             child: Column(
@@ -230,16 +230,16 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFFFFD700).withValues(alpha: 0.25),
-                        const Color(0xFFFFA500).withValues(alpha: 0.15),
+                        const Color(0xFFFFD700).withOpacity(0.25),
+                        const Color(0xFFFFA500).withOpacity(0.15),
                       ],
                     ),
                     border: Border.all(
                         color: const Color(0xFFFFD700)
-                            .withValues(alpha: 0.4)),
+                            .withOpacity(0.4)),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.15),
+                        color: const Color(0xFFFFD700).withOpacity(0.15),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -367,16 +367,16 @@ class _GlanceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
+              color: color.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 18),

@@ -433,9 +433,9 @@ class _LiveBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: accentColor.withValues(alpha: 0.15),
+        color: accentColor.withOpacity(0.15),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
+        border: Border.all(color: accentColor.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -449,11 +449,11 @@ class _LiveBadge extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: accentColor
-                      .withValues(alpha: pulseAnimation.value),
+                      .withOpacity(pulseAnimation.value),
                   boxShadow: [
                     BoxShadow(
                       color: accentColor
-                          .withValues(alpha: pulseAnimation.value * 0.5),
+                          .withOpacity(pulseAnimation.value * 0.5),
                       blurRadius: 4,
                     ),
                   ],
@@ -490,8 +490,8 @@ class _ExerciseHeroCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            t.brand.withValues(alpha: 0.3),
-            t.accent.withValues(alpha: 0.15),
+            t.brand.withOpacity(0.3),
+            t.accent.withOpacity(0.15),
           ],
         ),
         border: Border.all(color: t.glassBorder),
@@ -505,7 +505,7 @@ class _ExerciseHeroCard extends StatelessWidget {
             child: Icon(
               Icons.fitness_center_rounded,
               size: 160,
-              color: t.brand.withValues(alpha: 0.06),
+              color: t.brand.withOpacity(0.06),
             ),
           ),
           // Content
@@ -519,10 +519,10 @@ class _ExerciseHeroCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.2),
+                    color: t.brand.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                        color: t.brand.withValues(alpha: 0.4)),
+                        color: t.brand.withOpacity(0.4)),
                   ),
                   child: Text(
                     'CHEST • COMPOUND',
@@ -564,7 +564,7 @@ class _ExerciseHeroCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: t.surface.withValues(alpha: 0.8),
+                color: t.surface.withOpacity(0.8),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -594,7 +594,7 @@ class _MuscleBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -628,9 +628,9 @@ class _StepButton extends StatelessWidget {
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          border: Border.all(color: color.withOpacity(0.3)),
         ),
         child: Icon(icon, size: 16, color: color),
       ),

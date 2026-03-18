@@ -186,7 +186,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 20),
                         decoration: BoxDecoration(
-                          color: t.danger.withValues(alpha: 0.15),
+                          color: t.danger.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Icon(Icons.delete_outline_rounded,
@@ -241,7 +241,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 3),
                                           decoration: BoxDecoration(
-                                            color: t.brand.withValues(alpha: 0.12),
+                                            color: t.brand.withOpacity(0.12),
                                             borderRadius:
                                                 BorderRadius.circular(6),
                                           ),
@@ -308,7 +308,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: t.textMuted.withValues(alpha: 0.3),
+                        color: t.textMuted.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

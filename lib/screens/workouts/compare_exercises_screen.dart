@@ -176,7 +176,7 @@ class _CompareExercisesScreenState extends ConsumerState<CompareExercisesScreen>
                             ],
                           ),
                         ),
-                        Divider(color: t.divider.withValues(alpha: 0.5), height: 1),
+                        Divider(color: t.divider.withOpacity(0.5), height: 1),
                       ],
                     )),
                   ],

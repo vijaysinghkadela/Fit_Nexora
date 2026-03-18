@@ -67,7 +67,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
               gradient: const LinearGradient(colors: [_gold, _orange]),
               borderRadius: BorderRadius.circular(6),
               boxShadow: [BoxShadow(
-                  color: _gold.withValues(alpha: 0.5), blurRadius: 10)],
+                  color: _gold.withOpacity(0.5), blurRadius: 10)],
             ),
             child: Text('MASTER AI', style: GoogleFonts.inter(
                 fontSize: 9, fontWeight: FontWeight.w900,
@@ -472,7 +472,7 @@ class _InputBar extends StatelessWidget {
               gradient: const LinearGradient(colors: [_gold, Color(0xFFFF6F00)]),
               shape: BoxShape.circle,
               boxShadow: [BoxShadow(
-                  color: _gold.withValues(alpha: 0.5), blurRadius: 12)],
+                  color: _gold.withOpacity(0.5), blurRadius: 12)],
             ),
             child: loading
                 ? const Padding(padding: EdgeInsets.all(12),

@@ -31,8 +31,8 @@ class MasterProfileScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    t.brand.withValues(alpha: 0.22),
-                    t.brand.withValues(alpha: 0.0),
+                    t.brand.withOpacity(0.22),
+                    t.brand.withOpacity(0.0),
                   ],
                 ),
               ),
@@ -48,8 +48,8 @@ class MasterProfileScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    t.accent.withValues(alpha: 0.12),
-                    t.accent.withValues(alpha: 0.0),
+                    t.accent.withOpacity(0.12),
+                    t.accent.withOpacity(0.0),
                   ],
                 ),
               ),
@@ -61,7 +61,7 @@ class MasterProfileScreen extends ConsumerWidget {
               // AppBar
               SliverAppBar(
                 pinned: true,
-                backgroundColor: t.background.withValues(alpha: 0.96),
+                backgroundColor: t.background.withOpacity(0.96),
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
                   onPressed: () => Navigator.of(context).pop(),
@@ -201,7 +201,7 @@ class _ProfileHeader extends StatelessWidget {
                   gradient: t.brandGradient,
                   boxShadow: [
                     BoxShadow(
-                      color: t.brand.withValues(alpha: 0.55),
+                      color: t.brand.withOpacity(0.55),
                       blurRadius: 24,
                       spreadRadius: 4,
                     ),
@@ -235,7 +235,7 @@ class _ProfileHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.4),
+                        color: const Color(0xFFFFD700).withOpacity(0.4),
                         blurRadius: 10,
                       ),
                     ],
@@ -289,9 +289,9 @@ class _TagBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.13),
+        color: color.withOpacity(0.13),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        border: Border.all(color: color.withOpacity(0.35)),
       ),
       child: Text(
         label,
@@ -332,7 +332,7 @@ class _MembershipCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: t.brand.withValues(alpha: 0.15),
+                    color: t.brand.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -573,7 +573,7 @@ class _MasterFeaturesGrid extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: f.color.withValues(alpha: 0.15),
+                    color: f.color.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(f.icon, color: f.color, size: 18),
@@ -654,7 +654,7 @@ class _AccountSettingsList extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: item.color.withValues(alpha: 0.13),
+                          color: item.color.withOpacity(0.13),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Icon(item.icon, color: item.color, size: 18),

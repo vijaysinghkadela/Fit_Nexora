@@ -146,9 +146,9 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: c.withValues(alpha: 0.07),
+        color: c.withOpacity(0.07),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: c.withValues(alpha: 0.25)),
+        border: Border.all(color: c.withOpacity(0.25)),
       ),
       child: Row(children: [
         Text(emoji, style: const TextStyle(fontSize: 26)),
@@ -224,11 +224,11 @@ class _ScoreHero extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
-          color.withValues(alpha: 0.12),
-          color.withValues(alpha: 0.04),
+          color.withOpacity(0.12),
+          color.withOpacity(0.04),
         ]),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(children: [
         SizedBox(

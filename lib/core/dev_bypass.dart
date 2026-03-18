@@ -23,6 +23,7 @@ import 'enums.dart';
 const List<String> devEmails = [
   'vijaysinghfitness@gmail.com',
   'rohit@gmail.com',
+  'vinaypalsingh085@gmail.com',
 ];
 
 /// Quick check used by every provider.

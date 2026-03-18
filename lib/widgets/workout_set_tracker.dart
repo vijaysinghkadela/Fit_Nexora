@@ -78,7 +78,7 @@ class _CompletedDot extends StatelessWidget {
         color: color,
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.5),
+            color: color.withOpacity(0.5),
             blurRadius: 6,
             spreadRadius: 1,
           ),
@@ -155,7 +155,7 @@ class _PulsingDotState extends State<_PulsingDot>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: widget.color
-                        .withValues(alpha: _opacity.value),
+                        .withOpacity(_opacity.value),
                   ),
                 ),
               );
@@ -170,7 +170,7 @@ class _PulsingDotState extends State<_PulsingDot>
               color: widget.color,
               boxShadow: [
                 BoxShadow(
-                  color: widget.color.withValues(alpha: 0.6),
+                  color: widget.color.withOpacity(0.6),
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),

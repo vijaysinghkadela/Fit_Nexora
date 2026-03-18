@@ -162,7 +162,7 @@ class _NotificationsTabState extends ConsumerState<_NotificationsTab>
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             decoration: BoxDecoration(
-              color: t.danger.withValues(alpha: 0.15),
+              color: t.danger.withOpacity(0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(Icons.delete_outline_rounded, color: t.danger),
@@ -192,7 +192,7 @@ class _NotificationsTabState extends ConsumerState<_NotificationsTab>
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: _typeColor(notification.type, t)
-                            .withValues(alpha: 0.15),
+                            .withOpacity(0.15),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -293,9 +293,9 @@ class _MembershipExpiryAlert extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: t.warning.withValues(alpha: 0.1),
+        color: t.warning.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: t.warning.withValues(alpha: 0.4)),
+        border: Border.all(color: t.warning.withOpacity(0.4)),
       ),
       child: Row(
         children: [
@@ -331,7 +331,7 @@ class _MembershipExpiryAlert extends ConsumerWidget {
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
-                side: BorderSide(color: t.warning.withValues(alpha: 0.4)),
+                side: BorderSide(color: t.warning.withOpacity(0.4)),
               ),
             ),
             child: Text('Renew',
