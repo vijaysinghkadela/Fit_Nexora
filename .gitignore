@@ -81,6 +81,7 @@ app.*.map.json
 
 # Environment variables — NEVER commit these
 .env
+assets/app.env
 .env.local
 .env.production
 .env.staging

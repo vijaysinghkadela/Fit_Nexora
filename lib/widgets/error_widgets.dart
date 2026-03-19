@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import '../core/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,6 +25,7 @@ class _AppErrorBoundaryState extends State<AppErrorBoundary> {
     super.initState();
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
+      FlutterNativeSplash.remove(); // Remove splash so error is visible
       if (mounted) setState(() => _error = details.exception);
     };
   }
@@ -82,12 +84,18 @@ class _ErrorScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'An unexpected error occurred. Please restart the app.',
+                  'Error: ${error.toString().split("\n").first}',
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Please check your internet connection and try starting the app again.',
+                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),

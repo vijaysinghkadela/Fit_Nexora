@@ -9,6 +9,7 @@ import 'app.dart';
 import 'config/app_config.dart';
 import 'services/notification_service.dart';
 import 'widgets/error_widgets.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
 Future<void> main() async {
@@ -39,20 +40,29 @@ Future<void> main() async {
   GoogleFonts.config.allowRuntimeFetching = false;
 
   try {
-    await dotenv.load(fileName: '.env');
+    await dotenv.load(fileName: 'assets/app.env');
   } catch (error) {
-    debugPrint('Unable to load .env: $error');
+    debugPrint('[Initialization] Unable to load assets/app.env: $error');
   }
 
   if (AppConfig.hasSupabase) {
-    await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      anonKey: AppConfig.supabaseAnonKey,
-    );
+    try {
+      await Supabase.initialize(
+        url: AppConfig.supabaseUrl,
+        anonKey: AppConfig.supabaseAnonKey,
+      );
+    } catch (e) {
+      debugPrint('[Initialization] Supabase init failed: $e');
+    }
+  } else {
+    debugPrint('[Initialization] Skipping Supabase: Missing credentials in app.env');
   }
 
   // ── Local notifications ──
   await NotificationService.init();
+
+  // ── Remove native splash screen ──
+  FlutterNativeSplash.remove();
 
   runApp(
     const AppErrorBoundary(
