@@ -31,8 +31,6 @@
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
 		<key>UISupportedInterfaceOrientations~ipad</key>
 		<array>
@@ -46,8 +44,27 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIStatusBarHidden</key>
-		<true/>
-		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<true/>
+		<key>FLTEnableImpeller</key>
+		<true/>
+		<key>NSFaceIDUsageDescription</key>
+		<string>FitNexora uses Face ID to quickly and securely log you in.</string>
+		<!-- Google Sign-In: reversed iOS client ID as a URL scheme so Google can
+		     redirect back to the app after authentication.
+		     Replace the value below with REVERSED_CLIENT_ID from your
+		     GoogleService-Info.plist (e.g. com.googleusercontent.apps.XXXXX-YYYY). -->
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>$(REVERSED_CLIENT_ID)</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

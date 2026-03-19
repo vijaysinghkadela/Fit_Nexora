@@ -29,7 +29,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
       backgroundColor: AppColors.bgDark,
       appBar: AppBar(
         backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        leading: const BackButton(color: AppColors.textSecondary),
         title: Text('Live Trainer Sessions', style: GoogleFonts.inter(
             fontSize: 18, fontWeight: FontWeight.w800,
             color: AppColors.textPrimary)),

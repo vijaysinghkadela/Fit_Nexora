@@ -30,7 +30,7 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
       backgroundColor: AppColors.bgDark,
       appBar: AppBar(
         backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        leading: const BackButton(color: AppColors.textSecondary),
         title: Text('Smart Recovery', style: GoogleFonts.inter(
             fontSize: 19, fontWeight: FontWeight.w800,
             color: AppColors.textPrimary)),

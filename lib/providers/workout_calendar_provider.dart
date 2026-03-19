@@ -142,6 +142,6 @@ class WorkoutCalendarNotifier
 }
 
 final workoutCalendarProvider =
-    StateNotifierProvider<WorkoutCalendarNotifier, Map<String, ScheduledWorkout>>(
+    StateNotifierProvider.autoDispose<WorkoutCalendarNotifier, Map<String, ScheduledWorkout>>(
   (ref) => WorkoutCalendarNotifier(),
 );

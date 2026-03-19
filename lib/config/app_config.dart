@@ -22,6 +22,9 @@ class AppConfig {
 
   static String get claudeApiKey => dotenv.env['CLAUDE_API_KEY'] ?? '';
 
+  static String get googleWebClientId =>
+      dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '';
+
   /// Whether we're running with valid Supabase credentials.
   static bool get hasSupabase =>
       supabaseUrl.isNotEmpty &&

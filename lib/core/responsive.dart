@@ -91,17 +91,24 @@ class AppRadius {
 /// Container(width: rs.sp(100), height: rs.sp(100))
 /// ```
 class ResponsiveSize {
-  ResponsiveSize._(this._width);
+  ResponsiveSize._(this._width, [this._context]);
 
   final double _width;
+  final BuildContext? _context;
 
   /// Build from a [BuildContext].
   static ResponsiveSize of(BuildContext context) {
-    return ResponsiveSize._(MediaQuery.sizeOf(context).width);
+    return ResponsiveSize._(MediaQuery.sizeOf(context).width, context);
   }
+
+  /// Whether the screen is a small phone (< 375 dp, e.g. iPhone SE, budget Androids).
+  bool get isSmallPhone => _width < 375;
 
   /// Whether the screen is mobile (< 600).
   bool get isMobile => _width < 600;
+
+  /// Whether the screen is a large phone (>= 414 dp, e.g. iPhone Pro Max, Galaxy Ultra).
+  bool get isLargePhone => _width >= 414 && _width < 600;
 
   /// Whether the screen is a tablet (600 – 1199).
   bool get isTablet => _width >= 600 && _width < 1200;
@@ -133,4 +140,18 @@ class ResponsiveSize {
 
   /// Max width for content column on tablets/desktop.
   double get maxContentWidth => adaptive(mobile: double.infinity, tablet: 680, desktop: 900);
+
+  /// Bottom safe area (accounts for gesture bar / home indicator).
+  double get bottomSafeArea {
+    final ctx = _context;
+    if (ctx == null) return 0;
+    return MediaQuery.paddingOf(ctx).bottom;
+  }
+
+  /// Bottom padding that accounts for safe area + extra spacing.
+  double get bottomNavSafePadding {
+    final safeBottom = bottomSafeArea;
+    return safeBottom > 0 ? safeBottom : 16.0;
+  }
 }
+

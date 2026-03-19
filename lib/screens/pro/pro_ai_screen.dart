@@ -98,7 +98,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
             result: _workoutResult,
             loading: _workoutLoading,
             onGenerate: _generateWorkout,
-            presets: [
+            presets: const [
               'Give me a 3-day beginner workout plan for fat loss',
               'Recommend a muscle gain routine for intermediate gymers',
               'Design a full-body workout I can do 4 days a week',
@@ -113,7 +113,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
             result: _dietResult,
             loading: _dietLoading,
             onGenerate: _generateDiet,
-            presets: [
+            presets: const [
               'Suggest a high-protein Indian vegetarian meal plan',
               'What should I eat today to hit 2000 kcal with 150g protein?',
               'Give me a simple weekly diet for fat loss as an Indian',

@@ -99,6 +99,6 @@ class NotesNotifier extends StateNotifier<List<Note>> {
   }
 }
 
-final notesProvider = StateNotifierProvider<NotesNotifier, List<Note>>(
+final notesProvider = StateNotifierProvider.autoDispose<NotesNotifier, List<Note>>(
   (ref) => NotesNotifier(),
 );

@@ -111,8 +111,8 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
                       child: _SectionTitle(label: 'ACCOUNT'),
                     ),
@@ -146,8 +146,8 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
                       child: _SectionTitle(label: 'PREFERENCES'),
                     ),
@@ -199,8 +199,8 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
                       child: _SectionTitle(label: 'SUPPORT'),
                     ),
@@ -239,8 +239,8 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                   if (user?.globalRole == UserRole.superAdmin) ...[
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    const SliverPadding(
+                      padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                       sliver: SliverToBoxAdapter(
                         child: _SectionTitle(label: 'PLATFORM'),
                       ),

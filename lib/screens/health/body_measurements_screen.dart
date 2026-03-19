@@ -385,7 +385,7 @@ class _EmptyState extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 60),
       child: Column(
         children: [
-          Text('📏', style: const TextStyle(fontSize: 56)),
+          const Text('📏', style: TextStyle(fontSize: 56)),
           const SizedBox(height: 16),
           Text(
             'No measurements yet',
@@ -501,7 +501,7 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
                   TextField(
                     controller: _notes,
                     style: TextStyle(color: t.textPrimary),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Notes (optional)',
                       hintText: 'How you feel today…',
                     ),

@@ -119,10 +119,10 @@ class _ExerciseProgressScreenState
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
-                      const Color(0xFFFFD700),
-                      const Color(0xFFFFA500),
+                      Color(0xFFFFD700),
+                      Color(0xFFFFA500),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -200,7 +200,8 @@ class _ExerciseProgressScreenState
                 GlassmorphicCard(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 20, 12),
-                    child: SizedBox(
+                    child: RepaintBoundary(
+                      child: SizedBox(
                       height: 220,
                       child: LineChart(
                         LineChartData(
@@ -232,13 +233,13 @@ class _ExerciseProgressScreenState
                                 ),
                               ),
                             ),
-                            bottomTitles: AxisTitles(
+                            bottomTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            rightTitles: AxisTitles(
+                            rightTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
-                            topTitles: AxisTitles(
+                            topTitles: const AxisTitles(
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
@@ -296,6 +297,7 @@ class _ExerciseProgressScreenState
                         ),
                       ),
                     ),
+                    ),
                   ),
                 ).animate(delay: 100.ms).fadeIn(duration: 400.ms).slideY(begin: 0.1),
 
@@ -304,12 +306,12 @@ class _ExerciseProgressScreenState
                 // ── Stats Row ─────────────────────────────────────────────
                 Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: _ProgressStatCard(
                         label: 'Best Weight',
                         value: '82.5 kg',
                         icon: Icons.emoji_events_rounded,
-                        color: const Color(0xFFFFD700),
+                        color: Color(0xFFFFD700),
                       ),
                     ),
                     const SizedBox(width: 8),

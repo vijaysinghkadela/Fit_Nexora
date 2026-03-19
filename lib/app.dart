@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +9,26 @@ import 'providers/locale_provider.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
+
+/// Removes Android glow overscroll; uses Material 3 stretch indicator instead.
+class _AppScrollBehavior extends ScrollBehavior {
+  const _AppScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) =>
+      const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) =>
+      StretchingOverscrollIndicator(
+        axisDirection: details.direction,
+        child: child,
+      );
+}
 
 /// Root application widget.
 class GymOSApp extends ConsumerWidget {
@@ -27,6 +48,22 @@ class GymOSApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
+
+      /// SCROLL BEHAVIOR — stretch indicator instead of glow
+      scrollBehavior: const _AppScrollBehavior(),
+
+      /// BUILDER — clamp text scale to prevent layout overflow
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        final clampedTextScaler = mediaQuery.textScaler.clamp(
+          minScaleFactor: 0.85,
+          maxScaleFactor: 1.3,
+        );
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: clampedTextScaler),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
 
       /// LANGUAGE
       locale: locale,

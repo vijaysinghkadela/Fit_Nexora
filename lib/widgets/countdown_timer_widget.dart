@@ -90,12 +90,14 @@ class _CountdownTimerWidgetState extends State<CountdownTimerWidget>
       fontFeatures: const [FontFeature.tabularFigures()],
     );
 
-    return ScaleTransition(
+    return RepaintBoundary(
+      child: ScaleTransition(
       scale: _pulseAnimation,
       child: Text(
         _formatted,
         style: widget.textStyle ?? defaultStyle,
       ),
+    ),
     );
   }
 }

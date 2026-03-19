@@ -182,8 +182,8 @@ class _PRBestCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.emoji_events_rounded,
-                      color: const Color(0xFFF6B546), size: 18),
+                  const Icon(Icons.emoji_events_rounded,
+                      color: Color(0xFFF6B546), size: 18),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(

@@ -12,6 +12,7 @@
 [![Claude AI](https://img.shields.io/badge/AI-Claude_Opus_%26_Haiku-blueviolet)](https://anthropic.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Riverpod](https://img.shields.io/badge/State-Riverpod_2.6-orange)](https://riverpod.dev)
+[![Version](https://img.shields.io/badge/Version-v2.5-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
 
 </div>
 
@@ -57,8 +58,8 @@ FitNexora operates on a **3-tier SaaS model**:
 
 | Feature | 🥉 Basic | 🥈 Pro | 🥇 Elite |
 |---|---|---|---|
-| **Monthly Price** | $9.99/mo | $19.99/mo | $29.99/mo |
-| **Annual Price** | $99.99/yr | $199.99/yr | $299.99/yr |
+| **Monthly Price** | ₹799/mo | ₹1,499/mo | ₹2,499/mo |
+| **Annual Price** | ₹7,999/yr | ₹14,999/yr | ₹24,999/yr |
 | **Max Clients** | 50 | 200 | 500 |
 | **Trainer Seats** | 1 | 5 | Unlimited |
 | **AI Model** | ❌ None | ✅ Claude Haiku | ✅ Claude Opus + Haiku |
@@ -293,7 +294,7 @@ Every query is enforced at the **database level** with `gym_id` isolation. Even 
 FitNexora has **25 screen modules** organised by role and feature:
 
 ### 🔐 Auth
-Login, Register, Forgot Password, Onboarding wizard.
+Login, Register, **Google Sign-In**, Forgot Password, Onboarding wizard.
 
 ### 🏠 Dashboard
 Role-adaptive home screen with KPIs, quick actions, and AI-suggested insights.
@@ -376,7 +377,7 @@ Plan upgrade/downgrade with pricing comparison UI.
 Task management with priority (High/Medium/Low) and status (Todo / In Progress / Done).
 
 ### ⚙️ Settings
-Language, theme, notification preferences, account management.
+Language, theme, notification preferences, account management, **Biometric (Fingerprint) Setup**.
 
 ### 🛡️ Admin / Super Admin
 Platform-wide gym management (for FitNexora staff).
@@ -521,7 +522,7 @@ flutter test
 
 ## 12 — Roadmap
 
-### v2.1 (Current)
+### v2.5 (Current)
 - [x] Achievements & gamification
 - [x] Body measurements & water tracking
 - [x] Personal records (PR board)
@@ -530,6 +531,10 @@ flutter test
 - [x] Equipment status board
 - [x] Real-time gym occupancy view
 - [x] **AI Agent** — full pipeline: body analysis → workout → diet → monthly report
+- [x] **Biometric Authentication** — Fingerprint setup & secure credential storage
+- [x] **Google Sign-In** — One-tap authentication integration
+- [x] **INR Pricing Strategy** — Tiered pricing in Rupees for Indian market
+- [x] **Security Enhancements** — Route-aware navigation & credential encryption
 
 ### v3.0 (Planned)
 - [ ] **AI Video Form Analysis** — real-time posture & form correction using device camera
@@ -554,6 +559,6 @@ flutter test
 
 <div align="center">
 
-*FitNexora v2.1 — Built with ❤️ for the Indian Fitness Industry*
+*FitNexora v2.5 — Built with ❤️ for the Indian Fitness Industry*
 
 </div>

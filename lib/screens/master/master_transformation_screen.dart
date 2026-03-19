@@ -626,7 +626,7 @@ class _MilestoneRowState extends State<_MilestoneRow>
     switch (m.status) {
       case _MilestoneStatus.completed:
         dotColor = t.accent;
-        dotWidget = Icon(Icons.check_rounded, color: Colors.white, size: 12);
+        dotWidget = const Icon(Icons.check_rounded, color: Colors.white, size: 12);
         break;
       case _MilestoneStatus.current:
         dotColor = t.brand;

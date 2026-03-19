@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/app_config.dart';
 import '../models/user_model.dart';
 import '../core/constants.dart';
 import '../core/enums.dart';
@@ -103,12 +105,48 @@ class AuthService {
     return getProfile(response.user!.id);
   }
 
-  /// Sign in with Google OAuth.
+  /// Sign in with Google OAuth (native — uses GoogleSignIn package).
+  ///
+  /// On Android & iOS this shows the native Google account picker, then
+  /// exchanges the Google ID token for a Supabase session via signInWithIdToken.
   Future<void> signInWithGoogle() async {
-    await _client.auth.signInWithOAuth(
-      OAuthProvider.google,
-      redirectTo: kIsWeb ? null : 'com.gymos.app://login-callback',
+    final webClientId = AppConfig.googleWebClientId;
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      // The server client ID (Web) lets Supabase verify the token.
+      serverClientId: webClientId.isNotEmpty ? webClientId : null,
     );
+
+    final googleUser = await googleSignIn.signIn();
+    if (googleUser == null) {
+      // The user cancelled the picker.
+      throw Exception('Google sign-in was cancelled.');
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+    if (idToken == null) {
+      throw Exception('Google sign-in failed — no ID token received.');
+    }
+
+    await _client.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: googleAuth.accessToken,
+    );
+    // The authStateProvider listener in auth_provider.dart picks up the
+    // new session and loads the user profile automatically.
+  }
+
+  /// Disconnect Google account — call this alongside Supabase sign-out so
+  /// the account picker appears on the next Google sign-in instead of auto-selecting.
+  Future<void> signOutGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      await googleSignIn.disconnect();
+    } catch (e) {
+      debugPrint('Google sign-out error (non-fatal): $e');
+    }
   }
 
   /// Get user profile from the profiles table.
@@ -132,8 +170,9 @@ class AuthService {
     return user;
   }
 
-  /// Sign out.
+  /// Sign out (email/password and Google).
   Future<void> signOut() async {
+    await signOutGoogle();
     await _client.auth.signOut();
   }
 

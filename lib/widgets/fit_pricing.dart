@@ -391,6 +391,7 @@ class FitPlanUpgradePage extends StatelessWidget {
   final VoidCallback? onPrimaryAction;
   final String? secondaryActionLabel;
   final VoidCallback? onSecondaryAction;
+  final List<Widget>? actions;
 
   const FitPlanUpgradePage({
     super.key,
@@ -407,6 +408,7 @@ class FitPlanUpgradePage extends StatelessWidget {
     this.onPrimaryAction,
     this.secondaryActionLabel,
     this.onSecondaryAction,
+    this.actions,
   });
 
   @override
@@ -429,6 +431,7 @@ class FitPlanUpgradePage extends StatelessWidget {
                   )
                 : null,
             title: _brandLockup(context),
+            actions: actions,
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 0),

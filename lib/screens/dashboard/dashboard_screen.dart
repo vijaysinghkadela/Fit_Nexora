@@ -223,15 +223,15 @@ class _DashboardBody extends ConsumerWidget {
 
           // ── No gym banner ────────────────────────────────────────────────
           if (gym == null && userGymsAsync.isLoading)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
               sliver: SliverToBoxAdapter(
                 child: _NoGymBanner(isLoading: true),
               ),
             )
           else if (gym == null && !userGymsAsync.isLoading)
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
               sliver: SliverToBoxAdapter(
                 child: _NoGymBanner(isLoading: false),
               ),
@@ -1082,7 +1082,8 @@ class _OccupancyBarChart extends StatelessWidget {
       );
     }
 
-    return BarChart(
+    return RepaintBoundary(
+      child: BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceEvenly,
         maxY: 22,
@@ -1139,6 +1140,7 @@ class _OccupancyBarChart extends StatelessWidget {
             },
           ),
         ),
+      ),
       ),
     );
   }

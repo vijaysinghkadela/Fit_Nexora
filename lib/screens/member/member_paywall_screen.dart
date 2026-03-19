@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/extensions.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/fit_pricing.dart';
 
@@ -24,6 +25,13 @@ class MemberPaywallScreen extends ConsumerWidget {
       subtitle:
           'Unlock the member experience your gym already prepared for you, from check-ins and workouts to progress tracking and announcements.',
       sectionTitle: 'WHAT YOU GET',
+      actions: [
+        IconButton(
+          onPressed: () => ref.read(currentUserProvider.notifier).signOut(),
+          icon: const Icon(Icons.logout_rounded),
+          tooltip: 'Logout',
+        ),
+      ],
       offer: const FitPricingPlanData(
         title: 'Basic',
         price: 'Rs 499',

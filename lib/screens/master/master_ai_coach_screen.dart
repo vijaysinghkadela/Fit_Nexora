@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
 import '../../core/enums.dart';
+import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/member_provider.dart';
@@ -55,11 +55,12 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Row(children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -76,13 +77,13 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
           const SizedBox(width: 10),
           Text('Fitness Coach', style: GoogleFonts.inter(
               fontSize: 18, fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary)),
+              color: t.textPrimary)),
         ]),
         bottom: TabBar(
           controller: _tabs,
           indicatorColor: _gold,
           labelColor: _gold,
-          unselectedLabelColor: AppColors.textMuted,
+          unselectedLabelColor: t.textMuted,
           tabs: const [
             Tab(text: '💬 Coach Chat'),
             Tab(text: '📅 Daily Plan'),
@@ -131,12 +132,12 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                       Text('Today\'s Adaptive Plan',
                           style: GoogleFonts.inter(fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimary)),
+                              color: t.textPrimary)),
                     ]),
                     const SizedBox(height: 8),
                     Text('AI generates a fresh plan every day based on your fatigue, goals, and progress.',
                         style: GoogleFonts.inter(fontSize: 13,
-                            color: AppColors.textSecondary, height: 1.5)),
+                            color: t.textSecondary, height: 1.5)),
                   ]),
                 ),
               ).animate().fadeIn(),
@@ -185,7 +186,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                         Text('Your Adaptive Plan',
                             style: GoogleFonts.inter(fontSize: 14,
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary)),
+                                color: t.textPrimary)),
                         const Spacer(),
                         TextButton(
                           onPressed: () =>
@@ -195,10 +196,10 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                                   fontSize: 12, color: _gold)),
                         ),
                       ]),
-                      const Divider(color: AppColors.divider),
+                      Divider(color: t.divider),
                       Text(_dailyPlan!,
                           style: GoogleFonts.inter(fontSize: 14,
-                              color: AppColors.textSecondary, height: 1.6)),
+                              color: t.textSecondary, height: 1.6)),
                     ]),
                   ),
                 ).animate().fadeIn().slideY(begin: 0.04),
@@ -304,6 +305,7 @@ class _WelcomeView extends StatelessWidget {
   static const _gold = Color(0xFFFFD700);
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(children: [
@@ -322,16 +324,16 @@ class _WelcomeView extends StatelessWidget {
         Text('Master AI Fitness Coach',
             style: GoogleFonts.inter(fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
         const SizedBox(height: 6),
         Text('Your 24/7 AI coach — powered by the most advanced AI model',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(fontSize: 13,
-                color: AppColors.textSecondary, height: 1.5)),
+                color: t.textSecondary, height: 1.5)),
         const SizedBox(height: 28),
         Text('QUICK STARTS', style: GoogleFonts.inter(
             fontSize: 11, fontWeight: FontWeight.w700,
-            color: AppColors.textMuted, letterSpacing: 1.2)),
+            color: t.textMuted, letterSpacing: 1.2)),
         const SizedBox(height: 12),
         ...prompts.asMap().entries.map((e) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
@@ -341,18 +343,18 @@ class _WelcomeView extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
               decoration: BoxDecoration(
-                color: AppColors.bgCard,
+                color: t.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: t.border),
               ),
               child: Row(children: [
                 const Icon(Icons.bolt_rounded, color: _gold, size: 16),
                 const SizedBox(width: 10),
                 Expanded(child: Text(e.value,
                     style: GoogleFonts.inter(fontSize: 13,
-                        color: AppColors.textSecondary))),
-                const Icon(Icons.play_arrow_rounded,
-                    color: AppColors.textMuted, size: 18),
+                        color: t.textSecondary))),
+                Icon(Icons.play_arrow_rounded,
+                    color: t.textMuted, size: 18),
               ]),
             ).animate(delay: (e.key * 60).ms).fadeIn(),
           ),
@@ -369,6 +371,7 @@ class _ChatBubble extends StatelessWidget {
   static const _orange = Color(0xFFFF6F00);
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final isUser = msg.isUser;
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -380,20 +383,20 @@ class _ChatBubble extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: isUser ? const LinearGradient(
               colors: [_gold, _orange]) : null,
-          color: isUser ? null : AppColors.bgCard,
+          color: isUser ? null : t.surface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
             bottomLeft: Radius.circular(isUser ? 16 : 4),
             bottomRight: Radius.circular(isUser ? 4 : 16),
           ),
-          border: isUser ? null : Border.all(color: AppColors.border),
+          border: isUser ? null : Border.all(color: t.border),
         ),
         child: Text(msg.text,
             style: GoogleFonts.inter(fontSize: 14,
                 color: isUser ? Colors.black
-                    : msg.isError ? AppColors.error
-                    : AppColors.textPrimary,
+                    : msg.isError ? t.danger
+                    : t.textPrimary,
                 height: 1.5)),
       ).animate().fadeIn(duration: 200.ms),
     );
@@ -403,15 +406,16 @@ class _ChatBubble extends StatelessWidget {
 class _TypingBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.bgCard,
+          color: t.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: t.border),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(width: 18, height: 18,
@@ -420,7 +424,7 @@ class _TypingBubble extends StatelessWidget {
           const SizedBox(width: 10),
           Text('Coach is thinking...',
               style: GoogleFonts.inter(fontSize: 12,
-                  color: AppColors.textMuted)),
+                  color: t.textMuted)),
         ]),
       ).animate(onPlay: (c) => c.repeat())
           .shimmer(duration: 1200.ms),
@@ -436,25 +440,26 @@ class _InputBar extends StatelessWidget {
   static const _gold = Color(0xFFFFD700);
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
-        border: Border(top: BorderSide(color: AppColors.border)),
+        color: t.surface,
+        border: Border(top: BorderSide(color: t.border)),
       ),
       child: Row(children: [
         Expanded(
           child: TextField(
             controller: ctrl,
             style: GoogleFonts.inter(
-                color: AppColors.textPrimary, fontSize: 14),
+                color: t.textPrimary, fontSize: 14),
             onSubmitted: onSend,
             decoration: InputDecoration(
               hintText: 'Ask your Master AI coach...',
               hintStyle: GoogleFonts.inter(
-                  color: AppColors.textMuted, fontSize: 13),
+                  color: t.textMuted, fontSize: 13),
               filled: true,
-              fillColor: AppColors.bgInput,
+              fillColor: t.surfaceMuted,
               contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16, vertical: 10),
               border: OutlineInputBorder(

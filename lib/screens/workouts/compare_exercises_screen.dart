@@ -19,7 +19,7 @@ class _CompareExercisesScreenState extends ConsumerState<CompareExercisesScreen>
   String _exercise1 = 'Bench Press';
   String _exercise2 = 'Overhead Press';
 
-  final _metrics = [
+  final _metrics = const [
     _Metric(label: 'Max Weight', val1: '90 kg', val2: '70 kg', raw1: 90, raw2: 70),
     _Metric(label: 'Best Reps', val1: '8', val2: '10', raw1: 8, raw2: 10),
     _Metric(label: 'Total Volume', val1: '14,400', val2: '9,800', raw1: 14400, raw2: 9800),

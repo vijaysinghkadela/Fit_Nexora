@@ -18,7 +18,7 @@ class EliteTransformationScreen extends ConsumerWidget {
       backgroundColor: AppColors.bgDark,
       appBar: AppBar(
         backgroundColor: AppColors.bgDark,
-        leading: BackButton(color: AppColors.textSecondary),
+        leading: const BackButton(color: AppColors.textSecondary),
         title: Text('Transformation Photos',
             style: GoogleFonts.inter(
                 fontSize: 19, fontWeight: FontWeight.w800,

@@ -141,8 +141,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       300,
-      "Time to Work Out!",
-      "Your workout session is waiting. Keep the streak going!",
+      'Time to Work Out!',
+      'Your workout session is waiting. Keep the streak going!',
       scheduled,
       const NotificationDetails(android: _workoutChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

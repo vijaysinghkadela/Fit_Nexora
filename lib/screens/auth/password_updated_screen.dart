@@ -183,9 +183,9 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
                         ),
                       ),
                       onPressed: _goNext,
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text('Continue'),
                           SizedBox(width: 8),
                           Icon(Icons.settings_rounded),

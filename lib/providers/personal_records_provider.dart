@@ -95,12 +95,12 @@ class PersonalRecordsNotifier
   }
 }
 
-final personalRecordsProvider = StateNotifierProvider<PersonalRecordsNotifier,
+final personalRecordsProvider = StateNotifierProvider.autoDispose<PersonalRecordsNotifier,
     AsyncValue<List<PersonalRecord>>>(
   (ref) => PersonalRecordsNotifier(),
 );
 
 /// Convenience: grouped bests map
-final prBestsProvider = Provider<List<PersonalRecord>>((ref) {
+final prBestsProvider = Provider.autoDispose<List<PersonalRecord>>((ref) {
   return ref.watch(personalRecordsProvider.notifier).bests;
 });

@@ -63,10 +63,10 @@ class AchievementsScreen extends ConsumerWidget {
                               gradient: t.brandGradient,
                               shape: BoxShape.circle,
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '⚡',
-                                style: const TextStyle(fontSize: 28),
+                                style: TextStyle(fontSize: 28),
                               ),
                             ),
                           ),

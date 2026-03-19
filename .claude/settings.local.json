@@ -22,7 +22,9 @@
       "Bash(powershell.exe -Command \"\nSet-Location 'C:\\\\Users\\\\Vinay Pal\\\\Documents\\\\GYMOS_AI\\\\GYMOS_AI\\\\GymOS_AI-main'\n& 'C:\\\\flutter_sdk\\\\flutter\\\\bin\\\\flutter.bat' analyze --no-fatal-infos 2>&1\n\" 2>&1)",
       "Bash(ls /home/*/.pub-cache/bin/)",
       "Read(//usr/**)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(grep -rn \"Colors.white\\\\|Colors.black\\\\|Color\\(0xFF\" '/mnt/c/Users/Vinay Pal/Documents/GYMOS_AI/GYMOS_AI/GymOS_AI-main/lib/screens' --include=*.dart -l)",
+      "Bash(dart analyze:*)"
     ],
     "deny": [],
     "ask": []

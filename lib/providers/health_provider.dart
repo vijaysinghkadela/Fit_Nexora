@@ -52,7 +52,7 @@ class StepsNotifier extends StateNotifier<StepsState> {
   }
 }
 
-final stepsProvider = StateNotifierProvider<StepsNotifier, StepsState>(
+final stepsProvider = StateNotifierProvider.autoDispose<StepsNotifier, StepsState>(
   (ref) => StepsNotifier(),
 );
 
@@ -123,6 +123,6 @@ class SleepNotifier extends StateNotifier<SleepState> {
   }
 }
 
-final sleepProvider = StateNotifierProvider<SleepNotifier, SleepState>(
+final sleepProvider = StateNotifierProvider.autoDispose<SleepNotifier, SleepState>(
   (ref) => SleepNotifier(),
 );

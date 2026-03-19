@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/chart_buckets.dart';
-import '../../core/constants.dart';
 import '../../core/extensions.dart';
 import '../../core/responsive.dart';
 import '../../providers/auth_provider.dart';
@@ -118,6 +117,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
   }
 
   Widget _buildBgGlow() {
+    final t = context.fitTheme;
     return Stack(children: [
       Positioned(
         top: -100,
@@ -128,7 +128,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(colors: [
-              AppColors.primary.withOpacity(0.08),
+              t.brand.withOpacity(0.08),
               Colors.transparent,
             ]),
           ),
@@ -143,7 +143,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(colors: [
-              AppColors.accent.withOpacity(0.07),
+              t.accent.withOpacity(0.07),
               Colors.transparent,
             ]),
           ),
@@ -153,12 +153,13 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
   }
 
   SliverAppBar _buildAppBar(String gymName, String gymId, String userId) {
+    final t = context.fitTheme;
     return SliverAppBar(
       floating: true,
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded,
-            color: AppColors.textSecondary, size: 20),
+        icon: Icon(Icons.arrow_back_ios_rounded,
+            color: t.textSecondary, size: 20),
         onPressed: () => context.pop(),
       ),
       title: Column(
@@ -169,20 +170,20 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
+              color: t.textPrimary,
             ),
           ),
           Text(
             gymName,
             style:
-                GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
           ),
         ],
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh_rounded,
-              color: AppColors.textSecondary, size: 22),
+          icon: Icon(Icons.refresh_rounded,
+              color: t.textSecondary, size: 22),
           onPressed: () => _refreshTraffic(gymId, userId),
         ),
         const SizedBox(width: 8),
@@ -201,7 +202,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Check-in failed: ${_friendlyError(e)}'),
-            backgroundColor: AppColors.error,
+            backgroundColor: context.fitTheme.danger,
           ),
         );
       }
@@ -222,7 +223,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Check-out failed: ${_friendlyError(e)}'),
-            backgroundColor: AppColors.error,
+            backgroundColor: context.fitTheme.danger,
           ),
         );
       }
@@ -251,6 +252,7 @@ class _LiveTrafficCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final traffic = ref.watch(currentTrafficCountProvider(gymId));
     final rs = ResponsiveSize.of(context);
+    final t = context.fitTheme;
 
     return GlassmorphicCard(
       child: Padding(
@@ -262,9 +264,9 @@ class _LiveTrafficCard extends ConsumerWidget {
                 Container(
                   width: 10,
                   height: 10,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.accent,
+                    color: t.accent,
                   ),
                 )
                     .animate(onPlay: (c) => c.repeat())
@@ -284,7 +286,7 @@ class _LiveTrafficCard extends ConsumerWidget {
                   style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.accent,
+                    color: t.accent,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -307,7 +309,7 @@ class _LiveTrafficCard extends ConsumerWidget {
                     style: GoogleFonts.inter(
                       fontSize: rs.sp(72),
                       fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
+                      color: t.textPrimary,
                       height: 1,
                     ),
                   ).animate().fadeIn(duration: 400.ms).scale(
@@ -321,15 +323,15 @@ class _LiveTrafficCard extends ConsumerWidget {
                       count == 1 ? 'person\ncurrently' : 'people\ncurrently',
                       style: GoogleFonts.inter(
                         fontSize: 15,
-                        color: AppColors.textSecondary,
+                        color: t.textSecondary,
                         height: 1.4,
                       ),
                     ),
                   ),
                 ],
               ),
-              loading: () => Column(
-                children: const [
+              loading: () => const Column(
+                children: [
                   SkeletonBox(height: 62, width: 120, radius: 18),
                   SizedBox(height: 10),
                   SkeletonBox(height: 16, width: 110, radius: 8),
@@ -345,7 +347,7 @@ class _LiveTrafficCard extends ConsumerWidget {
             Text(
               'Updates in real time',
               style: GoogleFonts.inter(
-                  fontSize: 12, color: AppColors.textMuted),
+                  fontSize: 12, color: t.textMuted),
             ),
           ],
         ),
@@ -360,10 +362,11 @@ class _TrafficLevelPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final (label, color) = switch (count) {
-      <= 5 => ('Quiet', AppColors.accent),
-      <= 15 => ('Moderate', AppColors.warning),
-      _ => ('Busy', AppColors.error),
+      <= 5 => ('Quiet', t.accent),
+      <= 15 => ('Moderate', t.warning),
+      _ => ('Busy', t.danger),
     };
 
     return Container(
@@ -435,8 +438,8 @@ class _CheckInCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         SkeletonBox(height: 48, width: 48, radius: 14),
         SizedBox(width: 16),
         Expanded(
@@ -468,6 +471,7 @@ class _CheckedInView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final checkInTime = DateTime.tryParse(checkin['checked_in_at'] as String)
         ?.toLocal();
     final timeStr = checkInTime != null
@@ -486,11 +490,11 @@ class _CheckedInView extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.accent.withOpacity(0.15),
+            color: t.accent.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.fitness_center_rounded,
-              color: AppColors.accent, size: 24),
+          child: Icon(Icons.fitness_center_rounded,
+              color: t.accent, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -502,14 +506,14 @@ class _CheckedInView extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: t.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 'Checked in at $timeStr · $durationStr',
                 style: GoogleFonts.inter(
-                    fontSize: 12, color: AppColors.textSecondary),
+                    fontSize: 12, color: t.textSecondary),
               ),
             ],
           ),
@@ -522,20 +526,20 @@ class _CheckedInView extends StatelessWidget {
                 ? null
                 : () => onCheckOut(checkin['id'] as String),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error.withOpacity(0.2),
-              foregroundColor: AppColors.error,
+              backgroundColor: t.danger.withOpacity(0.2),
+              foregroundColor: t.danger,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(
-                      color: AppColors.error.withOpacity(0.4))),
+                      color: t.danger.withOpacity(0.4))),
               elevation: 0,
             ),
             child: loading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: AppColors.error))
+                        strokeWidth: 2, color: t.danger))
                 : Text('Check Out',
                     style: GoogleFonts.inter(
                         fontSize: 13, fontWeight: FontWeight.w600)),
@@ -553,17 +557,18 @@ class _CheckedOutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Row(
       children: [
         Container(
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.15),
+            color: t.brand.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.login_rounded,
-              color: AppColors.primary, size: 24),
+          child: Icon(Icons.login_rounded,
+              color: t.brand, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -575,14 +580,14 @@ class _CheckedOutView extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: t.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 'Tap to mark your gym visit',
                 style: GoogleFonts.inter(
-                    fontSize: 12, color: AppColors.textSecondary),
+                    fontSize: 12, color: t.textSecondary),
               ),
             ],
           ),
@@ -593,7 +598,7 @@ class _CheckedOutView extends StatelessWidget {
           child: ElevatedButton(
             onPressed: loading ? null : onCheckIn,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent,
+              backgroundColor: t.accent,
               foregroundColor: Colors.black,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
@@ -623,6 +628,7 @@ class _BestTimesCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bestTimes = ref.watch(bestVisitTimesProvider(gymId));
+    final t = context.fitTheme;
 
     return GlassmorphicCard(
       child: Padding(
@@ -632,15 +638,15 @@ class _BestTimesCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.star_rounded,
-                    color: AppColors.warning, size: 20),
+                Icon(Icons.star_rounded,
+                    color: t.warning, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Best Times to Visit',
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],
@@ -649,7 +655,7 @@ class _BestTimesCard extends ConsumerWidget {
             Text(
               'Quietest hours based on historical visits',
               style: GoogleFonts.inter(
-                  fontSize: 12, color: AppColors.textSecondary),
+                  fontSize: 12, color: t.textSecondary),
             ),
             const SizedBox(height: 16),
             bestTimes.when(
@@ -690,20 +696,21 @@ class _TimeSlotChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final label = _hourLabel(hour);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.accent.withOpacity(0.12),
+        color: t.accent.withOpacity(0.12),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-            color: AppColors.accent.withOpacity(isDefault ? 0.2 : 0.4)),
+            color: t.accent.withOpacity(isDefault ? 0.2 : 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.access_time_rounded,
-              color: AppColors.accent.withOpacity(isDefault ? 0.5 : 1),
+              color: t.accent.withOpacity(isDefault ? 0.5 : 1),
               size: 15),
           const SizedBox(width: 6),
           Text(
@@ -711,7 +718,7 @@ class _TimeSlotChip extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.accent
+              color: t.accent
                   .withOpacity(isDefault ? 0.5 : 1),
             ),
           ),
@@ -749,6 +756,7 @@ class _HourlyChartCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hourlyData = ref.watch(hourlyTrafficProvider(gymId));
+    final t = context.fitTheme;
 
     return GlassmorphicCard(
       child: Padding(
@@ -758,15 +766,15 @@ class _HourlyChartCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.bar_chart_rounded,
-                    color: AppColors.primary, size: 20),
+                Icon(Icons.bar_chart_rounded,
+                    color: t.brand, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Weekly Traffic Pattern',
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],
@@ -775,7 +783,7 @@ class _HourlyChartCard extends ConsumerWidget {
             Text(
               'Average visitors per hour (last 4 weeks)',
               style: GoogleFonts.inter(
-                  fontSize: 12, color: AppColors.textSecondary),
+                  fontSize: 12, color: t.textSecondary),
             ),
             const SizedBox(height: 20),
             hourlyData.when(
@@ -799,10 +807,12 @@ class _TrafficBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     // Only show gym hours 5 AM – 10 PM (indices 5–22)
     const startHour = 5;
     const endHour = 22;
-    return LayoutBuilder(
+    return RepaintBoundary(
+      child: LayoutBuilder(
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
         final buckets = bucketHourlyValues(
@@ -831,7 +841,7 @@ class _TrafficBarChart extends StatelessWidget {
                 'Not enough traffic history yet.',
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: AppColors.textMuted,
+                  color: t.textMuted,
                 ),
               ),
             ),
@@ -851,10 +861,10 @@ class _TrafficBarChart extends StatelessWidget {
               final isQuietest =
                   quietestValue != null && bucket.value == quietestValue;
               final color = bucket.containsCurrentHour
-                  ? AppColors.warning
+                  ? t.warning
                   : isQuietest
-                      ? AppColors.accent
-                      : AppColors.primary.withOpacity(0.45 + frac * 0.45);
+                      ? t.accent
+                      : t.brand.withOpacity(0.45 + frac * 0.45);
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: isNarrow ? 2 : 1.5),
@@ -866,9 +876,9 @@ class _TrafficBarChart extends StatelessWidget {
                           width: 4,
                           height: 4,
                           margin: const EdgeInsets.only(bottom: 4),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.warning,
+                            color: t.warning,
                           ),
                         ),
                       AnimatedContainer(
@@ -903,7 +913,7 @@ class _TrafficBarChart extends StatelessWidget {
                 showLabel ? _bucketLabel(bucket) : '',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                    fontSize: isNarrow ? 8 : 9, color: AppColors.textMuted),
+                    fontSize: isNarrow ? 8 : 9, color: t.textMuted),
               ),
             );
           }).toList(),
@@ -914,16 +924,17 @@ class _TrafficBarChart extends StatelessWidget {
           spacing: 16,
           runSpacing: 8,
           children: [
-            _LegendItem(color: AppColors.accent, label: 'Quietest'),
-            _LegendItem(color: AppColors.warning, label: 'Right now'),
+            _LegendItem(color: t.accent, label: 'Quietest'),
+            _LegendItem(color: t.warning, label: 'Right now'),
             _LegendItem(
-                color: AppColors.primary.withOpacity(0.9),
+                color: t.brand.withOpacity(0.9),
                 label: isNarrow ? 'Busiest windows' : 'Busy hours'),
           ],
         ),
           ],
         );
       },
+      ),
     );
   }
 
@@ -949,6 +960,7 @@ class _LegendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -961,7 +973,7 @@ class _LegendItem extends StatelessWidget {
         const SizedBox(width: 5),
         Text(label,
             style: GoogleFonts.inter(
-                fontSize: 11, color: AppColors.textSecondary)),
+                fontSize: 11, color: t.textSecondary)),
       ],
     );
   }
@@ -972,6 +984,7 @@ class _LegendItem extends StatelessWidget {
 class _TrafficTipsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     const tips = [
       (
         Icons.wb_twilight_rounded,
@@ -998,21 +1011,21 @@ class _TrafficTipsCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.lightbulb_rounded,
-                    color: AppColors.warning, size: 20),
+                Icon(Icons.lightbulb_rounded,
+                    color: t.warning, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Gym Traffic Tips',
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            ...tips.map((t) => Padding(
+            ...tips.map((tip) => Padding(
                   padding: const EdgeInsets.only(bottom: 14),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1021,11 +1034,11 @@ class _TrafficTipsCard extends StatelessWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: AppColors.bgElevated,
+                          color: t.surfaceAlt,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(t.$1,
-                            color: AppColors.textSecondary, size: 18),
+                        child: Icon(tip.$1,
+                            color: t.textSecondary, size: 18),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -1033,19 +1046,19 @@ class _TrafficTipsCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              t.$2,
+                              tip.$2,
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
+                                color: t.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              t.$3,
+                              tip.$3,
                               style: GoogleFonts.inter(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary),
+                                  color: t.textSecondary),
                             ),
                           ],
                         ),
@@ -1067,6 +1080,7 @@ class _ShimmerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Row(
       children: List.generate(
         3,
@@ -1076,7 +1090,7 @@ class _ShimmerRow extends StatelessWidget {
             width: 90,
             height: 38,
             decoration: BoxDecoration(
-              color: AppColors.bgElevated,
+              color: t.surfaceAlt,
               borderRadius: BorderRadius.circular(12),
             ),
           )

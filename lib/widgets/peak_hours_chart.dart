@@ -41,7 +41,8 @@ class PeakHoursChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.fitTheme;
 
-    return SizedBox(
+    return RepaintBoundary(
+      child: SizedBox(
       height: height + 36,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -119,6 +120,7 @@ class PeakHoursChart extends StatelessWidget {
           }).toList(),
         ),
       ),
+    ),
     );
   }
 }

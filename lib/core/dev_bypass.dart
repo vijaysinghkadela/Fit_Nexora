@@ -62,12 +62,12 @@ WorkoutPlan devWorkoutPlan() {
     status: PlanStatus.active,
     createdAt: now,
     updatedAt: now,
-    days: [
+    days: const [
       TrainingDay(
         dayName: 'Day 1 — Push (Chest & Triceps)',
         muscleGroup: 'chest_triceps',
         dayIndex: 0,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Bench Press', sets: 4, reps: '8-10', restSeconds: 90, equipment: 'Barbell'),
           Exercise(name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', restSeconds: 75, equipment: 'Dumbbells'),
           Exercise(name: 'Cable Fly', sets: 3, reps: '12-15', restSeconds: 60, equipment: 'Cable'),
@@ -79,7 +79,7 @@ WorkoutPlan devWorkoutPlan() {
         dayName: 'Day 2 — Pull (Back & Biceps)',
         muscleGroup: 'back_biceps',
         dayIndex: 1,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Deadlift', sets: 4, reps: '6-8', restSeconds: 120, equipment: 'Barbell'),
           Exercise(name: 'Pull-ups', sets: 3, reps: '8-10', restSeconds: 90, equipment: 'Bodyweight'),
           Exercise(name: 'Seated Cable Row', sets: 3, reps: '10-12', restSeconds: 75, equipment: 'Cable'),
@@ -91,7 +91,7 @@ WorkoutPlan devWorkoutPlan() {
         dayName: 'Day 3 — Legs & Core',
         muscleGroup: 'legs_core',
         dayIndex: 2,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Barbell Squat', sets: 4, reps: '8-10', restSeconds: 120, equipment: 'Barbell'),
           Exercise(name: 'Romanian Deadlift', sets: 3, reps: '10-12', restSeconds: 90, equipment: 'Barbell'),
           Exercise(name: 'Leg Press', sets: 3, reps: '12-15', restSeconds: 75, equipment: 'Machine'),
@@ -104,7 +104,7 @@ WorkoutPlan devWorkoutPlan() {
         dayName: 'Day 4 — Shoulders & Arms',
         muscleGroup: 'shoulders_arms',
         dayIndex: 3,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Overhead Press', sets: 4, reps: '8-10', restSeconds: 90, equipment: 'Barbell'),
           Exercise(name: 'Lateral Raise', sets: 3, reps: '12-15', restSeconds: 60, equipment: 'Dumbbells'),
           Exercise(name: 'Face Pulls', sets: 3, reps: '15', restSeconds: 60, equipment: 'Cable'),
@@ -116,7 +116,7 @@ WorkoutPlan devWorkoutPlan() {
         dayName: 'Day 5 — Full Body Power',
         muscleGroup: 'full_body',
         dayIndex: 4,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Power Clean', sets: 4, reps: '5', restSeconds: 120, equipment: 'Barbell'),
           Exercise(name: 'Front Squat', sets: 3, reps: '8', restSeconds: 90, equipment: 'Barbell'),
           Exercise(name: 'Weighted Dips', sets: 3, reps: '8-10', restSeconds: 75, equipment: 'Bodyweight'),
@@ -128,7 +128,7 @@ WorkoutPlan devWorkoutPlan() {
         dayName: 'Day 6 — Active Recovery & Cardio',
         muscleGroup: 'cardio',
         dayIndex: 5,
-        exercises: const [
+        exercises: [
           Exercise(name: 'Treadmill Incline Walk', sets: 1, reps: '20 min', restSeconds: 0, equipment: 'Treadmill'),
           Exercise(name: 'Foam Rolling', sets: 1, reps: '10 min', restSeconds: 0, equipment: 'Foam Roller'),
           Exercise(name: 'Stretching Routine', sets: 1, reps: '15 min', restSeconds: 0, equipment: 'Bodyweight'),
@@ -347,7 +347,7 @@ PagedResult<Membership> devMembershipsPaged({
       amount: i % 2 == 0 ? 25000 : 15000,
       startDate: DateTime.now().subtract(Duration(days: 30 + i)),
       endDate: status == MembershipStatus.expired
-          ? DateTime.now().subtract(Duration(days: 1))
+          ? DateTime.now().subtract(const Duration(days: 1))
           : DateTime.now().add(Duration(days: 30 + i)),
       status: status,
       createdAt: DateTime.now().subtract(Duration(days: 35 + i)),

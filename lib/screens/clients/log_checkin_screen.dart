@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../config/theme.dart';
+import '../../providers/gym_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Mock client data model for this screen.
@@ -139,6 +141,26 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
+    final gym = ref.watch(selectedGymProvider);
+
+    // Guard: if no gym is selected, show error and redirect
+    if (gym == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'No gym selected. Please access check-in from your dashboard.',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: t.danger,
+          ),
+        );
+        context.go('/dashboard');
+      });
+      return Scaffold(backgroundColor: t.background, body: const SizedBox.shrink());
+    }
+
     final filtered = _filtered;
 
     return Scaffold(

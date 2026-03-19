@@ -82,8 +82,8 @@ class ListTileSkeleton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: t.border),
       ),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           SkeletonBox(height: 52, width: 52, radius: 26),
           SizedBox(width: 16),
           Expanded(

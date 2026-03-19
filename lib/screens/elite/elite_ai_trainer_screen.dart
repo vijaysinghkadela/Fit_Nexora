@@ -265,8 +265,8 @@ class _WelcomeView extends StatelessWidget {
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
                 colors: [Color(0xFF9C27B0), Color(0xFF3F51B5)],
               ),
               shape: BoxShape.circle,

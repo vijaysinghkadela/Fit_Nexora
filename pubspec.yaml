@@ -79,6 +79,12 @@ dependencies:
   # Mobile barcode / QR scanner (food & gym check-in)
   mobile_scanner: ^5.2.3
 
+  # Biometric authentication (fingerprint / Face ID)
+  local_auth: ^2.3.0
+
+  # Google Sign-In
+  google_sign_in: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

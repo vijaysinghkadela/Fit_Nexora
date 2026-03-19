@@ -783,10 +783,10 @@ class _TaskCard extends StatelessWidget {
   ) {
     switch (priority) {
       case _TaskPriority.high:
-        return _PriorityStyle(
+        return const _PriorityStyle(
           label: 'HIGH',
-          foreground: const Color(0xFFFF8B8B),
-          background: const Color(0x33D95C66),
+          foreground: Color(0xFFFF8B8B),
+          background: Color(0x33D95C66),
         );
       case _TaskPriority.medium:
         return _PriorityStyle(

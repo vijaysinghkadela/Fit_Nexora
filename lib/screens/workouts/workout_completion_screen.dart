@@ -401,10 +401,10 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             colors: [
-                              const Color(0xFFFFD700),
-                              const Color(0xFFFFA500),
+                              Color(0xFFFFD700),
+                              Color(0xFFFFA500),
                             ],
                           ),
                           shape: BoxShape.circle,

@@ -34,7 +34,7 @@ String get masterSystemPrompt => _masterSystemPrompt ?? '';
 /// Pro | Elite over quota  → claude-haiku-4-5-20251001
 String _selectModel(String plan, int quotaRemaining) {
   if (plan == 'basic') {
-    throw AiAccessDeniedException('AI not available on Basic plan');
+    throw const AiAccessDeniedException('AI not available on Basic plan');
   }
   if (plan == 'elite' && quotaRemaining > 0) return 'claude-opus-4-5';
   return 'claude-haiku-4-5-20251001'; // Pro default or Elite overage
@@ -244,7 +244,7 @@ Future<String> clientChat(
   List<Map<String, String>> history = const [],
 }) {
   if (client.gymPlan != 'elite') {
-    throw AiAccessDeniedException(
+    throw const AiAccessDeniedException(
         'AI Chat is available exclusively on the Elite plan.');
   }
   return gymOSAI(

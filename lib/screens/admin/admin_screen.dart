@@ -777,7 +777,8 @@ class _GrowthLineChart extends StatelessWidget {
     final maxY = (displayPoints.fold<double>(0, math.max) * 1.25)
         .clamp(10.0, double.infinity);
 
-    return LineChart(
+    return RepaintBoundary(
+      child: LineChart(
       LineChartData(
         minX: 0,
         maxX: (displayPoints.length - 1).toDouble(),
@@ -864,6 +865,7 @@ class _GrowthLineChart extends StatelessWidget {
             },
           ),
         ),
+      ),
       ),
     );
   }

@@ -25,7 +25,8 @@ class WorkoutSetTracker extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.fitTheme;
 
-    return Row(
+    return RepaintBoundary(
+      child: Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(totalSets, (index) {
         final setNumber = index + 1; // 1-based
@@ -52,6 +53,7 @@ class WorkoutSetTracker extends StatelessWidget {
           );
         }
       }),
+    ),
     );
   }
 }

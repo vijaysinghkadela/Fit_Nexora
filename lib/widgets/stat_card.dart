@@ -33,7 +33,8 @@ class StatCard extends StatelessWidget {
     // Generate a soft glow color based on the icon's color
     final glowColor = color.withOpacity(0.15);
 
-    return Stack(
+    return RepaintBoundary(
+      child: Stack(
       children: [
         Container(
           padding: const EdgeInsets.all(20),
@@ -174,6 +175,7 @@ class StatCard extends StatelessWidget {
           ),
         ),
       ],
+    ),
     )
         .animate(delay: Duration(milliseconds: delay))
         .fadeIn(duration: AppConstants.normalAnimation)

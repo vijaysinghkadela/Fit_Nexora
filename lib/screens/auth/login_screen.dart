@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/biometric_provider.dart';
 import '../../widgets/fit_auth_scaffold.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -45,24 +46,75 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             password: _passwordController.text,
           );
 
-      if (mounted) {
-        final role = ref.read(currentUserProvider).value?.globalRole;
-        switch (role) {
-          case UserRole.superAdmin:
-            context.go('/admin');
-            break;
-          case UserRole.trainer:
-            context.go('/trainer');
-            break;
-          case UserRole.client:
-            context.go('/member');
-            break;
-          case UserRole.gymOwner:
-          case null:
-            context.go('/dashboard');
-            break;
-        }
+      // Save credentials for future biometric login
+      await ref.read(biometricServiceProvider).saveCredentials(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+      // Refresh biometric readiness
+      ref.invalidate(canBiometricLoginProvider);
+
+      if (mounted) _navigateToHome();
+    } catch (e) {
+      setState(() {
+        _errorMessage = _friendlyError(e.toString());
+      });
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _navigateToHome() {
+    final role = ref.read(currentUserProvider).value?.globalRole;
+    switch (role) {
+      case UserRole.superAdmin:
+        context.go('/admin');
+        break;
+      case UserRole.trainer:
+        context.go('/trainer');
+        break;
+      case UserRole.client:
+        context.go('/member');
+        break;
+      case UserRole.gymOwner:
+      case null:
+        context.go('/dashboard');
+        break;
+    }
+  }
+
+  Future<void> _handleBiometricLogin() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final bioService = ref.read(biometricServiceProvider);
+
+      // Step 1: Trigger fingerprint / Face ID prompt
+      final authenticated = await bioService.authenticate(
+        reason: 'Scan your fingerprint to log in to FitNexora',
+      );
+      if (!authenticated) {
+        setState(() => _errorMessage = 'Biometric authentication failed.');
+        return;
       }
+
+      // Step 2: Retrieve stored credentials
+      final creds = await bioService.getCredentials();
+      if (creds == null) {
+        setState(() => _errorMessage = 'No saved credentials. Please sign in with email first.');
+        return;
+      }
+
+      // Step 3: Sign in with stored credentials
+      await ref.read(currentUserProvider.notifier).signIn(
+            email: creds.email,
+            password: creds.password,
+          );
+
+      if (mounted) _navigateToHome();
     } catch (e) {
       setState(() {
         _errorMessage = _friendlyError(e.toString());
@@ -73,11 +125,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
       await ref.read(authServiceProvider).signInWithGoogle();
+      // The authStateProvider listener in auth_provider.dart will update
+      // currentUserProvider, so we just need to wait for it and navigate.
+      if (mounted) _navigateToHome();
     } catch (error) {
-      if (!mounted) return;
-      context.showSnackBar(error.toString(), isError: true);
+      // User cancelled — don't show an error for that.
+      final msg = error.toString();
+      if (!msg.contains('cancelled') && mounted) {
+        setState(() {
+          _errorMessage = _friendlyError(msg);
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -242,10 +309,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: null,
-                  icon: const Icon(Icons.fingerprint_rounded),
-                  label: const Text('Biometric'),
+                child: Consumer(
+                  builder: (context, ref, _) {
+                    final canBio = ref.watch(canBiometricLoginProvider);
+                    return OutlinedButton.icon(
+                      onPressed: canBio.valueOrNull == true && !_isLoading
+                          ? _handleBiometricLogin
+                          : null,
+                      icon: const Icon(Icons.fingerprint_rounded),
+                      label: const Text('Biometric'),
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 12),

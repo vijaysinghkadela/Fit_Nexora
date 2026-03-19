@@ -52,13 +52,13 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
           // Simulated camera background
           Positioned.fill(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    const Color(0xFF0A0A12),
-                    const Color(0xFF050508),
+                    Color(0xFF0A0A12),
+                    Color(0xFF050508),
                   ],
                 ),
               ),
@@ -186,7 +186,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                             elevation: 0,
                           ),
                           child: _isScanning
-                              ? SizedBox(
+                              ? const SizedBox(
                                   width: 22,
                                   height: 22,
                                   child: CircularProgressIndicator(
@@ -405,7 +405,7 @@ class _CornerPainter extends CustomPainter {
         paint,
       );
     } else if (top && !left) {
-      canvas.drawLine(Offset(0, 0), Offset(w - radius, 0), paint);
+      canvas.drawLine(const Offset(0, 0), Offset(w - radius, 0), paint);
       canvas.drawLine(Offset(w, radius), Offset(w, h), paint);
       canvas.drawArc(
         Rect.fromLTWH(w - radius * 2, 0, radius * 2, radius * 2),
@@ -415,7 +415,7 @@ class _CornerPainter extends CustomPainter {
         paint,
       );
     } else if (!top && left) {
-      canvas.drawLine(Offset(0, 0), Offset(0, h - radius), paint);
+      canvas.drawLine(const Offset(0, 0), Offset(0, h - radius), paint);
       canvas.drawLine(Offset(radius, h), Offset(w, h), paint);
       canvas.drawArc(
         Rect.fromLTWH(0, h - radius * 2, radius * 2, radius * 2),

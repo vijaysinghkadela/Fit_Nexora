@@ -27,7 +27,8 @@ class CircularGauge extends StatelessWidget {
     final t = context.fitTheme;
     final colors = gradientColors ?? [t.brand, t.accent];
 
-    return SizedBox(
+    return RepaintBoundary(
+      child: SizedBox(
       width: size,
       height: size,
       child: Stack(
@@ -68,6 +69,7 @@ class CircularGauge extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }

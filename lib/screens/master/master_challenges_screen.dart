@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+import '../../core/extensions.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Master: Exclusive Fitness Challenges + Gym Leaderboard.
@@ -16,42 +16,44 @@ class MasterChallengesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
+
     // Static leaderboard entries for demo (will be populated by Supabase)
     final leaderboard = [
       ('Rohit S.',    '🔥 28 day streak',   120, _gold),
       ('Priya M.',    '⚡ 25 days',          105, _silver),
       ('Arjun K.',    '💪 22 days',          98,  _bronze),
-      ('Neha P.',     '🏃 19 days',          87,  AppColors.textMuted),
-      ('Vikram D.',   '🌟 17 days',          75,  AppColors.textMuted),
-      ('Sneha R.',    '💎 15 days',          63,  AppColors.textMuted),
+      ('Neha P.',     '🏃 19 days',          87,  t.textMuted),
+      ('Vikram D.',   '🌟 17 days',          75,  t.textMuted),
+      ('Sneha R.',    '💎 15 days',          63,  t.textMuted),
     ];
 
     final challenges = [
       ('🔥', '30-Day Fat Burn Challenge',
           '30 min cardio every day for 30 days',
-          '12 days left', 62.0, AppColors.error),
+          '12 days left', 62.0, t.danger),
       ('💪', 'Push Up Power',
           '100 push-ups a day for 2 weeks',
-          '5 days left', 80.0, AppColors.primary),
+          '5 days left', 80.0, t.brand),
       ('🥗', 'Clean Eating Week',
           'Log 3 clean meals daily for 7 days',
-          '3 days left', 43.0, AppColors.success),
+          '3 days left', 43.0, t.success),
       ('🏆', 'Top Attendance',
           'Visit the gym 20+ times this month',
-          '8 days left', 55.0, AppColors.warning),
+          '8 days left', 55.0, t.warning),
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: AppColors.bgDark,
-            leading: BackButton(color: AppColors.textSecondary),
+            backgroundColor: t.background,
+            leading: BackButton(color: t.textSecondary),
             title: Text('Challenges & Leaderboard',
                 style: GoogleFonts.inter(fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary)),
+                    color: t.textPrimary)),
             expandedHeight: 180,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -61,7 +63,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       _gold.withOpacity(0.15),
-                      AppColors.bgDark,
+                      t.background,
                     ],
                   ),
                 ),
@@ -69,11 +71,11 @@ class MasterChallengesScreen extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
                     child: Row(children: [
-                      _statPill('🔥', 'Challenges', '4 active', _orange),
+                      _statPill(context, '🔥', 'Challenges', '4 active', _orange),
                       const SizedBox(width: 10),
-                      _statPill('🏆', 'Leaderboard', 'Top 6', _gold),
+                      _statPill(context, '🏆', 'Leaderboard', 'Top 6', _gold),
                       const SizedBox(width: 10),
-                      _statPill('🎯', 'Your Rank', '#3', AppColors.primary),
+                      _statPill(context, '🎯', 'Your Rank', '#3', t.brand),
                     ]),
                   ),
                 ),
@@ -82,7 +84,7 @@ class MasterChallengesScreen extends ConsumerWidget {
           ),
 
           // ─── Leaderboard
-          _hdr('🏆 GYM LEADERBOARD — THIS MONTH'),
+          _hdr(context, '🏆 GYM LEADERBOARD — THIS MONTH'),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
@@ -113,10 +115,10 @@ class MasterChallengesScreen extends ConsumerWidget {
                           title: Text(name,
                               style: GoogleFonts.inter(fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary)),
+                                  color: t.textPrimary)),
                           subtitle: Text(sub,
                               style: GoogleFonts.inter(fontSize: 12,
-                                  color: AppColors.textSecondary)),
+                                  color: t.textSecondary)),
                           trailing: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
@@ -130,7 +132,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                           ),
                         ),
                         if (i < leaderboard.length - 1)
-                          const Divider(color: AppColors.divider, height: 1),
+                          Divider(color: t.divider, height: 1),
                       ]);
                     }).toList(),
                   ),
@@ -140,7 +142,7 @@ class MasterChallengesScreen extends ConsumerWidget {
           ),
 
           // ─── Active Challenges
-          _hdr('⚡ ACTIVE CHALLENGES'),
+          _hdr(context, '⚡ ACTIVE CHALLENGES'),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
             sliver: SliverList(
@@ -158,20 +160,20 @@ class MasterChallengesScreen extends ConsumerWidget {
                           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Text(title, style: GoogleFonts.inter(
                                 fontSize: 15, fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary)),
+                                color: t.textPrimary)),
                             Text(desc, style: GoogleFonts.inter(
-                                fontSize: 12, color: AppColors.textSecondary)),
+                                fontSize: 12, color: t.textSecondary)),
                           ])),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.warning.withOpacity(0.12),
+                              color: t.warning.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(remaining, style: GoogleFonts.inter(
                                 fontSize: 11, fontWeight: FontWeight.w700,
-                                color: AppColors.warning)),
+                                color: t.warning)),
                           ),
                         ]),
                         const SizedBox(height: 12),
@@ -201,16 +203,17 @@ class MasterChallengesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _hdr(String t) => SliverPadding(
+  Widget _hdr(BuildContext context, String label) => SliverPadding(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
         sliver: SliverToBoxAdapter(
-          child: Text(t, style: GoogleFonts.inter(
+          child: Text(label, style: GoogleFonts.inter(
               fontSize: 11, fontWeight: FontWeight.w700,
-              color: AppColors.textMuted, letterSpacing: 1.1)),
+              color: context.fitTheme.textMuted, letterSpacing: 1.1)),
         ),
       );
 
-  Widget _statPill(String emoji, String label, String val, Color c) {
+  Widget _statPill(BuildContext context, String emoji, String label, String val, Color c) {
+    final t = context.fitTheme;
     return Expanded(child: Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
@@ -224,7 +227,7 @@ class MasterChallengesScreen extends ConsumerWidget {
         Text(val, style: GoogleFonts.inter(
             fontSize: 13, fontWeight: FontWeight.w900, color: c)),
         Text(label, style: GoogleFonts.inter(
-            fontSize: 9, color: AppColors.textMuted)),
+            fontSize: 9, color: t.textMuted)),
       ]),
     ));
   }

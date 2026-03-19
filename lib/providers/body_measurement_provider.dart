@@ -93,13 +93,13 @@ class BodyMeasurementNotifier
   }
 }
 
-final bodyMeasurementProvider = StateNotifierProvider<BodyMeasurementNotifier,
+final bodyMeasurementProvider = StateNotifierProvider.autoDispose<BodyMeasurementNotifier,
     AsyncValue<List<BodyMeasurement>>>(
   (ref) => BodyMeasurementNotifier(),
 );
 
 /// Latest measurement convenience provider
-final latestMeasurementProvider = Provider<BodyMeasurement?>((ref) {
+final latestMeasurementProvider = Provider.autoDispose<BodyMeasurement?>((ref) {
   final list = ref.watch(bodyMeasurementProvider).value ?? [];
   return list.isEmpty ? null : list.first;
 });
