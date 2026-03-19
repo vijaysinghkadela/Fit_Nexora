@@ -20,7 +20,7 @@ class EmailService {
   /// [subject] The subject line of the email.
   /// [htmlBody] The HTML content of the email.
   /// [from] The sender email address. Must be a verified domain in Resend.
-  /// Defaults to 'FitNexora <onboarding@resend.dev>' for testing purposes.
+  /// Defaults to "FitNexora (onboarding@resend.dev)" for testing purposes.
   Future<bool> sendEmail({
     required String to,
     required String subject,
