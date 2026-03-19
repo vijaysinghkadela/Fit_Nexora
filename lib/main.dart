@@ -10,7 +10,7 @@ import 'config/app_config.dart';
 import 'services/notification_service.dart';
 import 'widgets/error_widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,11 +64,30 @@ Future<void> main() async {
   // ── Remove native splash screen ──
   FlutterNativeSplash.remove();
 
-  runApp(
-    const AppErrorBoundary(
-      child: ProviderScope(
-        child: GymOSApp(),
+  if (AppConfig.sentryDsn.isNotEmpty) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = AppConfig.sentryDsn;
+        options.tracesSampleRate = 1.0;
+        options.profilesSampleRate = 1.0;
+      },
+      appRunner: () => runApp(
+        SentryWidget(
+          child: const AppErrorBoundary(
+            child: ProviderScope(
+              child: GymOSApp(),
+            ),
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  } else {
+    runApp(
+      const AppErrorBoundary(
+        child: ProviderScope(
+          child: GymOSApp(),
+        ),
+      ),
+    );
+  }
 }

@@ -20,6 +20,9 @@ class AppConfig {
   static String get razorpayKeySecret =>
       dotenv.env['RAZORPAY_KEY_SECRET'] ?? '';
 
+  static String get sentryDsn => dotenv.env['SENTRY_DSN'] ?? '';
+
+
   static String get claudeApiKey => dotenv.env['CLAUDE_API_KEY'] ?? '';
 
   static String get googleWebClientId =>

@@ -84,6 +84,7 @@ dependencies:
 
   # Google Sign-In
   google_sign_in: ^6.2.1
+  sentry_flutter: ^9.15.0
 
 dev_dependencies:
   flutter_test:

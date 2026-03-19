@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import '../core/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// A global error boundary that catches unhandled Flutter widget errors.
 ///
@@ -26,6 +27,7 @@ class _AppErrorBoundaryState extends State<AppErrorBoundary> {
     FlutterError.onError = (FlutterErrorDetails details) {
       FlutterError.presentError(details);
       FlutterNativeSplash.remove(); // Remove splash so error is visible
+      Sentry.captureException(details.exception, stackTrace: details.stack);
       if (mounted) setState(() => _error = details.exception);
     };
   }
