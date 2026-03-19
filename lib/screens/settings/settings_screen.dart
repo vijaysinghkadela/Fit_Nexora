@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../config/theme.dart';
 import '../../config/theme_mode_provider.dart';
@@ -285,7 +287,7 @@ class SettingsScreen extends ConsumerWidget {
                       padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
                       child: Center(
                         child: Text(
-                          'FITNEXORA V2.4.1 (${_buildFlavorLabel(user)})',
+                          'FITNEXORA V2.6.0 (${_buildFlavorLabel(user)})',
                           style: GoogleFonts.inter(
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
@@ -487,129 +489,224 @@ class SettingsScreen extends ConsumerWidget {
     final phoneCtrl = TextEditingController(text: user.phone ?? '');
     final formKey = GlobalKey<FormState>();
 
+    final picker = ImagePicker();
+    String? localAvatarUrl = user.avatarUrl;
+
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: colors.surface,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (sheetCtx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 8,
-            bottom: MediaQuery.viewInsetsOf(sheetCtx).bottom + 24,
-          ),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Edit Profile',
-                  style: GoogleFonts.inter(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: colors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: nameCtrl,
-                  style: GoogleFonts.inter(color: colors.textPrimary),
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    labelStyle: GoogleFonts.inter(color: colors.textMuted),
-                    prefixIcon: Icon(Icons.person_rounded, color: colors.brand),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.brand, width: 2),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.danger),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.danger, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: colors.surfaceMuted,
-                  ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Name is required' : null,
-                ),
-                const SizedBox(height: 14),
-                TextFormField(
-                  controller: phoneCtrl,
-                  keyboardType: TextInputType.phone,
-                  style: GoogleFonts.inter(color: colors.textPrimary),
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    labelStyle: GoogleFonts.inter(color: colors.textMuted),
-                    prefixIcon: Icon(Icons.phone_rounded, color: colors.brand),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.border),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: colors.brand, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: colors.surfaceMuted,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.brand,
-                      foregroundColor: colors.textPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
-                    onPressed: () async {
-                      if (!formKey.currentState!.validate()) return;
-                      final updated = user.copyWith(
-                        fullName: nameCtrl.text.trim(),
-                        phone: phoneCtrl.text.trim().isEmpty
-                            ? null
-                            : phoneCtrl.text.trim(),
-                      );
-                      try {
-                        await ref
-                            .read(authServiceProvider)
-                            .updateProfile(updated);
-                        ref.invalidate(currentUserProvider);
-                        if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
-                        if (context.mounted) {
-                          context.showSnackBar('Profile updated successfully');
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          context.showSnackBar('Update failed: $e',
-                              isError: true);
-                        }
-                      }
-                    },
-                    child: Text(
-                      'Save Changes',
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 8,
+                bottom: MediaQuery.viewInsetsOf(sheetCtx).bottom + 24,
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Edit Profile',
                       style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w700, fontSize: 16),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: colors.textPrimary,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: colors.surfaceAlt,
+                              border: Border.all(color: colors.brand, width: 2),
+                            ),
+                            child: ClipOval(
+                              child: localAvatarUrl != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: localAvatarUrl!,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.person_rounded,
+                                              size: 50, color: colors.textMuted),
+                                    )
+                                  : Icon(Icons.person_rounded,
+                                      size: 50, color: colors.textMuted),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.gallery,
+                                  imageQuality: 70,
+                                );
+                                if (image != null) {
+                                  try {
+                                    final bytes = await image.readAsBytes();
+                                    final extension =
+                                        image.path.split('.').last;
+                                    final fileName =
+                                        'avatar_${DateTime.now().millisecondsSinceEpoch}.$extension';
+
+                                    final publicUrl = await ref
+                                        .read(storageServiceProvider)
+                                        .uploadAvatar(
+                                          user.id,
+                                          bytes,
+                                          fileName,
+                                        );
+
+                                    setSheetState(() {
+                                      localAvatarUrl = publicUrl;
+                                    });
+                                  } catch (e) {
+                                    if (sheetCtx.mounted) {
+                                      ScaffoldMessenger.of(sheetCtx).showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text('Upload failed: $e'),
+                                            backgroundColor: Colors.red),
+                                      );
+                                    }
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: colors.brand,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: colors.surface, width: 2),
+                                ),
+                                child: const Icon(Icons.camera_alt_rounded,
+                                    size: 18, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    TextFormField(
+                      controller: nameCtrl,
+                      style: GoogleFonts.inter(color: colors.textPrimary),
+                      decoration: InputDecoration(
+                        labelText: 'Full Name',
+                        labelStyle: GoogleFonts.inter(color: colors.textMuted),
+                        prefixIcon:
+                            Icon(Icons.person_rounded, color: colors.brand),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.brand, width: 2),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.danger),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.danger, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: colors.surfaceMuted,
+                      ),
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Name is required'
+                          : null,
+                    ),
+                    const SizedBox(height: 14),
+                    TextFormField(
+                      controller: phoneCtrl,
+                      keyboardType: TextInputType.phone,
+                      style: GoogleFonts.inter(color: colors.textPrimary),
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        labelStyle: GoogleFonts.inter(color: colors.textMuted),
+                        prefixIcon:
+                            Icon(Icons.phone_rounded, color: colors.brand),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.border),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: colors.brand, width: 2),
+                        ),
+                        filled: true,
+                        fillColor: colors.surfaceMuted,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colors.brand,
+                          foregroundColor: colors.textPrimary,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                        ),
+                        onPressed: () async {
+                          if (!formKey.currentState!.validate()) return;
+                          final updated = user.copyWith(
+                            fullName: nameCtrl.text.trim(),
+                            phone: phoneCtrl.text.trim().isEmpty
+                                ? null
+                                : phoneCtrl.text.trim(),
+                            avatarUrl: localAvatarUrl,
+                          );
+                          try {
+                            await ref
+                                .read(authServiceProvider)
+                                .updateProfile(updated);
+                            ref.invalidate(currentUserProvider);
+                            if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
+                            if (context.mounted) {
+                              context.showSnackBar(
+                                  'Profile updated successfully');
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              context.showSnackBar('Update failed: $e',
+                                  isError: true);
+                            }
+                          }
+                        },
+                        child: Text(
+                          'Save Changes',
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w700, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -651,16 +748,33 @@ class _ProfileCard extends StatelessWidget {
                     gradient: colors.brandGradient,
                     shape: BoxShape.circle,
                   ),
-                  child: Center(
-                    child: Text(
-                      initial,
-                      style: GoogleFonts.inter(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                   child: user?.avatarUrl != null
+                       ? CachedNetworkImage(
+                           imageUrl: user!.avatarUrl!,
+                           fit: BoxFit.cover,
+                           placeholder: (context, url) =>
+                               const CircularProgressIndicator(strokeWidth: 2),
+                           errorWidget: (context, url, error) => Center(
+                             child: Text(
+                               initial,
+                               style: GoogleFonts.inter(
+                                 fontSize: 28,
+                                 fontWeight: FontWeight.w800,
+                                 color: Colors.white,
+                               ),
+                             ),
+                           ),
+                         )
+                       : Center(
+                           child: Text(
+                             initial,
+                             style: GoogleFonts.inter(
+                               fontSize: 28,
+                               fontWeight: FontWeight.w800,
+                               color: Colors.white,
+                             ),
+                           ),
+                         ),
                 ),
                 Positioned(
                   bottom: 2,

@@ -8,11 +8,12 @@
 *Built for India & Emerging Markets · Powered by Claude AI & Supabase*
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.6+-02569B?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.6.1+-0175C2?logo=dart)](https://dart.dev)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com)
 [![Claude AI](https://img.shields.io/badge/AI-Claude_Opus_%26_Haiku-blueviolet)](https://anthropic.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Riverpod](https://img.shields.io/badge/State-Riverpod_2.6-orange)](https://riverpod.dev)
-[![Version](https://img.shields.io/badge/Version-v2.5-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
+[![Version](https://img.shields.io/badge/Version-v2.6-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
 
 </div>
 
@@ -86,7 +87,7 @@ FitNexora operates on a **3-tier SaaS model**:
 │                      Flutter App (Client)                    │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────────┐  │
 │  │  Screens │  │ Providers│  │ Services │  │  Widgets   │  │
-│  │  (24 mod)│  │(Riverpod)│  │ (9 svc)  │  │(18 shared) │  │
+│  │  (24 mod)│  │(23 prov) │  │ (13 svc) │  │(18 shared) │  │
 │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────────────┘  │
 └───────┼─────────────┼─────────────┼────────────────────────┘
         │             │             │
@@ -109,7 +110,7 @@ FitNexora operates on a **3-tier SaaS model**:
 
 | Layer | Technology |
 |---|---|
-| Framework | Flutter 3.6+ (Dart) |
+| Framework | Flutter 3.6+ (Dart 3.6.1+) |
 | State Management | Riverpod 2.6 (compile-safe, reactive) |
 | Routing | GoRouter (deep-linking, role-based redirect) |
 | Theming | Custom `ThemeProvider` — Dark/Light/System |
@@ -129,7 +130,9 @@ lib/
 │   ├── app_config.dart        # Env vars (Supabase, Stripe, Claude keys)
 │   ├── plan_limits.dart       # Single source of truth for SaaS limits
 │   ├── routes.dart            # GoRouter config, role-based guards
+│   ├── routes_new_additions.dart # Extended route definitions
 │   ├── theme.dart             # Design tokens, color palettes
+│   ├── theme_mode_provider.dart  # Dark/Light/System theme switching
 │   ├── ai_system_prompt.txt   # Master Claude system prompt
 │   └── ai_agent_prompts.dart  # AI Agent structured prompt builders
 ├── core/
@@ -137,12 +140,16 @@ lib/
 │   ├── access_control.dart    # Feature gate logic
 │   ├── validators.dart        # Form validation
 │   ├── pagination.dart        # Cursor-based paginated controllers
+│   ├── responsive.dart        # Breakpoint & responsive sizing utilities
+│   ├── chart_buckets.dart     # Chart data aggregation helpers
+│   ├── error_handler.dart     # Centralised error translation & display
+│   ├── exceptions.dart        # Custom exception types
 │   ├── dev_bypass.dart        # Mock data for offline dev
 │   └── extensions.dart        # Dart extension methods
 ├── models/                    # 20 data models
-├── providers/                 # 22 Riverpod providers
-├── screens/                   # 25 screen modules
-├── services/                  # 10 backend services
+├── providers/                 # 23 Riverpod providers
+├── screens/                   # 24 screen modules (77 screen files)
+├── services/                  # 13 backend services
 └── widgets/                   # 18 shared UI components
 ```
 
@@ -291,10 +298,10 @@ Every query is enforced at the **database level** with `gym_id` isolation. Even 
 
 ## 07 — Screen Modules
 
-FitNexora has **25 screen modules** organised by role and feature:
+FitNexora has **24 screen modules** (77 screen files) organised by role and feature:
 
 ### 🔐 Auth
-Login, Register, **Google Sign-In**, Forgot Password, Onboarding wizard.
+Login, Register, **Google Sign-In**, **Biometric (Fingerprint) Login**, Forgot Password, Change Password, OTP Verification, Password Updated confirmation, Onboarding wizard.
 
 ### 🏠 Dashboard
 Role-adaptive home screen with KPIs, quick actions, and AI-suggested insights.
@@ -360,6 +367,17 @@ Gamified milestone system with badges and streak tracking.
 
 ### 🤖 AI Agent (Master/Elite)
 - **AI Agent Screen** — Generate comprehensive body analysis, 4-week workout plan, Indian diet plan, and monthly progress report via Claude Opus — all in one pipeline
+
+### 🏠 Master Member Portal
+- **Master Home** — Premium dashboard with AI coaching
+- **Master AI Coach** — Advanced AI-powered training recommendations
+- **Master Analytics** — Deep performance insights
+- **Master Challenges** — Community challenges
+- **Master Live Sessions** — Live training sessions
+- **Master Perks** — Exclusive member benefits
+- **Master Profile** — Enhanced member profile
+- **Master Recovery** — Recovery tracking & AI recommendations
+- **Master Transformation** — Before/after transformation tracking
 
 ### 📝 Notes & Journals
 Private encrypted member notes and journaling.
@@ -448,7 +466,7 @@ The application logic is driven by type-safe Dart enums (`lib/core/enums.dart`):
 
 ### Prerequisites
 
-- Flutter 3.6+ with Dart 3.x
+- Flutter 3.6+ with Dart 3.6.1+
 - Supabase account
 - Anthropic Claude API key
 - Razorpay account (for Indian payments)
@@ -456,7 +474,7 @@ The application logic is driven by type-safe Dart enums (`lib/core/enums.dart`):
 
 ### Environment Setup
 
-Create a `.env` file in the project root:
+Create `assets/app.env` in the project root:
 
 ```env
 SUPABASE_URL=https://your-project.supabase.co
@@ -467,6 +485,11 @@ RAZORPAY_KEY_ID=your-razorpay-key-id
 RAZORPAY_KEY_SECRET=your-razorpay-secret
 STRIPE_PUBLISHABLE_KEY=your-stripe-pk
 STRIPE_SECRET_KEY=your-stripe-sk
+SENTRY_DSN=your-sentry-dsn
+GOOGLE_WEB_CLIENT_ID=your-google-client-id
+RESEND_API_KEY=your-resend-api-key
+PINECONE_API_KEY=your-pinecone-key
+PINECONE_HOST=your-pinecone-host
 ```
 
 ### Setup Workflow
@@ -497,20 +520,23 @@ flutter run
 
 The `dev_bypass.dart` module provides full mock data injection. Set the bypass flag to `true` to run the app without any Supabase or Claude credentials — ideal for UI development and testing.
 
-### Key Services
+### Key Services (13 total)
 
 | Service | Responsibility |
 |---|---|
-| `auth_service.dart` | Supabase Auth (login, register, session management) |
+| `auth_service.dart` | Supabase Auth (login, register, Google OAuth, session management) |
+| `biometric_service.dart` | Fingerprint/Face ID authentication & secure credential storage |
 | `database_service.dart` | All Supabase CRUD operations |
 | `claude_service.dart` | Claude API calls with tier routing |
 | `ai_agent_service.dart` | **AI Agent pipeline** — body analysis, plans, reports via Claude Opus |
 | `ai_prompt_builder.dart` | Context enrichment for AI prompts |
 | `plan_enforcement_service.dart` | Feature gate checks at runtime |
 | `payment_service.dart` | Razorpay & Stripe integration |
-| `notification_service.dart` | Push & in-app notification dispatch |
+| `notification_service.dart` | Local push notifications (membership expiry, hydration, workout reminders) |
 | `food_service.dart` | Indian food database queries |
 | `storage_service.dart` | Supabase Storage (avatar/photo uploads) |
+| `email_service.dart` | Transactional email delivery via Resend |
+| `pinecone_service.dart` | Vector search for AI context retrieval |
 
 ### Running Tests
 
@@ -522,7 +548,7 @@ flutter test
 
 ## 12 — Roadmap
 
-### v2.5 (Current)
+### v2.5 (Previous)
 - [x] Achievements & gamification
 - [x] Body measurements & water tracking
 - [x] Personal records (PR board)
@@ -535,6 +561,18 @@ flutter test
 - [x] **Google Sign-In** — One-tap authentication integration
 - [x] **INR Pricing Strategy** — Tiered pricing in Rupees for Indian market
 - [x] **Security Enhancements** — Route-aware navigation & credential encryption
+
+### v2.6 (Current)
+- [x] **Bug Fix: Razorpay Memory Leak** — Class-level instance management, proper cleanup on callbacks
+- [x] **Bug Fix: DateTime Month Overflow** — Safe `_addMonths()` handling for December & short months
+- [x] **Bug Fix: Sign-Out Crash Prevention** — `.catchError` handlers on all sign-out chains
+- [x] **Bug Fix: Duplicate Back Button** — Removed double AppBar on gym traffic screen
+- [x] **Bug Fix: INR Formatting** — Rewrote Indian number grouping (₹14,999 now displays correctly)
+- [x] **Bug Fix: GoogleFonts Runtime** — Fixed font loading crash on first install
+- [x] **Master Member Portal** — 9 new screens: AI Coach, Analytics, Challenges, Live Sessions, Perks, Profile, Recovery, Transformation
+- [x] **Sentry Error Tracking** — Production crash reporting integration
+- [x] **Email Service** — Transactional email via Resend API
+- [x] **Vector Search** — Pinecone integration for AI context retrieval
 
 ### v3.0 (Planned)
 - [ ] **AI Video Form Analysis** — real-time posture & form correction using device camera
@@ -559,6 +597,6 @@ flutter test
 
 <div align="center">
 
-*FitNexora v2.5 — Built with ❤️ for the Indian Fitness Industry*
+*FitNexora v2.6 — Built with ❤️ for the Indian Fitness Industry*
 
 </div>

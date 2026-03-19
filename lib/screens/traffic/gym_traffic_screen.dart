@@ -53,13 +53,6 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
 
     return Scaffold(
       backgroundColor: t.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: BackButton(
-          onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
-        ),
-      ),
       body: SafeArea(
         top: false,
         child: Stack(

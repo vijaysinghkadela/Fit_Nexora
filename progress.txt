@@ -1,0 +1,14 @@
+- Implemented profile avatar updates with `image_picker` and Supabase Storage in `SettingsScreen`.
+- Updated app version to `V2.6.0` in `settings_screen.dart`.
+- Fixed memory leaks in `PaymentService` (Razorpay integration).
+- Fixed `DateTime` overflow in billing interval calculations.
+- Added Sentry integration and global exception handling in `main.dart`.
+- Optimized image caching limits for low-RAM devices (4-6GB).
+- Improved performance by making `GlassmorphicCard` blur optional based on performance mode.
+- Added `catchError` to async sign-out flows in `TrainerDashboardScreen` and `SharedManagementWrapper`.
+- Implemented Indian currency formatting (`₹14,999`) in `PlanLimits.dart`.
+- Verified `LogCheckinScreen` gym selection guards and `routes.dart` theme consistency.
+- Scheduled daily hydration and workout reminders in `NotificationService.init()`.
+- Integrated membership expiry scheduling in `member_provider.dart`.
+
+ralph-done-fs7qj

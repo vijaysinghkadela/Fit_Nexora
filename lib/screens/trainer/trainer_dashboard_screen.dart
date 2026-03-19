@@ -60,6 +60,8 @@ class TrainerDashboardScreen extends ConsumerWidget {
           if (context.mounted) {
             context.go('/login');
           }
+        }).catchError((_) {
+          if (context.mounted) context.go('/login');
         });
       },
       child: _TrainerDashboardBody(

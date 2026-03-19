@@ -13,8 +13,20 @@ import '../models/subscription_model.dart';
 /// which handle the appropriate gateway based on the gym's configuration.
 class PaymentService {
   final SupabaseClient _client;
+  Razorpay? _razorpay;
 
   PaymentService(this._client);
+
+  /// Safe month-offset calculation that handles December and short-month overflow.
+  static DateTime _addMonths(DateTime from, int months) {
+    final newMonth = from.month + months;
+    final newYear = from.year + (newMonth - 1) ~/ 12;
+    final month = ((newMonth - 1) % 12) + 1;
+    // Clamp day to the last day of the target month
+    final maxDay = DateTime(newYear, month + 1, 0).day;
+    final day = from.day > maxDay ? maxDay : from.day;
+    return DateTime(newYear, month, day);
+  }
 
   // ─── SUBSCRIPTION QUERIES ──────────────────────────────────────────
 
@@ -55,9 +67,9 @@ class PaymentService {
     DateTime periodEnd;
 
     if (interval == BillingInterval.annual) {
-      periodEnd = DateTime(now.year + 1, now.month, now.day);
+      periodEnd = _addMonths(now, 12);
     } else {
-      periodEnd = DateTime(now.year, now.month + 1, now.day);
+      periodEnd = _addMonths(now, 1);
     }
 
     final trialEnd = withTrial && PlanLimits.trialEligible.contains(plan)
@@ -187,8 +199,8 @@ class PaymentService {
         : PlanLimits.monthlyPrice[current.planTier];
 
     final periodEnd = interval == BillingInterval.annual
-        ? DateTime(now.year + 1, now.month, now.day)
-        : DateTime(now.year, now.month + 1, now.day);
+        ? _addMonths(now, 12)
+        : _addMonths(now, 1);
 
     final data = await _client
         .from(AppConstants.subscriptionsTable)
@@ -248,21 +260,26 @@ class PaymentService {
     required void Function(PaymentFailureResponse) onError,
     required void Function(ExternalWalletResponse) onExternalWallet,
   }) {
-    final razorpay = Razorpay();
+    // Clear any previous instance to prevent listener leaks
+    _razorpay?.clear();
+    _razorpay = Razorpay();
 
-    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (PaymentSuccessResponse response) {
+    _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, (PaymentSuccessResponse response) {
       onSuccess(response);
-      razorpay.clear();
+      _razorpay?.clear();
+      _razorpay = null;
     });
 
-    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, (PaymentFailureResponse response) {
+    _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, (PaymentFailureResponse response) {
       onError(response);
-      razorpay.clear();
+      _razorpay?.clear();
+      _razorpay = null;
     });
 
-    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, (ExternalWalletResponse response) {
+    _razorpay!.on(Razorpay.EVENT_EXTERNAL_WALLET, (ExternalWalletResponse response) {
       onExternalWallet(response);
-      razorpay.clear();
+      _razorpay?.clear();
+      _razorpay = null;
     });
 
     // Add API Key from config
@@ -271,7 +288,7 @@ class PaymentService {
       'key': AppConfig.razorpayKeyId,
     };
 
-    razorpay.open(fullOptions);
+    _razorpay!.open(fullOptions);
   }
 
   /// Process a successful Razorpay payment and update the subscription.

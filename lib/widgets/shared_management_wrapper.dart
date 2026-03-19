@@ -45,6 +45,9 @@ class SharedManagementWrapper extends ConsumerWidget {
           if (context.mounted) {
             context.go('/login');
           }
+        }).catchError((_) {
+          // Navigate to login even if sign-out fails (e.g. network error)
+          if (context.mounted) context.go('/login');
         });
       },
       child: child,

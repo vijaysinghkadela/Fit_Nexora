@@ -31,6 +31,10 @@ class NotificationService {
     );
 
     await _requestPermissions();
+
+    // Schedule static daily reminders
+    await scheduleDailyHydrationReminder();
+    await scheduleWorkoutReminder();
   }
 
   static Future<void> _requestPermissions() async {

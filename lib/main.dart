@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
@@ -50,8 +50,8 @@ Future<void> main() async {
   PaintingBinding.instance.imageCache.maximumSize = 50;
   PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20; // 50 MB
 
-  // ── Prevent runtime Google Fonts fetching after first run ──
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // Note: GoogleFonts runtime fetching is kept enabled because the Inter font
+  // is not bundled in assets/fonts/. It will be cached after first download.
 
   try {
     await dotenv.load(fileName: 'assets/app.env');

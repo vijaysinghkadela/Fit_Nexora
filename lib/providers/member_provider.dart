@@ -8,6 +8,8 @@ import '../models/announcement_model.dart';
 import 'auth_provider.dart';
 import 'gym_provider.dart';
 
+import '../services/notification_service.dart';
+
 const _announcementsPageSize = 10;
 
 // ─── Access Gate ──────────────────────────────────────────────────────────────
@@ -22,7 +24,18 @@ final memberMembershipProvider =
   if (isDevUser(user.email)) return devMembership();
 
   final db = ref.watch(databaseServiceProvider);
-  return db.getActiveMembershipForUser(user.id);
+  final membership = await db.getActiveMembershipForUser(user.id);
+
+  if (membership != null) {
+    // Attempt to schedule a 7-day warning
+    final gym = ref.read(selectedGymProvider);
+    NotificationService.scheduleMembershipExpiryWarning(
+      expiryDate: membership.endDate,
+      gymName: gym?.name ?? 'Your Gym',
+    );
+  }
+
+  return membership;
 });
 
 /// True only if the member has a paid, non-expired membership.

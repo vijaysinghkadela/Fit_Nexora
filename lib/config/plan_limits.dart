@@ -274,28 +274,23 @@ class PlanLimits {
     return 'Save ₹${_formatInr(annualSavings(tier))}';
   }
 
-  /// Indian number formatting (e.g. 14999 → "14,999").
+  /// Indian number formatting (e.g. 14999 → "14,999", 799 → "799").
   static String _formatInr(double value) {
     final intVal = value.toInt();
     final str = intVal.toString();
     if (str.length <= 3) return str;
+
+    // Indian grouping: last 3 digits, then pairs of 2 from right
     final last3 = str.substring(str.length - 3);
     final rest = str.substring(0, str.length - 3);
-    final buffer = StringBuffer();
-    for (var i = rest.length - 1; i >= 0; i--) {
-      buffer.write(rest[rest.length - 1 - i]);
+    final parts = <String>[];
+    var i = rest.length;
+    while (i > 0) {
+      final start = (i - 2) < 0 ? 0 : i - 2;
+      parts.insert(0, rest.substring(start, i));
+      i = start;
     }
-    // Re-do: proper Indian grouping (pairs from right after first 3)
-    final restReversed = rest.split('').reversed.toList();
-    final groups = <String>[];
-    for (var i = 0; i < restReversed.length; i += 2) {
-      if (i + 1 < restReversed.length) {
-        groups.add('${restReversed[i + 1]}${restReversed[i]}');
-      } else {
-        groups.add(restReversed[i]);
-      }
-    }
-    return '${groups.reversed.join(',')},$last3';
+    return '${parts.join(',')},$last3';
   }
 }
 
