@@ -25,6 +25,9 @@ class AppConfig {
 
   static String get resendApiKey => dotenv.env['RESEND_API_KEY'] ?? '';
 
+  static String get pineconeApiKey => dotenv.env['PINECONE_API_KEY'] ?? '';
+  static String get pineconeHost => dotenv.env['PINECONE_HOST'] ?? '';
+
   static String get claudeApiKey => dotenv.env['CLAUDE_API_KEY'] ?? '';
 
   static String get googleWebClientId =>
