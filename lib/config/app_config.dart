@@ -23,6 +23,8 @@ class AppConfig {
   static String get sentryDsn => dotenv.env['SENTRY_DSN'] ?? '';
 
 
+  static String get resendApiKey => dotenv.env['RESEND_API_KEY'] ?? '';
+
   static String get claudeApiKey => dotenv.env['CLAUDE_API_KEY'] ?? '';
 
   static String get googleWebClientId =>
