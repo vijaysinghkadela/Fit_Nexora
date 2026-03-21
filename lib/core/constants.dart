@@ -23,6 +23,8 @@ class AppConstants {
   static const String dietPlansTable = 'diet_plans';
   static const String progressCheckInsTable = 'progress_checkins';
   static const String announcementsTable = 'gym_announcements';
+  static const String occupancyView = 'gym_current_occupancy';
+  static const String equipmentStatusTable = 'equipment_status';
 
   // Storage Buckets
   static const String avatarsBucket = 'avatars';

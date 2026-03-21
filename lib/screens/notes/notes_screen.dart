@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../providers/notes_provider.dart';
@@ -65,7 +66,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                     onChanged: (v) => setState(() => _searchQuery = v),
                   )
                 : Text(
-                    'Notes & Journal',
+                    'My Personal Notes',
                     style: GoogleFonts.inter(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
@@ -74,7 +75,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                   ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
             ),
             actions: [
               IconButton(

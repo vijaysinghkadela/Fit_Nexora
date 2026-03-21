@@ -90,6 +90,7 @@ import '../screens/tools/macro_calculator_screen.dart';
 import '../screens/tools/one_rep_max_screen.dart';
 import '../screens/gym/equipment_status_screen.dart';
 import '../screens/gym/qr_checkin_screen.dart';
+import '../widgets/member_bottom_nav.dart';
 
 Page<void> _fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage(
@@ -308,37 +309,66 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'pricing',
         builder: (context, state) => const PricingScreen(),
       ),
-      GoRoute(
-        path: '/member',
-        name: 'member',
-        builder: (context, state) => const MemberHomeScreen(),
-      ),
-      GoRoute(
-        path: '/member/workout',
-        name: 'member-workout',
-        builder: (context, state) => const MemberWorkoutScreen(),
+      ShellRoute(
+        builder: (context, state, child) => Scaffold(
+          body: child,
+          bottomNavigationBar: MemberBottomNav(location: state.matchedLocation),
+        ),
         routes: [
           GoRoute(
-            path: 'add',
-            name: 'member-workout-add',
-            builder: (context, state) => const MemberAddWorkoutPlanScreen(),
+            path: '/member',
+            name: 'member',
+            builder: (context, state) => const MemberHomeScreen(),
+          ),
+          GoRoute(
+            path: '/member/workout',
+            name: 'member-workout',
+            builder: (context, state) => const MemberWorkoutScreen(),
+            routes: [
+              GoRoute(
+                path: 'add',
+                name: 'member-workout-add',
+                builder: (context, state) => const MemberAddWorkoutPlanScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/member/diet',
+            name: 'member-diet',
+            builder: (context, state) => const MemberDietScreen(),
+          ),
+          GoRoute(
+            path: '/member/progress',
+            name: 'member-progress',
+            builder: (context, state) => const MemberProgressScreen(),
+          ),
+          GoRoute(
+            path: '/member/announcements',
+            name: 'member-announcements',
+            builder: (context, state) => const MemberAnnouncementsScreen(),
+          ),
+          GoRoute(
+            path: '/member/traffic',
+            name: 'member-traffic',
+            pageBuilder: (context, state) => _fadePage(
+              state,
+              const GymTrafficScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/member/profile',
+            name: 'member_profile',
+            pageBuilder: (context, state) => _fadePage(
+              state,
+              const MemberProfileScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/member/notes',
+            name: 'member-notes',
+            pageBuilder: (context, state) => _fadePage(state, const NotesScreen()),
           ),
         ],
-      ),
-      GoRoute(
-        path: '/member/diet',
-        name: 'member-diet',
-        builder: (context, state) => const MemberDietScreen(),
-      ),
-      GoRoute(
-        path: '/member/progress',
-        name: 'member-progress',
-        builder: (context, state) => const MemberProgressScreen(),
-      ),
-      GoRoute(
-        path: '/member/announcements',
-        name: 'member-announcements',
-        builder: (context, state) => const MemberAnnouncementsScreen(),
       ),
       GoRoute(
         path: '/member/paywall',
@@ -461,22 +491,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ),
       ),
-      GoRoute(
-        path: '/member/traffic',
-        name: 'member-traffic',
-        pageBuilder: (context, state) => _fadePage(
-          state,
-          const GymTrafficScreen(),
-        ),
-      ),
-      GoRoute(
-        path: '/member/profile',
-        name: 'member_profile',
-        pageBuilder: (context, state) => _fadePage(
-          state,
-          const MemberProfileScreen(),
-        ),
-      ),
+
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
@@ -646,11 +661,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (c, s) =>
             _fadePage(s, QrCheckinScreen(isCheckOut: true, checkInId: s.extra as String?)),
       ),
-      GoRoute(
-        path: '/notes',
-        name: 'notes',
-        pageBuilder: (c, s) => _fadePage(s, const NotesScreen()),
-      ),
+
     ],
 
     errorBuilder: (context, state) => Scaffold(

@@ -12,7 +12,6 @@ import '../../providers/notifications_provider.dart';
 import '../../providers/traffic_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/loading_widgets.dart';
-import '../../widgets/member_bottom_nav.dart';
 
 
 /// Entry point for the member-facing experience.
@@ -78,7 +77,6 @@ class _MemberDashboard extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: t.background,
-      bottomNavigationBar: const MemberBottomNav(),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshAll,
@@ -307,16 +305,17 @@ class _MemberDashboard extends ConsumerWidget {
           ),
 
           // ─── Section: Notes ───────────────────────────────────────────
-          _sectionHeader('NOTES & JOURNAL'),
+          _sectionHeader('NOTES & GENERAL'),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             sliver: SliverToBoxAdapter(
-              child: GestureDetector(
-                onTap: () => context.push('/notes'),
+              child: GlassmorphicCard(
+                borderRadius: 16,
+                onTap: () => context.push('/member/notes'),
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: t.surfaceAlt,
+                    color: t.surfaceAlt.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: t.brand.withOpacity(0.2)),
                   ),
@@ -336,12 +335,12 @@ class _MemberDashboard extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Notes & Journal',
+                            Text('Personal Notes',
                                 style: GoogleFonts.inter(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
                                     color: t.textPrimary)),
-                            Text('Tap to view your notes',
+                            Text('Tap to view your notes & guides',
                                 style: GoogleFonts.inter(
                                     fontSize: 12,
                                     color: t.textSecondary)),
@@ -352,8 +351,8 @@ class _MemberDashboard extends ConsumerWidget {
                           color: t.textMuted),
                     ],
                   ),
-                ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.04),
-              ),
+                ),
+              ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.04),
             ),
           ),
 
@@ -368,9 +367,9 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Body Stats',
+                          label: 'Body Measurements',
                           value: '📏',
-                          sublabel: 'Measurements',
+                          sublabel: 'Full Progress',
                           icon: Icons.monitor_weight_rounded,
                           color: const Color(0xFF10D88A),
                           onTap: () => handlePremiumTap('/health/body-measurements'),
@@ -394,9 +393,9 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'My PRs',
+                          label: 'Personal Records',
                           value: '🏆',
-                          sublabel: 'Personal Records',
+                          sublabel: 'Hall of Fame',
                           icon: Icons.emoji_events_rounded,
                           color: const Color(0xFFF6B546),
                           onTap: () => handlePremiumTap('/workout/personal-records'),
@@ -420,9 +419,9 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Macros',
+                          label: 'Macro Calculator',
                           value: '🥗',
-                          sublabel: 'TDEE Calculator',
+                          sublabel: 'TDEE & Macros',
                           icon: Icons.restaurant_rounded,
                           color: const Color(0xFF7A8BFF),
                           onTap: () => handlePremiumTap('/tools/macro-calculator'),
@@ -431,7 +430,7 @@ class _MemberDashboard extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _QuickNavCard(
-                          label: '1RM Calc',
+                          label: '1RM Calculator',
                           value: '💪',
                           sublabel: 'Max Strength',
                           icon: Icons.fitness_center_rounded,
@@ -706,43 +705,46 @@ class _StatMiniCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: t.surfaceAlt,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 18),
+    return GlassmorphicCard(
+      borderRadius: 16,
+      child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: t.surfaceAlt.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withOpacity(0.2)),
           ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-              color: t.textPrimary,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                value,
+                style: GoogleFonts.inter(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  color: t.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(label,
+                  style: GoogleFonts.inter(
+                      fontSize: 12, color: t.textSecondary)),
+              Text(sublabel,
+                  style:
+                      GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
+            ],
           ),
-          const SizedBox(height: 2),
-          Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 12, color: t.textSecondary)),
-          Text(sublabel,
-              style:
-                  GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
-        ],
-      ),
-    ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.04);
+        ),
+      ).animate(delay: 100.ms).fadeIn().slideY(begin: 0.04);
   }
 }
 

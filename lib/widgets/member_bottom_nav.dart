@@ -22,17 +22,18 @@ class _Tab {
 }
 
 class MemberBottomNav extends ConsumerWidget {
-  const MemberBottomNav({super.key});
+  final String? location;
+  const MemberBottomNav({super.key, this.location});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
-    final location = GoRouterState.of(context).matchedLocation;
+    final currentLocation = location ?? GoRouterState.of(context).matchedLocation;
 
     int selectedIndex = 0;
     for (int i = 0; i < _tabs.length; i++) {
-      if (location.startsWith(_tabs[i].route) &&
-          (_tabs[i].route != '/member' || location == '/member')) {
+      if (currentLocation.startsWith(_tabs[i].route) &&
+          (_tabs[i].route != '/member' || currentLocation == '/member')) {
         selectedIndex = i;
         break;
       }

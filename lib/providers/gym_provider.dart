@@ -21,7 +21,7 @@ final selectedGymProvider = StateProvider<Gym?>((ref) {
 });
 
 /// Gyms for the current user.
-final userGymsProvider = FutureProvider<List<Gym>>((ref) async {
+final userGymsProvider = FutureProvider.autoDispose<List<Gym>>((ref) async {
   final currentUser = ref.watch(currentUserProvider).value;
   if (currentUser == null) return [];
 
@@ -33,7 +33,7 @@ final userGymsProvider = FutureProvider<List<Gym>>((ref) async {
 
 /// Dashboard stats for the selected gym.
 final dashboardStatsProvider =
-    FutureProvider<Map<String, dynamic>>((ref) async {
+    FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
   final user = ref.watch(currentUserProvider).value;
   if (user != null && isDevUser(user.email)) return devDashboardStats();
 

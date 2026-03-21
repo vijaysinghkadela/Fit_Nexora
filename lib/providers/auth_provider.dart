@@ -98,19 +98,30 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
         if (isDevUser(user.email)) {
           state = AsyncValue.data(AppUser(
             id: user.id,
-            email: user.email!,
-            fullName: user.userMetadata?['full_name'] ?? 'Dev Owner',
-            globalRole: UserRole.gymOwner,
+            fullName: user.email?.split('@').first ?? 'Dev User',
+            email: user.email ?? 'dev@example.com',
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
+            globalRole: UserRole.gymOwner,
           ));
         } else {
-          state = const AsyncValue.data(null);
+          state = AsyncValue.error(e, StackTrace.current);
         }
       }
     } else {
       state = const AsyncValue.data(null);
     }
+  }
+
+  /// Updates the local user state optimistically.
+  void updateUser(AppUser user) {
+    state = AsyncValue.data(user);
+  }
+
+  /// Re-fetches the user profile from the database.
+  Future<void> reload() async {
+    state = const AsyncValue.loading();
+    await _init();
   }
 
   /// Internal handler for auth state changes — keeps the whenData callback sync.

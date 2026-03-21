@@ -11,4 +11,8 @@
 - Scheduled daily hydration and workout reminders in `NotificationService.init()`.
 - Integrated membership expiry scheduling in `member_provider.dart`.
 
+- Fixed profile editing logic: implemented optimistic updates (`updateUser`) and payload filtering in `AuthService`.
+- Centralized member navigation: implemented `ShellRoute` in `routes.dart` and updated `MemberBottomNav` for consistent UI across all member screens.
+
 ralph-done-fs7qj
+ralph-done-03ukv

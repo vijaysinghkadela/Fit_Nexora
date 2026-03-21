@@ -13,6 +13,7 @@ import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/error_widgets.dart';
 import '../../widgets/loading_widgets.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 class MemberAnnouncementsScreen extends ConsumerWidget {
   const MemberAnnouncementsScreen({super.key});
@@ -28,6 +29,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
       final announcements = devAnnouncements();
       return Scaffold(
         backgroundColor: t.background,
+        bottomNavigationBar: const MemberBottomNav(),
         appBar: AppBar(
           backgroundColor: t.background,
           leading: IconButton(
@@ -64,6 +66,7 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
     if (gym == null) {
       return Scaffold(
         backgroundColor: t.background,
+        bottomNavigationBar: const MemberBottomNav(),
         appBar: AppBar(
           backgroundColor: t.background,
           leading: IconButton(

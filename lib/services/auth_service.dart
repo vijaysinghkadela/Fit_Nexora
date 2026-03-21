@@ -153,9 +153,15 @@ class AuthService {
 
   /// Update user profile.
   Future<AppUser> updateProfile(AppUser user) async {
+    final updateData = user.toJson();
+    // Remove fields that should not be updated via general profile update or that are managed elsewhere
+    updateData.remove('id');
+    updateData.remove('email');
+    updateData.remove('global_role');
+
     await _client
         .from(AppConstants.profilesTable)
-        .update(user.toJson())
+        .update(updateData)
         .eq('id', user.id);
 
     return user;

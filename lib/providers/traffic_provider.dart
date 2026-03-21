@@ -3,7 +3,7 @@ import 'auth_provider.dart';
 
 // ─── Real-time stream of all check-in rows for a gym ────────────────────────
 
-final gymCheckInsStreamProvider = StreamProvider.family<
+final gymCheckInsStreamProvider = StreamProvider.autoDispose.family<
     List<Map<String, dynamic>>, String>((ref, gymId) {
   final db = ref.watch(databaseServiceProvider);
   return db.streamGymCheckIns(gymId);
@@ -12,7 +12,7 @@ final gymCheckInsStreamProvider = StreamProvider.family<
 // ─── Current live traffic count (active check-ins in last 12 h) ─────────────
 
 final currentTrafficCountProvider =
-    Provider.family<AsyncValue<int>, String>((ref, gymId) {
+    Provider.autoDispose.family<AsyncValue<int>, String>((ref, gymId) {
   return ref.watch(gymCheckInsStreamProvider(gymId)).whenData((rows) {
     final cutoff = DateTime.now().subtract(const Duration(hours: 12));
     return rows.where((r) {
@@ -27,7 +27,7 @@ final currentTrafficCountProvider =
 
 // ─── User's active check-in record ──────────────────────────────────────────
 
-final activeCheckInProvider = FutureProvider.family<Map<String, dynamic>?,
+final activeCheckInProvider = FutureProvider.autoDispose.family<Map<String, dynamic>?,
     (String gymId, String userId)>((ref, args) async {
   final db = ref.watch(databaseServiceProvider);
   return db.getActiveCheckIn(gymId: args.$1, userId: args.$2);
@@ -36,7 +36,7 @@ final activeCheckInProvider = FutureProvider.family<Map<String, dynamic>?,
 // ─── Hourly traffic averages (List<double> with 24 entries, index = hour) ───
 
 final hourlyTrafficProvider =
-    FutureProvider.family<List<double>, String>((ref, gymId) async {
+    FutureProvider.autoDispose.family<List<double>, String>((ref, gymId) async {
   final db = ref.watch(databaseServiceProvider);
   final checkins = await db.getRecentCheckIns(gymId: gymId);
   return _computeHourlyAverages(checkins);
@@ -45,7 +45,7 @@ final hourlyTrafficProvider =
 // ─── Best 3 hours to visit (sorted by lowest average, gym hours only) ────────
 
 final bestVisitTimesProvider =
-    FutureProvider.family<List<int>, String>((ref, gymId) async {
+    FutureProvider.autoDispose.family<List<int>, String>((ref, gymId) async {
   final averages = await ref.watch(hourlyTrafficProvider(gymId).future);
 
   // Only consider reasonable gym hours: 5 AM – 10 PM

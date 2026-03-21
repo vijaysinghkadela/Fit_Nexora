@@ -16,6 +16,7 @@ import '../../models/membership_model.dart';
 import '../../models/subscription_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
+import '../../providers/dashboard_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/ai_usage_meter.dart';
 import '../../widgets/fit_management_scaffold.dart';
@@ -165,6 +166,10 @@ class _DashboardBody extends ConsumerWidget {
       ref.invalidate(recentGymCheckInsProvider);
       ref.invalidate(gymClientsProvider);
       ref.invalidate(dashboardMembershipPreviewProvider);
+      if (gym != null) {
+        ref.invalidate(currentOccupancyProvider(gym.id));
+        ref.invalidate(equipmentSummaryProvider(gym.id));
+      }
 
       await Future.wait([
         ref.read(dashboardStatsProvider.future),
@@ -172,6 +177,10 @@ class _DashboardBody extends ConsumerWidget {
         ref.read(recentGymCheckInsProvider.future),
         ref.read(gymClientsProvider.future),
         ref.read(dashboardMembershipPreviewProvider.future),
+        if (gym != null) ...[
+          ref.read(currentOccupancyProvider(gym.id).future),
+          ref.read(equipmentSummaryProvider(gym.id).future),
+        ],
       ]);
     }
 
@@ -253,6 +262,15 @@ class _DashboardBody extends ConsumerWidget {
               ),
             ),
           ),
+
+          // ── Live snapshots (Occupancy & Equipment) ───────────────────────
+          if (gym != null)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: _LiveSnapshotCards(gymId: gym.id),
+              ),
+            ),
 
           // ── Gym occupancy bar chart ───────────────────────────────────────
           SliverPadding(
@@ -1148,6 +1166,275 @@ class _OccupancyBarChart extends StatelessWidget {
   }
 }
 
+// ─── Live snapshot cards (Occupancy & Equipment) ──────────────────────────────
+
+class _LiveSnapshotCards extends ConsumerWidget {
+  const _LiveSnapshotCards({required this.gymId});
+  final String gymId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.fitTheme;
+    final occupancyAsync = ref.watch(currentOccupancyProvider(gymId));
+    final equipmentAsync = ref.watch(equipmentSummaryProvider(gymId));
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useRow = constraints.maxWidth >= 600;
+
+        final occupancyCard = GlassmorphicCard(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                   Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: colors.brand.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.people_rounded, color: colors.brand, size: 20),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: colors.accent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: colors.accent,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'LIVE',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: colors.accent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Current Occupancy',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              occupancyAsync.when(
+                data: (count) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      '$count',
+                      style: GoogleFonts.inter(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'members active',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+                loading: () => const SizedBox(
+                  height: 32,
+                  width: 32,
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 3),
+                ),
+                error: (_, __) => Text(
+                  '--',
+                  style: GoogleFonts.inter(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          ),
+        );
+
+        final equipmentCard = GlassmorphicCard(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: colors.accent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.fitness_center_rounded, color: colors.accent, size: 20),
+                  ),
+                  TextButton(
+                    onPressed: () => context.go('/gym/equipment'),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'View All',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: colors.brand,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.arrow_forward_ios_rounded, size: 10, color: colors.brand),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Equipment Status',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              equipmentAsync.when(
+                data: (summary) {
+                  final total = summary.values.fold(0, (a, b) => a + b);
+                  final available = summary['available'] ?? 0;
+                  final outOfOrder = summary['out_of_order'] ?? 0;
+                  
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            '$available',
+                            style: GoogleFonts.inter(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: colors.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            '/$total',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'ready',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: colors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (outOfOrder > 0)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: colors.danger.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '$outOfOrder Down',
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: colors.danger,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+                loading: () => const SizedBox(
+                  height: 32,
+                  width: 32,
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 3),
+                ),
+                error: (_, __) => Text(
+                  'No equipment added',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textMuted,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          ),
+        );
+
+        if (!useRow) {
+          return Column(
+            children: [
+              occupancyCard,
+              const SizedBox(height: 16),
+              equipmentCard,
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: occupancyCard),
+            const SizedBox(width: 16),
+            Expanded(child: equipmentCard),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ─── Info chip ──────────────────────────────────────────────────────────────
 class _InfoChip extends StatelessWidget {
   const _InfoChip({
     required this.label,

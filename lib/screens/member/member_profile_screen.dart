@@ -18,7 +18,6 @@ import '../../providers/performance_provider.dart';
 import '../../providers/unit_provider.dart';
 import '../../services/notification_service.dart';
 import '../../widgets/glassmorphic_card.dart';
-import '../../widgets/member_bottom_nav.dart';
 
 class MemberProfileScreen extends ConsumerWidget {
   const MemberProfileScreen({super.key});
@@ -293,7 +292,6 @@ class MemberProfileScreen extends ConsumerWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const MemberBottomNav(),
     );
   }
 
@@ -664,7 +662,7 @@ class MemberProfileScreen extends ConsumerWidget {
                             await ref
                                 .read(authServiceProvider)
                                 .updateProfile(updated);
-                            ref.invalidate(currentUserProvider);
+                            ref.read(currentUserProvider.notifier).updateUser(updated);
                             if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                             if (context.mounted) {
                               context.showSnackBar(

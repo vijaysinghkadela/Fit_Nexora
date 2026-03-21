@@ -699,7 +699,7 @@ class SettingsScreen extends ConsumerWidget {
                             await ref
                                 .read(authServiceProvider)
                                 .updateProfile(updated);
-                            ref.invalidate(currentUserProvider);
+                            ref.read(currentUserProvider.notifier).updateUser(updated);
                             if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                             if (context.mounted) {
                               context.showSnackBar(

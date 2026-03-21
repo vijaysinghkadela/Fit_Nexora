@@ -830,4 +830,38 @@ class DatabaseService {
       'gym_id': gymId,
     });
   }
+
+  // ─── DASHBOARD / QUICK STATS ──────────────────────────────────────────────
+
+  /// Get current occupant count for a gym using the occupancy view.
+  Future<int> getCurrentOccupancyCount(String gymId) async {
+    final result = await _client
+        .from(AppConstants.occupancyView)
+        .select('current_count')
+        .eq('gym_id', gymId)
+        .maybeSingle();
+    return result?['current_count'] ?? 0;
+  }
+
+  /// Get equipment status summary for a gym.
+  /// Returns counts grouped by status.
+  Future<Map<String, int>> getEquipmentStatusSummary(String gymId) async {
+    final result = await _client
+        .from(AppConstants.equipmentStatusTable)
+        .select('status')
+        .eq('gym_id', gymId);
+
+    final Map<String, int> summary = {
+      'available': 0,
+      'in_use': 0,
+      'out_of_order': 0,
+    };
+
+    for (final row in result) {
+      final status = row['status'] as String;
+      summary[status] = (summary[status] ?? 0) + 1;
+    }
+
+    return summary;
+  }
 }

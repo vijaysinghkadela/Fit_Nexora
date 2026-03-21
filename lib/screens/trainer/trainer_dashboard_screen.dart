@@ -17,7 +17,7 @@ import '../clients/add_client_screen.dart';
 const trainerDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
-    label: 'Trainer',
+    label: 'Home',
     route: '/trainer',
   ),
   FitShellDestination(
@@ -26,8 +26,8 @@ const trainerDestinations = [
     route: '/clients',
   ),
   FitShellDestination(
-    icon: Icons.fitness_center_rounded,
-    label: 'Workouts',
+    icon: Icons.calendar_today_rounded,
+    label: 'Schedule',
     route: '/workouts',
   ),
   FitShellDestination(
