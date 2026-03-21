@@ -17,7 +17,7 @@ DateTime _endOfDay(DateTime d) =>
 // ─── Today's logs ────────────────────────────────────────────────────────────
 
 final todayFoodLogsProvider =
-    FutureProvider.family<List<FoodLog>, String>((ref, userId) async {
+    FutureProvider.autoDispose.family<List<FoodLog>, String>((ref, userId) async {
   final db = ref.watch(databaseServiceProvider);
   final now = DateTime.now();
   return db.getFoodLogs(
@@ -30,7 +30,7 @@ final todayFoodLogsProvider =
 // ─── Last 7 days logs ────────────────────────────────────────────────────────
 
 final weeklyFoodLogsProvider =
-    FutureProvider.family<List<FoodLog>, String>((ref, userId) async {
+    FutureProvider.autoDispose.family<List<FoodLog>, String>((ref, userId) async {
   final db = ref.watch(databaseServiceProvider);
   final now = DateTime.now();
   return db.getFoodLogs(
@@ -43,7 +43,7 @@ final weeklyFoodLogsProvider =
 // ─── Last 30 days logs ───────────────────────────────────────────────────────
 
 final monthlyFoodLogsProvider =
-    FutureProvider.family<List<FoodLog>, String>((ref, userId) async {
+    FutureProvider.autoDispose.family<List<FoodLog>, String>((ref, userId) async {
   final db = ref.watch(databaseServiceProvider);
   final now = DateTime.now();
   return db.getFoodLogs(

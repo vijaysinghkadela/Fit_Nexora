@@ -9,7 +9,7 @@ const _kXpKey = 'total_xp';
 
 class AchievementNotifier extends StateNotifier<List<Achievement>> {
   AchievementNotifier() : super(AchievementData.all) {
-    _loadUnlocked();
+    Future.microtask(_loadUnlocked);
   }
 
   int _totalXp = 0;
@@ -100,16 +100,16 @@ class AchievementNotifier extends StateNotifier<List<Achievement>> {
 }
 
 final achievementProvider =
-    StateNotifierProvider<AchievementNotifier, List<Achievement>>(
+    StateNotifierProvider.autoDispose<AchievementNotifier, List<Achievement>>(
   (ref) => AchievementNotifier(),
 );
 
-final totalXpProvider = Provider<int>((ref) {
+final totalXpProvider = Provider.autoDispose<int>((ref) {
   ref.watch(achievementProvider); // trigger rebuild
   return ref.read(achievementProvider.notifier).totalXp;
 });
 
-final levelProvider = Provider<int>((ref) {
+final levelProvider = Provider.autoDispose<int>((ref) {
   ref.watch(achievementProvider);
   return ref.read(achievementProvider.notifier).level;
 });
