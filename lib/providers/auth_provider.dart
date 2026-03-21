@@ -67,7 +67,19 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
   final Ref _ref;
 
   CurrentUserNotifier(this._ref) : super(const AsyncValue.loading()) {
-    _init();
+    // Defer async init to avoid state mutation during the build phase.
+    Future.microtask(_init);
+
+    // Register the auth-state listener synchronously in the constructor so
+    // no events are missed, but dispatch state changes via Future.microtask
+    // to guarantee they never happen while the widget tree is still building.
+    _ref.listen(authStateProvider, (previous, next) {
+      next.whenData((authState) {
+        Future.microtask(
+          () => _handleAuthChange(_ref.read(authServiceProvider), authState),
+        );
+      });
+    });
   }
 
   Future<void> _init() async {
@@ -99,13 +111,6 @@ class CurrentUserNotifier extends StateNotifier<AsyncValue<AppUser?>> {
     } else {
       state = const AsyncValue.data(null);
     }
-
-    // Listen for auth state changes
-    _ref.listen(authStateProvider, (previous, next) {
-      next.whenData((authState) {
-        _handleAuthChange(authService, authState);
-      });
-    });
   }
 
   /// Internal handler for auth state changes — keeps the whenData callback sync.

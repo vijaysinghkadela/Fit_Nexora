@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../config/app_config.dart';
 import '../config/theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,9 +19,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(const Duration(seconds: 2), () {
-      if (mounted) context.go('/login');
-    });
+    _navigateAfterSplash();
+  }
+
+  Future<void> _navigateAfterSplash() async {
+    // If already authenticated, skip the full splash animation
+    if (AppConfig.hasSupabase) {
+      final session = Supabase.instance.client.auth.currentSession;
+      if (session != null) {
+        // Already logged in — short delay so splash is still briefly visible
+        await Future<void>.delayed(const Duration(milliseconds: 400));
+        if (mounted) context.go('/login'); // router redirect handles role-based routing
+        return;
+      }
+    }
+    // Not authenticated — show a reduced 1-second splash
+    await Future<void>.delayed(const Duration(seconds: 1));
+    if (mounted) context.go('/login');
   }
 
   @override

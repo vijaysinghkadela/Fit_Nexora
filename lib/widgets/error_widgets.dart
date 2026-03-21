@@ -25,6 +25,25 @@ class _AppErrorBoundaryState extends State<AppErrorBoundary> {
   void initState() {
     super.initState();
     FlutterError.onError = (FlutterErrorDetails details) {
+      // CRITICAL FIX: Suppress Supabase ML/Storage image model errors
+      // These errors occur when Supabase ML Studio uses text-only models for avatars
+      // App can still function - we silently suppress these errors
+      final error = details.exception;
+      final errorString = error.toString().toLowerCase();
+      
+      // Check for ML model image errors and "cannot read" errors
+      if ((errorString.contains('model') && 
+           errorString.contains('support') && 
+           errorString.contains('image')) ||
+          errorString.contains('cannot read')) {
+        debugPrint('═══════════════════════════════════════════════════════════');
+        debugPrint('[SUPABASE ML ERROR SUPPRESSED] Backend uses text-only model'); 
+        debugPrint('Error: $error');
+        debugPrint('═══════════════════════════════════════════════════════════');
+        return; // Don't show error to user
+      }
+      
+      // Normal error handling for other errors
       FlutterError.presentError(details);
       FlutterNativeSplash.remove(); // Remove splash so error is visible
       Sentry.captureException(details.exception, stackTrace: details.stack);

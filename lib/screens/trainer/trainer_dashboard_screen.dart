@@ -652,6 +652,11 @@ class _QuickActionRow extends StatelessWidget {
           onTap: onAddClient,
         ),
         _ActionButton(
+          icon: Icons.assignment_ind_rounded,
+          label: 'Assign Plan',
+          onTap: () => context.go('/trainer/assign-workout'),
+        ),
+        _ActionButton(
           icon: Icons.edit_note_rounded,
           label: 'Create Plan',
           onTap: () => context.go('/workouts'),

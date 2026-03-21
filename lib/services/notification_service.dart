@@ -24,7 +24,7 @@ class NotificationService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: androidSettings,
         iOS: darwinSettings,
       ),
@@ -47,6 +47,21 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  /// Public method to request notification permissions on demand (e.g. from settings).
+  static Future<bool> requestPermissions() async {
+    await _requestPermissions();
+    // Check if the permission was actually granted after requesting
+    final androidImpl = _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidImpl != null) {
+      final granted = await androidImpl.areNotificationsEnabled();
+      return granted ?? false;
+    }
+    // On iOS permissions are handled by the OS dialog; assume granted if no error
+    return true;
   }
 
   // ─── Channels ──────────────────────────────────────────────────────────────
@@ -89,14 +104,12 @@ class NotificationService {
     if (warningDate.isBefore(DateTime.now())) return;
 
     await _plugin.zonedSchedule(
-      100,
-      'Membership Expiring Soon',
-      'Your $gymName membership expires in 7 days. Renew now to keep access.',
-      tz.TZDateTime.from(warningDate, tz.local),
-      const NotificationDetails(android: _membershipChannel),
+      id: 100,
+      title: 'Membership Expiring Soon',
+      body: 'Your $gymName membership expires in 7 days. Renew now to keep access.',
+      scheduledDate: tz.TZDateTime.from(warningDate, tz.local),
+      notificationDetails: const NotificationDetails(android: _membershipChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
     debugPrint('[Notifications] Membership expiry scheduled for $warningDate');
   }
@@ -105,7 +118,7 @@ class NotificationService {
 
   /// Schedules a daily water reminder at 10 AM.
   static Future<void> scheduleDailyHydrationReminder() async {
-    await _plugin.cancel(200);
+    await _plugin.cancel(id: 200);
 
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, 10);
@@ -114,14 +127,12 @@ class NotificationService {
     }
 
     await _plugin.zonedSchedule(
-      200,
-      'Stay Hydrated!',
-      "Don't forget to drink water. Track your hydration in FitNexora.",
-      scheduled,
-      const NotificationDetails(android: _hydrationChannel),
+      id: 200,
+      title: 'Stay Hydrated!',
+      body: "Don't forget to drink water. Track your hydration in FitNexora.",
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(android: _hydrationChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
     debugPrint('[Notifications] Daily hydration reminder scheduled at 10 AM');
@@ -134,7 +145,7 @@ class NotificationService {
     int hour = 18,
     int minute = 0,
   }) async {
-    await _plugin.cancel(300);
+    await _plugin.cancel(id: 300);
 
     final now = tz.TZDateTime.now(tz.local);
     var scheduled =
@@ -144,24 +155,20 @@ class NotificationService {
     }
 
     await _plugin.zonedSchedule(
-      300,
-      'Time to Work Out!',
-      'Your workout session is waiting. Keep the streak going!',
-      scheduled,
-      const NotificationDetails(android: _workoutChannel),
+      id: 300,
+      title: 'Time to Work Out!',
+      body: 'Your workout session is waiting. Keep the streak going!',
+      scheduledDate: scheduled,
+      notificationDetails: const NotificationDetails(android: _workoutChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
     debugPrint('[Notifications] Workout reminder scheduled at $hour:$minute');
   }
 
   // ─── Cancel ────────────────────────────────────────────────────────────────
-
   static Future<void> cancelAll() => _plugin.cancelAll();
-
-  static Future<void> cancelMembershipReminder() => _plugin.cancel(100);
-  static Future<void> cancelHydrationReminder() => _plugin.cancel(200);
-  static Future<void> cancelWorkoutReminder() => _plugin.cancel(300);
+  static Future<void> cancelMembershipReminder() => _plugin.cancel(id: 100);
+  static Future<void> cancelHydrationReminder() => _plugin.cancel(id: 200);
+  static Future<void> cancelWorkoutReminder() => _plugin.cancel(id: 300);
 }

@@ -41,7 +41,9 @@ import '../screens/member/member_diet_screen.dart';
 import '../screens/member/member_home_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
+import '../screens/member/member_profile_screen.dart';
 import '../screens/member/member_workout_screen.dart';
+import '../screens/member/member_add_workout_plan_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
 import '../screens/nutrition/barcode_scanner_screen.dart';
@@ -67,13 +69,16 @@ import '../screens/pro/pro_paywall_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/subscription/pricing_screen.dart';
+import '../screens/notes/notes_screen.dart';
 import '../screens/todos/todos_screen.dart';
+
 import '../screens/trainer/trainer_dashboard_screen.dart';
+import '../screens/trainer/trainer_assign_workout_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
+import '../screens/motivation/motivation_quote_screen.dart';
 import '../screens/health/steps_tracking_screen.dart';
 import '../screens/health/sleep_tracking_screen.dart';
-import '../screens/notes/notes_screen.dart';
 import '../screens/workouts/workout_calendar_screen.dart';
 import '../screens/notifications/notifications_screen.dart';
 import '../widgets/shared_management_wrapper.dart';
@@ -257,6 +262,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const TrainerDashboardScreen(),
       ),
       GoRoute(
+        path: '/trainer/assign-workout',
+        name: 'trainer-assign-workout',
+        builder: (context, state) => const TrainerAssignWorkoutScreen(),
+      ),
+      GoRoute(
         path: '/clients',
         name: 'clients',
         builder: (context, state) => const SharedManagementWrapper(
@@ -307,6 +317,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/member/workout',
         name: 'member-workout',
         builder: (context, state) => const MemberWorkoutScreen(),
+        routes: [
+          GoRoute(
+            path: 'add',
+            name: 'member-workout-add',
+            builder: (context, state) => const MemberAddWorkoutPlanScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/member/diet',
@@ -445,6 +462,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
+        path: '/member/traffic',
+        name: 'member-traffic',
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          const GymTrafficScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/member/profile',
+        name: 'member_profile',
+        pageBuilder: (context, state) => _fadePage(
+          state,
+          const MemberProfileScreen(),
+        ),
+      ),
+      GoRoute(
         path: '/nutrition',
         name: 'nutrition',
         pageBuilder: (context, state) => _fadePage(
@@ -543,12 +576,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'sleep-tracking',
         pageBuilder: (c, s) => _fadePage(s, const SleepTrackingScreen()),
       ),
-      GoRoute(
-        path: '/notes',
-        name: 'notes',
-        pageBuilder: (c, s) => _fadePage(s, const NotesScreen()),
-      ),
-      GoRoute(
+    // ─── Motivation Routes ─────────────────────────────────────────────────
+    GoRoute(
+      path: '/motivation/daily',
+      name: 'motivation-daily',
+      pageBuilder: (c, s) => _fadePage(s, const MotivationQuoteScreen()),
+    ),
+    GoRoute(
         path: '/workout/calendar',
         name: 'workout-calendar',
         pageBuilder: (c, s) => _fadePage(s, const WorkoutCalendarScreen()),
@@ -606,7 +640,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (c, s) =>
             _fadePage(s, const QrCheckinScreen()),
       ),
+      GoRoute(
+        path: '/gym/checkout',
+        name: 'gym-checkout',
+        pageBuilder: (c, s) =>
+            _fadePage(s, QrCheckinScreen(isCheckOut: true, checkInId: s.extra as String?)),
+      ),
+      GoRoute(
+        path: '/notes',
+        name: 'notes',
+        pageBuilder: (c, s) => _fadePage(s, const NotesScreen()),
+      ),
     ],
+
     errorBuilder: (context, state) => Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(

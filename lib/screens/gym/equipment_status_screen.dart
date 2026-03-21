@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../config/theme.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
@@ -36,7 +38,7 @@ class EquipmentItem {
         id: m['id'] as String,
         name: m['name'] as String,
         category: (m['category'] as String?) ?? 'General',
-        totalCount: (m['total_count'] as int?) ?? 1,
+        totalCount: (m['total_units'] as int?) ?? 1,
         inUse: (m['in_use'] as int?) ?? 0,
         outOfService: (m['out_of_service'] as int?) ?? 0,
       );
@@ -72,11 +74,22 @@ class EquipmentStatusScreen extends ConsumerWidget {
     final t = context.fitTheme;
     final equipAsync = ref.watch(equipmentStatusProvider);
     final user = ref.watch(currentUserProvider).value;
+    final gymsLoading = ref.watch(userGymsProvider).isLoading;
+    final gym = ref.watch(selectedGymProvider);
     final isOwner =
         user?.globalRole.name == 'gymOwner' || user?.globalRole.name == 'superAdmin';
 
     return Scaffold(
       backgroundColor: t.background,
+      floatingActionButton: isOwner
+          ? FloatingActionButton.extended(
+              onPressed: () => _showAddEquipmentSheet(context, gym?.id, t),
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Add Equipment'),
+              backgroundColor: t.brand,
+              foregroundColor: Colors.white,
+            )
+          : null,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -92,75 +105,79 @@ class EquipmentStatusScreen extends ConsumerWidget {
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-              onPressed: () => Navigator.of(context).maybePop(),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/dashboard'),
             ),
           ),
 
-          equipAsync.when(
-            loading: () => const SliverFillRemaining(
+          // Show loading spinner while gym is being fetched
+          if (gym == null && gymsLoading)
+            const SliverFillRemaining(
               child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (e, _) => SliverFillRemaining(
-              child: Center(
-                child: Text(
-                  'Could not load equipment data',
-                  style: GoogleFonts.inter(color: t.textMuted),
+            )
+          else
+            equipAsync.when(
+              loading: () => const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (e, _) => SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    'Could not load equipment data',
+                    style: GoogleFonts.inter(color: t.textMuted),
+                  ),
                 ),
               ),
-            ),
-            data: (items) {
-              if (items.isEmpty) {
-                return SliverFillRemaining(
-                  child: _EmptyState(t: t),
+              data: (items) {
+                if (items.isEmpty) {
+                  return SliverFillRemaining(
+                    child: _EmptyState(t: t, isOwner: isOwner),
+                  );
+                }
+
+                // Summary header
+                final totalAvail = items.fold(0, (s, e) => s + e.available);
+                final totalInUse = items.fold(0, (s, e) => s + e.inUse);
+                final totalOos = items.fold(0, (s, e) => s + e.outOfService);
+
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+                  sliver: SliverList.list(
+                    children: [
+                      _SummaryRow(
+                        available: totalAvail,
+                        inUse: totalInUse,
+                        outOfService: totalOos,
+                        t: t,
+                      ).animate().fadeIn(duration: 300.ms),
+                      const SizedBox(height: 24),
+                      ...items.asMap().entries.map((entry) {
+                        final i = entry.key;
+                        final item = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _EquipmentCard(
+                            item: item,
+                            isOwner: isOwner,
+                            onUpdate: isOwner
+                                ? (inUse, oos) => _update(
+                                    context, ref, item.id, inUse, oos)
+                                : null,
+                            t: t,
+                          )
+                              .animate()
+                              .fadeIn(
+                                duration: 300.ms,
+                                delay: Duration(milliseconds: 40 * i),
+                              )
+                              .slideY(begin: 0.04),
+                        );
+                      }),
+                    ],
+                  ),
                 );
-              }
-
-              // Summary header
-              final totalAvail =
-                  items.fold(0, (s, e) => s + e.available);
-              final totalInUse =
-                  items.fold(0, (s, e) => s + e.inUse);
-              final totalOos =
-                  items.fold(0, (s, e) => s + e.outOfService);
-
-              return SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverList.list(
-                  children: [
-                    _SummaryRow(
-                      available: totalAvail,
-                      inUse: totalInUse,
-                      outOfService: totalOos,
-                      t: t,
-                    ).animate().fadeIn(duration: 300.ms),
-                    const SizedBox(height: 24),
-                    ...items.asMap().entries.map((entry) {
-                      final i = entry.key;
-                      final item = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _EquipmentCard(
-                          item: item,
-                          isOwner: isOwner,
-                          onUpdate: isOwner
-                              ? (inUse, oos) => _update(
-                                  context, ref, item.id, inUse, oos)
-                              : null,
-                          t: t,
-                        )
-                            .animate()
-                            .fadeIn(
-                              duration: 300.ms,
-                              delay: Duration(milliseconds: 40 * i),
-                            )
-                            .slideY(begin: 0.04),
-                      );
-                    }),
-                  ],
-                ),
-              );
-            },
-          ),
+              },
+            ),
         ],
       ),
     );
@@ -179,6 +196,216 @@ class EquipmentStatusScreen extends ConsumerWidget {
         context.showSnackBar('Update failed: $e', isError: true);
       }
     }
+  }
+
+  Future<void> _showAddEquipmentSheet(
+    BuildContext context,
+    String? gymId,
+    FitNexoraThemeTokens t,
+  ) async {
+    if (gymId == null) {
+      context.showSnackBar('No gym selected.', isError: true);
+      return;
+    }
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: t.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => _AddEquipmentSheet(gymId: gymId, t: t),
+    );
+  }
+}
+
+// ─── Add Equipment Sheet ───────────────────────────────────────────────────────
+
+class _AddEquipmentSheet extends ConsumerStatefulWidget {
+  final String gymId;
+  final FitNexoraThemeTokens t;
+
+  const _AddEquipmentSheet({
+    required this.gymId,
+    required this.t,
+  });
+
+  @override
+  ConsumerState<_AddEquipmentSheet> createState() => _AddEquipmentSheetState();
+}
+
+class _AddEquipmentSheetState extends ConsumerState<_AddEquipmentSheet> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameCtrl = TextEditingController();
+  final _unitsCtrl = TextEditingController(text: '1');
+  String _category = 'Cardio';
+  bool _saving = false;
+
+  static const _categories = [
+    'Cardio',
+    'Strength',
+    'Flexibility',
+    'Functional',
+    'Other',
+  ];
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _unitsCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    try {
+      await Supabase.instance.client.from('equipment_status').insert({
+        'gym_id': widget.gymId,
+        'name': _nameCtrl.text.trim(),
+        'category': _category,
+        'total_units': int.tryParse(_unitsCtrl.text.trim()) ?? 1,
+        'in_use': 0,
+        'out_of_service': 0,
+      });
+      ref.invalidate(equipmentStatusProvider);
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar('Failed to add equipment: $e', isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = widget.t;
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: t.textMuted.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Add Equipment',
+              style: GoogleFonts.inter(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: t.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _nameCtrl,
+              style: GoogleFonts.inter(color: t.textPrimary),
+              decoration: InputDecoration(
+                labelText: 'Equipment Name',
+                labelStyle: GoogleFonts.inter(color: t.textMuted),
+                filled: true,
+                fillColor: t.surfaceMuted,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Required' : null,
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              value: _category,
+              dropdownColor: t.surface,
+              style: GoogleFonts.inter(color: t.textPrimary),
+              decoration: InputDecoration(
+                labelText: 'Category',
+                labelStyle: GoogleFonts.inter(color: t.textMuted),
+                filled: true,
+                fillColor: t.surfaceMuted,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
+              onChanged: (v) => setState(() => _category = v ?? _category),
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _unitsCtrl,
+              style: GoogleFonts.inter(color: t.textPrimary),
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Total Units',
+                labelStyle: GoogleFonts.inter(color: t.textMuted),
+                filled: true,
+                fillColor: t.surfaceMuted,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              validator: (v) {
+                final n = int.tryParse(v ?? '');
+                return (n == null || n < 1) ? 'Enter a valid number' : null;
+              },
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saving ? null : _save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: t.brand,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: _saving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'Add Equipment',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -468,7 +695,8 @@ class _CounterButton extends StatelessWidget {
 
 class _EmptyState extends StatelessWidget {
   final FitNexoraThemeTokens t;
-  const _EmptyState({required this.t});
+  final bool isOwner;
+  const _EmptyState({required this.t, required this.isOwner});
 
   @override
   Widget build(BuildContext context) {
@@ -488,8 +716,11 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Equipment will appear here once added.',
+            isOwner
+                ? 'Tap "Add Equipment" below to get started.'
+                : 'Equipment will appear here once added.',
             style: GoogleFonts.inter(fontSize: 14, color: t.textMuted),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

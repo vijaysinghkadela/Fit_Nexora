@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/fit_pricing.dart';
 
-/// Paywall shown when a client has no active member plan.
+/// Paywall shown when a client needs to upgrade for premium features.
+/// 
+/// REMINDER: Free tier features (attendance, traffic, calendar, quotes, check-in/out) 
+/// are always accessible without membership. This paywall only appears for premium features.
 class MemberPaywallScreen extends ConsumerWidget {
   const MemberPaywallScreen({super.key});
 
@@ -21,10 +25,11 @@ class MemberPaywallScreen extends ConsumerWidget {
     final phone = gym?.phone?.trim() ?? '';
 
     return FitPlanUpgradePage(
-      title: 'Start with Basic',
-      subtitle:
-          'Unlock the member experience your gym already prepared for you, from check-ins and workouts to progress tracking and announcements.',
-      sectionTitle: 'WHAT YOU GET',
+      title: 'Upgrade Membership',
+      subtitle: 
+          'You have access to FREE features: attendance, live gym traffic, calendar, motivation quotes, and check-in/check-out. '
+          'Upgrade to unlock premium features: AI workout plans, advanced analytics, body measurements, and more.',
+      sectionTitle: 'PREMIUM FEATURES YOU\'LL GET',
       actions: [
         IconButton(
           onPressed: () => ref.read(currentUserProvider.notifier).signOut(),
@@ -33,19 +38,20 @@ class MemberPaywallScreen extends ConsumerWidget {
         ),
       ],
       offer: const FitPricingPlanData(
-        title: 'Basic',
-        price: 'Rs 499',
-        period: '/month',
+        title: 'Premium',
+        price: '', // Pricing determined by gym - not shown here
+        period: '',
         description:
-            'A clear, no-friction member plan for everyday training, attendance, and progress visibility.',
-        ctaLabel: 'Contact Your Gym',
+            'Unlock all premium features including AI workout plans, advanced analytics, and nutrition tracking.',
+        ctaLabel: 'Contact Your Gym to Upgrade',
         palette: _palette,
         features: [
-          FitPricingFeatureData(label: 'Membership management'),
-          FitPricingFeatureData(label: 'Attendance tracking'),
-          FitPricingFeatureData(label: 'Trainer-assigned workouts'),
-          FitPricingFeatureData(label: 'Trainer-assigned diet plans'),
-          FitPricingFeatureData(label: 'Weight and progress logging'),
+          FitPricingFeatureData(label: 'AI Workout Plans'),
+          FitPricingFeatureData(label: 'AI Diet Plans'),
+          FitPricingFeatureData(label: 'Body Measurements'),
+          FitPricingFeatureData(label: 'Water Tracker'),
+          FitPricingFeatureData(label: 'Personal Records'),
+          FitPricingFeatureData(label: 'Macro Calculator'),
         ],
       ),
       featureItems: const [
@@ -80,19 +86,25 @@ class MemberPaywallScreen extends ConsumerWidget {
           palette: _palette,
         ),
       ],
-      contactTitle: 'Purchase through your gym',
+      contactTitle: 'Ready to Upgrade?',
       contactMessage:
-          'Your gym manages member plan upgrades. Reach out to confirm the Basic plan and activate your account access.',
+          'Your gym manages all membership upgrades. Contact them to learn about premium plan options and pricing.',
       gymName: gym?.name,
       gymPhone: phone.isEmpty ? null : phone,
       primaryActionLabel: 'Contact Gym',
       onPrimaryAction: () => context.showSnackBar(
         phone.isEmpty
-            ? 'Ask your gym front desk to activate the Basic plan.'
-            : 'Call $phone to activate the Basic plan.',
+            ? 'Visit your gym front desk or use the contact information provided.'
+            : 'Call $phone to learn about premium plans.',
       ),
       secondaryActionLabel: 'Not Now',
-      onSecondaryAction: () => Navigator.of(context).maybePop(),
+      onSecondaryAction: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/member');
+        }
+      },
     );
   }
 }

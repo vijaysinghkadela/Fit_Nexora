@@ -8,10 +8,10 @@ import '../core/extensions.dart';
 
 const _tabs = [
   _Tab(label: 'Home', icon: Icons.home_rounded, route: '/member'),
-  _Tab(label: 'Workouts', icon: Icons.fitness_center_rounded, route: '/workouts'),
-  _Tab(label: 'Nutrition', icon: Icons.restaurant_rounded, route: '/nutrition'),
+  _Tab(label: 'Workouts', icon: Icons.fitness_center_rounded, route: '/member/workout'),
+  _Tab(label: 'Nutrition', icon: Icons.restaurant_rounded, route: '/member/diet'),
   _Tab(label: 'Progress', icon: Icons.bar_chart_rounded, route: '/member/progress'),
-  _Tab(label: 'Profile', icon: Icons.person_rounded, route: '/settings'),
+  _Tab(label: 'Profile', icon: Icons.person_rounded, route: '/member/profile'),
 ];
 
 class _Tab {

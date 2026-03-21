@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/extensions.dart';
 
@@ -12,6 +13,8 @@ class FitAuthScaffold extends StatelessWidget {
   final bool showBack;
   final VoidCallback? onBack;
   final List<Widget> actions;
+  /// Optional path to an image asset shown as a logo in the hero area.
+  final String? logoAsset;
 
   const FitAuthScaffold({
     super.key,
@@ -24,6 +27,7 @@ class FitAuthScaffold extends StatelessWidget {
     this.showBack = false,
     this.onBack,
     this.actions = const [],
+    this.logoAsset,
   });
 
   @override
@@ -121,7 +125,13 @@ class FitAuthScaffold extends StatelessWidget {
                 _TopAction(
                   visible: showBack,
                   icon: Icons.arrow_back_rounded,
-                  onTap: onBack ?? () => Navigator.of(context).maybePop(),
+                  onTap: onBack ?? () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/login');
+                    }
+                  },
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -136,6 +146,26 @@ class FitAuthScaffold extends StatelessWidget {
             right: 28,
             child: Column(
               children: [
+                if (logoAsset != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      logoAsset!,
+                      width: 76,
+                      height: 76,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 76,
+                        height: 76,
+                        decoration: BoxDecoration(
+                          gradient: colors.brandGradient,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Icon(heroIcon, size: 36, color: Colors.white),
+                      ),
+                    ),
+                  )
+                else
                 Container(
                   width: 76,
                   height: 76,

@@ -35,12 +35,6 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
     _controllers =
         List.generate(_digitCount, (_) => TextEditingController());
     _focusNodes = List.generate(_digitCount, (_) => FocusNode());
-    // Rebuild on focus change to animate box borders
-    for (final node in _focusNodes) {
-      node.addListener(() {
-        if (mounted) setState(() {});
-      });
-    }
     _startTimer();
   }
 
@@ -209,71 +203,76 @@ class _VerifyOtpScreenState extends ConsumerState<VerifyOtpScreen> {
           ],
 
           // OTP boxes
-          Row(
-            children: List.generate(_digitCount, (index) {
-              final isFocused = _focusNodes[index].hasFocus;
-              final isFilled = _controllers[index].text.isNotEmpty;
+          ListenableBuilder(
+            listenable: Listenable.merge(_focusNodes),
+            builder: (context, _) {
+              return Row(
+                children: List.generate(_digitCount, (index) {
+                  final isFocused = _focusNodes[index].hasFocus;
+                  final isFilled = _controllers[index].text.isNotEmpty;
 
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      right: index == _digitCount - 1 ? 0 : 12),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: isFilled
-                          ? t.brand.withOpacity(0.10)
-                          : t.surfaceAlt,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isFocused
-                            ? t.brand
-                            : isFilled
-                                ? t.brand.withOpacity(0.45)
-                                : t.border,
-                        width: isFocused ? 2 : 1.2,
-                      ),
-                      boxShadow: isFocused
-                          ? [
-                              BoxShadow(
-                                color: t.brand.withOpacity(0.22),
-                                blurRadius: 16,
-                                offset: const Offset(0, 6),
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: TextField(
-                        controller: _controllers[index],
-                        focusNode: _focusNodes[index],
-                        autofocus: index == 0,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        maxLength: 1,
-                        style: GoogleFonts.inter(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                          color: isFilled ? t.brand : t.textPrimary,
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: index == _digitCount - 1 ? 0 : 12),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: isFilled
+                              ? t.brand.withOpacity(0.10)
+                              : t.surfaceAlt,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isFocused
+                                ? t.brand
+                                : isFilled
+                                    ? t.brand.withOpacity(0.45)
+                                    : t.border,
+                            width: isFocused ? 2 : 1.2,
+                          ),
+                          boxShadow: isFocused
+                              ? [
+                                  BoxShadow(
+                                    color: t.brand.withOpacity(0.22),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ]
+                              : null,
                         ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          counterText: '',
-                          hintText: '–',
-                          filled: false,
-                          contentPadding: EdgeInsets.zero,
+                        child: Center(
+                          child: TextField(
+                            controller: _controllers[index],
+                            focusNode: _focusNodes[index],
+                            autofocus: index == 0,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            maxLength: 1,
+                            style: GoogleFonts.inter(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w800,
+                              color: isFilled ? t.brand : t.textPrimary,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              counterText: '',
+                              hintText: '–',
+                              filled: false,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            onChanged: (value) => _handleChanged(value, index),
+                          ),
                         ),
-                        onChanged: (value) => _handleChanged(value, index),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               );
-            }),
+            },
           ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.1, end: 0),
 
           const SizedBox(height: 28),

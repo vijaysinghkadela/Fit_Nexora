@@ -169,6 +169,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       title: 'Welcome Back',
       subtitle: 'Log in to continue your fitness journey',
       heroIcon: Icons.bolt_rounded,
+      logoAsset: 'assets/images/logo.png',
       footer: TextButton(
         onPressed: () => context.go('/register'),
         child: const Text('New here? Start your transformation'),

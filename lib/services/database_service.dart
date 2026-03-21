@@ -11,6 +11,7 @@ import '../models/food_log_model.dart';
 import '../models/membership_model.dart';
 import '../models/membership_counts.dart';
 import '../models/subscription_model.dart';
+import '../models/workout_plan_model.dart';
 
 /// Database service wrapping Supabase queries.
 ///
@@ -627,6 +628,30 @@ class DatabaseService {
         .limit(1);
     if (data.isEmpty) return null;
     return data.first;
+  }
+
+  /// All active workout plans for a gym (most recent first).
+  Future<List<WorkoutPlan>> getWorkoutPlansForGym(String gymId,
+      {int limit = 10}) async {
+    final data = await _client
+        .from(AppConstants.workoutPlansTable)
+        .select()
+        .eq('gym_id', gymId)
+        .order('created_at', ascending: false)
+        .limit(limit);
+    return (data as List)
+        .map((e) => WorkoutPlan.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Create a new workout plan and return the persisted record.
+  Future<WorkoutPlan> createWorkoutPlan(Map<String, dynamic> data) async {
+    final result = await _client
+        .from(AppConstants.workoutPlansTable)
+        .insert(data)
+        .select()
+        .single();
+    return WorkoutPlan.fromJson(result);
   }
 
   /// Diet plan assigned to a client.

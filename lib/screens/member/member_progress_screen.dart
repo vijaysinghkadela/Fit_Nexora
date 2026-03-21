@@ -41,7 +41,13 @@ class _MemberProgressScreenState
         backgroundColor: t.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/member');
+            }
+          },
         ),
         title: Text('Weight Progress',
             style: GoogleFonts.inter(

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _kThemeModeKey = 'app_theme_mode';
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.dark) {
+  ThemeModeNotifier() : super(ThemeMode.light) {
     _loadSavedThemeMode();
   }
 
@@ -13,9 +13,9 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
     final prefs = await SharedPreferences.getInstance();
     final rawMode = prefs.getString(_kThemeModeKey);
     state = switch (rawMode) {
-      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
       'system' => ThemeMode.system,
-      _ => ThemeMode.dark,
+      _ => ThemeMode.light,
     };
   }
 

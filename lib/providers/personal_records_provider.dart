@@ -8,7 +8,7 @@ import '../models/personal_record_model.dart';
 class PersonalRecordsNotifier
     extends StateNotifier<AsyncValue<List<PersonalRecord>>> {
   PersonalRecordsNotifier() : super(const AsyncValue.loading()) {
-    load();
+    Future.microtask(load);
   }
 
   final _client = Supabase.instance.client;

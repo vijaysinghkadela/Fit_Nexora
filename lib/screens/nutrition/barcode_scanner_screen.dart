@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/extensions.dart';
+
 import '../../config/theme.dart';
+import '../../core/extensions.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 class BarcodeScannerScreen extends ConsumerStatefulWidget {
@@ -133,7 +135,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                 children: [
                   _CircleIconButton(
                     icon: Icons.close_rounded,
-                    onTap: () => Navigator.of(context).maybePop(),
+                    onTap: () => context.canPop() ? context.pop() : context.go('/nutrition'),
                     color: Colors.white,
                     bgColor: Colors.white.withOpacity(0.12),
                   ),
@@ -205,7 +207,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                       ),
                       const SizedBox(height: 12),
                       TextButton.icon(
-                        onPressed: () => Navigator.of(context).maybePop(),
+                        onPressed: () => context.canPop() ? context.pop() : context.go('/nutrition'),
                         icon: Icon(Icons.edit_rounded,
                             size: 16, color: t.textSecondary),
                         label: Text(

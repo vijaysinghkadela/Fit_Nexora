@@ -9,9 +9,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../config/theme.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/traffic_provider.dart';
 
 class QrCheckinScreen extends ConsumerStatefulWidget {
-  const QrCheckinScreen({super.key});
+  final bool isCheckOut;
+  final String? checkInId;
+
+  const QrCheckinScreen({
+    super.key,
+    this.isCheckOut = false,
+    this.checkInId,
+  });
 
   @override
   ConsumerState<QrCheckinScreen> createState() => _QrCheckinScreenState();
@@ -52,18 +60,26 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
       final userId = ref.read(currentUserProvider).value?.id;
       if (userId == null) throw Exception('Not logged in');
 
-      await Supabase.instance.client.from('gym_checkins').insert({
-        'gym_id': raw,
-        'user_id': userId,
-        'checked_in_at': DateTime.now().toIso8601String(),
-      });
+      final db = ref.read(databaseServiceProvider);
+      if (widget.isCheckOut) {
+        if (widget.checkInId == null) throw Exception('No active check-in ID found');
+        await db.checkOutFromGym(widget.checkInId!);
+      } else {
+        await Supabase.instance.client.from('gym_checkins').insert({
+          'gym_id': raw,
+          'user_id': userId,
+          'checked_in_at': DateTime.now().toIso8601String(),
+        });
+      }
+
+      ref.invalidate(activeCheckInProvider((raw, userId)));
 
       if (mounted) setState(() => _success = true);
     } catch (e) {
       if (mounted) {
         setState(() {
           _success = false;
-          _errorMessage = 'Check-in failed. Try again.';
+          _errorMessage = '${widget.isCheckOut ? 'Check-out' : 'Check-in'} failed. Try again.';
         });
       }
     }
@@ -111,7 +127,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
                       onPressed: () => Navigator.of(context).maybePop(),
                     ),
                     Text(
-                      'Gym Check-In',
+                      widget.isCheckOut ? 'Gym Check-Out' : 'Gym Check-In',
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -136,7 +152,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
               color: t.background,
               child: Center(
                 child: _success
-                    ? _SuccessView(t: t)
+                    ? _SuccessView(t: t, isCheckOut: widget.isCheckOut)
                         .animate()
                         .fadeIn(duration: 400.ms)
                         .scale(begin: const Offset(0.8, 0.8))
@@ -192,7 +208,8 @@ class _ScanOverlay extends StatelessWidget {
 
 class _SuccessView extends StatelessWidget {
   final FitNexoraThemeTokens t;
-  const _SuccessView({required this.t});
+  final bool isCheckOut;
+  const _SuccessView({required this.t, required this.isCheckOut});
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +228,7 @@ class _SuccessView extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Text(
-          'Checked In!',
+          isCheckOut ? 'Checked Out!' : 'Checked In!',
           style: GoogleFonts.inter(
             fontSize: 28,
             fontWeight: FontWeight.w800,
@@ -220,7 +237,7 @@ class _SuccessView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Welcome to the gym. Have a great workout!',
+          isCheckOut ? 'Workout complete. See you next time!' : 'Welcome to the gym. Have a great workout!',
           style: GoogleFonts.inter(fontSize: 15, color: t.textSecondary),
           textAlign: TextAlign.center,
         ),

@@ -7,6 +7,7 @@ import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/client_provider.dart';
 import '../../widgets/error_widgets.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/loading_widgets.dart';
@@ -536,6 +537,9 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                 await ref
                     .read(databaseServiceProvider)
                     .deleteClient(_client.id);
+                // Invalidate providers so the client list refreshes
+                ref.invalidate(gymClientsProvider);
+                ref.invalidate(pagedClientsControllerProvider);
                 if (mounted) Navigator.of(context).pop();
               } catch (e) {
                 if (mounted) {

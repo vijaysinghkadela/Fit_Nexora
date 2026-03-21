@@ -39,11 +39,62 @@ final memberMembershipProvider =
 });
 
 /// True only if the member has a paid, non-expired membership.
-/// This is the single paywall gate — every member screen checks this.
+/// This is the premium paywall gate - only checks for premium features.
+/// Free tier features are ALWAYS accessible regardless of membership status.
 final memberHasAccessProvider = FutureProvider.autoDispose<bool>((ref) async {
   final membership = await ref.watch(memberMembershipProvider.future);
+  
+  // Developer bypass (uncomment for testing with dev emails)
+  // final user = ref.watch(currentUserProvider).value;
+  // if (user != null && isDevUser(user.email)) return true;
+  
+  // For premium features only - check if membership is active
   if (membership == null) return false;
   return !membership.isExpired;
+});
+
+/// Determines if a member can access FREE tier features.
+/// Returns true for ALL authenticated users (members don't need paid plans for free features).
+final memberCanAccessFreeFeaturesProvider = FutureProvider.autoDispose<bool>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  
+  // Developer bypass (uncomment for testing with dev emails)
+  // if (user != null && isDevUser(user.email)) return true;
+  
+  // Any authenticated member has access to free features
+  // Membership/payment is ONLY required for premium features
+  return user != null;
+});
+
+/// Maps specific features to their access level (free vs premium)
+/// 
+/// Usage: 
+/// final canAccess = ref.watch(memberCanAccessFeatureProvider('feature_id'));
+/// if (!canAccess) { return const UpgradePrompt(); }
+final memberCanAccessFeatureProvider = Provider.family<bool, String>((ref, featureId) {
+  final user = ref.watch(currentUserProvider).value;
+  
+  if (user == null) return false; // Must be authenticated
+  
+  // FREE TIER - These 5 features are ALWAYS accessible
+  const freeFeatures = {
+    'attendance',           // Attendance tracking
+    'gym_traffic',          // Live gym traffic
+    'calendar',             // Workout calendar
+    'motivation_quotes',    // Motivation quotes (NEW)
+    'checkin_checkout',     // Check-in/check-out
+  };
+  
+  if (freeFeatures.contains(featureId)) {
+    return true; // These features are always free
+  }
+  
+  // PREMIUM FEATURES = require paid membership
+  final membership = ref.watch(memberMembershipProvider).value;
+  if (membership == null) return false;
+  if (membership.isExpired) return false;
+  
+  return true; // Has active membership → can access premium features
 });
 
 // ─── Workout ─────────────────────────────────────────────────────────────────

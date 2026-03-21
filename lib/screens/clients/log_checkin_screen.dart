@@ -62,6 +62,40 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
   String _query = '';
   String? _selectedClientId;
   DateTime _checkInTime = DateTime.now();
+  bool _redirected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkGym());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _checkGym();
+  }
+
+  void _checkGym() {
+    if (_redirected || !mounted) return;
+    final gym = ref.read(selectedGymProvider);
+    if (gym == null) {
+      _redirected = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'No gym selected. Please access check-in from your dashboard.',
+              style: GoogleFonts.inter(),
+            ),
+            backgroundColor: context.fitTheme.danger,
+          ),
+        );
+        context.go('/dashboard');
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -143,21 +177,8 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
     final t = context.fitTheme;
     final gym = ref.watch(selectedGymProvider);
 
-    // Guard: if no gym is selected, show error and redirect
+    // Guard: if no gym is selected, show empty scaffold while redirect is pending
     if (gym == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'No gym selected. Please access check-in from your dashboard.',
-              style: GoogleFonts.inter(),
-            ),
-            backgroundColor: t.danger,
-          ),
-        );
-        context.go('/dashboard');
-      });
       return Scaffold(backgroundColor: t.background, body: const SizedBox.shrink());
     }
 
@@ -169,7 +190,8 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
         backgroundColor: t.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/clients'),
         ),
         title: Text(
           'Log Check-in',

@@ -16,6 +16,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../providers/performance_provider.dart';
+import '../../services/notification_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -106,10 +107,14 @@ class SettingsScreen extends ConsumerWidget {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
                     sliver: SliverToBoxAdapter(
-                      child: _ProfileCard(
-                        user: user,
-                        gym: gym,
-                        colors: colors,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => _showEditProfileSheet(context, ref, user),
+                        child: _ProfileCard(
+                          user: user,
+                          gym: gym,
+                          colors: colors,
+                        ),
                       ),
                     ),
                   ),
@@ -162,9 +167,18 @@ class SettingsScreen extends ConsumerWidget {
                           _SettingsRow(
                             icon: Icons.notifications_rounded,
                             title: 'Notifications',
-                            subtitle: 'On',
-                            onTap: () {
-                              context.showSnackBar('Notification preferences are coming next.');
+                            subtitle: 'Manage notification permissions',
+                            onTap: () async {
+                              final granted =
+                                  await NotificationService.requestPermissions();
+                              if (context.mounted) {
+                                context.showSnackBar(
+                                  granted
+                                      ? 'Notifications enabled!'
+                                      : 'Notification permission denied. Enable it in device settings.',
+                                  isError: !granted,
+                                );
+                              }
                             },
                           ),
                           _SettingsRow(
@@ -483,7 +497,10 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     AppUser? user,
   ) async {
-    if (user == null) return;
+    if (user == null) {
+      context.showSnackBar('Profile is still loading. Please try again.');
+      return;
+    }
     final colors = context.fitTheme;
     final nameCtrl = TextEditingController(text: user.fullName);
     final phoneCtrl = TextEditingController(text: user.phone ?? '');
@@ -748,24 +765,28 @@ class _ProfileCard extends StatelessWidget {
                     gradient: colors.brandGradient,
                     shape: BoxShape.circle,
                   ),
-                   child: user?.avatarUrl != null
-                       ? CachedNetworkImage(
-                           imageUrl: user!.avatarUrl!,
-                           fit: BoxFit.cover,
-                           placeholder: (context, url) =>
-                               const CircularProgressIndicator(strokeWidth: 2),
-                           errorWidget: (context, url, error) => Center(
-                             child: Text(
-                               initial,
-                               style: GoogleFonts.inter(
-                                 fontSize: 28,
-                                 fontWeight: FontWeight.w800,
-                                 color: Colors.white,
-                               ),
-                             ),
-                           ),
-                         )
-                       : Center(
+                  child: user?.avatarUrl != null
+                      ? ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: user!.avatarUrl!,
+                            fit: BoxFit.cover,
+                            width: 76,
+                            height: 76,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(strokeWidth: 2),
+                            errorWidget: (context, url, error) => Center(
+                              child: Text(
+                                initial,
+                                style: GoogleFonts.inter(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Center(
                            child: Text(
                              initial,
                              style: GoogleFonts.inter(

@@ -52,7 +52,13 @@ class _ProNutritionScreenState extends ConsumerState<ProNutritionScreen>
         backgroundColor: t.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: t.textSecondary),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/dashboard');
+            }
+          },
         ),
         title: Text('Nutrition Tracker',
             style: GoogleFonts.inter(

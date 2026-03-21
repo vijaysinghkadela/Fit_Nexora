@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../config/app_config.dart';
 import '../models/user_model.dart';
 import '../core/constants.dart';
 import '../core/enums.dart';
@@ -110,14 +109,7 @@ class AuthService {
   /// On Android & iOS this shows the native Google account picker, then
   /// exchanges the Google ID token for a Supabase session via signInWithIdToken.
   Future<void> signInWithGoogle() async {
-    final webClientId = AppConfig.googleWebClientId;
-
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      // The server client ID (Web) lets Supabase verify the token.
-      serverClientId: webClientId.isNotEmpty ? webClientId : null,
-    );
-
-    final googleUser = await googleSignIn.signIn();
+    final googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) {
       // The user cancelled the picker.
       throw Exception('Google sign-in was cancelled.');
@@ -142,8 +134,7 @@ class AuthService {
   /// the account picker appears on the next Google sign-in instead of auto-selecting.
   Future<void> signOutGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      await googleSignIn.disconnect();
+      await GoogleSignIn().signOut();
     } catch (e) {
       debugPrint('Google sign-out error (non-fatal): $e');
     }

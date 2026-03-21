@@ -21,8 +21,29 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
   final _ctrl = TextEditingController();
   final _scrollCtrl = ScrollController();
   bool _sending = false;
+  int _lastMsgCount = 0;
 
   static const _purple = Color(0xFF9C27B0);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!mounted) return;
+      ref.listenManual(eliteTrainerChatProvider, (prev, next) {
+        next.whenData((msgs) {
+          if (msgs.length > _lastMsgCount) {
+            _lastMsgCount = msgs.length;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (_scrollCtrl.hasClients) {
+                _scrollCtrl.jumpTo(_scrollCtrl.position.maxScrollExtent);
+              }
+            });
+          }
+        });
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -114,13 +135,6 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                     ),
                   );
                 }
-
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (_scrollCtrl.hasClients) {
-                    _scrollCtrl.jumpTo(
-                        _scrollCtrl.position.maxScrollExtent);
-                  }
-                });
 
                 return ListView.builder(
                   controller: _scrollCtrl,

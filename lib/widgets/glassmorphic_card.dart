@@ -84,7 +84,7 @@ class GlassmorphicCard extends ConsumerWidget {
     }
 
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
       child: Container(
         decoration: BoxDecoration(
           color: colors.glassFill,

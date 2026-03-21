@@ -103,7 +103,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         if (_requiresCurrentPassword) {
           context.go('/settings');
         } else {
-          Navigator.of(context).maybePop();
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/login');
+          }
         }
       },
       footer: TextButton(
@@ -111,7 +115,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           if (_requiresCurrentPassword) {
             context.go('/forgot-password');
           } else {
-            Navigator.of(context).maybePop();
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/login');
+            }
           }
         },
         child: Text(

@@ -8,7 +8,7 @@ import '../models/body_measurement_model.dart';
 class BodyMeasurementNotifier
     extends StateNotifier<AsyncValue<List<BodyMeasurement>>> {
   BodyMeasurementNotifier() : super(const AsyncValue.loading()) {
-    load();
+    Future.microtask(load);
   }
 
   final _client = Supabase.instance.client;

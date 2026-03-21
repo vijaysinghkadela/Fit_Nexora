@@ -9,6 +9,9 @@ import 'providers/locale_provider.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
+import 'widgets/app_notification_overlay.dart';
+
+
 
 /// Removes Android glow overscroll; uses Material 3 stretch indicator instead.
 class _AppScrollBehavior extends ScrollBehavior {
@@ -59,9 +62,11 @@ class GymOSApp extends ConsumerWidget {
           minScaleFactor: 0.85,
           maxScaleFactor: 1.3,
         );
-        return MediaQuery(
-          data: mediaQuery.copyWith(textScaler: clampedTextScaler),
-          child: child ?? const SizedBox.shrink(),
+        return AppNotificationOverlay(
+          child: MediaQuery(
+            data: mediaQuery.copyWith(textScaler: clampedTextScaler),
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
 

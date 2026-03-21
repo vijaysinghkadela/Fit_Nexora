@@ -58,7 +58,13 @@ class _WorkoutCalendarScreenState extends ConsumerState<WorkoutCalendarScreen> {
             backgroundColor: t.surface,
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go('/member');
+              }
+            },
             ),
             title: Text(
               'Workout Calendar',

@@ -14,6 +14,7 @@ class WorkoutPlan extends Equatable {
   final int durationWeeks;
   final int currentWeek;
   final String phase; // e.g., "Hypertrophy", "Strength", "Deload"
+  final String athleteType; // e.g., "General", "Powerlifting", "Bodybuilding", "Arm Wrestling"
 
   // Training days
   final List<TrainingDay> days;
@@ -36,6 +37,7 @@ class WorkoutPlan extends Equatable {
     this.durationWeeks = 8,
     this.currentWeek = 1,
     this.phase = 'Phase 1',
+    this.athleteType = 'General',
     this.days = const [],
     this.status = PlanStatus.active,
     this.isTemplate = false,
@@ -62,6 +64,7 @@ class WorkoutPlan extends Equatable {
       durationWeeks: json['duration_weeks'] as int? ?? 8,
       currentWeek: json['current_week'] as int? ?? 1,
       phase: json['phase'] as String? ?? 'Phase 1',
+      athleteType: json['athlete_type'] as String? ?? 'General',
       days: daysJson
           .map((d) => TrainingDay.fromJson(d as Map<String, dynamic>))
           .toList(),
@@ -83,6 +86,7 @@ class WorkoutPlan extends Equatable {
         'duration_weeks': durationWeeks,
         'current_week': currentWeek,
         'phase': phase,
+        'athlete_type': athleteType,
         'days': days.map((d) => d.toJson()).toList(),
         'status': status.value,
         'is_template': isTemplate,
@@ -138,6 +142,10 @@ class Exercise {
   final int sets;
   final String reps; // "8-12" or "10" or "30s"
   final int restSeconds;
+  final String? setTime; // duration string representing time under tension per set
+  final int? rpe; // 1-10 rate of perceived exertion
+  final String? supersetGroupId; // "A", "B", etc. to group exercises
+  final String? intensity; // "Low", "Medium", "High"
   final String? tempo; // e.g., "3-1-2-0"
   final String? equipment;
   final String? cue; // one key coaching cue
@@ -149,6 +157,10 @@ class Exercise {
     this.sets = 3,
     this.reps = '10',
     this.restSeconds = 60,
+    this.setTime,
+    this.rpe,
+    this.supersetGroupId,
+    this.intensity,
     this.tempo,
     this.equipment,
     this.cue,
@@ -162,6 +174,10 @@ class Exercise {
       sets: json['sets'] as int? ?? 3,
       reps: json['reps'] as String? ?? '10',
       restSeconds: json['rest_seconds'] as int? ?? 60,
+      setTime: json['set_time'] as String?,
+      rpe: json['rpe'] as int?,
+      supersetGroupId: json['superset_group_id'] as String?,
+      intensity: json['intensity'] as String?,
       tempo: json['tempo'] as String?,
       equipment: json['equipment'] as String?,
       cue: json['cue'] as String?,
@@ -175,6 +191,10 @@ class Exercise {
         'sets': sets,
         'reps': reps,
         'rest_seconds': restSeconds,
+        'set_time': setTime,
+        'rpe': rpe,
+        'superset_group_id': supersetGroupId,
+        'intensity': intensity,
         'tempo': tempo,
         'equipment': equipment,
         'cue': cue,

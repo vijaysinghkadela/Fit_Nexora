@@ -10,7 +10,7 @@ const _kWaterGoalKey = 'water_daily_goal_ml';
 
 class WaterTrackerNotifier extends StateNotifier<WaterTrackerState> {
   WaterTrackerNotifier() : super(const WaterTrackerState(isLoading: true)) {
-    _init();
+    Future.microtask(_init);
   }
 
   final _client = Supabase.instance.client;
@@ -96,6 +96,6 @@ class WaterTrackerNotifier extends StateNotifier<WaterTrackerState> {
 }
 
 final waterTrackerProvider =
-    StateNotifierProvider<WaterTrackerNotifier, WaterTrackerState>(
+    StateNotifierProvider.autoDispose<WaterTrackerNotifier, WaterTrackerState>(
   (ref) => WaterTrackerNotifier(),
 );

@@ -153,7 +153,13 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios_rounded,
             color: t.textSecondary, size: 20),
-        onPressed: () => context.pop(),
+        onPressed: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go('/dashboard');
+          }
+        },
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

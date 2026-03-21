@@ -1,14 +1,25 @@
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../config/theme.dart';
 
+import '../../config/theme.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
+import '../../models/workout_plan_model.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
+
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
+final gymWorkoutPlansProvider =
+    FutureProvider.autoDispose<List<WorkoutPlan>>((ref) async {
+  final gym = ref.watch(selectedGymProvider);
+  if (gym == null) return [];
+  return ref.read(databaseServiceProvider).getWorkoutPlansForGym(gym.id);
+});
 
 /// Workout plan list + quick builder screen.
 class WorkoutsScreen extends ConsumerStatefulWidget {
@@ -24,6 +35,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     final t = context.fitTheme;
     final subscriptionAsync = ref.watch(currentGymSubscriptionProvider);
     final hasAiAccess = subscriptionAsync.value?.hasAiAccess ?? false;
+    final plansAsync = ref.watch(gymWorkoutPlansProvider);
 
     // Template data defined here so colors resolve from theme
     final templates = [
@@ -166,7 +178,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           ),
         ),
 
-        // Recent plans
+        // Recent plans header
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
           sliver: SliverToBoxAdapter(
@@ -182,7 +194,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => context.push('/workout/history'),
                   child: const Text('View All'),
                 ),
               ],
@@ -190,53 +202,86 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           ),
         ),
 
-        // Empty state
+        // Recent plans list
         SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
           sliver: SliverToBoxAdapter(
-            child: GlassmorphicCard(
-              child: Padding(
-                padding: const EdgeInsets.all(40),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: t.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Icon(
-                        Icons.fitness_center_rounded,
-                        size: 36,
-                        color: t.textMuted.withOpacity(0.5),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No workout plans yet',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: t.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Create a plan manually or use a template to get started',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: t.textMuted,
-                      ),
-                    ),
-                  ],
+            child: plansAsync.when(
+              loading: () => const Center(
+                  child: Padding(
+                padding: EdgeInsets.all(32),
+                child: CircularProgressIndicator(),
+              )),
+              error: (_, __) => GlassmorphicCard(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'Could not load plans.',
+                    style: GoogleFonts.inter(color: t.textMuted),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ).animate(delay: 300.ms).fadeIn(),
+              data: (plans) {
+                if (plans.isEmpty) {
+                  return GlassmorphicCard(
+                    child: Padding(
+                      padding: const EdgeInsets.all(40),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: t.surface,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Icon(
+                              Icons.fitness_center_rounded,
+                              size: 36,
+                              color: t.textMuted.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No workout plans yet',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: t.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Create a plan manually or use a template to get started',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: t.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ).animate(delay: 300.ms).fadeIn();
+                }
+
+                return Column(
+                  children: plans.asMap().entries.map((entry) {
+                    final i = entry.key;
+                    final plan = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _PlanListTile(plan: plan, t: t)
+                          .animate(delay: Duration(milliseconds: 60 * i))
+                          .fadeIn()
+                          .slideY(begin: 0.04, end: 0),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ),
         ),
-
-        const SliverToBoxAdapter(child: SizedBox(height: 40)),
       ],
     );
   }
@@ -244,14 +289,11 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   Widget _buildTemplateCard(_PlanTemplate template, int index, FitNexoraThemeTokens t) {
     final color = template.color;
     return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Creating ${template.name} plan…'),
-            backgroundColor: color,
-          ),
-        );
-      },
+      onTap: () => _showCreatePlanSheet(
+        prefillName: template.name,
+        prefillGoal: template.goal,
+        prefillDays: template.days,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: t.surfaceAlt,
@@ -333,12 +375,20 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     );
   }
 
-  void _showCreatePlanSheet() {
+  void _showCreatePlanSheet({
+    String? prefillName,
+    String? prefillGoal,
+    int? prefillDays,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _CreatePlanSheet(),
+      builder: (context) => _CreatePlanSheet(
+        prefillName: prefillName,
+        prefillGoal: prefillGoal,
+        prefillDays: prefillDays,
+      ),
     );
   }
 }
@@ -474,21 +524,76 @@ class _AiGenerationBanner extends StatelessWidget {
 }
 
 /// Bottom sheet for creating a new workout plan.
-class _CreatePlanSheet extends StatefulWidget {
+class _CreatePlanSheet extends ConsumerStatefulWidget {
+  const _CreatePlanSheet({this.prefillName, this.prefillGoal, this.prefillDays});
+  final String? prefillName;
+  final String? prefillGoal;
+  final int? prefillDays;
+
   @override
-  State<_CreatePlanSheet> createState() => _CreatePlanSheetState();
+  ConsumerState<_CreatePlanSheet> createState() => _CreatePlanSheetState();
 }
 
-class _CreatePlanSheetState extends State<_CreatePlanSheet> {
-  final _nameController = TextEditingController();
+class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
+  late final TextEditingController _nameController;
   FitnessGoal _goal = FitnessGoal.generalFitness;
   int _durationWeeks = 8;
   int _daysPerWeek = 4;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.prefillName ?? '');
+    if (widget.prefillDays != null) _daysPerWeek = widget.prefillDays!;
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _save() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      context.showSnackBar('Please enter a plan name.', isError: true);
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final gym = ref.read(selectedGymProvider);
+      if (gym == null) {
+        context.showSnackBar('No gym selected.', isError: true);
+        return;
+      }
+      await ref.read(databaseServiceProvider).createWorkoutPlan({
+        'gym_id': gym.id,
+        'name': name,
+        'goal': _goal.value,
+        'duration_weeks': _durationWeeks,
+        'days': List.generate(
+            _daysPerWeek, (i) => {'day': i + 1, 'exercises': []}),
+        'status': 'active',
+        'is_template': false,
+      });
+      ref.invalidate(gymWorkoutPlansProvider);
+      if (mounted) {
+        final messenger = ScaffoldMessenger.of(context);
+        final brand = context.fitTheme.brand;
+        Navigator.pop(context);
+        messenger.showSnackBar(SnackBar(
+          content: Text('Plan "$name" created!'),
+          backgroundColor: brand,
+        ));
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar('Failed to create plan: $e', isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   @override
@@ -688,17 +793,7 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
               width: double.infinity,
               height: 50,
               child: FilledButton(
-                onPressed: () {
-                  final snackColor = t.brand;
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Created "${_nameController.text}" — ${_daysPerWeek}d/wk, $_durationWeeks weeks'),
-                      backgroundColor: snackColor,
-                    ),
-                  );
-                },
+                onPressed: _saving ? null : _save,
                 style: FilledButton.styleFrom(
                   backgroundColor: t.brand,
                   foregroundColor: Colors.white,
@@ -706,13 +801,22 @@ class _CreatePlanSheetState extends State<_CreatePlanSheet> {
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                child: Text(
-                  'Create Plan',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: _saving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'Create Plan',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
@@ -739,4 +843,76 @@ class _PlanTemplate {
     required this.icon,
     required this.color,
   });
+}
+
+class _PlanListTile extends StatelessWidget {
+  const _PlanListTile({required this.plan, required this.t});
+  final WorkoutPlan plan;
+  final FitNexoraThemeTokens t;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassmorphicCard(
+      borderRadius: 14,
+      applyBlur: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: t.brand.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(Icons.fitness_center_rounded,
+                  color: t.brand, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    plan.name,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: t.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${plan.durationWeeks}wk · ${plan.trainingDaysCount}d/wk · ${plan.goal.replaceAll('_', ' ')}',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: t.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: t.success.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                plan.status.label,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: t.success,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

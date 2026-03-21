@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/extensions.dart';
@@ -19,7 +20,17 @@ class MemberWorkoutScreen extends ConsumerWidget {
       backgroundColor: t.background,
       appBar: AppBar(
         backgroundColor: t.background,
-        leading: BackButton(color: t.textSecondary),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: t.textSecondary,
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/member');
+            }
+          },
+        ),
         title: Text(
           'My Workout Plan',
           style: GoogleFonts.inter(
@@ -28,6 +39,25 @@ class MemberWorkoutScreen extends ConsumerWidget {
             color: t.textPrimary,
           ),
         ),
+      ),
+      floatingActionButton: planAsync.whenOrNull(
+        data: (plan) {
+          if (plan == null || plan.days.isEmpty) return null;
+          return FloatingActionButton.extended(
+            onPressed: () => context.push('/workout/active'),
+            backgroundColor: t.accent,
+            icon: const Icon(Icons.play_arrow_rounded, color: Colors.white),
+            label: Text(
+              'START WORKOUT',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
+            ),
+          );
+        },
       ),
       body: planAsync.when(
         loading: () => Center(

@@ -85,7 +85,8 @@ class _CompareExercisesScreenState extends ConsumerState<CompareExercisesScreen>
                     Text('Volume Comparison (last 4 weeks)',
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 16),
-                    SizedBox(
+                    RepaintBoundary(
+                      child: SizedBox(
                       height: 180,
                       child: BarChart(
                         BarChartData(
@@ -125,6 +126,7 @@ class _CompareExercisesScreenState extends ConsumerState<CompareExercisesScreen>
                           groupsSpace: 20,
                         ),
                       ),
+                    ),
                     ),
                   ],
                 ),

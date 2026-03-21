@@ -245,7 +245,7 @@ class _ExerciseProgressScreenState
                           ),
                           lineTouchData: LineTouchData(
                             touchTooltipData: LineTouchTooltipData(
-                              tooltipBgColor: t.surfaceAlt,
+                              getTooltipColor: (_) => t.surfaceAlt,
                               getTooltipItems: (touchedSpots) {
                                 return touchedSpots
                                     .map((s) => LineTooltipItem(

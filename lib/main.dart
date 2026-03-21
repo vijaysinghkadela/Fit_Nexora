@@ -108,6 +108,7 @@ Future<void> main() async {
       (options) {
         options.dsn = AppConfig.sentryDsn;
         options.tracesSampleRate = 1.0;
+        // ignore: experimental_member_use
         options.profilesSampleRate = 1.0;
       },
       appRunner: () => runApp(

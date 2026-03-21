@@ -13,7 +13,7 @@
 [![Claude AI](https://img.shields.io/badge/AI-Claude_Opus_%26_Haiku-blueviolet)](https://anthropic.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Riverpod](https://img.shields.io/badge/State-Riverpod_2.6-orange)](https://riverpod.dev)
-[![Version](https://img.shields.io/badge/Version-v2.6-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
+[![Version](https://img.shields.io/badge/Version-v2.7-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
 
 </div>
 
@@ -262,8 +262,8 @@ FitNexora uses **19 PostgreSQL migration modules** on Supabase with full Row-Lev
 | 9 | `workout_plans` | Versioned, AI-generated workout programs |
 | 10 | `diet_plans` | Versioned AI-generated meal plans |
 | 11 | `health_tracking` | Daily aggregates (Steps, Sleep, Activity) |
-| 12 | `journals` | Private encrypted daily member notes |
-| 13 | `notifications` | In-app and push notification records |
+| 12 | `journals` | Private encrypted daily member notes & journal entries |
+| 13 | `notifications` | In-app and push notification records (iPhone-style alerts) |
 
 ### Extension Tables (Migration 011+)
 
@@ -328,11 +328,14 @@ AI-enhanced screens for Pro subscriptions:
 - **Pro Measurements** — Body stat logging and trend charting
 
 ### 👤 Member Portal (All tiers)
-- **Member Home** — Workout & diet summary
-- **Member Workouts** — Today's plan + history
-- **Member Diet** — Food log & macro balance
-- **Member Progress** — Progress check-ins & photo uploads
-- **Member Announcements** — Gym broadcast messages
+- **Member Home** — Central dashboard with workout & diet summaries, gym visit streak, and quick entry into all member features.
+- **Member Workouts** — [NEW] Personal workout planner (members can add their own plans).
+- **Member Diet** — Comprehensive food log with India-specific food database.
+- **Member Progress** — Tracking body measurements and checking against historical trends.
+- **Member Announcements** — Stay updated with the latest gym broadcasts.
+- **Member Profile** — Dedicated member settings for units (Metric/Imperial), theme (Default: Light), language, and personal privacy.
+- **Notes & Journal** — [NEW] Private journal with fixed navigation and encrypted entries.
+- **In-App Alerts** — iPhone-style top notifications for membership, hydration, steps, and diet.
 
 ### 🏋️ Workouts
 - **Workouts Screen** — Browse & filter workout templates
@@ -418,8 +421,9 @@ The app has **4 user roles** with fully segregated navigation and feature access
 
 Role detection drives:
 1. **GoRouter redirects** (role-based route guards in `routes.dart`)
-2. **Sidebar navigation** (`sidebar_nav.dart`) — different nav items per role
+2. **Sidebar navigation** (`sidebar_nav.dart` + `member_bottom_nav.dart`) — distinct UI patterns for owners/trainers vs. members
 3. **Feature gates** (`access_control.dart` + `plan_limits.dart`) — premium features behind plan walls
+4. **Navigation Consistency** — Standardized "can pop" fallback logic ensuring users never get stuck when deep-linking.
 
 ---
 
@@ -434,6 +438,7 @@ FitNexora is natively built for the Indian fitness market:
 | 🥘 **Indian Food DB** | Pre-configured food database covering Dal, Paneer, Roti, regional breakfasts |
 | 🗣️ **Language Support** | English, Hindi, Hinglish localisation via Flutter `l10n` |
 | 🧘 **Jain & Vegan Diets** | Full diet type support including Jain, Veg, Lacto-Veg, Diabetic-Friendly |
+| 🏋️ **Standard Navigation** | Robust "can pop" back-button logic for reliable deep-linking and browser navigation |
 | 🌐 **Offline Dev Bypass** | Local mock data in `dev_bypass.dart` for development without network |
 
 ---
@@ -573,6 +578,19 @@ flutter test
 - [x] **Sentry Error Tracking** — Production crash reporting integration
 - [x] **Email Service** — Transactional email via Resend API
 - [x] **Vector Search** — Pinecone integration for AI context retrieval
+- [x] **Member-Owner UI Separation** — Dedicated dashboard and profile routes for gym members
+- [x] **Robust Navigation** — Global "can pop" logic fix for deep-linked workout and announcement screens
+- [x] **Unit System (Metric/Imperial)** — Persistent measurement unit selection
+- [x] **Primary Light Theme** — Switched default application look to Light Mode
+
+### v2.7 (Latest)
+- [x] **In-App Notification System** — iPhone-style top-screen alerts for membership status, hydration, steps, and diet.
+- [x] **Security Audit & Hardening** — Enforced Row-Level Security (RLS) on `profiles`, locked search paths for database functions, and enabled leaked password protection.
+- [x] **Member Workout Planner** — Feature for gym members to add their own custom workout plans.
+- [x] **Notes & Journal Fix** — Resolved navigation errors and standardized terminology for personal journaling.
+- [x] **Profile Separation** — Dedicated route and interface for member profile management.
+- [x] **Dashboard Enhancements** — Fixed the recent memberships display and improved UI cross-compatibility.
+- [x] **Navigation Resilience** — Global back-button logic refinement across all dashboard modules.
 
 ### v3.0 (Planned)
 - [ ] **AI Video Form Analysis** — real-time posture & form correction using device camera
@@ -597,6 +615,6 @@ flutter test
 
 <div align="center">
 
-*FitNexora v2.6 — Built with ❤️ for the Indian Fitness Industry*
+*FitNexora v2.7 — Built with ❤️ for the Indian Fitness Industry*
 
 </div>

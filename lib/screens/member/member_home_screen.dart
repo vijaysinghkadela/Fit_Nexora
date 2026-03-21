@@ -3,17 +3,16 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../core/responsive.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../providers/notifications_provider.dart';
+import '../../providers/traffic_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/loading_widgets.dart';
 import '../../widgets/member_bottom_nav.dart';
-import 'member_paywall_screen.dart';
 
 
 /// Entry point for the member-facing experience.
@@ -27,11 +26,8 @@ class MemberHomeScreen extends ConsumerWidget {
 
     return accessAsync.when(
       loading: () => const DashboardSkeletonScaffold(),
-      error: (e, _) => const MemberPaywallScreen(),
-      data: (hasAccess) {
-        if (!hasAccess) return const MemberPaywallScreen();
-        return const _MemberDashboard();
-      },
+      error: (e, _) => const _MemberDashboard(),
+      data: (_) => const _MemberDashboard(),
     );
   }
 }
@@ -52,6 +48,15 @@ class _MemberDashboard extends ConsumerWidget {
     final progressAsync = ref.watch(memberProgressProvider);
     final attendanceAsync = ref.watch(memberAttendanceProvider);
     final announcementsAsync = ref.watch(memberAnnouncementsProvider);
+
+    final hasAccess = ref.watch(memberHasAccessProvider).valueOrNull ?? false;
+    void handlePremiumTap(String route) {
+      if (hasAccess) {
+        context.push(route);
+      } else {
+        context.push('/member/paywall');
+      }
+    }
 
     final firstName = user?.fullName.split(' ').first ?? 'Member';
     final rs = ResponsiveSize.of(context);
@@ -251,7 +256,7 @@ class _MemberDashboard extends ConsumerWidget {
             sliver: SliverToBoxAdapter(
               child: _WorkoutCard(
                 async: workoutAsync,
-                onTap: () => context.push('/member/workout'),
+                onTap: () => handlePremiumTap('/member/workout'),
               ),
             ),
           ),
@@ -263,7 +268,7 @@ class _MemberDashboard extends ConsumerWidget {
             sliver: SliverToBoxAdapter(
               child: _DietCard(
                 async: dietAsync,
-                onTap: () => context.push('/member/diet'),
+                onTap: () => handlePremiumTap('/member/diet'),
               ),
             ),
           ),
@@ -368,7 +373,7 @@ class _MemberDashboard extends ConsumerWidget {
                           sublabel: 'Measurements',
                           icon: Icons.monitor_weight_rounded,
                           color: const Color(0xFF10D88A),
-                          onTap: () => context.push('/health/body-measurements'),
+                          onTap: () => handlePremiumTap('/health/body-measurements'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -379,7 +384,7 @@ class _MemberDashboard extends ConsumerWidget {
                           sublabel: 'Water Intake',
                           icon: Icons.water_drop_rounded,
                           color: const Color(0xFF38BDF8),
-                          onTap: () => context.push('/health/water'),
+                          onTap: () => handlePremiumTap('/health/water'),
                         ),
                       ),
                     ],
@@ -394,7 +399,7 @@ class _MemberDashboard extends ConsumerWidget {
                           sublabel: 'Personal Records',
                           icon: Icons.emoji_events_rounded,
                           color: const Color(0xFFF6B546),
-                          onTap: () => context.push('/workout/personal-records'),
+                          onTap: () => handlePremiumTap('/workout/personal-records'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -420,7 +425,7 @@ class _MemberDashboard extends ConsumerWidget {
                           sublabel: 'TDEE Calculator',
                           icon: Icons.restaurant_rounded,
                           color: const Color(0xFF7A8BFF),
-                          onTap: () => context.push('/tools/macro-calculator'),
+                          onTap: () => handlePremiumTap('/tools/macro-calculator'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -431,7 +436,7 @@ class _MemberDashboard extends ConsumerWidget {
                           sublabel: 'Max Strength',
                           icon: Icons.fitness_center_rounded,
                           color: const Color(0xFFFF6B7D),
-                          onTap: () => context.push('/tools/one-rep-max'),
+                          onTap: () => handlePremiumTap('/tools/one-rep-max'),
                         ),
                       ),
                     ],
@@ -743,87 +748,62 @@ class _StatMiniCard extends StatelessWidget {
 
 // ─── Check-In Button ─────────────────────────────────────────────────────────
 
-class _CheckInButton extends ConsumerStatefulWidget {
+class _CheckInButton extends ConsumerWidget {
   final dynamic gym;
   final dynamic user;
   const _CheckInButton({this.gym, this.user});
 
   @override
-  ConsumerState<_CheckInButton> createState() => _CheckInButtonState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (gym == null || user == null) return const SizedBox.shrink();
 
-class _CheckInButtonState extends ConsumerState<_CheckInButton> {
-  bool _loading = false;
-  bool _checkedIn = false;
+    final gymId = gym.id as String;
+    final userId = user.id as String;
+    final checkInAsync = ref.watch(activeCheckInProvider((gymId, userId)));
 
-  @override
-  Widget build(BuildContext context) {
     final t = context.fitTheme;
-    return SizedBox(
-      width: double.infinity,
-      height: 54,
-      child: FilledButton.icon(
-        onPressed: _loading || _checkedIn ? null : _doCheckIn,
-        style: FilledButton.styleFrom(
-          backgroundColor:
-              _checkedIn ? t.success : t.brand,
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: _checkedIn
-              ? t.success.withOpacity(0.6)
-              : t.brand.withOpacity(0.4),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14)),
-        ),
-        icon: _loading
-            ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                    color: Colors.white, strokeWidth: 2),
-              )
-            : Icon(
-                _checkedIn ? Icons.check_circle_rounded : Icons.login_rounded,
-                size: 20),
-        label: Text(
-          _checkedIn ? 'Checked In ✓' : 'Check In to Gym',
-          style:
-              GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700),
+
+    return checkInAsync.when(
+      data: (checkIn) {
+        final isCheckedIn = checkIn != null;
+        final buttonText = isCheckedIn ? 'Check Out' : 'Check In to Gym';
+        final buttonIcon = isCheckedIn ? Icons.logout_rounded : Icons.login_rounded;
+        final bgColor = isCheckedIn ? t.danger : t.brand;
+
+        return SizedBox(
+          width: double.infinity,
+          height: 54,
+          child: FilledButton.icon(
+            onPressed: () {
+              if (isCheckedIn) {
+                context.push('/gym/checkout', extra: checkIn['id']);
+              } else {
+                context.push('/gym/checkin');
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: bgColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+            ),
+            icon: Icon(buttonIcon, size: 20),
+            label: Text(
+              buttonText,
+              style: GoogleFonts.inter(
+                  fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ).animate(delay: 150.ms).fadeIn().slideY(begin: 0.04);
+      },
+      loading: () => SizedBox(
+        height: 54,
+        child: Center(
+          child: CircularProgressIndicator(color: t.brand),
         ),
       ),
-    ).animate(delay: 150.ms).fadeIn().slideY(begin: 0.04);
-  }
-
-  Future<void> _doCheckIn() async {
-    if (widget.user == null) return;
-    setState(() => _loading = true);
-    try {
-      // Developer Bypass: Simulate successful check-in
-      if (isDevUser(widget.user?.email as String?)) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        if (mounted) setState(() => _checkedIn = true);
-        return;
-      }
-
-      if (widget.gym == null) return;
-      final db = ref.read(databaseServiceProvider);
-      await db.memberCheckIn(
-        gymId: widget.gym.id as String,
-        userId: widget.user.id as String,
-      );
-      ref.invalidate(memberAttendanceProvider);
-      if (mounted) setState(() => _checkedIn = true);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Check-in failed: $e'),
-            backgroundColor: context.fitTheme.danger,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
+      error: (_, __) => const SizedBox.shrink(),
+    );
   }
 }
 

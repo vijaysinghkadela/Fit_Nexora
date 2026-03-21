@@ -24,7 +24,10 @@
       "Read(//usr/**)",
       "Bash(ls:*)",
       "Bash(grep -rn \"Colors.white\\\\|Colors.black\\\\|Color\\(0xFF\" '/mnt/c/Users/Vinay Pal/Documents/GYMOS_AI/GYMOS_AI/GymOS_AI-main/lib/screens' --include=*.dart -l)",
-      "Bash(dart analyze:*)"
+      "Bash(dart analyze:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(/mnt/c/flutter/bin/flutter analyze:*)",
+      "Bash(flutter pub:*)"
     ],
     "deny": [],
     "ask": []
