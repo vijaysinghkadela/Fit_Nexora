@@ -35,6 +35,11 @@ class _AddPRSheetState extends State<AddPRSheet> {
   late final TextEditingController _weightCtrl;
   late final TextEditingController _repsCtrl;
   final _notesCtrl = TextEditingController();
+
+  final _weightFocus = FocusNode();
+  final _repsFocus = FocusNode();
+  final _notesFocus = FocusNode();
+
   bool _saving = false;
 
   static const _popularExercises = [
@@ -56,6 +61,9 @@ class _AddPRSheetState extends State<AddPRSheet> {
     _weightCtrl.dispose();
     _repsCtrl.dispose();
     _notesCtrl.dispose();
+    _weightFocus.dispose();
+    _repsFocus.dispose();
+    _notesFocus.dispose();
     super.dispose();
   }
 
@@ -95,6 +103,7 @@ class _AddPRSheetState extends State<AddPRSheet> {
             Expanded(
               child: ListView(
                 controller: ctrl,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 children: [
                   // Exercise chips
@@ -125,6 +134,8 @@ class _AddPRSheetState extends State<AddPRSheet> {
                   TextField(
                     controller: _exerciseCtrl,
                     style: TextStyle(color: t.textPrimary),
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => FocusScope.of(context).requestFocus(_weightFocus),
                     decoration: const InputDecoration(
                       labelText: 'Exercise name',
                       hintText: 'Or type a custom exercise',
@@ -136,7 +147,10 @@ class _AddPRSheetState extends State<AddPRSheet> {
                       Expanded(
                         child: TextField(
                           controller: _weightCtrl,
+                          focusNode: _weightFocus,
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_) => FocusScope.of(context).requestFocus(_repsFocus),
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
                           style: TextStyle(color: t.textPrimary),
                           decoration: const InputDecoration(
@@ -149,7 +163,10 @@ class _AddPRSheetState extends State<AddPRSheet> {
                       Expanded(
                         child: TextField(
                           controller: _repsCtrl,
+                          focusNode: _repsFocus,
                           keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_) => FocusScope.of(context).requestFocus(_notesFocus),
                           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           style: TextStyle(color: t.textPrimary),
                           decoration: const InputDecoration(
@@ -163,7 +180,9 @@ class _AddPRSheetState extends State<AddPRSheet> {
                   const SizedBox(height: 12),
                   TextField(
                     controller: _notesCtrl,
+                    focusNode: _notesFocus,
                     style: TextStyle(color: t.textPrimary),
+                    textInputAction: TextInputAction.done,
                     decoration: const InputDecoration(
                       labelText: 'Notes (optional)',
                     ),

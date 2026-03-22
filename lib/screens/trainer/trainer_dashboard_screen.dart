@@ -65,6 +65,11 @@ class TrainerDashboardScreen extends ConsumerWidget {
           if (context.mounted) context.go('/login');
         });
       },
+      centerAction: FitShellCenterAction(
+        icon: Icons.add_rounded,
+        label: 'Add Client',
+        onTap: () => _openAddClientSheet(context),
+      ),
       child: _TrainerDashboardBody(
         userName: userName,
         onAddClient: () => _openAddClientSheet(context),

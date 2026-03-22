@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import '../core/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../core/extensions.dart';
@@ -170,17 +169,18 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     if (compact) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline_rounded,
-              color: AppColors.error, size: 16),
+          Icon(Icons.error_outline_rounded,
+              color: t.danger, size: 16),
           const SizedBox(width: 8),
           Flexible(
             child: Text(message,
                 style: GoogleFonts.inter(
-                    fontSize: 13, color: AppColors.textSecondary)),
+                    fontSize: 13, color: t.textSecondary)),
           ),
           if (onRetry != null) ...[
             const SizedBox(width: 8),
@@ -189,7 +189,7 @@ class ErrorStateWidget extends StatelessWidget {
               child: Text('Retry',
                   style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: AppColors.primary,
+                      color: t.brand,
                       fontWeight: FontWeight.w600)),
             ),
           ],
@@ -203,13 +203,13 @@ class ErrorStateWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded,
-                color: AppColors.textMuted, size: 40),
+            Icon(Icons.wifi_off_rounded,
+                color: t.textMuted, size: 40),
             const SizedBox(height: 12),
             Text(
               message,
               style: GoogleFonts.inter(
-                  fontSize: 14, color: AppColors.textSecondary),
+                  fontSize: 14, color: t.textSecondary),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
@@ -219,7 +219,7 @@ class ErrorStateWidget extends StatelessWidget {
                 icon: const Icon(Icons.refresh_rounded, size: 18),
                 label: const Text('Retry'),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: t.brand,
                 ),
               ),
             ],

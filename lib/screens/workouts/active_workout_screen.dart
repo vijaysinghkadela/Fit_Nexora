@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -531,7 +532,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
           children: [
             Expanded(
               child: FilledButton.icon(
-                onPressed: () => context.push('/workout/timer'),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.push('/workout/timer');
+                },
                 icon: const Icon(Icons.timer_outlined, size: 16),
                 label: Text(
                   'START REST',
@@ -550,7 +554,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => _nextSet(exercises),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  _nextSet(exercises);
+                },
                 icon: Icon(Icons.skip_next_rounded, size: 16, color: t.textPrimary),
                 label: Text(
                   'NEXT',
@@ -573,6 +580,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
+                  HapticFeedback.selectionClick();
                   final weight = double.tryParse(_weightController.text);
                   final reps = int.tryParse(_repsController.text);
                   AddPRSheet.show(context, exercise: ex.name, weight: weight, reps: reps);
@@ -594,7 +602,10 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton(
-                onPressed: () => context.push('/workout/done'),
+                onPressed: () {
+                  HapticFeedback.heavyImpact();
+                  context.push('/workout/done');
+                },
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: t.danger),
                   foregroundColor: t.danger,

@@ -16,6 +16,10 @@ import 'dart:ui';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Image caching limits for performance on 4-6GB devices
+  PaintingBinding.instance.imageCache.maximumSize = 50;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20; // 50 MB
+
   // Catch all async unhandled errors so app doesn't silently crash
   PlatformDispatcher.instance.onError = (error, stack) {
     debugPrint('Global Async Error: $error');

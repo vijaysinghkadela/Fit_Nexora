@@ -26,6 +26,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  final _emailFocusNode = FocusNode();
+  final _phoneFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  final _confirmFocusNode = FocusNode();
+
   UserRole _selectedRole = UserRole.gymOwner;
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
@@ -42,6 +47,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _emailFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _confirmFocusNode.dispose();
     super.dispose();
   }
 
@@ -287,6 +296,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_emailFocusNode),
                   decoration: const InputDecoration(
                     labelText: 'Full name',
                     prefixIcon:
@@ -304,7 +315,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 // Email
                 TextFormField(
                   controller: _emailController,
+                  focusNode: _emailFocusNode,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_phoneFocusNode),
                   decoration: const InputDecoration(
                     labelText: 'Email address',
                     prefixIcon: Icon(Icons.mail_outline_rounded),
@@ -324,7 +338,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 // Phone
                 TextFormField(
                   controller: _phoneController,
+                  focusNode: _phoneFocusNode,
                   keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_passwordFocusNode),
                   decoration: const InputDecoration(
                     labelText: 'Phone number',
                     prefixIcon: Icon(Icons.call_outlined),
@@ -335,7 +352,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 // Password
                 TextFormField(
                   controller: _passwordController,
+                  focusNode: _passwordFocusNode,
                   obscureText: _obscurePassword,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_confirmFocusNode),
                   decoration: InputDecoration(
                     labelText: 'Password',
                     prefixIcon:
@@ -362,7 +382,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 // Confirm password
                 TextFormField(
                   controller: _confirmPasswordController,
+                  focusNode: _confirmFocusNode,
                   obscureText: _obscureConfirm,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _handleRegister(),
                   decoration: InputDecoration(
                     labelText: 'Confirm password',
                     prefixIcon:

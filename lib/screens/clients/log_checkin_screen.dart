@@ -34,6 +34,7 @@ const _mockClients = [
 ];
 
 Color _membershipColor(String type, FitNexoraThemeTokens t) {
+  if (type == 'Expired' || type == 'Inactive') return t.danger;
   switch (type.toLowerCase()) {
     case 'master':
       return const Color(0xFFFF3D5E);

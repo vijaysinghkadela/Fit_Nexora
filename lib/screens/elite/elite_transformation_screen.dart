@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+import '../../core/extensions.dart';
 import '../../providers/elite_member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -12,36 +12,37 @@ class EliteTransformationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.fitTheme;
     final photosAsync = ref.watch(eliteTransformationPhotosProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: AppColors.bgDark,
-        leading: const BackButton(color: AppColors.textSecondary),
+        backgroundColor: t.background,
+        leading: BackButton(color: t.textSecondary),
         title: Text('Transformation Photos',
             style: GoogleFonts.inter(
                 fontSize: 19, fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary)),
+                color: t.textPrimary)),
       ),
       body: photosAsync.when(
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => Center(
+            child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
             child: Text('$e',
-                style: GoogleFonts.inter(color: AppColors.error))),
+                style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.compare_rounded,
-                      size: 56, color: AppColors.textMuted),
+                  Icon(Icons.compare_rounded,
+                      size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No transformation photos yet',
                       style: GoogleFonts.inter(
-                          color: AppColors.textSecondary, fontSize: 16)),
+                          color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -49,7 +50,7 @@ class EliteTransformationScreen extends ConsumerWidget {
                       'Your trainer can upload your progress photos.\nThey will appear here for comparison.',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                          color: AppColors.textMuted,
+                          color: t.textMuted,
                           fontSize: 13, height: 1.5),
                     ),
                   ),
@@ -59,13 +60,13 @@ class EliteTransformationScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(children: [
-                        const Icon(Icons.info_outline_rounded,
-                            color: AppColors.info, size: 28),
+                        Icon(Icons.info_outline_rounded,
+                            color: t.info, size: 28),
                         const SizedBox(height: 10),
                         Text('How it works',
                             style: GoogleFonts.inter(
                                 fontSize: 14, fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimary)),
+                                color: t.textPrimary)),
                         const SizedBox(height: 8),
                         Text(
                           '1. Take front, side, and back photos\n'
@@ -74,7 +75,7 @@ class EliteTransformationScreen extends ConsumerWidget {
                           '4. Compare before vs after here',
                           style: GoogleFonts.inter(
                               fontSize: 12,
-                              color: AppColors.textSecondary,
+                              color: t.textSecondary,
                               height: 1.6),
                         ),
                       ]),
@@ -99,7 +100,7 @@ class EliteTransformationScreen extends ConsumerWidget {
                     child: Text('BEFORE vs AFTER',
                         style: GoogleFonts.inter(
                             fontSize: 11, fontWeight: FontWeight.w700,
-                            color: AppColors.textMuted, letterSpacing: 1.2)),
+                            color: t.textMuted, letterSpacing: 1.2)),
                   ),
                 ),
                 SliverPadding(
@@ -117,7 +118,7 @@ class EliteTransformationScreen extends ConsumerWidget {
                   child: Text('ALL PHOTOS',
                       style: GoogleFonts.inter(
                           fontSize: 11, fontWeight: FontWeight.w700,
-                          color: AppColors.textMuted, letterSpacing: 1.2)),
+                          color: t.textMuted, letterSpacing: 1.2)),
                 ),
               ),
 
@@ -147,6 +148,7 @@ class _ComparisonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return GlassmorphicCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -158,7 +160,7 @@ class _ComparisonCard extends StatelessWidget {
                   photoUrl: before.frontPhotoUrl as String?,
                   weight: before.weightKg as double?)),
               const SizedBox(width: 12),
-              Container(width: 1, height: 120, color: AppColors.divider),
+              Container(width: 1, height: 120, color: t.divider),
               const SizedBox(width: 12),
               Expanded(child: _PhotoColumn(label: 'AFTER',
                   date: after.checkInDate as DateTime,
@@ -172,17 +174,17 @@ class _ComparisonCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.1),
+                    color: t.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                        color: AppColors.success.withOpacity(0.3)),
+                        color: t.success.withOpacity(0.3)),
                   ),
                   child: Text(
                     'Total change: ${((after.weightKg as double) - (before.weightKg as double)).toStringAsFixed(1)} kg',
                     style: GoogleFonts.inter(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.success),
+                        color: t.success),
                   ),
                 ),
               ),
@@ -204,42 +206,43 @@ class _PhotoColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     const months = ['Jan','Feb','Mar','Apr','May','Jun',
         'Jul','Aug','Sep','Oct','Nov','Dec'];
     return Column(children: [
       Text(label,
           style: GoogleFonts.inter(
               fontSize: 10, fontWeight: FontWeight.w800,
-              color: AppColors.textMuted, letterSpacing: 1.2)),
+              color: t.textMuted, letterSpacing: 1.2)),
       const SizedBox(height: 8),
       Container(
         height: 100, width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.bgElevated,
+          color: t.surfaceAlt,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: t.border),
         ),
         child: photoUrl != null
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(photoUrl!, fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Icon(
+                    errorBuilder: (_, __, ___) => Icon(
                         Icons.broken_image_rounded,
-                        color: AppColors.textMuted)),
+                        color: t.textMuted)),
               )
-            : const Center(
+            : Center(
                 child: Icon(Icons.person_rounded,
-                    size: 40, color: AppColors.textMuted)),
+                    size: 40, color: t.textMuted)),
       ),
       const SizedBox(height: 6),
       Text('${date.day} ${months[date.month - 1]}',
           style: GoogleFonts.inter(
-              fontSize: 11, color: AppColors.textSecondary)),
+              fontSize: 11, color: t.textSecondary)),
       if (weight != null)
         Text('${weight!.toStringAsFixed(1)} kg',
             style: GoogleFonts.inter(
                 fontSize: 12, fontWeight: FontWeight.w700,
-                color: AppColors.primary)),
+                color: t.brand)),
     ]);
   }
 }
@@ -250,6 +253,7 @@ class _PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     const months = ['Jan','Feb','Mar','Apr','May','Jun',
         'Jul','Aug','Sep','Oct','Nov','Dec'];
     final dt = checkIn.checkInDate as DateTime;
@@ -266,19 +270,19 @@ class _PhotoCard extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            const Icon(Icons.calendar_today_rounded,
-                size: 14, color: AppColors.textMuted),
+            Icon(Icons.calendar_today_rounded,
+                size: 14, color: t.textMuted),
             const SizedBox(width: 6),
             Text(dateStr,
                 style: GoogleFonts.inter(
                     fontSize: 13, fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary)),
+                    color: t.textPrimary)),
             if (checkIn.weightKg != null) ...[
               const Spacer(),
               Text('${(checkIn.weightKg as double).toStringAsFixed(1)} kg',
                   style: GoogleFonts.inter(
                       fontSize: 13, fontWeight: FontWeight.w800,
-                      color: AppColors.primary)),
+                      color: t.brand)),
             ],
           ]),
           if (photos.isNotEmpty) ...[
@@ -291,22 +295,22 @@ class _PhotoCard extends StatelessWidget {
                     Container(
                       height: 80,
                       decoration: BoxDecoration(
-                        color: AppColors.bgElevated,
+                        color: t.surfaceAlt,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: t.border),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(p.$2!, fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Center(
+                            errorBuilder: (_, __, ___) => Center(
                                 child: Icon(Icons.broken_image_rounded,
-                                    color: AppColors.textMuted))),
+                                    color: t.textMuted))),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(p.$1,
                         style: GoogleFonts.inter(
-                            fontSize: 9, color: AppColors.textMuted)),
+                            fontSize: 9, color: t.textMuted)),
                   ]),
                 ),
               )).toList(),

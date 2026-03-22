@@ -1041,7 +1041,9 @@ class _GymOccupancyCard extends StatelessWidget {
             // fl_chart BarChart
             SizedBox(
               height: 200,
-              child: _OccupancyBarChart(series: series, colors: colors),
+              child: RepaintBoundary(
+                child: _OccupancyBarChart(series: series, colors: colors),
+              ),
             ),
             const SizedBox(height: 16),
             Row(

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../config/theme.dart';
 import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
@@ -65,8 +66,7 @@ class _MemberProgressScreenState
         ],
       ),
       body: progressAsync.when(
-        loading: () => Center(
-            child: CircularProgressIndicator(color: t.brand)),
+        loading: () => _ProgressSkeleton(t: t),
         error: (e, _) => Center(
             child: Text('Error: $e',
                 style: GoogleFonts.inter(color: t.danger))),
@@ -527,4 +527,148 @@ class _ChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+// ─── Skeleton Loading State ───────────────────────────────────────────────────
+
+class _ProgressSkeleton extends StatefulWidget {
+  const _ProgressSkeleton({required this.t});
+  final FitNexoraThemeTokens t;
+
+  @override
+  State<_ProgressSkeleton> createState() => _ProgressSkeletonState();
+}
+
+class _ProgressSkeletonState extends State<_ProgressSkeleton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    _anim = Tween<double>(begin: 0.3, end: 0.7).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Widget _bone(double w, double h, {double radius = 10}) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Container(
+        width: w,
+        height: h,
+        decoration: BoxDecoration(
+          color: widget.t.surfaceMuted.withOpacity(_anim.value),
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = widget.t;
+    return CustomScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      slivers: [
+        // Stat cards
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+          sliver: SliverToBoxAdapter(
+            child: Row(
+              children: List.generate(3, (i) => Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: i == 0 ? 0 : 6, right: i == 2 ? 0 : 6),
+                  child: Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: t.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: t.border),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _bone(40, 10),
+                        _bone(55, 18, radius: 6),
+                      ],
+                    ),
+                  ),
+                ),
+              )),
+            ),
+          ),
+        ),
+        // Chart skeleton
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          sliver: SliverToBoxAdapter(
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: t.surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: t.border),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _bone(100, 14),
+                  const Spacer(),
+                  _bone(double.infinity, 80, radius: 8),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // History rows
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          sliver: SliverList.builder(
+            itemCount: 5,
+            itemBuilder: (_, i) => Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: t.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: t.border),
+              ),
+              child: Row(
+                children: [
+                  _bone(42, 42, radius: 12),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _bone(80, 12),
+                        const SizedBox(height: 6),
+                        _bone(120, 10),
+                      ],
+                    ),
+                  ),
+                  _bone(50, 14, radius: 6),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

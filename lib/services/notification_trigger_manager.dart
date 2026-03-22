@@ -8,6 +8,8 @@ import '../providers/water_tracker_provider.dart';
 import '../providers/health_provider.dart';
 import '../providers/notification_overlay_provider.dart';
 import '../providers/gym_provider.dart';
+import '../providers/notification_settings_provider.dart';
+import 'notification_service.dart';
 
 class NotificationTriggerManager extends ConsumerStatefulWidget {
   const NotificationTriggerManager({super.key});
@@ -31,15 +33,30 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
   void _setupListeners() {
     _resetDailyTrackerIfNeeded();
 
+    // ── Pre-emptive Refresh ──
+    // Refresh push schedules whenever settings change
+    ref.listen(notificationSettingsProvider, (prev, next) {
+      if (prev != next) {
+        _refreshPushSchedules(next);
+      }
+    });
+
     // 1. Membership Expiry
     ref.listen(memberMembershipProvider, (previous, next) {
       if (next.hasValue && next.value != null) {
         final membership = next.value!;
         final daysLeft = membership.endDate.difference(DateTime.now()).inDays;
         
+        // Push Notification logic (always ensure scheduled)
+        final gym = ref.read(selectedGymProvider);
+        NotificationService.scheduleMembershipExpiryWarning(
+          expiryDate: membership.endDate,
+          gymName: gym?.name ?? 'Your Gym',
+        );
+
+        // Overlay logic
         if (daysLeft <= 7 && !_shownToday.contains('membership_expiry')) {
-          final gym = ref.read(selectedGymProvider);
-          _showNotification(AppNotification.membership(
+          _showOverlay(AppNotification.membership(
             gymName: gym?.name ?? 'Your Gym',
             daysLeft: daysLeft,
           ));
@@ -52,16 +69,26 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
     ref.listen(waterTrackerProvider, (previous, next) {
       final state = next;
       final progress = state.progressFraction;
+      final settings = ref.read(notificationSettingsProvider);
+
+      if (settings.hydrationEnabled) {
+        // Update Push Schedule based on progress
+        NotificationService.scheduleDailyHydrationReminder(
+          conditionMet: progress >= 0.5,
+        );
+      } else {
+        NotificationService.cancelHydrationReminder();
+      }
       
-      // Trigger at specific milestones (50%, 90%, 100%)
+      // Overlay Trigger at specific milestones (50%, 100%)
       if (progress >= 1.0 && !_shownToday.contains('hydration_100')) {
-        _showNotification(AppNotification.hydration(
+        _showOverlay(AppNotification.hydration(
           currentMl: state.totalTodayMl,
           goalMl: state.dailyGoalMl,
         ));
         _shownToday.add('hydration_100');
       } else if (progress >= 0.5 && progress < 0.6 && !_shownToday.contains('hydration_50')) {
-        _showNotification(AppNotification.hydration(
+        _showOverlay(AppNotification.hydration(
           currentMl: state.totalTodayMl,
           goalMl: state.dailyGoalMl,
         ));
@@ -75,14 +102,14 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
       final progress = state.stepsToday / state.dailyGoal;
       
       if (progress >= 1.0 && !_shownToday.contains('steps_100')) {
-        _showNotification(AppNotification.steps(
+        _showOverlay(AppNotification.steps(
           currentSteps: state.stepsToday,
           goalSteps: state.dailyGoal,
           isComplete: true,
         ));
         _shownToday.add('steps_100');
       } else if (progress >= 0.9 && progress < 1.0 && !_shownToday.contains('steps_90')) {
-        _showNotification(AppNotification.steps(
+        _showOverlay(AppNotification.steps(
           currentSteps: state.stepsToday,
           goalSteps: state.dailyGoal,
         ));
@@ -98,9 +125,8 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
         final currentTimeStr = DateFormat('hh:mm a').format(now);
 
         for (final meal in plan.meals) {
-          // If timing matches current time or we are within a 5-minute window
           if (meal.timing == currentTimeStr && !_shownToday.contains('meal_${meal.name}')) {
-            _showNotification(AppNotification.diet(
+            _showOverlay(AppNotification.diet(
               mealName: meal.name,
               timing: meal.timing,
             ));
@@ -111,8 +137,26 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
     });
   }
 
-  void _showNotification(AppNotification notification) {
-    // Delay slightly to avoid issues with build cycle
+  void _refreshPushSchedules(NotificationSettings settings) {
+    // 1. Workout
+    NotificationService.scheduleWorkoutReminder(
+      hour: settings.workoutTime.hour,
+      minute: settings.workoutTime.minute,
+      enabled: settings.workoutEnabled,
+    );
+    
+    // 2. Hydration
+    final waterState = ref.read(waterTrackerProvider);
+    if (settings.hydrationEnabled) {
+      NotificationService.scheduleDailyHydrationReminder(
+        conditionMet: waterState.progressFraction >= 0.5,
+      );
+    } else {
+      NotificationService.cancelHydrationReminder();
+    }
+  }
+
+  void _showOverlay(AppNotification notification) {
     Future.microtask(() {
       if (mounted) {
         ref.read(notificationOverlayProvider.notifier).show(notification);

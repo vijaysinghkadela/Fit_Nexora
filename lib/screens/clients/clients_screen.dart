@@ -388,6 +388,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
     final currentSort = ref.read(clientSortProvider);
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         decoration: BoxDecoration(

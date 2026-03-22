@@ -115,10 +115,34 @@ class NotificationService {
   }
 
   // ─── Daily Hydration Reminder ──────────────────────────────────────────────
-
+  
   /// Schedules a daily water reminder at 10 AM.
-  static Future<void> scheduleDailyHydrationReminder() async {
-    await _plugin.cancel(id: 200);
+  /// If [conditionMet] is true, we cancel the reminder for today and schedule for tomorrow.
+  static Future<void> scheduleDailyHydrationReminder({
+    bool conditionMet = false,
+  }) async {
+    const reminderId = 200;
+    await _plugin.cancel(id: reminderId);
+
+    if (conditionMet) {
+      debugPrint('[Notifications] Hydration goal met for today; suppressing 10 AM push.');
+      // Still schedule ahead for tomorrow (recurring daily)
+      // Actually, if it's recurring, it will fire tomorrow anyway. 
+      // But if we cancel it today, we should RE-SCHEDULE it starting tomorrow.
+      final tomorrow = tz.TZDateTime.now(tz.local).add(const Duration(days: 1));
+      final scheduled = tz.TZDateTime(tz.local, tomorrow.year, tomorrow.month, tomorrow.day, 10);
+      
+      await _plugin.zonedSchedule(
+        id: reminderId,
+        title: 'Stay Hydrated!',
+        body: "Don't forget to drink water. Keep your hydration goal on track!",
+        scheduledDate: scheduled,
+        notificationDetails: const NotificationDetails(android: _hydrationChannel),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+      return;
+    }
 
     final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, 10);
@@ -127,9 +151,9 @@ class NotificationService {
     }
 
     await _plugin.zonedSchedule(
-      id: 200,
+      id: reminderId,
       title: 'Stay Hydrated!',
-      body: "Don't forget to drink water. Track your hydration in FitNexora.",
+      body: "Don't forget to drink water. Your goal is still pending!",
       scheduledDate: scheduled,
       notificationDetails: const NotificationDetails(android: _hydrationChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -144,8 +168,15 @@ class NotificationService {
   static Future<void> scheduleWorkoutReminder({
     int hour = 18,
     int minute = 0,
+    bool enabled = true,
   }) async {
-    await _plugin.cancel(id: 300);
+    const reminderId = 300;
+    await _plugin.cancel(id: reminderId);
+    
+    if (!enabled) {
+      debugPrint('[Notifications] Workout reminders are disabled.');
+      return;
+    }
 
     final now = tz.TZDateTime.now(tz.local);
     var scheduled =
@@ -155,9 +186,9 @@ class NotificationService {
     }
 
     await _plugin.zonedSchedule(
-      id: 300,
+      id: reminderId,
       title: 'Time to Work Out!',
-      body: 'Your workout session is waiting. Keep the streak going!',
+      body: 'Your workout session is waiting. Stay consistent!',
       scheduledDate: scheduled,
       notificationDetails: const NotificationDetails(android: _workoutChannel),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

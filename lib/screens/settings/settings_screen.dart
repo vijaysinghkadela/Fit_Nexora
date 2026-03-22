@@ -15,7 +15,9 @@ import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
+import '../../providers/notification_settings_provider.dart';
 import '../../providers/performance_provider.dart';
+import '../../providers/unit_provider.dart';
 import '../../services/notification_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -30,6 +32,7 @@ class SettingsScreen extends ConsumerWidget {
     final gym = ref.watch(selectedGymProvider);
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+    final unitSystem = ref.watch(unitProvider);
     final homeRoute = _homeRouteFor(user?.globalRole);
 
     Future<void> signOut() async {
@@ -164,27 +167,14 @@ class SettingsScreen extends ConsumerWidget {
                           _SettingsRow(
                             icon: Icons.notifications_rounded,
                             title: 'Notifications',
-                            subtitle: 'Manage notification permissions',
-                            onTap: () async {
-                              final granted =
-                                  await NotificationService.requestPermissions();
-                              if (context.mounted) {
-                                context.showSnackBar(
-                                  granted
-                                      ? 'Notifications enabled!'
-                                      : 'Notification permission denied. Enable it in device settings.',
-                                  isError: !granted,
-                                );
-                              }
-                            },
+                            subtitle: 'Reminders and alerts',
+                            onTap: () => _showNotificationSettings(context, ref),
                           ),
                           _SettingsRow(
                             icon: Icons.straighten_rounded,
                             title: 'Units',
-                            subtitle: 'Metric',
-                            onTap: () {
-                              context.showSnackBar('Unit preferences are coming next.');
-                            },
+                            subtitle: unitSystem == UnitSystem.metric ? 'Metric' : 'Imperial',
+                            onTap: () => _showUnitPicker(context, ref),
                           ),
                           _SettingsRow(
                             icon: Icons.language_rounded,
@@ -227,25 +217,21 @@ class SettingsScreen extends ConsumerWidget {
                             icon: Icons.help_rounded,
                             title: 'Help Center',
                             subtitle: 'Guides, FAQs, and setup support',
-                            onTap: () {
-                              context.showSnackBar('Support center is coming next.');
-                            },
+                            onTap: () => _showSupportSheet(context),
                           ),
                           _SettingsRow(
                             icon: Icons.policy_rounded,
                             title: 'Privacy Policy',
                             subtitle: 'How FitNexora handles your data',
-                            onTap: () {
-                              context.showSnackBar('Privacy documentation is coming next.');
-                            },
+                            onTap: () => _showLegalSheet(context, 'Privacy Policy',
+                                'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
                           ),
                           _SettingsRow(
                             icon: Icons.description_rounded,
                             title: 'Terms of Service',
                             subtitle: 'Platform usage and subscription terms',
-                            onTap: () {
-                              context.showSnackBar('Terms documentation is coming next.');
-                            },
+                            onTap: () => _showLegalSheet(context, 'Terms of Service',
+                                'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
                           ),
                         ],
                       ),
@@ -398,6 +384,7 @@ class SettingsScreen extends ConsumerWidget {
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: colors.surface,
       showDragHandle: true,
       builder: (context) {
@@ -432,6 +419,135 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  static Future<void> _showNotificationSettings(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final colors = context.fitTheme;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final s = ref.watch(notificationSettingsProvider);
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Notification Settings',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Configure your push reminders and alerts.',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _SwitchRow(
+                      label: 'Hydration Daily Reminder',
+                      subtitle: 'Remind at 10 AM if under 50% goal',
+                      value: s.hydrationEnabled,
+                      onChanged: (val) => ref
+                          .read(notificationSettingsProvider.notifier)
+                          .setHydrationEnabled(val),
+                    ),
+                    const Divider(height: 32),
+                    _SwitchRow(
+                      label: 'Workout Daily Reminder',
+                      subtitle: 'Scheduled reminder for your session',
+                      value: s.workoutEnabled,
+                      onChanged: (val) => ref
+                          .read(notificationSettingsProvider.notifier)
+                          .setWorkoutEnabled(val),
+                    ),
+                    if (s.workoutEnabled) ...[
+                      const SizedBox(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          'Reminder Time',
+                          style: GoogleFonts.inter(color: colors.textPrimary),
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: colors.accent.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            s.workoutTime.format(context),
+                            style: GoogleFonts.inter(
+                              color: colors.accent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        onTap: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: s.workoutTime,
+                          );
+                          if (time != null) {
+                            ref
+                                .read(notificationSettingsProvider.notifier)
+                                .setWorkoutTime(time);
+                          }
+                        },
+                      ),
+                    ],
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final granted =
+                              await NotificationService.requestPermissions();
+                          if (context.mounted) {
+                            context.showSnackBar(
+                              granted
+                                  ? 'Push permissions verified!'
+                                  : 'Permissions denied. Check system settings.',
+                              isError: !granted,
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colors.accent,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Verify System Permissions'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   static Future<void> _showThemePicker(
     BuildContext context,
     WidgetRef ref,
@@ -440,6 +556,7 @@ class SettingsScreen extends ConsumerWidget {
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: colors.surface,
       showDragHandle: true,
       builder: (context) {
@@ -467,6 +584,95 @@ class SettingsScreen extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+
+  static Future<void> _showUnitPicker(BuildContext context, WidgetRef ref) async {
+    final current = ref.read(unitProvider);
+    final colors = context.fitTheme;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            for (final unit in UnitSystem.values)
+              RadioListTile<UnitSystem>(
+                value: unit,
+                groupValue: current,
+                title: Text(unit == UnitSystem.metric ? 'Metric (kg, cm)' : 'Imperial (lbs, ft)'),
+                onChanged: (value) async {
+                  if (value == null) return;
+                  await ref.read(unitProvider.notifier).setUnitSystem(value);
+                  if (ctx.mounted) Navigator.of(ctx).pop();
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static void _showSupportSheet(BuildContext context) {
+    final colors = context.fitTheme;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Help & Support',
+                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+              const SizedBox(height: 16),
+              _SupportTile(icon: Icons.email_rounded, label: 'Email Support', value: 'support@fitnexora.com', colors: colors),
+              const SizedBox(height: 10),
+              _SupportTile(icon: Icons.chat_bubble_rounded, label: 'In-App Chat', value: 'Available Mon–Fri, 9AM–6PM IST', colors: colors),
+              const SizedBox(height: 10),
+              _SupportTile(icon: Icons.menu_book_rounded, label: 'Documentation', value: 'Setup guides and FAQs', colors: colors),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static void _showLegalSheet(BuildContext context, String title, String body) {
+    final colors = context.fitTheme;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        maxChildSize: 0.9,
+        minChildSize: 0.3,
+        expand: false,
+        builder: (_, ctrl) => ListView(
+          controller: ctrl,
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+          children: [
+            Text(title,
+                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+            const SizedBox(height: 16),
+            Text(body,
+                style: GoogleFonts.inter(fontSize: 14, height: 1.65, color: colors.textSecondary)),
+            const SizedBox(height: 24),
+            Text('Last updated: March 2026',
+                style: GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1011,6 +1217,42 @@ class _RoundIconButton extends StatelessWidget {
   }
 }
 
+class _SupportTile extends StatelessWidget {
+  const _SupportTile({required this.icon, required this.label, required this.value, required this.colors});
+  final IconData icon;
+  final String label;
+  final String value;
+  final FitNexoraThemeTokens colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: colors.surfaceAlt,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: colors.border),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: colors.brand),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: colors.textPrimary)),
+                Text(value, style: GoogleFonts.inter(fontSize: 12, color: colors.textSecondary)),
+              ],
+            ),
+          ),
+          Icon(Icons.chevron_right_rounded, size: 18, color: colors.textMuted),
+        ],
+      ),
+    );
+  }
+}
+
 class _SettingsGlow extends StatelessWidget {
   const _SettingsGlow({
     required this.color,
@@ -1033,6 +1275,57 @@ class _SettingsGlow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SwitchRow extends StatelessWidget {
+  final String label;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _SwitchRow({
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.fitTheme;
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: colors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: colors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch.adaptive(
+          value: value,
+          onChanged: onChanged,
+          activeColor: colors.accent,
+        ),
+      ],
     );
   }
 }

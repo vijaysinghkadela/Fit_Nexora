@@ -208,7 +208,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.auto_awesome, color: t.brand.withValues(alpha: 0.5), size: 64),
+            Icon(Icons.auto_awesome, color: t.brand.withOpacity(0.5), size: 64),
             const SizedBox(height: 24),
             Text(
               'No AI Report Generated Yet',

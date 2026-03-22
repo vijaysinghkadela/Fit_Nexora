@@ -236,7 +236,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF120B22),
+              _colors.backgroundAlt,
               _colors.background,
             ],
           ),
@@ -322,7 +322,7 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
                         child: _RecentActivityCard(
                           colors: _colors,
                           loading: _loading,
-                          activities: _snapshot.activityFeed,
+                          activities: _snapshot.activityFeed(_colors),
                         ),
                       ),
                     ),
@@ -478,7 +478,7 @@ class _HeaderActionButton extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.04),
+              color: colors.surface.withOpacity(0.04),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 20, color: colors.textSecondary),
@@ -491,7 +491,7 @@ class _HeaderActionButton extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFF5B75),
+                  color: colors.danger,
                   shape: BoxShape.circle,
                   border: Border.all(color: colors.backgroundAlt, width: 1.2),
                 ),
@@ -718,7 +718,7 @@ class _SubscriptionGrowthCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.04),
+                  color: colors.surface.withOpacity(0.04),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: colors.brand.withOpacity(0.12)),
                 ),
@@ -739,7 +739,7 @@ class _SubscriptionGrowthCard extends StatelessWidget {
             child: loading
                 ? Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.03),
+                      color: colors.surface.withOpacity(0.03),
                       borderRadius: BorderRadius.circular(18),
                     ),
                   )
@@ -1140,7 +1140,7 @@ class _GymRowPlaceholder extends StatelessWidget {
       height: 62,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: colors.surface.withOpacity(0.03),
         borderRadius: BorderRadius.circular(16),
       ),
     );
@@ -1187,7 +1187,7 @@ class _RecentActivityCard extends StatelessWidget {
                 height: 66,
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: colors.surface.withOpacity(0.03),
                   borderRadius: BorderRadius.circular(16),
                 ),
               )
@@ -1324,7 +1324,7 @@ class _AdminBottomBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 8, 10, 10 + bottomInset),
       decoration: BoxDecoration(
-        color: const Color(0xF20F0A1E),
+        color: colors.backgroundAlt.withOpacity(0.95),
         border: Border(top: BorderSide(color: colors.brand.withOpacity(0.16))),
       ),
       child: Row(
@@ -1451,12 +1451,12 @@ class _AdminSnapshot {
     ];
   }
 
-  List<_AdminActivityItem> get activityFeed {
+  List<_AdminActivityItem> activityFeed(FitNexoraThemeTokens colors) {
     final firstGym = recentGyms.isNotEmpty ? recentGyms.first : null;
     return [
       _AdminActivityItem(
         icon: Icons.person_add_alt_1_rounded,
-        color: const Color(0xFF8B5CF6),
+        color: colors.brand,
         title: 'New Partner Onboarded',
         subtitle: firstGym == null
             ? 'A new gym completed platform verification.'
@@ -1465,22 +1465,22 @@ class _AdminSnapshot {
       ),
       _AdminActivityItem(
         icon: Icons.verified_rounded,
-        color: const Color(0xFF22C55E),
+        color: colors.success,
         title: 'Payout Processed',
         subtitle:
             'Rs ${(estimatedRevenue * 0.25).round()} sent to partner settlements.',
         timestamp: '5 hours ago',
       ),
-      const _AdminActivityItem(
+      _AdminActivityItem(
         icon: Icons.warning_amber_rounded,
-        color: Color(0xFFF59E0B),
+        color: colors.warning,
         title: 'System Alert',
         subtitle: 'Latency spike detected in AP-South-1 region.',
         timestamp: '12 hours ago',
       ),
-      const _AdminActivityItem(
+      _AdminActivityItem(
         icon: Icons.auto_awesome_rounded,
-        color: Color(0xFF60A5FA),
+        color: colors.info,
         title: 'AI Model Updated',
         subtitle: 'Workout plan generation model rolled to v2.1.',
         timestamp: '1 day ago',

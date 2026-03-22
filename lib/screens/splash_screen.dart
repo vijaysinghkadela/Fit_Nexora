@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/app_config.dart';
-import '../config/theme.dart';
+import '../core/extensions.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = FitNexoraThemeTokens.dark();
+    final colors = context.fitTheme;
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       shape: BoxShape.circle,
                       color: colors.brand.withOpacity(0.16),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.08),
+                        color: colors.textPrimary.withOpacity(0.08),
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 88,
                           fontWeight: FontWeight.w900,
-                          color: Colors.white,
+                          color: colors.textPrimary,
                           letterSpacing: -2,
                         ),
                       ),

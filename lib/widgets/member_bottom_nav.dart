@@ -1,5 +1,6 @@
 // lib/widgets/member_bottom_nav.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,11 +44,18 @@ class MemberBottomNav extends ConsumerWidget {
       decoration: BoxDecoration(
         color: t.surface,
         border: Border(top: BorderSide(color: t.border, width: 0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: t.glow.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 60,
+          height: 62,
           child: Row(
             children: List.generate(_tabs.length, (i) {
               final tab = _tabs[i];
@@ -55,30 +63,47 @@ class MemberBottomNav extends ConsumerWidget {
               final color = isActive ? t.brand : t.textMuted;
 
               return Expanded(
-                child: InkWell(
-                  onTap: () {
-                    if (!isActive) context.go(tab.route);
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedScale(
-                        scale: isActive ? 1.1 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(tab.icon, color: color, size: 24),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: isActive
+                      ? null
+                      : () {
+                          HapticFeedback.selectionClick();
+                          context.go(tab.route);
+                        },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOutCubic,
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: isActive ? t.brand.withOpacity(0.12) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        tab.label,
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight:
-                              isActive ? FontWeight.w700 : FontWeight.w400,
-                          color: color,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AnimatedScale(
+                            scale: isActive ? 1.12 : 1.0,
+                            duration: const Duration(milliseconds: 220),
+                            curve: Curves.easeOutBack,
+                            child: Icon(tab.icon, color: color, size: 22),
+                          ),
+                          const SizedBox(height: 3),
+                          AnimatedDefaultTextStyle(
+                            duration: const Duration(milliseconds: 200),
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                              color: color,
+                            ),
+                            child: Text(tab.label),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               );

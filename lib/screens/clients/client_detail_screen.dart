@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
 import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
@@ -36,17 +35,17 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: CustomScrollView(
         slivers: [
           // App bar
           SliverAppBar(
-            backgroundColor: AppColors.bgDark,
+            backgroundColor: t.background,
             pinned: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded,
-                  color: AppColors.textPrimary),
+              icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
               onPressed: () =>
                   context.canPop() ? context.pop() : Navigator.of(context).pop(),
             ),
@@ -55,28 +54,26 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: t.textPrimary,
               ),
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit_rounded,
-                    color: AppColors.textSecondary),
+                icon: Icon(Icons.edit_rounded, color: t.textSecondary),
                 onPressed: _editClient,
                 tooltip: 'Edit',
               ),
               PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert_rounded,
-                    color: AppColors.textSecondary),
-                color: AppColors.bgElevated,
+                icon: Icon(Icons.more_vert_rounded, color: t.textSecondary),
+                color: t.surfaceAlt,
                 onSelected: _handleMenuAction,
                 itemBuilder: (_) => [
                   const PopupMenuItem(
                       value: 'membership', child: Text('Add Membership')),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'delete',
                     child: Text('Delete Client',
-                        style: TextStyle(color: AppColors.error)),
+                        style: TextStyle(color: t.danger)),
                   ),
                 ],
               ),
@@ -121,6 +118,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildProfileCard() {
+    final t = context.fitTheme;
     final initial = (_client.fullName?.isNotEmpty == true)
         ? _client.fullName![0].toUpperCase()
         : '?';
@@ -133,13 +131,13 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             // Avatar
             CircleAvatar(
               radius: 36,
-              backgroundColor: AppColors.primary.withOpacity(0.15),
+              backgroundColor: t.brand.withOpacity(0.15),
               child: Text(
                 initial,
                 style: GoogleFonts.inter(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
+                  color: t.brand,
                 ),
               ),
             ),
@@ -153,7 +151,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: t.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -174,17 +172,18 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildInfoRow(IconData icon, String text) {
+    final t = context.fitTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 3),
       child: Row(
         children: [
-          Icon(icon, size: 14, color: AppColors.textMuted),
+          Icon(icon, size: 14, color: t.textMuted),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
               text,
               style: GoogleFonts.inter(
-                  fontSize: 13, color: AppColors.textSecondary),
+                  fontSize: 13, color: t.textSecondary),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -194,6 +193,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildMetricsGrid() {
+    final t = context.fitTheme;
     return Row(
       children: [
         Expanded(
@@ -202,7 +202,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             value: _client.weightKg != null ? '${_client.weightKg}' : '—',
             unit: 'kg',
             icon: Icons.monitor_weight_outlined,
-            color: AppColors.primary,
+            color: t.brand,
           ),
         ),
         const SizedBox(width: 12),
@@ -212,7 +212,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             value: _client.heightCm != null ? '${_client.heightCm}' : '—',
             unit: 'cm',
             icon: Icons.height_rounded,
-            color: AppColors.accent,
+            color: t.accent,
           ),
         ),
         const SizedBox(width: 12),
@@ -222,7 +222,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             value: _calculateBMI(),
             unit: '',
             icon: Icons.speed_rounded,
-            color: AppColors.warning,
+            color: t.warning,
           ),
         ),
       ],
@@ -237,6 +237,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildFitnessProfile() {
+    final t = context.fitTheme;
     return GlassmorphicCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -249,15 +250,15 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _buildDetailChip('🎯 ${_client.goal.label}', AppColors.primary),
+                _buildDetailChip('🎯 ${_client.goal.label}', t.brand),
                 _buildDetailChip(
-                    '📊 ${_client.trainingLevel.label}', AppColors.accent),
+                    '📊 ${_client.trainingLevel.label}', t.accent),
                 _buildDetailChip(
-                    '📅 ${_client.daysPerWeek} days/week', AppColors.info),
+                    '📅 ${_client.daysPerWeek} days/week', t.info),
                 _buildDetailChip(
-                    '🏋️ ${_client.equipment ?? 'Gym'}', AppColors.warning),
+                    '🏋️ ${_client.equipment ?? 'Gym'}', t.warning),
                 _buildDetailChip(
-                    '🍽️ ${_client.dietType.label}', AppColors.success),
+                    '🍽️ ${_client.dietType.label}', t.success),
               ],
             ),
           ],
@@ -267,6 +268,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildMembershipCard() {
+    final t = context.fitTheme;
     return FutureBuilder<Membership?>(
       future: ref.read(databaseServiceProvider).getActiveMembership(_client.id),
       builder: (context, snapshot) {
@@ -310,13 +312,13 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                   _buildMembershipRow('Plan', membership.planName),
                   _buildMembershipRow('Status', membership.status.label,
                       valueColor: membership.isExpired
-                          ? AppColors.error
-                          : AppColors.success),
+                          ? t.danger
+                          : t.success),
                   _buildMembershipRow('Amount',
                       membership.amount != null ? membership.amount!.inr : '—'),
                   _buildMembershipRow('Ends', membership.endDate.mediumFormatted,
                       valueColor: membership.expiresWithin(7)
-                          ? AppColors.warning
+                          ? t.warning
                           : null),
                   if (membership.daysRemaining >= 0)
                     _buildMembershipRow(
@@ -329,14 +331,13 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                         children: [
                           Icon(Icons.card_membership_outlined,
                               size: 36,
-                              color:
-                                  AppColors.textMuted.withOpacity(0.4)),
+                              color: t.textMuted.withOpacity(0.4)),
                           const SizedBox(height: 8),
                           Text(
                             'No active membership',
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              color: AppColors.textMuted,
+                              color: t.textMuted,
                             ),
                           ),
                         ],
@@ -353,6 +354,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildMembershipRow(String label, String value, {Color? valueColor}) {
+    final t = context.fitTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -360,14 +362,14 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
         children: [
           Text(
             label,
-            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textMuted),
+            style: GoogleFonts.inter(fontSize: 13, color: t.textMuted),
           ),
           Text(
             value,
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: valueColor ?? AppColors.textPrimary,
+              color: valueColor ?? t.textPrimary,
             ),
           ),
         ],
@@ -376,6 +378,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildHealthNotes() {
+    final t = context.fitTheme;
     return GlassmorphicCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -386,10 +389,10 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             const SizedBox(height: 14),
             if (_client.injuries != null)
               _buildNoteItem('Injuries / Limitations', _client.injuries!,
-                  Icons.healing_rounded, AppColors.error),
+                  Icons.healing_rounded, t.danger),
             if (_client.restrictions != null)
               _buildNoteItem('Allergies / Restrictions', _client.restrictions!,
-                  Icons.no_food_rounded, AppColors.warning),
+                  Icons.no_food_rounded, t.warning),
           ],
         ),
       ),
@@ -398,6 +401,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
 
   Widget _buildNoteItem(
       String label, String value, IconData icon, Color color) {
+    final t = context.fitTheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
@@ -428,7 +432,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                   value,
                   style: GoogleFonts.inter(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: t.textSecondary,
                   ),
                 ),
               ],
@@ -440,16 +444,17 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   Widget _buildCardHeader(String title, IconData icon) {
+    final t = context.fitTheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.primary),
+        Icon(icon, size: 18, color: t.brand),
         const SizedBox(width: 8),
         Text(
           title,
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
       ],
@@ -511,21 +516,22 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   }
 
   void _confirmDelete() {
+    final t = context.fitTheme;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.bgCard,
+        backgroundColor: t.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Delete Client',
           style: GoogleFonts.inter(
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
         content: Text(
           'Are you sure you want to delete ${_client.fullName ?? 'this client'}? This action cannot be undone.',
-          style: GoogleFonts.inter(color: AppColors.textSecondary),
+          style: GoogleFonts.inter(color: t.textSecondary),
         ),
         actions: [
           TextButton(
@@ -548,12 +554,12 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                         content: Text('Error: $e'),
-                        backgroundColor: AppColors.error),
+                        backgroundColor: t.danger),
                   );
                 }
               }
             },
-            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            style: FilledButton.styleFrom(backgroundColor: t.danger),
             child: const Text('Delete'),
           ),
         ],
@@ -580,12 +586,13 @@ class _MetricTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Column(
         children: [
@@ -599,7 +606,7 @@ class _MetricTile extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 if (unit.isNotEmpty)
@@ -607,7 +614,7 @@ class _MetricTile extends StatelessWidget {
                     text: ' $unit',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      color: AppColors.textMuted,
+                      color: t.textMuted,
                     ),
                   ),
               ],
@@ -618,7 +625,7 @@ class _MetricTile extends StatelessWidget {
             label,
             style: GoogleFonts.inter(
               fontSize: 12,
-              color: AppColors.textMuted,
+              color: t.textMuted,
             ),
           ),
         ],

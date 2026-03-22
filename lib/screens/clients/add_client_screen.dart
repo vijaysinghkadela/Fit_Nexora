@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/constants.dart';
+import '../../core/extensions.dart';
 import '../../core/enums.dart';
 import '../../core/validators.dart';
 import '../../models/client_profile_model.dart';
@@ -79,11 +79,12 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    final t = context.fitTheme;
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please correct the errors in the form'),
-          backgroundColor: AppColors.error,
+        SnackBar(
+          content: const Text('Please correct the errors in the form'),
+          backgroundColor: t.danger,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -144,9 +145,9 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         await db.updateClient(clientData);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Client profile updated successfully'),
-              backgroundColor: AppColors.success,
+            SnackBar(
+              content: const Text('Client profile updated successfully'),
+              backgroundColor: t.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -155,9 +156,9 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         await db.addClient(clientData);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('New client added successfully'),
-              backgroundColor: AppColors.success,
+            SnackBar(
+              content: const Text('New client added successfully'),
+              backgroundColor: t.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -174,7 +175,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: $e'),
-            backgroundColor: AppColors.error,
+            backgroundColor: t.danger,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -186,19 +187,20 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.92,
       ),
-      decoration: const BoxDecoration(
-        color: AppColors.bgCard,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: t.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border(
-          top: BorderSide(color: AppColors.glassBorder, width: 1),
-          left: BorderSide(color: AppColors.glassBorder, width: 1),
-          right: BorderSide(color: AppColors.glassBorder, width: 1),
+          top: BorderSide(color: t.glassBorder, width: 1),
+          left: BorderSide(color: t.glassBorder, width: 1),
+          right: BorderSide(color: t.glassBorder, width: 1),
         ),
       ),
       child: Column(
@@ -210,7 +212,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textMuted.withOpacity(0.3),
+              color: t.textMuted.withOpacity(0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -226,19 +228,18 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded,
-                      color: AppColors.textMuted),
+                  icon: Icon(Icons.close_rounded, color: t.textMuted),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
           ),
 
-          const Divider(color: AppColors.divider, height: 1),
+          Divider(color: t.divider, height: 1),
 
           // Form
           Expanded(
@@ -409,8 +410,8 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                       child: FilledButton(
                         onPressed: _isLoading ? null : _handleSubmit,
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          foregroundColor: Colors.black,
+                          backgroundColor: t.accent,
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -421,7 +422,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                                 height: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               )
                             : Text(
@@ -445,16 +446,17 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Widget _buildSectionHeader(String title, IconData icon) {
+    final t = context.fitTheme;
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppColors.primary),
+        Icon(icon, size: 18, color: t.brand),
         const SizedBox(width: 8),
         Text(
           title,
           style: GoogleFonts.inter(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
       ],
@@ -470,40 +472,39 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
     String? Function(String?)? validator,
     int maxLines = 1,
   }) {
+    final t = context.fitTheme;
     return TextFormField(
       controller: controller,
       keyboardType: keyboard,
       maxLines: maxLines,
-      style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+      style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.inter(color: AppColors.textMuted),
+        labelStyle: GoogleFonts.inter(color: t.textMuted),
         hintText: hint,
-        hintStyle: GoogleFonts.inter(
-            color: AppColors.textMuted.withOpacity(0.5)),
-        prefixIcon: Icon(icon, color: AppColors.textMuted, size: 18),
+        hintStyle: GoogleFonts.inter(color: t.textMuted.withOpacity(0.5)),
+        prefixIcon: Icon(icon, color: t.textMuted, size: 18),
         filled: true,
-        fillColor: AppColors.bgInput,
+        fillColor: t.surfaceAlt,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: t.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:
-              BorderSide(color: AppColors.border.withOpacity(0.5)),
+          borderSide: BorderSide(color: t.border.withOpacity(0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: BorderSide(color: t.brand, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.error, width: 1),
+          borderSide: BorderSide(color: t.danger, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+          borderSide: BorderSide(color: t.danger, width: 1.5),
         ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -519,6 +520,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
     required String Function(T) labelBuilder,
     required ValueChanged<T?> onChanged,
   }) {
+    final t = context.fitTheme;
     return DropdownButtonFormField<T>(
       value: value,
       items: items
@@ -526,46 +528,45 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                 value: item,
                 child: Text(
                   labelBuilder(item),
-                  style: GoogleFonts.inter(
-                      color: AppColors.textPrimary, fontSize: 14),
+                  style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
                 ),
               ))
           .toList(),
       onChanged: onChanged,
-      icon: const Icon(Icons.expand_more_rounded, color: AppColors.textMuted),
+      icon: Icon(Icons.expand_more_rounded, color: t.textMuted),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.inter(color: AppColors.textMuted),
+        labelStyle: GoogleFonts.inter(color: t.textMuted),
         filled: true,
-        fillColor: AppColors.bgInput,
+        fillColor: t.surfaceAlt,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: t.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:
-              BorderSide(color: AppColors.border.withOpacity(0.5)),
+          borderSide: BorderSide(color: t.border.withOpacity(0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: BorderSide(color: t.brand, width: 1.5),
         ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
-      dropdownColor: AppColors.bgElevated,
+      dropdownColor: t.surfaceAlt,
       borderRadius: BorderRadius.circular(12),
     );
   }
 
   Widget _buildSexSelector() {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Sex',
-          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textMuted),
+          style: GoogleFonts.inter(fontSize: 12, color: t.textMuted),
         ),
         const SizedBox(height: 8),
         Row(
@@ -586,12 +587,13 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Widget _buildDaysPerWeekSelector() {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Training Days / Week',
-          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textMuted),
+          style: GoogleFonts.inter(fontSize: 12, color: t.textMuted),
         ),
         const SizedBox(height: 10),
         Row(
@@ -607,13 +609,13 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                   height: 42,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primary.withOpacity(0.15)
-                        : AppColors.bgInput,
+                        ? t.brand.withOpacity(0.15)
+                        : t.surfaceAlt,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: isSelected
-                          ? AppColors.primary
-                          : AppColors.border.withOpacity(0.5),
+                          ? t.brand
+                          : t.border.withOpacity(0.5),
                       width: isSelected ? 1.5 : 1.0,
                     ),
                   ),
@@ -624,9 +626,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
                       fontSize: 14,
                       fontWeight:
                           isSelected ? FontWeight.w700 : FontWeight.w500,
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
+                      color: isSelected ? t.brand : t.textSecondary,
                     ),
                   ),
                 ),
@@ -639,12 +639,13 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Widget _buildEquipmentSelector() {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Available Equipment',
-          style: GoogleFonts.inter(fontSize: 12, color: AppColors.textMuted),
+          style: GoogleFonts.inter(fontSize: 12, color: t.textMuted),
         ),
         const SizedBox(height: 10),
         Wrap(
@@ -675,6 +676,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
   }
 
   Widget _buildChip(String label, bool isSelected, VoidCallback onTap) {
+    final t = context.fitTheme;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -682,13 +684,13 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.15)
-              : AppColors.bgInput,
+              ? t.brand.withOpacity(0.15)
+              : t.surfaceAlt,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? AppColors.primary
-                : AppColors.border.withOpacity(0.5),
+                ? t.brand
+                : t.border.withOpacity(0.5),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -698,7 +700,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? t.brand : t.textSecondary,
           ),
         ),
       ),

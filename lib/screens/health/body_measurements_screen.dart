@@ -428,6 +428,17 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
   final _thigh = TextEditingController();
   final _hip = TextEditingController();
   final _notes = TextEditingController();
+
+  final _heightFocus = FocusNode();
+  final _fatFocus = FocusNode();
+  final _muscleFocus = FocusNode();
+  final _waistFocus = FocusNode();
+  final _chestFocus = FocusNode();
+  final _armFocus = FocusNode();
+  final _thighFocus = FocusNode();
+  final _hipFocus = FocusNode();
+  final _notesFocus = FocusNode();
+
   bool _saving = false;
 
   @override
@@ -436,6 +447,12 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
       _weight, _height, _fat, _muscle, _waist, _chest, _arm, _thigh, _hip, _notes
     ]) {
       c.dispose();
+    }
+    for (final f in [
+      _heightFocus, _fatFocus, _muscleFocus, _waistFocus,
+      _chestFocus, _armFocus, _thighFocus, _hipFocus, _notesFocus,
+    ]) {
+      f.dispose();
     }
     super.dispose();
   }
@@ -478,34 +495,37 @@ class _AddMeasurementSheetState extends State<_AddMeasurementSheet> {
             Expanded(
               child: ListView(
                 controller: controller,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 children: [
                   _buildSection('Weight & Height', [
-                    _NumField(ctrl: _weight, label: 'Weight (kg)', hint: '75.0'),
-                    _NumField(ctrl: _height, label: 'Height (cm)', hint: '175'),
+                    _NumField(ctrl: _weight, label: 'Weight (kg)', hint: '75.0', nextFocusNode: _heightFocus),
+                    _NumField(ctrl: _height, label: 'Height (cm)', hint: '175', focusNode: _heightFocus, nextFocusNode: _fatFocus),
                   ]),
                   const SizedBox(height: 16),
                   _buildSection('Composition', [
-                    _NumField(ctrl: _fat, label: 'Body Fat %', hint: '18.5'),
-                    _NumField(ctrl: _muscle, label: 'Muscle Mass (kg)', hint: '35.0'),
+                    _NumField(ctrl: _fat, label: 'Body Fat %', hint: '18.5', focusNode: _fatFocus, nextFocusNode: _muscleFocus),
+                    _NumField(ctrl: _muscle, label: 'Muscle Mass (kg)', hint: '35.0', focusNode: _muscleFocus, nextFocusNode: _waistFocus),
                   ]),
                   const SizedBox(height: 16),
                   _buildSection('Circumferences (cm)', [
-                    _NumField(ctrl: _waist, label: 'Waist', hint: '82'),
-                    _NumField(ctrl: _chest, label: 'Chest', hint: '100'),
-                    _NumField(ctrl: _arm, label: 'Arm', hint: '36'),
-                    _NumField(ctrl: _thigh, label: 'Thigh', hint: '58'),
-                    _NumField(ctrl: _hip, label: 'Hip', hint: '95'),
+                    _NumField(ctrl: _waist, label: 'Waist', hint: '82', focusNode: _waistFocus, nextFocusNode: _chestFocus),
+                    _NumField(ctrl: _chest, label: 'Chest', hint: '100', focusNode: _chestFocus, nextFocusNode: _armFocus),
+                    _NumField(ctrl: _arm, label: 'Arm', hint: '36', focusNode: _armFocus, nextFocusNode: _thighFocus),
+                    _NumField(ctrl: _thigh, label: 'Thigh', hint: '58', focusNode: _thighFocus, nextFocusNode: _hipFocus),
+                    _NumField(ctrl: _hip, label: 'Hip', hint: '95', focusNode: _hipFocus, nextFocusNode: _notesFocus),
                   ]),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _notes,
+                    focusNode: _notesFocus,
                     style: TextStyle(color: t.textPrimary),
                     decoration: const InputDecoration(
                       labelText: 'Notes (optional)',
                       hintText: 'How you feel today…',
                     ),
                     maxLines: 2,
+                    textInputAction: TextInputAction.done,
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -593,10 +613,14 @@ class _NumField extends StatelessWidget {
     required this.ctrl,
     required this.label,
     required this.hint,
+    this.focusNode,
+    this.nextFocusNode,
   });
   final TextEditingController ctrl;
   final String label;
   final String hint;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -604,7 +628,12 @@ class _NumField extends StatelessWidget {
       width: 150,
       child: TextField(
         controller: ctrl,
+        focusNode: focusNode,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        textInputAction: nextFocusNode != null ? TextInputAction.next : TextInputAction.done,
+        onSubmitted: nextFocusNode != null
+            ? (_) => FocusScope.of(context).requestFocus(nextFocusNode)
+            : null,
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
         ],

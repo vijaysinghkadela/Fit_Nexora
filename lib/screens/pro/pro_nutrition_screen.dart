@@ -784,6 +784,7 @@ class _LogFoodTabState extends ConsumerState<_LogFoodTab> {
     final t = context.fitTheme;
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: t.surfaceAlt,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),

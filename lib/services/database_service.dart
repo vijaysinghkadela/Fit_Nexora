@@ -869,4 +869,25 @@ class DatabaseService {
       'out_of_order': totalOutOfOrder,
     };
   }
+
+  // ─── Workout History ──────────────────────────────────────────────────────
+
+  /// Returns the most recent [limit] completed workout sessions for a user.
+  Future<List<Map<String, dynamic>>> getWorkoutHistory({
+    required String userId,
+    int limit = 30,
+  }) async {
+    try {
+      final data = await _client
+          .from('workout_sessions')
+          .select(
+              'id, workout_name, started_at, completed_at, total_sets, total_reps, notes')
+          .eq('user_id', userId)
+          .order('started_at', ascending: false)
+          .limit(limit);
+      return List<Map<String, dynamic>>.from(data as List);
+    } catch (_) {
+      return [];
+    }
+  }
 }

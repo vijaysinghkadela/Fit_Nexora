@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/app_config.dart';
-import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/user_model.dart';
 import '../providers/auth_provider.dart';
@@ -93,6 +92,7 @@ import '../screens/gym/equipment_status_screen.dart';
 import '../screens/gym/qr_checkin_screen.dart';
 import '../widgets/member_bottom_nav.dart';
 
+/// Fade transition — used for lateral auth screens (login ↔ register).
 Page<void> _fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage(
       key: state.pageKey,
@@ -106,8 +106,63 @@ Page<void> _fadePage(GoRouterState state, Widget child) =>
           ),
         );
       },
-      transitionDuration: const Duration(milliseconds: 300),
-      reverseTransitionDuration: const Duration(milliseconds: 300),
+      transitionDuration: const Duration(milliseconds: 280),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+    );
+
+/// Slide-from-right + fade — iOS-style push for all drill-down detail screens.
+Page<void> _pushPage(GoRouterState state, Widget child) =>
+    CustomTransitionPage(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (_, animation, secondaryAnimation, child) {
+        final slideIn = Tween<Offset>(
+          begin: const Offset(0.06, 0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+        final slideOut = Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(-0.03, 0),
+        ).animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn));
+
+        return SlideTransition(
+          position: slideIn,
+          child: FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: slideOut,
+              child: FadeTransition(
+                opacity: Tween<double>(begin: 1.0, end: 0.0)
+                    .animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn)),
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 260),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+    );
+
+/// Slide-from-bottom + fade — for modal-style overlay screens.
+Page<void> _modalPage(GoRouterState state, Widget child) =>
+    CustomTransitionPage(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (_, animation, secondaryAnimation, child) {
+        final slideIn = Tween<Offset>(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+        return SlideTransition(
+          position: slideIn,
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 260),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
     );
 
 const _publicRoutes = [
@@ -266,20 +321,20 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/trainer/assign-workout',
         name: 'trainer-assign-workout',
-        builder: (context, state) => const TrainerAssignWorkoutScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const TrainerAssignWorkoutScreen()),
       ),
       GoRoute(
         path: '/trainer/clients',
         name: 'trainer-clients',
-        builder: (context, state) => const TrainerClientsScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const TrainerClientsScreen()),
       ),
       GoRoute(
         path: '/trainer/settings',
         name: 'trainer-settings',
-        builder: (context, state) => const SharedManagementWrapper(
+        pageBuilder: (c, s) => _pushPage(s, const SharedManagementWrapper(
           currentRoute: '/trainer/settings',
           child: SettingsScreen(),
-        ),
+        )),
       ),
       GoRoute(
         path: '/clients',
@@ -367,23 +422,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/member/traffic',
             name: 'member-traffic',
-            pageBuilder: (context, state) => _fadePage(
-              state,
-              const GymTrafficScreen(),
-            ),
+            pageBuilder: (context, state) => _pushPage(state, const GymTrafficScreen()),
           ),
           GoRoute(
             path: '/member/profile',
             name: 'member_profile',
-            pageBuilder: (context, state) => _fadePage(
-              state,
-              const MemberProfileScreen(),
-            ),
+            pageBuilder: (context, state) => _pushPage(state, const MemberProfileScreen()),
           ),
           GoRoute(
             path: '/member/notes',
             name: 'member-notes',
-            pageBuilder: (context, state) => _fadePage(state, const NotesScreen()),
+            pageBuilder: (context, state) => _pushPage(state, const NotesScreen()),
           ),
         ],
       ),
@@ -400,22 +449,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/pro/ai',
         name: 'pro-ai',
-        builder: (context, state) => const ProAiScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const ProAiScreen()),
       ),
       GoRoute(
         path: '/pro/nutrition',
         name: 'pro-nutrition',
-        builder: (context, state) => const ProNutritionScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const ProNutritionScreen()),
       ),
       GoRoute(
         path: '/pro/measurements',
         name: 'pro-measurements',
-        builder: (context, state) => const ProMeasurementsScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const ProMeasurementsScreen()),
       ),
       GoRoute(
         path: '/pro/paywall',
         name: 'pro-paywall',
-        builder: (context, state) => const ProPaywallScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const ProPaywallScreen()),
       ),
       GoRoute(
         path: '/elite',
@@ -425,32 +474,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/elite/ai',
         name: 'elite-ai',
-        builder: (context, state) => const EliteAiTrainerScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const EliteAiTrainerScreen()),
       ),
       GoRoute(
         path: '/elite/chat',
         name: 'elite-chat',
-        builder: (context, state) => const EliteChatScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const EliteChatScreen()),
       ),
       GoRoute(
         path: '/elite/supplements',
         name: 'elite-supplements',
-        builder: (context, state) => const EliteSupplementScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const EliteSupplementScreen()),
       ),
       GoRoute(
         path: '/elite/progress',
         name: 'elite-progress',
-        builder: (context, state) => const EliteMuscleProgressScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const EliteMuscleProgressScreen()),
       ),
       GoRoute(
         path: '/elite/transformation',
         name: 'elite-transformation',
-        builder: (context, state) => const EliteTransformationScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const EliteTransformationScreen()),
       ),
       GoRoute(
         path: '/elite/paywall',
         name: 'elite-paywall',
-        builder: (context, state) => const ElitePaywallScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const ElitePaywallScreen()),
       ),
       GoRoute(
         path: '/master',
@@ -460,32 +509,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/master/ai',
         name: 'master-ai',
-        builder: (context, state) => const MasterAiCoachScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterAiCoachScreen()),
       ),
       GoRoute(
         path: '/master/analytics',
         name: 'master-analytics',
-        builder: (context, state) => const MasterAnalyticsScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterAnalyticsScreen()),
       ),
       GoRoute(
         path: '/master/challenges',
         name: 'master-challenges',
-        builder: (context, state) => const MasterChallengesScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterChallengesScreen()),
       ),
       GoRoute(
         path: '/master/live',
         name: 'master-live',
-        builder: (context, state) => const MasterLiveSessionsScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterLiveSessionsScreen()),
       ),
       GoRoute(
         path: '/master/recovery',
         name: 'master-recovery',
-        builder: (context, state) => const MasterRecoveryScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterRecoveryScreen()),
       ),
       GoRoute(
         path: '/master/paywall',
         name: 'master-paywall',
-        builder: (context, state) => const MasterPaywallScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterPaywallScreen()),
       ),
       GoRoute(
         path: '/admin',
@@ -503,7 +552,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/traffic',
         name: 'traffic',
-        pageBuilder: (context, state) => _fadePage(
+        pageBuilder: (context, state) => _pushPage(
           state,
           const SharedManagementWrapper(
             currentRoute: '/traffic',
@@ -515,7 +564,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
-        pageBuilder: (context, state) => _fadePage(
+        pageBuilder: (context, state) => _pushPage(
           state,
           const SharedManagementWrapper(
             currentRoute: '/nutrition',
@@ -527,69 +576,69 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/nutrition/scan',
         name: 'nutrition-scan',
         pageBuilder: (context, state) =>
-            _fadePage(state, const BarcodeScannerScreen()),
+            _pushPage(state, const BarcodeScannerScreen()),
       ),
       GoRoute(
         path: '/nutrition/log',
         name: 'nutrition-log',
         pageBuilder: (context, state) =>
-            _fadePage(state, const ManualNutritionLogScreen()),
+            _pushPage(state, const ManualNutritionLogScreen()),
       ),
       GoRoute(
         path: '/nutrition/goal',
         name: 'nutrition-goal',
         pageBuilder: (context, state) =>
-            _fadePage(state, const DailyCalorieGoalScreen()),
+            _pushPage(state, const DailyCalorieGoalScreen()),
       ),
       GoRoute(
         path: '/workout/active',
         name: 'workout-active',
-        builder: (context, state) => const ActiveWorkoutScreen(),
+        pageBuilder: (context, state) => _modalPage(state, const ActiveWorkoutScreen()),
       ),
       GoRoute(
         path: '/workout/timer',
         name: 'workout-timer',
-        builder: (context, state) => const RestTimerScreen(),
+        pageBuilder: (context, state) => _modalPage(state, const RestTimerScreen()),
       ),
       GoRoute(
         path: '/workout/done',
         name: 'workout-done',
-        builder: (context, state) => const WorkoutCompletionScreen(),
+        pageBuilder: (context, state) => _modalPage(state, const WorkoutCompletionScreen()),
       ),
       GoRoute(
         path: '/workout/history',
         name: 'workout-history',
-        builder: (context, state) => const WorkoutHistoryScreen(),
+        pageBuilder: (context, state) => _pushPage(state, const WorkoutHistoryScreen()),
       ),
       GoRoute(
         path: '/workout/exercise-search',
         name: 'workout-exercise-search',
-        builder: (context, state) => const SearchExerciseScreen(),
+        pageBuilder: (context, state) => _pushPage(state, const SearchExerciseScreen()),
       ),
       GoRoute(
         path: '/workout/exercise-progress',
         name: 'workout-exercise-progress',
-        builder: (context, state) => const ExerciseProgressScreen(),
+        pageBuilder: (context, state) => _pushPage(state, const ExerciseProgressScreen()),
       ),
       GoRoute(
         path: '/workout/compare',
         name: 'workout-compare',
-        builder: (context, state) => const CompareExercisesScreen(),
+        pageBuilder: (context, state) => _pushPage(state, const CompareExercisesScreen()),
       ),
       GoRoute(
         path: '/master/profile',
         name: 'master-profile',
-        builder: (context, state) => const MasterProfileScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterProfileScreen()),
       ),
       GoRoute(
         path: '/master/perks',
         name: 'master-perks',
-        builder: (context, state) => const MasterPerksScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterPerksScreen()),
       ),
       GoRoute(
         path: '/master/transformation',
         name: 'master-transformation',
-        builder: (context, state) => const MasterTransformationScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const MasterTransformationScreen()),
       ),
       GoRoute(
         path: '/support',
@@ -602,87 +651,80 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/clients/checkin',
         name: 'clients-checkin',
-        builder: (context, state) => const LogCheckinScreen(),
+        pageBuilder: (c, s) => _pushPage(s, const LogCheckinScreen()),
       ),
       GoRoute(
         path: '/health/steps',
         name: 'steps-tracking',
-        pageBuilder: (c, s) => _fadePage(s, const StepsTrackingScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const StepsTrackingScreen()),
       ),
       GoRoute(
         path: '/health/sleep',
         name: 'sleep-tracking',
-        pageBuilder: (c, s) => _fadePage(s, const SleepTrackingScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const SleepTrackingScreen()),
       ),
-    // ─── Motivation Routes ─────────────────────────────────────────────────
-    GoRoute(
-      path: '/motivation/daily',
-      name: 'motivation-daily',
-      pageBuilder: (c, s) => _fadePage(s, const MotivationQuoteScreen()),
-    ),
-    GoRoute(
+      // ─── Motivation Routes ───────────────────────────────────────────────
+      GoRoute(
+        path: '/motivation/daily',
+        name: 'motivation-daily',
+        pageBuilder: (c, s) => _pushPage(s, const MotivationQuoteScreen()),
+      ),
+      GoRoute(
         path: '/workout/calendar',
         name: 'workout-calendar',
-        pageBuilder: (c, s) => _fadePage(s, const WorkoutCalendarScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const WorkoutCalendarScreen()),
       ),
       GoRoute(
         path: '/notifications',
         name: 'notifications',
-        pageBuilder: (c, s) => _fadePage(s, const NotificationsScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const NotificationsScreen()),
       ),
-      // ── New Feature Routes ─────────────────────────────────────────────────
+      // ── New Feature Routes ───────────────────────────────────────────────
       GoRoute(
         path: '/health/body-measurements',
         name: 'body-measurements',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const BodyMeasurementsScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const BodyMeasurementsScreen()),
       ),
       GoRoute(
         path: '/health/water',
         name: 'water-tracker',
-        pageBuilder: (c, s) => _fadePage(s, const WaterTrackerScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const WaterTrackerScreen()),
       ),
       GoRoute(
         path: '/workout/personal-records',
         name: 'personal-records',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const PersonalRecordsScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const PersonalRecordsScreen()),
       ),
       GoRoute(
         path: '/achievements',
         name: 'achievements',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const AchievementsScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const AchievementsScreen()),
       ),
       GoRoute(
         path: '/tools/macro-calculator',
         name: 'macro-calculator',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const MacroCalculatorScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const MacroCalculatorScreen()),
       ),
       GoRoute(
         path: '/tools/one-rep-max',
         name: 'one-rep-max',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const OneRepMaxScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const OneRepMaxScreen()),
       ),
       GoRoute(
         path: '/gym/equipment',
         name: 'equipment-status',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const EquipmentStatusScreen()),
+        pageBuilder: (c, s) => _pushPage(s, const EquipmentStatusScreen()),
       ),
       GoRoute(
         path: '/gym/checkin',
         name: 'gym-checkin',
-        pageBuilder: (c, s) =>
-            _fadePage(s, const QrCheckinScreen()),
+        pageBuilder: (c, s) => _modalPage(s, const QrCheckinScreen()),
       ),
       GoRoute(
         path: '/gym/checkout',
         name: 'gym-checkout',
         pageBuilder: (c, s) =>
-            _fadePage(s, QrCheckinScreen(isCheckOut: true, checkInId: s.extra as String?)),
+            _modalPage(s, QrCheckinScreen(isCheckOut: true, checkInId: s.extra as String?)),
       ),
 
     ],
@@ -693,7 +735,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
             const SizedBox(height: 16),
             Text(
               'Page not found',

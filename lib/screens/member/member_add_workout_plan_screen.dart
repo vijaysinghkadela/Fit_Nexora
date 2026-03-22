@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/constants.dart';
+import '../../core/extensions.dart';
 import '../../models/workout_plan_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -25,7 +25,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   String _selectedGoal = 'general_fitness';
   String _selectedAthleteType = 'General';
   int _durationWeeks = 8;
-  
+
   final List<TrainingDay> _days = [];
 
   @override
@@ -72,7 +72,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         reps: '10',
         orderIndex: day.exercises.length,
       ));
-      
+
       _days[dayIndex] = TrainingDay(
         dayName: day.dayName,
         dayIndex: day.dayIndex,
@@ -88,7 +88,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
       final day = _days[dayIndex];
       final newExercises = List<Exercise>.from(day.exercises);
       newExercises.removeAt(exerciseIndex);
-      
+
       // Re-order exercises
       for (int i = 0; i < newExercises.length; i++) {
         final ex = newExercises[i];
@@ -124,7 +124,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
       final day = _days[dayIndex];
       final newExercises = List<Exercise>.from(day.exercises);
       newExercises[exerciseIndex] = updatedExercise;
-      
+
       _days[dayIndex] = TrainingDay(
         dayName: day.dayName,
         dayIndex: day.dayIndex,
@@ -137,7 +137,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
 
   Future<void> _savePlan() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     if (_days.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please add at least one training day')),
@@ -147,7 +147,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
 
     final user = ref.read(currentUserProvider).value;
     final gym = ref.read(selectedGymProvider);
-    
+
     if (user == null || gym == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error: User or Gym not identified')),
@@ -156,7 +156,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     }
 
     final db = ref.read(databaseServiceProvider);
-    
+
     final planData = {
       'gym_id': gym.id,
       'client_id': user.id,
@@ -177,7 +177,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     try {
       await db.createWorkoutPlan(planData);
       ref.invalidate(memberWorkoutPlanProvider);
-      
+
       if (mounted) {
         context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -195,8 +195,9 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: CustomScrollView(
         slivers: [
           _buildSliverAppBar(),
@@ -262,8 +263,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                           SnackBar(content: Text('$_selectedAthleteType template loaded!')),
                         );
                       },
-                      icon: const Icon(Icons.download_rounded, size: 16, color: AppColors.primaryLight),
-                      label: const Text('Load Pre-filled Template', style: TextStyle(color: AppColors.primaryLight)),
+                      icon: Icon(Icons.download_rounded, size: 16, color: t.brandSecondary),
+                      label: Text('Load Pre-filled Template', style: TextStyle(color: t.brandSecondary)),
                     ),
                     const SizedBox(height: 16),
                     _buildDurationSelector(),
@@ -273,7 +274,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                     Text(
                       'Define your training days and exercises.',
                       style: GoogleFonts.inter(
-                        color: AppColors.textSecondary,
+                        color: t.textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -291,7 +292,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _savePlan,
-        backgroundColor: AppColors.primary,
+        backgroundColor: t.brand,
         icon: const Icon(Icons.save_rounded, color: Colors.white),
         label: Text(
           'Save Workout Plan',
@@ -302,10 +303,11 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildSliverAppBar() {
+    final t = context.fitTheme;
     return SliverAppBar(
       expandedHeight: 120,
       pinned: true,
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => context.pop(),
@@ -324,8 +326,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.primary.withOpacity(0.2),
-                AppColors.bgDark,
+                t.brand.withOpacity(0.2),
+                t.background,
               ],
             ),
           ),
@@ -335,13 +337,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildStepHeader(String number, String title) {
+    final t = context.fitTheme;
     return Row(
       children: [
         Container(
           width: 28,
           height: 28,
-          decoration: const BoxDecoration(
-            color: AppColors.primary,
+          decoration: BoxDecoration(
+            color: t.brand,
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -361,7 +364,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
           style: GoogleFonts.outfit(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: t.textPrimary,
           ),
         ),
       ],
@@ -375,13 +378,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     int maxLines = 1,
     String? Function(String?)? validator,
   }) {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: GoogleFonts.inter(
-            color: AppColors.textSecondary,
+            color: t.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -394,14 +398,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: AppColors.textMuted.withOpacity(0.5)),
+            hintStyle: TextStyle(color: t.textMuted.withOpacity(0.5)),
             filled: true,
-            fillColor: AppColors.bgInput,
+            fillColor: t.surfaceAlt,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            errorStyle: const TextStyle(color: AppColors.error),
+            errorStyle: TextStyle(color: t.danger),
           ),
         ),
       ],
@@ -414,13 +418,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     required List<DropdownMenuItem<T>> items,
     required void Function(T?) onChanged,
   }) {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: GoogleFonts.inter(
-            color: AppColors.textSecondary,
+            color: t.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -429,7 +434,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: AppColors.bgInput,
+            color: t.surfaceAlt,
             borderRadius: BorderRadius.circular(12),
           ),
           child: DropdownButtonHideUnderline(
@@ -437,8 +442,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
               value: value,
               items: items,
               onChanged: onChanged,
-              dropdownColor: AppColors.bgElevated,
-              icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textSecondary),
+              dropdownColor: t.surfaceAlt,
+              icon: Icon(Icons.keyboard_arrow_down, color: t.textSecondary),
               style: const TextStyle(color: Colors.white),
               isExpanded: true,
             ),
@@ -449,13 +454,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildDurationSelector() {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Plan Duration (Weeks)',
           style: GoogleFonts.inter(
-            color: AppColors.textSecondary,
+            color: t.textSecondary,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
@@ -477,6 +483,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _durationOption(int weeks) {
+    final t = context.fitTheme;
     bool isSelected = _durationWeeks == weeks;
     return Expanded(
       child: GestureDetector(
@@ -484,10 +491,10 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         child: Container(
           height: 48,
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withOpacity(0.2) : AppColors.bgInput,
+            color: isSelected ? t.brand.withOpacity(0.2) : t.surfaceAlt,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? AppColors.primary : Colors.transparent,
+              color: isSelected ? t.brand : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -495,7 +502,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
             child: Text(
               '$weeks',
               style: GoogleFonts.inter(
-                color: isSelected ? AppColors.primaryLight : AppColors.textSecondary,
+                color: isSelected ? t.brandSecondary : t.textSecondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -506,13 +513,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildDayCard(int dayIdx) {
+    final t = context.fitTheme;
     final day = _days[dayIdx];
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: t.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Column(
         children: [
@@ -533,10 +541,11 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildDayHeader(int dayIdx, TrainingDay day) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.bgElevated.withOpacity(0.5),
+        color: t.surfaceAlt.withOpacity(0.5),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Row(
@@ -567,7 +576,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.error, size: 20),
+            icon: Icon(Icons.delete_outline, color: t.danger, size: 20),
             onPressed: () => _removeDay(dayIdx),
           ),
         ],
@@ -576,14 +585,15 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildExerciseRow(int dayIdx, int exIdx) {
+    final t = context.fitTheme;
     final exercise = _days[dayIdx].exercises[exIdx];
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.bgInput.withOpacity(0.5),
+        color: t.surfaceAlt.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border.withOpacity(0.3)),
+        border: Border.all(color: t.border.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -621,7 +631,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, color: AppColors.error, size: 20),
+                icon: Icon(Icons.close, color: t.danger, size: 20),
                 onPressed: () => _removeExercise(dayIdx, exIdx),
               ),
             ],
@@ -696,6 +706,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     required void Function(String) onChanged,
     TextInputType? keyboardType,
   }) {
+    final t = context.fitTheme;
     return TextFormField(
       initialValue: initialValue,
       style: const TextStyle(color: Colors.white, fontSize: 13),
@@ -705,7 +716,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
         filled: true,
-        fillColor: AppColors.bgInput,
+        fillColor: t.surfaceAlt,
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         border: OutlineInputBorder(
@@ -717,13 +728,14 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildAddExerciseButton(int dayIdx) {
+    final t = context.fitTheme;
     return TextButton.icon(
       onPressed: () => _addExercise(dayIdx),
-      icon: const Icon(Icons.add, size: 18, color: AppColors.primaryLight),
+      icon: Icon(Icons.add, size: 18, color: t.brandSecondary),
       label: Text(
         'Add Exercise',
         style: GoogleFonts.inter(
-          color: AppColors.primaryLight,
+          color: t.brandSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
@@ -732,6 +744,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
   }
 
   Widget _buildAddDayButton() {
+    final t = context.fitTheme;
     return InkWell(
       onTap: _addDay,
       borderRadius: BorderRadius.circular(16),
@@ -739,18 +752,18 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         height: 56,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 1.5),
+          border: Border.all(color: t.brand.withOpacity(0.3), width: 1.5),
         ),
         child: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.calendar_today_rounded, color: AppColors.primaryLight, size: 20),
+              Icon(Icons.calendar_today_rounded, color: t.brandSecondary, size: 20),
               const SizedBox(width: 12),
               Text(
                 'Add Training Day',
                 style: GoogleFonts.inter(
-                  color: AppColors.primaryLight,
+                  color: t.brandSecondary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

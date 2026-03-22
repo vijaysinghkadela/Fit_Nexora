@@ -1,5 +1,6 @@
 // lib/screens/health/water_tracker_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,7 @@ class WaterTrackerScreen extends ConsumerWidget {
                       size: 200,
                       centerText: '${state.totalTodayMl}',
                       label: '/ ${state.dailyGoalMl} ml goal',
-                      gradientColors: [const Color(0xFF38BDF8), t.brand],
+                      gradientColors: [t.info, t.brand],
                     ),
                   ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
                   const SizedBox(height: 16),
@@ -137,17 +138,18 @@ class WaterTrackerScreen extends ConsumerWidget {
                     runSpacing: 10,
                     children: _quickAmounts.map((ml) {
                       return GestureDetector(
-                        onTap: () => ref
-                            .read(waterTrackerProvider.notifier)
-                            .logWater(ml),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          ref.read(waterTrackerProvider.notifier).logWater(ml);
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 18, vertical: 12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF38BDF8).withOpacity(0.1),
+                            color: t.info.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: const Color(0xFF38BDF8).withOpacity(0.25),
+                              color: t.info.withOpacity(0.25),
                             ),
                           ),
                           child: Text(
@@ -156,7 +158,7 @@ class WaterTrackerScreen extends ConsumerWidget {
                                 : '$ml ml',
                             style: GoogleFonts.inter(
                               fontWeight: FontWeight.w700,
-                              color: const Color(0xFF38BDF8),
+                              color: t.info,
                             ),
                           ),
                         ),
@@ -264,7 +266,7 @@ class WaterTrackerScreen extends ConsumerWidget {
                             style: GoogleFonts.inter(
                               fontSize: 15,
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFF38BDF8),
+                              color: t.info,
                             ),
                           ),
                         ],

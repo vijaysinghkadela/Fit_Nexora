@@ -7,6 +7,116 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../config/theme.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../models/food_log_model.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/nutrition_provider.dart';
+import '../../providers/water_tracker_provider.dart';
+
+// ── Meal type metadata ────────────────────────────────────────────────────────
+
+const _mealTypeOrder = ['breakfast', 'lunch', 'dinner', 'snack', 'other'];
+
+IconData _iconForMealType(String type) {
+  switch (type.toLowerCase()) {
+    case 'breakfast':
+      return Icons.wb_sunny_rounded;
+    case 'lunch':
+      return Icons.wb_cloudy_rounded;
+    case 'dinner':
+      return Icons.nights_stay_rounded;
+    case 'snack':
+      return Icons.cookie_rounded;
+    default:
+      return Icons.restaurant_rounded;
+  }
+}
+
+String _labelForMealType(String type) {
+  final t = type.trim();
+  if (t.isEmpty) return 'Other';
+  return t[0].toUpperCase() + t.substring(1).toLowerCase();
+}
+
+// ── Static fallback sections (shown when no real data is available) ───────────
+
+const _kFallbackSections = [
+  _MealSection(
+    type: 'Breakfast',
+    icon: Icons.wb_sunny_rounded,
+    totalKcal: 420,
+    items: [
+      _FoodItem(name: 'Oatmeal with Berries', kcal: 280, protein: 8, carbs: 52, fat: 6),
+      _FoodItem(name: 'Boiled Egg', kcal: 78, protein: 6, carbs: 1, fat: 5),
+      _FoodItem(name: 'Orange Juice', kcal: 62, protein: 1, carbs: 14, fat: 0),
+    ],
+  ),
+  _MealSection(
+    type: 'Lunch',
+    icon: Icons.wb_cloudy_rounded,
+    totalKcal: 680,
+    items: [
+      _FoodItem(name: 'Grilled Chicken Salad', kcal: 380, protein: 42, carbs: 18, fat: 12),
+      _FoodItem(name: 'Brown Rice (150g)', kcal: 165, protein: 4, carbs: 35, fat: 1),
+      _FoodItem(name: 'Dal Tadka', kcal: 135, protein: 9, carbs: 22, fat: 3),
+    ],
+  ),
+  _MealSection(
+    type: 'Dinner',
+    icon: Icons.nights_stay_rounded,
+    totalKcal: 620,
+    items: [
+      _FoodItem(name: 'Paneer Bhurji', kcal: 280, protein: 18, carbs: 8, fat: 20),
+      _FoodItem(name: 'Chapati x2', kcal: 200, protein: 6, carbs: 40, fat: 2),
+      _FoodItem(name: 'Mixed Salad', kcal: 140, protein: 4, carbs: 24, fat: 3),
+    ],
+  ),
+  _MealSection(
+    type: 'Snacks',
+    icon: Icons.cookie_rounded,
+    totalKcal: 120,
+    items: [
+      _FoodItem(name: 'Greek Yogurt', kcal: 80, protein: 10, carbs: 6, fat: 1),
+      _FoodItem(name: 'Mixed Nuts (25g)', kcal: 40, protein: 1, carbs: 2, fat: 3),
+    ],
+  ),
+];
+
+/// Convert a list of [FoodLog] entries into [_MealSection] objects grouped by
+/// meal type, preserving the canonical ordering defined in [_mealTypeOrder].
+List<_MealSection> _buildSectionsFromLogs(List<FoodLog> logs) {
+  if (logs.isEmpty) return [];
+
+  final Map<String, List<FoodLog>> grouped = {};
+  for (final log in logs) {
+    final key = log.mealType.toLowerCase();
+    grouped.putIfAbsent(key, () => []).add(log);
+  }
+
+  final orderedKeys = [
+    ..._mealTypeOrder.where(grouped.containsKey),
+    ...grouped.keys.where((k) => !_mealTypeOrder.contains(k)),
+  ];
+
+  return orderedKeys.map((key) {
+    final mealLogs = grouped[key]!;
+    final totalKcal =
+        mealLogs.fold<double>(0, (s, l) => s + l.caloriesKcal).round();
+    return _MealSection(
+      type: _labelForMealType(key),
+      icon: _iconForMealType(key),
+      totalKcal: totalKcal,
+      items: mealLogs
+          .map((l) => _FoodItem(
+                name: l.productName,
+                kcal: l.caloriesKcal.round(),
+                protein: l.proteinG.round(),
+                carbs: l.carbsG.round(),
+                fat: l.fatG.round(),
+              ))
+          .toList(),
+    );
+  }).toList();
+}
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
@@ -16,67 +126,55 @@ class NutritionScreen extends ConsumerStatefulWidget {
 }
 
 class _NutritionScreenState extends ConsumerState<NutritionScreen> {
-  int _filledWater = 5;
-
-  // Mock data
-  static const int _kcalConsumed = 1840;
+  // Fallback calorie goal when no diet plan provider is available.
   static const int _kcalGoal = 2200;
   static const int _kcalBurned = 320;
 
-  static const int _proteinCurrent = 142;
+  // Macro goals (static targets — can be replaced with a diet plan provider).
   static const int _proteinGoal = 180;
-  static const int _carbsCurrent = 220;
   static const int _carbsGoal = 280;
-  static const int _fatCurrent = 58;
   static const int _fatGoal = 73;
-
-  final _mealSections = const [
-    _MealSection(
-      type: 'Breakfast',
-      icon: Icons.wb_sunny_rounded,
-      totalKcal: 420,
-      items: [
-        _FoodItem(name: 'Oatmeal with Berries', kcal: 280, protein: 8, carbs: 52, fat: 6),
-        _FoodItem(name: 'Boiled Egg', kcal: 78, protein: 6, carbs: 1, fat: 5),
-        _FoodItem(name: 'Orange Juice', kcal: 62, protein: 1, carbs: 14, fat: 0),
-      ],
-    ),
-    _MealSection(
-      type: 'Lunch',
-      icon: Icons.wb_cloudy_rounded,
-      totalKcal: 680,
-      items: [
-        _FoodItem(name: 'Grilled Chicken Salad', kcal: 380, protein: 42, carbs: 18, fat: 12),
-        _FoodItem(name: 'Brown Rice (150g)', kcal: 165, protein: 4, carbs: 35, fat: 1),
-        _FoodItem(name: 'Dal Tadka', kcal: 135, protein: 9, carbs: 22, fat: 3),
-      ],
-    ),
-    _MealSection(
-      type: 'Dinner',
-      icon: Icons.nights_stay_rounded,
-      totalKcal: 620,
-      items: [
-        _FoodItem(name: 'Paneer Bhurji', kcal: 280, protein: 18, carbs: 8, fat: 20),
-        _FoodItem(name: 'Chapati x2', kcal: 200, protein: 6, carbs: 40, fat: 2),
-        _FoodItem(name: 'Mixed Salad', kcal: 140, protein: 4, carbs: 24, fat: 3),
-      ],
-    ),
-    _MealSection(
-      type: 'Snacks',
-      icon: Icons.cookie_rounded,
-      totalKcal: 120,
-      items: [
-        _FoodItem(name: 'Greek Yogurt', kcal: 80, protein: 10, carbs: 6, fat: 1),
-        _FoodItem(name: 'Mixed Nuts (25g)', kcal: 40, protein: 1, carbs: 2, fat: 3),
-      ],
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final double gaugeProgress =
-        (_kcalConsumed / _kcalGoal).clamp(0.0, 1.0);
+
+    // ── Real data: water tracker ──────────────────────────────────────────────
+    final waterState = ref.watch(waterTrackerProvider);
+    final totalWaterMl = waterState.totalTodayMl;
+    final waterGoalMl = waterState.dailyGoalMl;
+
+    // ── Real data: today's food logs ──────────────────────────────────────────
+    final userId = ref.watch(currentUserProvider).value?.id ?? '';
+    final foodLogsAsync =
+        userId.isNotEmpty ? ref.watch(todayFoodLogsProvider(userId)) : null;
+
+    final summary = foodLogsAsync?.valueOrNull != null
+        ? NutritionSummary.fromLogs(foodLogsAsync!.value!)
+        : null;
+
+    final int kcalConsumed = summary != null
+        ? summary.calories.round()
+        : 1840; // static fallback
+
+    final int proteinCurrent =
+        summary != null ? summary.protein.round() : 142;
+    final int carbsCurrent = summary != null ? summary.carbs.round() : 220;
+    final int fatCurrent = summary != null ? summary.fat.round() : 58;
+
+    // Build meal sections from real logs; fall back to static data while
+    // loading or when no logs exist yet.
+    final List<_MealSection> mealSections;
+    if (foodLogsAsync == null || foodLogsAsync.isLoading) {
+      mealSections = _kFallbackSections;
+    } else {
+      final realSections =
+          _buildSectionsFromLogs(foodLogsAsync.valueOrNull ?? []);
+      mealSections =
+          realSections.isNotEmpty ? realSections : _kFallbackSections;
+    }
+
+    final double gaugeProgress = (kcalConsumed / _kcalGoal).clamp(0.0, 1.0);
 
     return Scaffold(
       backgroundColor: t.background,
@@ -137,7 +235,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
               delegate: SliverChildListDelegate([
                 // ── Calorie Tracker ──────────────────────────────────────────
                 _CalorieTrackerSection(
-                  consumed: _kcalConsumed,
+                  consumed: kcalConsumed,
                   goal: _kcalGoal,
                   burned: _kcalBurned,
                   progress: gaugeProgress,
@@ -164,7 +262,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         const SizedBox(height: 14),
                         _MacroProgressBar(
                           label: 'Protein',
-                          current: _proteinCurrent,
+                          current: proteinCurrent,
                           goal: _proteinGoal,
                           unit: 'g',
                           color: t.info,
@@ -173,7 +271,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         const SizedBox(height: 12),
                         _MacroProgressBar(
                           label: 'Carbs',
-                          current: _carbsCurrent,
+                          current: carbsCurrent,
                           goal: _carbsGoal,
                           unit: 'g',
                           color: t.warning,
@@ -182,7 +280,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         const SizedBox(height: 12),
                         _MacroProgressBar(
                           label: 'Fat',
-                          current: _fatCurrent,
+                          current: fatCurrent,
                           goal: _fatGoal,
                           unit: 'g',
                           color: t.danger,
@@ -287,8 +385,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                 const SizedBox(height: 24),
 
                 // ── Meal Sections ────────────────────────────────────────────
-                ...List.generate(_mealSections.length, (index) {
-                  final section = _mealSections[index];
+                ...List.generate(mealSections.length, (index) {
+                  final section = mealSections[index];
                   return _MealSectionWidget(
                     section: section,
                     themeTokens: t,
@@ -330,7 +428,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    '${_filledWater * 312}ml / 2500ml',
+                                    '${totalWaterMl}ml / ${waterGoalMl}ml',
                                     style: GoogleFonts.inter(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -343,7 +441,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
                                 child: LinearProgressIndicator(
-                                  value: _filledWater / 8,
+                                  value: waterState.progressFraction,
                                   minHeight: 6,
                                   backgroundColor: t.ringTrack,
                                   valueColor:
@@ -355,9 +453,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         ),
                         const SizedBox(width: 12),
                         GestureDetector(
-                          onTap: () => setState(() {
-                            if (_filledWater < 8) _filledWater++;
-                          }),
+                          onTap: () =>
+                              ref.read(waterTrackerProvider.notifier).logWater(250),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),

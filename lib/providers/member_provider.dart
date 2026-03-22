@@ -131,6 +131,17 @@ final memberDietPlanProvider =
   return DietPlan.fromJson(raw);
 });
 
+// ─── Workout History ──────────────────────────────────────────────────────────
+
+/// Returns the 30 most-recent completed workout sessions for the current user.
+final workoutHistoryProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
+  final db = ref.watch(databaseServiceProvider);
+  final user = ref.watch(currentUserProvider).value;
+  if (user == null) return [];
+  return db.getWorkoutHistory(userId: user.id, limit: 30);
+});
+
 // ─── Progress ────────────────────────────────────────────────────────────────
 
 /// Raw weight entries (latest first) for the weight chart.

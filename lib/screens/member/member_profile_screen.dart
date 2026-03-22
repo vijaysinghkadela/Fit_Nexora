@@ -227,25 +227,21 @@ class MemberProfileScreen extends ConsumerWidget {
                             icon: Icons.help_rounded,
                             title: 'Help Center',
                             subtitle: 'Guides, FAQs, and setup support',
-                            onTap: () {
-                              context.showSnackBar('Support center is coming next.');
-                            },
+                            onTap: () => _showSupportSheet(context),
                           ),
                           _SettingsRow(
                             icon: Icons.policy_rounded,
                             title: 'Privacy Policy',
                             subtitle: 'How FitNexora handles your data',
-                            onTap: () {
-                              context.showSnackBar('Privacy documentation is coming next.');
-                            },
+                            onTap: () => _showLegalSheet(context, 'Privacy Policy',
+                                'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
                           ),
                           _SettingsRow(
                             icon: Icons.description_rounded,
                             title: 'Terms of Service',
                             subtitle: 'Platform usage and subscription terms',
-                            onTap: () {
-                              context.showSnackBar('Terms documentation is coming next.');
-                            },
+                            onTap: () => _showLegalSheet(context, 'Terms of Service',
+                                'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
                           ),
                         ],
                       ),
@@ -347,6 +343,7 @@ class MemberProfileScreen extends ConsumerWidget {
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: colors.surface,
       showDragHandle: true,
       builder: (context) {
@@ -389,6 +386,7 @@ class MemberProfileScreen extends ConsumerWidget {
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: colors.surface,
       showDragHandle: true,
       builder: (context) {
@@ -425,6 +423,7 @@ class MemberProfileScreen extends ConsumerWidget {
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: colors.surface,
       showDragHandle: true,
       builder: (context) {
@@ -452,6 +451,66 @@ class MemberProfileScreen extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+
+  static void _showSupportSheet(BuildContext context) {
+    final colors = context.fitTheme;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Help & Support',
+                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+              const SizedBox(height: 16),
+              _SupportTile(icon: Icons.email_rounded, label: 'Email Support', value: 'support@fitnexora.com', colors: colors),
+              const SizedBox(height: 10),
+              _SupportTile(icon: Icons.chat_bubble_rounded, label: 'In-App Chat', value: 'Available Mon–Fri, 9AM–6PM IST', colors: colors),
+              const SizedBox(height: 10),
+              _SupportTile(icon: Icons.menu_book_rounded, label: 'Documentation', value: 'Setup guides and FAQs', colors: colors),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static void _showLegalSheet(BuildContext context, String title, String body) {
+    final colors = context.fitTheme;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colors.surface,
+      showDragHandle: true,
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        maxChildSize: 0.9,
+        minChildSize: 0.3,
+        expand: false,
+        builder: (_, ctrl) => ListView(
+          controller: ctrl,
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+          children: [
+            Text(title,
+                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+            const SizedBox(height: 16),
+            Text(body,
+                style: GoogleFonts.inter(fontSize: 14, height: 1.65, color: colors.textSecondary)),
+            const SizedBox(height: 24),
+            Text('Last updated: March 2026',
+                style: GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
+          ],
+        ),
+      ),
     );
   }
 
@@ -991,6 +1050,42 @@ class _RoundIconButton extends StatelessWidget {
           border: Border.all(color: colors.border),
         ),
         child: Icon(icon, color: colors.textPrimary),
+      ),
+    );
+  }
+}
+
+class _SupportTile extends StatelessWidget {
+  const _SupportTile({required this.icon, required this.label, required this.value, required this.colors});
+  final IconData icon;
+  final String label;
+  final String value;
+  final FitNexoraThemeTokens colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: colors.surfaceAlt,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: colors.border),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: colors.brand),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: colors.textPrimary)),
+                Text(value, style: GoogleFonts.inter(fontSize: 12, color: colors.textSecondary)),
+              ],
+            ),
+          ),
+          Icon(Icons.chevron_right_rounded, size: 18, color: colors.textMuted),
+        ],
       ),
     );
   }
