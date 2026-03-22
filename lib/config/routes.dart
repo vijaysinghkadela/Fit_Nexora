@@ -74,6 +74,7 @@ import '../screens/todos/todos_screen.dart';
 
 import '../screens/trainer/trainer_dashboard_screen.dart';
 import '../screens/trainer/trainer_assign_workout_screen.dart';
+import '../screens/trainer/trainer_clients_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
 import '../screens/motivation/motivation_quote_screen.dart';
@@ -266,6 +267,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/trainer/assign-workout',
         name: 'trainer-assign-workout',
         builder: (context, state) => const TrainerAssignWorkoutScreen(),
+      ),
+      GoRoute(
+        path: '/trainer/clients',
+        name: 'trainer-clients',
+        builder: (context, state) => const TrainerClientsScreen(),
+      ),
+      GoRoute(
+        path: '/trainer/settings',
+        name: 'trainer-settings',
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/trainer/settings',
+          child: SettingsScreen(),
+        ),
       ),
       GoRoute(
         path: '/clients',
