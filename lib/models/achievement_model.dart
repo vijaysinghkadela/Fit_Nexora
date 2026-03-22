@@ -30,15 +30,15 @@ class Achievement extends Equatable {
   Color get categoryColor {
     switch (category) {
       case AchievementCategory.fitness:
-        return const Color(0xFF895AF6);
+        return const Color(0xFFFF5C00); // brand orange
       case AchievementCategory.nutrition:
-        return const Color(0xFF10D88A);
+        return const Color(0xFF00E5C3); // accent teal
       case AchievementCategory.consistency:
-        return const Color(0xFFF6B546);
+        return const Color(0xFFFFB830); // warning amber
       case AchievementCategory.social:
-        return const Color(0xFF7A8BFF);
+        return const Color(0xFF4A9FFF); // info blue
       case AchievementCategory.milestone:
-        return const Color(0xFFFF6B7D);
+        return const Color(0xFFFF4A6B); // danger coral
     }
   }
 

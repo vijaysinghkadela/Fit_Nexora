@@ -848,20 +848,25 @@ class DatabaseService {
   Future<Map<String, int>> getEquipmentStatusSummary(String gymId) async {
     final result = await _client
         .from(AppConstants.equipmentStatusTable)
-        .select('status')
+        .select('total_units, in_use, out_of_service')
         .eq('gym_id', gymId);
 
-    final Map<String, int> summary = {
-      'available': 0,
-      'in_use': 0,
-      'out_of_order': 0,
-    };
+    int totalUnits = 0;
+    int totalInUse = 0;
+    int totalOutOfOrder = 0;
 
     for (final row in result) {
-      final status = row['status'] as String;
-      summary[status] = (summary[status] ?? 0) + 1;
+      totalUnits += (row['total_units'] as int?) ?? 0;
+      totalInUse += (row['in_use'] as int?) ?? 0;
+      totalOutOfOrder += (row['out_of_service'] as int?) ?? 0;
     }
 
-    return summary;
+    final totalAvailable = (totalUnits - totalInUse - totalOutOfOrder).clamp(0, totalUnits);
+
+    return {
+      'available': totalAvailable,
+      'in_use': totalInUse,
+      'out_of_order': totalOutOfOrder,
+    };
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -46,7 +47,8 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_rounded,
                   color: AppColors.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : Navigator.of(context).pop(),
             ),
             title: Text(
               _client.fullName ?? 'Client',

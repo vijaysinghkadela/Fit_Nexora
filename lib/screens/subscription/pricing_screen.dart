@@ -23,19 +23,18 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
   bool _isAnnual = false;
 
   static const _basicPalette = FitPlanPalette(
-    primary: Color(0xFF6E6489),
-    secondary: Color(0xFF9E95B5),
+    primary: Color(0xFF787885),
+    secondary: Color(0xFFAAAAAA),
   );
 
   static const _proPalette = FitPlanPalette(
-    primary: Color(0xFFF2B451),
-    secondary: Color(0xFFFFD37A),
-    darkOnAccent: true,
+    primary: Color(0xFF3AA8FF),
+    secondary: Color(0xFF7AC8FF),
   );
 
   static const _elitePalette = FitPlanPalette(
-    primary: Color(0xFF895AF6),
-    secondary: Color(0xFFB895FF),
+    primary: Color(0xFF9B5DE5),
+    secondary: Color(0xFFCF9FFF),
   );
 
   String _priceFor(PlanTier tier) {

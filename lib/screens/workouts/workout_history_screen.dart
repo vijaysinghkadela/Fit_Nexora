@@ -25,7 +25,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
       durationMinutes: 42,
       exerciseCount: 6,
       volumeKg: 9450,
-      accentColor: const Color(0xFF895AF6),
+      accentColor: const Color(0xFFFF5C00),
     ),
     _WorkoutSession(
       name: 'Pull Day B',
@@ -49,7 +49,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
       durationMinutes: 40,
       exerciseCount: 6,
       volumeKg: 8900,
-      accentColor: const Color(0xFF895AF6),
+      accentColor: const Color(0xFFFF5C00),
     ),
   ];
 
@@ -230,16 +230,15 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFFFFD700).withOpacity(0.25),
-                        const Color(0xFFFFA500).withOpacity(0.15),
+                        t.brand.withOpacity(0.25),
+                        t.brandSecondary.withOpacity(0.15),
                       ],
                     ),
                     border: Border.all(
-                        color: const Color(0xFFFFD700)
-                            .withOpacity(0.4)),
+                        color: t.brand.withOpacity(0.4)),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFD700).withOpacity(0.15),
+                        color: t.brand.withOpacity(0.15),
                         blurRadius: 20,
                         offset: const Offset(0, 4),
                       ),
@@ -252,9 +251,9 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                         Container(
                           width: 48,
                           height: 48,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                              colors: [t.brand, t.brandSecondary],
                             ),
                             shape: BoxShape.circle,
                           ),
@@ -274,7 +273,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                                 style: GoogleFonts.inter(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: const Color(0xFFFFA500),
+                                  color: const Color(0xFFFF8A3D),
                                   letterSpacing: 0.3,
                                 ),
                               ),

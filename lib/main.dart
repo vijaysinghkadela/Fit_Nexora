@@ -115,7 +115,7 @@ Future<void> main() async {
         SentryWidget(
           child: const AppErrorBoundary(
             child: ProviderScope(
-              child: GymOSApp(),
+              child: FitNexoraApp(),
             ),
           ),
         ),
@@ -125,7 +125,7 @@ Future<void> main() async {
     runApp(
       const AppErrorBoundary(
         child: ProviderScope(
-          child: GymOSApp(),
+          child: FitNexoraApp(),
         ),
       ),
     );

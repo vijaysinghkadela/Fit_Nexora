@@ -62,8 +62,8 @@ class _LoadingScaffold extends StatelessWidget {
 class _EliteDashboard extends ConsumerWidget {
   const _EliteDashboard();
 
-  static const _purple = Color(0xFF9C27B0);
-  static const _indigo = Color(0xFF3F51B5);
+  static const _elitePrimary = Color(0xFF9B5DE5);
+  static const _eliteSecondary = Color(0xFF6A3DFF);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,11 +110,11 @@ class _EliteDashboard extends ConsumerWidget {
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                          colors: [_purple, _indigo]),
+                          colors: [_elitePrimary, _eliteSecondary]),
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
-                            color: _purple.withOpacity(0.4),
+                            color: _elitePrimary.withOpacity(0.4),
                             blurRadius: 10)
                       ],
                     ),
@@ -143,7 +143,7 @@ class _EliteDashboard extends ConsumerWidget {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.psychology_rounded, color: _purple),
+                icon: const Icon(Icons.psychology_rounded, color: _elitePrimary),
                 tooltip: 'AI Trainer',
                 onPressed: () => Navigator.push(context,
                     MaterialPageRoute(
@@ -273,7 +273,7 @@ class _EliteDashboard extends ConsumerWidget {
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                    colors: [_purple, _indigo]),
+                                    colors: [_elitePrimary, _eliteSecondary]),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.chat_rounded,
@@ -345,13 +345,13 @@ class _EliteFeatureGrid extends StatelessWidget {
   final BuildContext context;
   const _EliteFeatureGrid({required this.context});
 
-  static const _purple = Color(0xFF9C27B0);
+  static const _elitePrimary = Color(0xFF9B5DE5);
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
     final items = [
-      (Icons.psychology_rounded, 'AI Trainer', _purple,
+      (Icons.psychology_rounded, 'AI Trainer', _elitePrimary,
           () => Navigator.push(context, MaterialPageRoute(
               builder: (_) => const EliteAiTrainerScreen()))),
       (Icons.medication_rounded, 'Supplements', t.accent,
@@ -408,8 +408,8 @@ class _MembershipBanner extends StatelessWidget {
   final dynamic membership;
   const _MembershipBanner({required this.membership});
 
-  static const _purple = Color(0xFF9C27B0);
-  static const _indigo = Color(0xFF3F51B5);
+  static const _elitePrimary = Color(0xFF9B5DE5);
+  static const _eliteSecondary = Color(0xFF6A3DFF);
 
   @override
   Widget build(BuildContext context) {
@@ -419,14 +419,14 @@ class _MembershipBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [_purple.withOpacity(0.15),
-                _indigo.withOpacity(0.08)]),
+            colors: [_elitePrimary.withOpacity(0.15),
+                _eliteSecondary.withOpacity(0.08)]),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _purple.withOpacity(0.3)),
+        border: Border.all(color: _elitePrimary.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.diamond_rounded, color: _purple, size: 22),
+          const Icon(Icons.diamond_rounded, color: _elitePrimary, size: 22),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -481,11 +481,11 @@ class _ChatPreviewTile extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       leading: CircleAvatar(
         backgroundColor: isTrainer
-            ? const Color(0xFF9C27B0).withOpacity(0.2)
+            ? const Color(0xFF9B5DE5).withOpacity(0.2)
             : t.brand.withOpacity(0.2),
         child: Icon(
           isTrainer ? Icons.person_rounded : Icons.face_rounded,
-          color: isTrainer ? const Color(0xFF9C27B0) : t.brand,
+          color: isTrainer ? const Color(0xFF9B5DE5) : t.brand,
           size: 20,
         ),
       ),

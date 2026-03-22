@@ -23,7 +23,7 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
   bool _sending = false;
   int _lastMsgCount = 0;
 
-  static const _purple = Color(0xFF9C27B0);
+  static const _elitePrimary = Color(0xFF9B5DE5);
 
   @override
   void initState() {
@@ -66,8 +66,8 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
         title: Row(children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: _purple.withOpacity(0.2),
-            child: const Icon(Icons.person_rounded, color: _purple, size: 20),
+            backgroundColor: _elitePrimary.withOpacity(0.2),
+            child: const Icon(Icons.person_rounded, color: _elitePrimary, size: 20),
           ),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -113,11 +113,11 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: _purple.withOpacity(0.1),
+                            color: _elitePrimary.withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(Icons.chat_rounded,
-                              size: 40, color: _purple),
+                              size: 40, color: _elitePrimary),
                         ).animate().scale(
                               duration: 500.ms,
                               curve: Curves.elasticOut),
@@ -194,12 +194,12 @@ class _EliteChatScreenState extends ConsumerState<EliteChatScreen> {
                       gradient: _sending
                           ? null
                           : const LinearGradient(
-                              colors: [_purple, Color(0xFF3F51B5)]),
+                              colors: [_elitePrimary, Color(0xFF6A3DFF)]),
                       color: _sending ? t.surface : null,
                       shape: BoxShape.circle,
                       boxShadow: _sending ? null : [
                         BoxShadow(
-                            color: _purple.withOpacity(0.4),
+                            color: _elitePrimary.withOpacity(0.4),
                             blurRadius: 12),
                       ],
                     ),
@@ -251,7 +251,7 @@ class _MessageBubble extends StatelessWidget {
   final bool isMe;
   const _MessageBubble({required this.msg, required this.isMe});
 
-  static const _purple = Color(0xFF9C27B0);
+  static const _elitePrimary = Color(0xFF9B5DE5);
 
   @override
   Widget build(BuildContext context) {
@@ -274,9 +274,9 @@ class _MessageBubble extends StatelessWidget {
           if (!isMe) ...[
             CircleAvatar(
               radius: 14,
-              backgroundColor: _purple.withOpacity(0.15),
+              backgroundColor: _elitePrimary.withOpacity(0.15),
               child: const Icon(Icons.person_rounded,
-                  color: _purple, size: 16),
+                  color: _elitePrimary, size: 16),
             ),
             const SizedBox(width: 8),
           ],
@@ -292,7 +292,7 @@ class _MessageBubble extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: isMe
                       ? const LinearGradient(
-                          colors: [_purple, Color(0xFF3F51B5)])
+                          colors: [_elitePrimary, Color(0xFF6A3DFF)])
                       : null,
                   color: isMe ? null : t.surfaceAlt,
                   borderRadius: BorderRadius.only(

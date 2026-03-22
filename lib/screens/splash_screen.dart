@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   radius: 0.88,
                   colors: [
                     colors.brand.withOpacity(0.14),
-                    const Color(0xFF0A0812),
+                    colors.background,
                   ],
                 ),
               ),
@@ -134,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF9087A8),
+                      color: colors.textMuted,
                       letterSpacing: 3,
                     ),
                   ),
@@ -157,7 +157,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF8F89A6),
+                                      color: colors.textMuted,
                                     ),
                                   ),
                                 ),
@@ -177,7 +177,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               child: LinearProgressIndicator(
                                 minHeight: 6,
                                 value: value,
-                                backgroundColor: const Color(0xFF231D34),
+                                backgroundColor: colors.ringTrack,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                   colors.brand,
                                 ),

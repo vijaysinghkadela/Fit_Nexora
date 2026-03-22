@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 
 class PasswordUpdatedScreen extends ConsumerStatefulWidget {
@@ -46,10 +47,11 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const background = Color(0xFF221610);
-    const panel = Color(0xFF301D15);
-    const primary = Color(0xFFEC5B13);
-    const muted = Color(0xFFB89E8E);
+    final t = context.fitTheme;
+    final background = t.background;
+    final panel = t.surface;
+    final primary = t.brand;
+    final muted = t.textMuted;
 
     return Scaffold(
       backgroundColor: background,
@@ -115,7 +117,7 @@ class _PasswordUpdatedScreenState extends ConsumerState<PasswordUpdatedScreen> {
                       child: Container(
                         width: 92,
                         height: 92,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: primary,
                         ),

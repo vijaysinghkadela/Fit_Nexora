@@ -12,7 +12,7 @@ class GstInvoice extends Equatable {
   final String? clientId;
 
   // Invoice details
-  final String invoiceNumber; // e.g., "GYMOS-2026-0001"
+  final String invoiceNumber; // e.g., "FITNEXORA-2026-0001"
   final DateTime invoiceDate;
   final DateTime? dueDate;
 
@@ -27,13 +27,13 @@ class GstInvoice extends Equatable {
   final String currency; // INR
 
   // GST details
-  final String? sellerGstin; // GymOS platform GSTIN
+  final String? sellerGstin; // FitNexora platform GSTIN
   final String? buyerGstin; // Gym owner's GSTIN (optional)
   final String? placeOfSupply; // State code
   final String hsn; // HSN/SAC code for SaaS services
 
   // Line items description
-  final String description; // e.g., "GymOS Pro Plan - Monthly Subscription"
+  final String description; // e.g., "FitNexora Pro Plan - Monthly Subscription"
   final int quantity;
 
   // Status

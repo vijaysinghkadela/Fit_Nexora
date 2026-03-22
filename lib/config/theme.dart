@@ -50,51 +50,51 @@ class FitNexoraThemeTokens extends ThemeExtension<FitNexoraThemeTokens> {
   });
 
   factory FitNexoraThemeTokens.dark() => const FitNexoraThemeTokens(
-        brand: Color(0xFF895AF6),
-        brandSecondary: Color(0xFFBA98FF),
-        accent: Color(0xFF10D88A),
-        success: Color(0xFF10D88A),
-        warning: Color(0xFFF6B546),
-        danger: Color(0xFFFF6B7D),
-        info: Color(0xFF7A8BFF),
-        background: Color(0xFF0B0714),
-        backgroundAlt: Color(0xFF171126),
-        surface: Color(0xFF151022),
-        surfaceAlt: Color(0xFF1E1730),
-        surfaceMuted: Color(0xFF2A2140),
-        border: Color(0xFF2E2648),
-        divider: Color(0xFF261F3D),
-        textPrimary: Color(0xFFF8F7FD),
-        textSecondary: Color(0xFFB3A9CC),
-        textMuted: Color(0xFF7E7597),
-        glassFill: Color(0x2EF8F7FD),
-        glassBorder: Color(0x3DFFFFFF),
-        glow: Color(0x40895AF6),
-        ringTrack: Color(0xFF29203F),
+        brand: Color(0xFFFF5C00),
+        brandSecondary: Color(0xFFFF8A3D),
+        accent: Color(0xFF00E5C3),
+        success: Color(0xFF22D48A),
+        warning: Color(0xFFFFB830),
+        danger: Color(0xFFFF4A6B),
+        info: Color(0xFF4A9FFF),
+        background: Color(0xFF0C0C0E),
+        backgroundAlt: Color(0xFF141416),
+        surface: Color(0xFF1A1A1E),
+        surfaceAlt: Color(0xFF222228),
+        surfaceMuted: Color(0xFF2C2C34),
+        border: Color(0xFF2E2E38),
+        divider: Color(0xFF1E1E24),
+        textPrimary: Color(0xFFF5F5F5),
+        textSecondary: Color(0xFFAAAAAA),
+        textMuted: Color(0xFF666672),
+        glassFill: Color(0x26FF5C00),
+        glassBorder: Color(0x33FF5C00),
+        glow: Color(0x55FF5C00),
+        ringTrack: Color(0xFF252528),
       );
 
   factory FitNexoraThemeTokens.light() => const FitNexoraThemeTokens(
-        brand: Color(0xFF895AF6),
-        brandSecondary: Color(0xFFB895FF),
-        accent: Color(0xFF1FD493),
-        success: Color(0xFF1DBF82),
-        warning: Color(0xFFF2B451),
-        danger: Color(0xFFE9697A),
-        info: Color(0xFF6A7BFF),
-        background: Color(0xFFF7F5FB),
-        backgroundAlt: Color(0xFFF0ECF7),
+        brand: Color(0xFFE84F00),
+        brandSecondary: Color(0xFFFF7A2E),
+        accent: Color(0xFF00B89A),
+        success: Color(0xFF1BAD74),
+        warning: Color(0xFFE89A00),
+        danger: Color(0xFFD93851),
+        info: Color(0xFF1A7FCC),
+        background: Color(0xFFF8F8F8),
+        backgroundAlt: Color(0xFFF0F0F2),
         surface: Color(0xFFFFFFFF),
-        surfaceAlt: Color(0xFFF7F3FD),
-        surfaceMuted: Color(0xFFF2EDF9),
-        border: Color(0xFFE7E0F5),
-        divider: Color(0xFFEDE7F8),
-        textPrimary: Color(0xFF221A36),
-        textSecondary: Color(0xFF6E6489),
-        textMuted: Color(0xFFA098B6),
+        surfaceAlt: Color(0xFFF5F5F7),
+        surfaceMuted: Color(0xFFEEEEF0),
+        border: Color(0xFFDDDDE3),
+        divider: Color(0xFFE8E8EC),
+        textPrimary: Color(0xFF141416),
+        textSecondary: Color(0xFF55555F),
+        textMuted: Color(0xFF9898A6),
         glassFill: Color(0xCCFFFFFF),
-        glassBorder: Color(0x4DFFFFFF),
-        glow: Color(0x33895AF6),
-        ringTrack: Color(0xFFE8E1F4),
+        glassBorder: Color(0x33000000),
+        glow: Color(0x22E84F00),
+        ringTrack: Color(0xFFE8E8EE),
       );
 
   LinearGradient get brandGradient => LinearGradient(
@@ -384,6 +384,82 @@ class AppTheme {
         color: tokens.brand,
         linearTrackColor: tokens.ringTrack,
         circularTrackColor: tokens.ringTrack,
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return tokens.brand;
+          return tokens.textMuted;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return tokens.brand.withOpacity(0.4);
+          }
+          return tokens.surfaceMuted;
+        }),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return tokens.brand;
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(Colors.white),
+        side: BorderSide(color: tokens.border, width: 1.5),
+      ),
+      sliderTheme: SliderThemeData(
+        activeTrackColor: tokens.brand,
+        thumbColor: tokens.brand,
+        overlayColor: tokens.brand.withOpacity(0.2),
+        inactiveTrackColor: tokens.ringTrack,
+        valueIndicatorColor: tokens.brand,
+        valueIndicatorTextStyle: const TextStyle(color: Colors.white),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: tokens.brand,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: tokens.surfaceAlt,
+        selectedColor: tokens.brand.withOpacity(0.18),
+        labelStyle: TextStyle(color: tokens.textSecondary),
+        side: BorderSide(color: tokens.border),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: tokens.brand,
+        unselectedLabelColor: tokens.textMuted,
+        indicatorColor: tokens.brand,
+        dividerColor: tokens.divider,
+        indicatorSize: TabBarIndicatorSize.label,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: tokens.surface,
+        indicatorColor: tokens.brand.withOpacity(0.18),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: tokens.brand);
+          }
+          return IconThemeData(color: tokens.textMuted);
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: tokens.brand,
+            );
+          }
+          return GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: tokens.textMuted,
+          );
+        }),
       ),
     );
   }

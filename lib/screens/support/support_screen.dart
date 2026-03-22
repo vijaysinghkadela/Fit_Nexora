@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,7 +75,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
         backgroundColor: t.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.canPop() ? context.pop() : context.go('/'),
         ),
         title: Text(
           'Help & Support',

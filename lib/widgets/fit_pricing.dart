@@ -163,9 +163,9 @@ class FitPricingLandingPage extends StatelessWidget {
                 child: _actionButton(
                   context,
                   label: headerActionLabel,
-                  palette: const FitPlanPalette(
-                    primary: Color(0xFF895AF6),
-                    secondary: Color(0xFFB895FF),
+                  palette: FitPlanPalette(
+                    primary: context.fitTheme.brand,
+                    secondary: context.fitTheme.brandSecondary,
                   ),
                   onTap: onHeaderAction,
                   filled: true,
@@ -624,8 +624,8 @@ Widget _brandLockup(BuildContext context) {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF895AF6), Color(0xFFB895FF)],
+          gradient: LinearGradient(
+            colors: [colors.brand, colors.brandSecondary],
           ),
           borderRadius: BorderRadius.circular(12),
         ),

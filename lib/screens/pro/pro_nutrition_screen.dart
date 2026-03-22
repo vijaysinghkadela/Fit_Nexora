@@ -56,7 +56,7 @@ class _ProNutritionScreenState extends ConsumerState<ProNutritionScreen>
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/dashboard');
+              context.go('/');
             }
           },
         ),

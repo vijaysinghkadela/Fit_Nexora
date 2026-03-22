@@ -119,16 +119,16 @@ class _ExerciseProgressScreenState
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     colors: [
-                      Color(0xFFFFD700),
-                      Color(0xFFFFA500),
+                      t.brand,
+                      t.brandSecondary,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFFD700).withOpacity(0.3),
+                      color: t.brand.withOpacity(0.3),
                       blurRadius: 8,
                     ),
                   ],
@@ -311,7 +311,7 @@ class _ExerciseProgressScreenState
                         label: 'Best Weight',
                         value: '82.5 kg',
                         icon: Icons.emoji_events_rounded,
-                        color: Color(0xFFFFD700),
+                        color: Color(0xFFFF5C00),
                       ),
                     ),
                     const SizedBox(width: 8),

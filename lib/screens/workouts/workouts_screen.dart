@@ -78,7 +78,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
         SliverAppBar(
           floating: true,
           leading: BackButton(
-            onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+            onPressed: () => context.canPop() ? context.pop() : context.go('/'),
           ),
           backgroundColor: t.background,
           title: Text(

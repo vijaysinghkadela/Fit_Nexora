@@ -31,7 +31,6 @@ class SettingsScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
     final homeRoute = _homeRouteFor(user?.globalRole);
-    final workoutRoute = _workoutRouteFor(user?.globalRole);
 
     Future<void> signOut() async {
       await ref.read(currentUserProvider.notifier).signOut();
@@ -40,9 +39,7 @@ class SettingsScreen extends ConsumerWidget {
       }
     }
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      body: DecoratedBox(
+    return DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -84,8 +81,8 @@ class SettingsScreen extends ConsumerWidget {
                           _RoundIconButton(
                             icon: Icons.arrow_back_rounded,
                             onTap: () {
-                              if (Navigator.of(context).canPop()) {
-                                Navigator.of(context).maybePop();
+                              if (context.canPop()) {
+                                context.pop();
                               } else {
                                 context.go(homeRoute);
                               }
@@ -317,12 +314,6 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: _SettingsBottomBar(
-        colors: colors,
-        homeRoute: homeRoute,
-        workoutRoute: workoutRoute,
-      ),
     );
   }
 
@@ -396,19 +387,6 @@ class SettingsScreen extends ConsumerWidget {
       case UserRole.client:
       case null:
         return '/member';
-    }
-  }
-
-  static String _workoutRouteFor(UserRole? role) {
-    switch (role) {
-      case UserRole.superAdmin:
-        return '/dashboard';
-      case UserRole.gymOwner:
-      case UserRole.trainer:
-        return '/workouts';
-      case UserRole.client:
-      case null:
-        return '/member/workout';
     }
   }
 
@@ -1031,110 +1009,6 @@ class _RoundIconButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _SettingsBottomBar extends StatelessWidget {
-  const _SettingsBottomBar({
-    required this.colors,
-    required this.homeRoute,
-    required this.workoutRoute,
-  });
-
-  final FitNexoraThemeTokens colors;
-  final String homeRoute;
-  final String workoutRoute;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = [
-      _BottomItem(
-        label: 'Home',
-        icon: Icons.home_outlined,
-        activeIcon: Icons.home_rounded,
-        route: homeRoute,
-      ),
-      _BottomItem(
-        label: 'Workouts',
-        icon: Icons.fitness_center_outlined,
-        activeIcon: Icons.fitness_center_rounded,
-        route: workoutRoute,
-      ),
-      const _BottomItem(
-        label: 'Traffic',
-        icon: Icons.analytics_outlined,
-        activeIcon: Icons.analytics_rounded,
-        route: '/traffic',
-      ),
-      const _BottomItem(
-        label: 'Profile',
-        icon: Icons.account_circle_outlined,
-        activeIcon: Icons.account_circle_rounded,
-        route: '/settings',
-      ),
-    ];
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        10,
-        10,
-        10,
-        10 + MediaQuery.paddingOf(context).bottom,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surface.withOpacity(0.96),
-        border: Border(top: BorderSide(color: colors.divider)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items.map((item) {
-          final isSelected = item.route == '/settings';
-          return InkWell(
-            onTap: () {
-              if (!isSelected) context.go(item.route);
-            },
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    isSelected ? item.activeIcon : item.icon,
-                    color: isSelected ? colors.brand : colors.textMuted,
-                    size: 22,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.label,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight:
-                          isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isSelected ? colors.brand : colors.textMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _BottomItem {
-  const _BottomItem({
-    required this.label,
-    required this.icon,
-    required this.activeIcon,
-    required this.route,
-  });
-
-  final String label;
-  final IconData icon;
-  final IconData activeIcon;
-  final String route;
 }
 
 class _SettingsGlow extends StatelessWidget {

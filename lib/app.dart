@@ -34,8 +34,8 @@ class _AppScrollBehavior extends ScrollBehavior {
 }
 
 /// Root application widget.
-class GymOSApp extends ConsumerWidget {
-  const GymOSApp({super.key});
+class FitNexoraApp extends ConsumerWidget {
+  const FitNexoraApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

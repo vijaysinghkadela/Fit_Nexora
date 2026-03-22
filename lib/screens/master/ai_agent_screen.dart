@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../core/extensions.dart';
 import '../../models/ai_generated_plan_model.dart';
 import '../../providers/ai_agent_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -43,6 +44,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     final generatorState = ref.watch(aiReportGeneratorProvider);
     final plansAsync = ref.watch(
       aiGeneratedPlansProvider(
@@ -51,53 +53,53 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0D),
+      backgroundColor: t.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: t.surface,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'AI Agent Report',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: t.textPrimary,
               ),
             ),
             Text(
               widget.memberName,
               style: GoogleFonts.inter(
                 fontSize: 12,
-                color: Colors.white54,
+                color: t.textSecondary,
               ),
             ),
           ],
         ),
         actions: [
           generatorState.isLoading
-              ? const Padding(
-                  padding: EdgeInsets.all(12),
+              ? Padding(
+                  padding: const EdgeInsets.all(12),
                   child: SizedBox(
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Color(0xFFFF6B00),
+                      color: t.brand,
                     ),
                   ),
                 )
               : IconButton(
                   onPressed: _generateReport,
-                  icon: const Icon(Icons.auto_awesome, color: Color(0xFFFF6B00)),
+                  icon: Icon(Icons.auto_awesome, color: t.brand),
                   tooltip: 'Generate AI Report',
                 ),
         ],
         bottom: TabBar(
           controller: _tabController,
-          labelColor: const Color(0xFFFF6B00),
-          unselectedLabelColor: Colors.white38,
-          indicatorColor: const Color(0xFFFF6B00),
+          labelColor: t.brand,
+          unselectedLabelColor: t.textMuted,
+          indicatorColor: t.brand,
           labelStyle: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
           tabs: const [
             Tab(text: 'Body', icon: Icon(Icons.accessibility_new, size: 18)),
@@ -111,7 +113,6 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
         loading: () => _buildLoadingState(),
         error: (error, _) => _buildErrorState(error),
         data: (latestPlan) {
-          // Use latest plan from generator OR the most recent from history
           return plansAsync.when(
             loading: () => _buildLoadingState(),
             error: (error, _) => _buildErrorState(error),
@@ -144,23 +145,24 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
   }
 
   Widget _buildLoadingState() {
+    final t = context.fitTheme;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircularProgressIndicator(color: Color(0xFFFF6B00)),
+          CircularProgressIndicator(color: t.brand),
           const SizedBox(height: 24),
           Text(
             'AI Agent is analysing...',
-            style: GoogleFonts.poppins(
-              color: Colors.white70,
+            style: GoogleFonts.inter(
+              color: t.textSecondary,
               fontSize: 16,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'This may take 30-60 seconds',
-            style: GoogleFonts.inter(color: Colors.white38, fontSize: 12),
+            style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
           ),
         ],
       ),
@@ -168,6 +170,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
   }
 
   Widget _buildErrorState(Object error) {
+    final t = context.fitTheme;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -179,7 +182,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
             Text(
               error.toString().replaceAll('Exception: ', ''),
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
@@ -187,7 +190,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
               icon: const Icon(Icons.refresh),
               label: const Text('Try Again'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B00),
+                backgroundColor: t.brand,
                 foregroundColor: Colors.white,
               ),
             ),
@@ -198,18 +201,19 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
   }
 
   Widget _buildEmptyState() {
+    final t = context.fitTheme;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.auto_awesome, color: const Color(0xFFFF6B00).withValues(alpha: 0.5), size: 64),
+            Icon(Icons.auto_awesome, color: t.brand.withValues(alpha: 0.5), size: 64),
             const SizedBox(height: 24),
             Text(
               'No AI Report Generated Yet',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+              style: GoogleFonts.inter(
+                color: t.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
@@ -219,7 +223,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
               'Tap the ✨ button above to generate a comprehensive\n'
               'body analysis, workout plan, diet plan, and monthly report.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(color: Colors.white54, fontSize: 13),
+              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
@@ -227,10 +231,10 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
               icon: const Icon(Icons.auto_awesome),
               label: const Text('Generate AI Report'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B00),
+                backgroundColor: t.brand,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -248,7 +252,8 @@ class _BodyAnalysisTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (analysis == null) return _emptyTab('No body analysis available');
+    final t = context.fitTheme;
+    if (analysis == null) return _emptyTab(context, 'No body analysis available');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -262,7 +267,7 @@ class _BodyAnalysisTab extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               analysis!['somatotype_explanation'] ?? '',
-              style: GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+              style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
             ),
           ],
         ),
@@ -273,7 +278,7 @@ class _BodyAnalysisTab extends StatelessWidget {
           children: [
             Text(
               analysis!['fitness_assessment'] ?? '',
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 13),
+              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 12),
             _BulletList(title: 'Key Strengths', items: _toStringList(analysis!['key_strengths']), color: Colors.greenAccent),
@@ -294,7 +299,8 @@ class _WorkoutPlanTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (workoutPlan == null) return _emptyTab('No workout plan available');
+    final t = context.fitTheme;
+    if (workoutPlan == null) return _emptyTab(context, 'No workout plan available');
     final weeks = workoutPlan!['weeks'] as List<dynamic>? ?? [];
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -328,8 +334,8 @@ class _WorkoutPlanTab extends StatelessWidget {
                       children: [
                         Text(
                           '${d['day']} — ${d['focus'] ?? ''}',
-                          style: GoogleFonts.poppins(
-                            color: const Color(0xFFFF6B00),
+                          style: GoogleFonts.inter(
+                            color: t.brand,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                           ),
@@ -340,7 +346,7 @@ class _WorkoutPlanTab extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 12, top: 4),
                             child: Text(
                               '• ${e['name']}: ${e['sets']}×${e['reps']} (rest ${e['rest_seconds']}s)',
-                              style: GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+                              style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
                             ),
                           );
                         }),
@@ -349,7 +355,7 @@ class _WorkoutPlanTab extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 12, top: 4),
                             child: Text(
                               '🏃 ${d['cardio']}',
-                              style: GoogleFonts.inter(color: Colors.white38, fontSize: 11),
+                              style: GoogleFonts.inter(color: t.textMuted, fontSize: 11),
                             ),
                           ),
                       ],
@@ -364,7 +370,7 @@ class _WorkoutPlanTab extends StatelessWidget {
           title: 'Trainer Tips',
           icon: Icons.lightbulb_outline,
           children: [
-            _BulletList(items: _toStringList(workoutPlan!['trainer_tips']), color: const Color(0xFFFF6B00)),
+            _BulletList(items: _toStringList(workoutPlan!['trainer_tips']), color: t.brand),
           ],
         ),
       ].animate(interval: 80.ms).fadeIn(duration: 300.ms).slideY(begin: 0.05),
@@ -380,7 +386,8 @@ class _DietPlanTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (dietPlan == null) return _emptyTab('No diet plan available');
+    final t = context.fitTheme;
+    if (dietPlan == null) return _emptyTab(context, 'No diet plan available');
     final template = dietPlan!['daily_template'] as Map<String, dynamic>? ?? {};
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -406,14 +413,14 @@ class _DietPlanTab extends StatelessWidget {
               title: '${_formatMealName(meal.key)} — ${mealData['time'] ?? ''}',
               icon: Icons.fastfood,
               children: items.isEmpty
-                  ? [Text('No items', style: GoogleFonts.inter(color: Colors.white38, fontSize: 12))]
+                  ? [Text('No items', style: GoogleFonts.inter(color: t.textMuted, fontSize: 12))]
                   : items.map((item) {
                       final i = item as Map<String, dynamic>;
                       return Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
                           '• ${i['food']} — ${i['quantity']} (${i['calories']} cal)',
-                          style: GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+                          style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
                         ),
                       );
                     }).toList(),
@@ -425,7 +432,7 @@ class _DietPlanTab extends StatelessWidget {
           title: 'Nutritionist Tips',
           icon: Icons.lightbulb_outline,
           children: [
-            _BulletList(items: _toStringList(dietPlan!['nutritionist_tips']), color: const Color(0xFFFF6B00)),
+            _BulletList(items: _toStringList(dietPlan!['nutritionist_tips']), color: t.brand),
           ],
         ),
       ].animate(interval: 80.ms).fadeIn(duration: 300.ms).slideY(begin: 0.05),
@@ -446,7 +453,8 @@ class _MonthlyReportTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (report == null) return _emptyTab('No monthly report available');
+    final t = context.fitTheme;
+    if (report == null) return _emptyTab(context, 'No monthly report available');
     final attendance = report!['attendance_analysis'] as Map<String, dynamic>? ?? {};
     final progress = report!['progress_assessment'] as Map<String, dynamic>? ?? {};
     final focuses = report!['next_month_focus'] as List<dynamic>? ?? [];
@@ -460,7 +468,7 @@ class _MonthlyReportTab extends StatelessWidget {
           children: [
             Text(
               report!['executive_summary'] ?? '',
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 13),
+              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 13),
             ),
           ],
         ),
@@ -472,7 +480,7 @@ class _MonthlyReportTab extends StatelessWidget {
             _KpiRow(label: 'Verdict', value: (attendance['verdict'] ?? '—').toString().toUpperCase()),
             Text(
               attendance['comment'] ?? '',
-              style: GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+              style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
             ),
           ],
         ),
@@ -498,10 +506,10 @@ class _MonthlyReportTab extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 12,
-                    backgroundColor: const Color(0xFFFF6B00),
+                    backgroundColor: t.brand,
                     child: Text(
                       '${focus['priority']}',
-                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
+                      style: GoogleFonts.inter(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -509,8 +517,8 @@ class _MonthlyReportTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(focus['focus'] ?? '', style: GoogleFonts.poppins(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
-                        Text(focus['action'] ?? '', style: GoogleFonts.inter(color: Colors.white54, fontSize: 12)),
+                        Text(focus['focus'] ?? '', style: GoogleFonts.inter(color: t.textPrimary, fontSize: 13, fontWeight: FontWeight.w600)),
+                        Text(focus['action'] ?? '', style: GoogleFonts.inter(color: t.textSecondary, fontSize: 12)),
                       ],
                     ),
                   ),
@@ -525,13 +533,13 @@ class _MonthlyReportTab extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const Icon(Icons.format_quote, color: Color(0xFFFF6B00), size: 28),
+                Icon(Icons.format_quote, color: t.brand, size: 28),
                 const SizedBox(height: 8),
                 Text(
                   report!['motivational_message'] ?? '',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
-                    color: Colors.white70,
+                    color: t.textSecondary,
                     fontSize: 13,
                     fontStyle: FontStyle.italic,
                   ),
@@ -558,11 +566,12 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
+        color: t.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: t.border),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -570,13 +579,13 @@ class _SectionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: const Color(0xFFFF6B00), size: 18),
+              Icon(icon, color: t.brand, size: 18),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   title,
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+                  style: GoogleFonts.inter(
+                    color: t.textPrimary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -599,16 +608,17 @@ class _KpiRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.inter(color: Colors.white54, fontSize: 12)),
+          Text(label, style: GoogleFonts.inter(color: t.textSecondary, fontSize: 12)),
           Flexible(
             child: Text(
               _titleCase(value.replaceAll('_', ' ')),
-              style: GoogleFonts.poppins(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 12, fontWeight: FontWeight.w500),
               textAlign: TextAlign.end,
             ),
           ),
@@ -626,12 +636,13 @@ class _BulletList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null) ...[
           const SizedBox(height: 8),
-          Text(title!, style: GoogleFonts.poppins(color: color, fontSize: 12, fontWeight: FontWeight.w600)),
+          Text(title!, style: GoogleFonts.inter(color: color, fontSize: 12, fontWeight: FontWeight.w600)),
         ],
         ...items.map((item) => Padding(
               padding: const EdgeInsets.only(top: 4, left: 8),
@@ -640,7 +651,7 @@ class _BulletList extends StatelessWidget {
                 children: [
                   Text('• ', style: TextStyle(color: color, fontSize: 12)),
                   Expanded(
-                    child: Text(item, style: GoogleFonts.inter(color: Colors.white60, fontSize: 12)),
+                    child: Text(item, style: GoogleFonts.inter(color: t.textMuted, fontSize: 12)),
                   ),
                 ],
               ),
@@ -656,17 +667,18 @@ class _MetadataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF111111),
+        color: t.background,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: t.border),
       ),
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Generation Metadata', style: GoogleFonts.inter(color: Colors.white38, fontSize: 10)),
+          Text('Generation Metadata', style: GoogleFonts.inter(color: t.textMuted, fontSize: 10)),
           const SizedBox(height: 6),
           _KpiRow(label: 'Model', value: plan.modelUsed),
           _KpiRow(label: 'Tokens Used', value: '${plan.tokensUsed ?? '—'}'),
@@ -678,11 +690,12 @@ class _MetadataCard extends StatelessWidget {
   }
 }
 
-Widget _emptyTab(String message) {
+Widget _emptyTab(BuildContext context, String message) {
+  final t = context.fitTheme;
   return Center(
     child: Text(
       message,
-      style: GoogleFonts.inter(color: Colors.white38, fontSize: 14),
+      style: GoogleFonts.inter(color: t.textMuted, fontSize: 14),
     ),
   );
 }
@@ -699,4 +712,3 @@ String _titleCase(String text) {
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join(' ');
 }
-

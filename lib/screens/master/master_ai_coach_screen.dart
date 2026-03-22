@@ -27,8 +27,8 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
   String? _dailyPlan;
   bool _planLoading = false;
 
-  static const _gold   = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
+  static const _masterPrimary   = Color(0xFFFF3D5E);
+  static const _masterSecondary = Color(0xFFFF8C00);
 
   final _quickStarts = [
     '🏆 Give me today\'s optimal workout based on my goals',
@@ -65,14 +65,14 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_gold, _orange]),
+              gradient: const LinearGradient(colors: [_masterPrimary, _masterSecondary]),
               borderRadius: BorderRadius.circular(6),
               boxShadow: [BoxShadow(
-                  color: _gold.withOpacity(0.5), blurRadius: 10)],
+                  color: _masterPrimary.withOpacity(0.5), blurRadius: 10)],
             ),
             child: Text('MASTER AI', style: GoogleFonts.inter(
                 fontSize: 9, fontWeight: FontWeight.w900,
-                color: Colors.black, letterSpacing: 1.2)),
+                color: Colors.white, letterSpacing: 1.2)),
           ),
           const SizedBox(width: 10),
           Text('Fitness Coach', style: GoogleFonts.inter(
@@ -81,8 +81,8 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
         ]),
         bottom: TabBar(
           controller: _tabs,
-          indicatorColor: _gold,
-          labelColor: _gold,
+          indicatorColor: _masterPrimary,
+          labelColor: _masterPrimary,
           unselectedLabelColor: t.textMuted,
           tabs: const [
             Tab(text: '💬 Coach Chat'),
@@ -127,7 +127,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                   padding: const EdgeInsets.all(16),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Row(children: [
-                      const Icon(Icons.bolt_rounded, color: _gold, size: 22),
+                      const Icon(Icons.bolt_rounded, color: _masterPrimary, size: 22),
                       const SizedBox(width: 10),
                       Text('Today\'s Adaptive Plan',
                           style: GoogleFonts.inter(fontSize: 16,
@@ -149,8 +149,8 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                   child: FilledButton.icon(
                     onPressed: _generateDailyPlan,
                     style: FilledButton.styleFrom(
-                      backgroundColor: _gold,
-                      foregroundColor: Colors.black,
+                      backgroundColor: _masterPrimary,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
                     ),
@@ -158,13 +158,13 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                     label: Text('Generate Today\'s Plan',
                         style: GoogleFonts.inter(
                             fontSize: 15, fontWeight: FontWeight.w800,
-                            color: Colors.black)),
+                            color: Colors.white)),
                   ).animate().fadeIn(),
                 ),
               if (_planLoading)
                 const Center(child: Padding(
                   padding: EdgeInsets.all(24),
-                  child: CircularProgressIndicator(color: _gold),
+                  child: CircularProgressIndicator(color: _masterPrimary),
                 )),
               if (_dailyPlan != null) ...[
                 GlassmorphicCard(
@@ -176,11 +176,11 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                                colors: [_gold, _orange]),
+                                colors: [_masterPrimary, _masterSecondary]),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.smart_toy_rounded,
-                              color: Colors.black, size: 16),
+                              color: Colors.white, size: 16),
                         ),
                         const SizedBox(width: 10),
                         Text('Your Adaptive Plan',
@@ -193,7 +193,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                               setState(() => _dailyPlan = null),
                           child: Text('Regenerate',
                               style: GoogleFonts.inter(
-                                  fontSize: 12, color: _gold)),
+                                  fontSize: 12, color: _masterPrimary)),
                         ),
                       ]),
                       Divider(color: t.divider),
@@ -302,7 +302,7 @@ class _WelcomeView extends StatelessWidget {
   final List<String> prompts;
   final void Function(String) onTap;
   const _WelcomeView({required this.prompts, required this.onTap});
-  static const _gold = Color(0xFFFFD700);
+  static const _masterPrimary = Color(0xFFFF3D5E);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -314,7 +314,7 @@ class _WelcomeView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
               gradient: RadialGradient(
-                  colors: [Color(0xFFFFD700), Color(0xFFFF6F00),
+                  colors: [Color(0xFFFF3D5E), Color(0xFFFF8C00),
                       Color(0xFFB71C1C)]),
               shape: BoxShape.circle),
           child: const Icon(Icons.smart_toy_rounded,
@@ -348,7 +348,7 @@ class _WelcomeView extends StatelessWidget {
                 border: Border.all(color: t.border),
               ),
               child: Row(children: [
-                const Icon(Icons.bolt_rounded, color: _gold, size: 16),
+                const Icon(Icons.bolt_rounded, color: _masterPrimary, size: 16),
                 const SizedBox(width: 10),
                 Expanded(child: Text(e.value,
                     style: GoogleFonts.inter(fontSize: 13,
@@ -367,8 +367,8 @@ class _WelcomeView extends StatelessWidget {
 class _ChatBubble extends StatelessWidget {
   final _Msg msg;
   const _ChatBubble({required this.msg});
-  static const _gold = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
+  static const _masterPrimary = Color(0xFFFF3D5E);
+  static const _masterSecondary = Color(0xFFFF8C00);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -382,7 +382,7 @@ class _ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           gradient: isUser ? const LinearGradient(
-              colors: [_gold, _orange]) : null,
+              colors: [_masterPrimary, _masterSecondary]) : null,
           color: isUser ? null : t.surface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
@@ -394,7 +394,7 @@ class _ChatBubble extends StatelessWidget {
         ),
         child: Text(msg.text,
             style: GoogleFonts.inter(fontSize: 14,
-                color: isUser ? Colors.black
+                color: isUser ? Colors.white
                     : msg.isError ? t.danger
                     : t.textPrimary,
                 height: 1.5)),
@@ -420,7 +420,7 @@ class _TypingBubble extends StatelessWidget {
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(width: 18, height: 18,
               child: CircularProgressIndicator(
-                  color: Color(0xFFFFD700), strokeWidth: 2)),
+                  color: Color(0xFFFF3D5E), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('Coach is thinking...',
               style: GoogleFonts.inter(fontSize: 12,
@@ -437,7 +437,7 @@ class _InputBar extends StatelessWidget {
   final bool loading;
   final void Function(String) onSend;
   const _InputBar({required this.ctrl, required this.loading, required this.onSend});
-  static const _gold = Color(0xFFFFD700);
+  static const _masterPrimary = Color(0xFFFF3D5E);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -474,17 +474,17 @@ class _InputBar extends StatelessWidget {
           child: Container(
             width: 46, height: 46,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_gold, Color(0xFFFF6F00)]),
+              gradient: const LinearGradient(colors: [_masterPrimary, Color(0xFFFF8C00)]),
               shape: BoxShape.circle,
               boxShadow: [BoxShadow(
-                  color: _gold.withOpacity(0.5), blurRadius: 12)],
+                  color: _masterPrimary.withOpacity(0.5), blurRadius: 12)],
             ),
             child: loading
                 ? const Padding(padding: EdgeInsets.all(12),
                     child: CircularProgressIndicator(
-                        color: Colors.black, strokeWidth: 2))
+                        color: Colors.white, strokeWidth: 2))
                 : const Icon(Icons.send_rounded,
-                    color: Colors.black, size: 20),
+                    color: Colors.white, size: 20),
           ),
         ),
       ]),

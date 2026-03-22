@@ -100,3 +100,17 @@ final pagedClientsControllerProvider = StateNotifierProvider.autoDispose<
     return controller;
   },
 );
+
+/// Count of trainer clients who visited the gym today.
+final trainerTodayActiveClientsProvider =
+    FutureProvider.autoDispose<int>((ref) async {
+  final clients = await ref.watch(trainerClientsProvider.future);
+  final today = DateTime.now();
+  return clients.where((c) {
+    final last = c.lastGymVisit;
+    return last != null &&
+        last.year == today.year &&
+        last.month == today.month &&
+        last.day == today.day;
+  }).length;
+});

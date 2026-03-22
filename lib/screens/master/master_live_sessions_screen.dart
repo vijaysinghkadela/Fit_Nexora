@@ -10,8 +10,8 @@ import '../../widgets/glassmorphic_card.dart';
 class MasterLiveSessionsScreen extends ConsumerWidget {
   const MasterLiveSessionsScreen({super.key});
 
-  static const _gold  = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
+  static const _masterPrimary  = Color(0xFFFF3D5E);
+  static const _masterSecondary = Color(0xFFFF8C00);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +22,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
       ('Wed 19 Mar', '6:30 PM – 7:15 PM', 'Nutrition Check-in',
           'Priya Mehta',  AppColors.success, '🥗'),
       ('Sat 22 Mar', '10:00 AM – 11:00 AM', 'Monthly Progress Review',
-          'Rahul Singh', _gold, '📊'),
+          'Rahul Singh', _masterPrimary, '📊'),
     ];
 
     return Scaffold(
@@ -38,7 +38,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
             onPressed: () => _showBookSheet(context),
             icon: const Icon(Icons.add_rounded, size: 16),
             label: const Text('Book'),
-            style: TextButton.styleFrom(foregroundColor: _gold),
+            style: TextButton.styleFrom(foregroundColor: _masterPrimary),
           ),
           const SizedBox(width: 8),
         ],
@@ -53,14 +53,14 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    _gold.withOpacity(0.12),
-                    _orange.withOpacity(0.06),
+                    _masterPrimary.withOpacity(0.12),
+                    _masterSecondary.withOpacity(0.06),
                   ]),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: _gold.withOpacity(0.3)),
+                  border: Border.all(color: _masterPrimary.withOpacity(0.3)),
                 ),
                 child: Row(children: [
-                  const Icon(Icons.video_call_rounded, color: _gold, size: 32),
+                  const Icon(Icons.video_call_rounded, color: _masterPrimary, size: 32),
                   const SizedBox(width: 14),
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('1-on-1 Video Sessions', style: GoogleFonts.inter(
@@ -266,7 +266,7 @@ class MasterLiveSessionsScreen extends ConsumerWidget {
             child: FilledButton.icon(
               onPressed: () => Navigator.pop(context),
               style: FilledButton.styleFrom(
-                backgroundColor: _gold,
+                backgroundColor: _masterPrimary,
                 foregroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),

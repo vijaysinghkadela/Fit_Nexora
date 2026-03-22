@@ -38,7 +38,7 @@ class _AccessDeniedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = FitNexoraThemeTokens.dark();
+    final colors = context.fitTheme;
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -48,7 +48,7 @@ class _AccessDeniedPage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF120C22),
+              colors.backgroundAlt,
               colors.background,
             ],
           ),
@@ -80,7 +80,7 @@ class _AccessDeniedPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(28),
                       decoration: BoxDecoration(
-                        color: const Color(0x991B1432),
+                        color: colors.surface.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(
                           color: colors.brand.withOpacity(0.18),
@@ -164,7 +164,7 @@ class _AdminDashboard extends ConsumerStatefulWidget {
 }
 
 class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
-  final FitNexoraThemeTokens _colors = FitNexoraThemeTokens.dark();
+  FitNexoraThemeTokens get _colors => context.fitTheme;
 
   bool _loading = true;
   String? _error;
@@ -366,7 +366,7 @@ class _AdminHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0x991B1432),
+        color: colors.surface.withOpacity(0.6),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: colors.brand.withOpacity(0.18)),
       ),
@@ -493,7 +493,7 @@ class _HeaderActionButton extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xFFFF5B75),
                   shape: BoxShape.circle,
-                  border: Border.all(color: _colorsBg, width: 1.2),
+                  border: Border.all(color: colors.backgroundAlt, width: 1.2),
                 ),
               ),
             ),
@@ -502,7 +502,7 @@ class _HeaderActionButton extends StatelessWidget {
     );
   }
 
-  static const _colorsBg = Color(0xFF0F0A1E);
+  // _colorsBg removed — replaced by context.fitTheme.backgroundAlt at usage site
 }
 
 // ─── Stats grid ────────────────────────────────────────────────────────────────
@@ -625,7 +625,7 @@ class _AdminMetricGrid extends StatelessWidget {
 
   static BoxDecoration _cardDecoration(FitNexoraThemeTokens colors) {
     return BoxDecoration(
-      color: const Color(0x991B1432),
+      color: colors.surface.withOpacity(0.6),
       borderRadius: BorderRadius.circular(22),
       border: Border.all(color: colors.brand.withOpacity(0.14)),
     );
@@ -683,7 +683,7 @@ class _SubscriptionGrowthCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0x991B1432),
+        color: colors.surface.withOpacity(0.6),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),
@@ -890,7 +890,7 @@ class _RecentGymsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0x991B1432),
+        color: colors.surface.withOpacity(0.6),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),
@@ -1165,7 +1165,7 @@ class _RecentActivityCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
-        color: const Color(0x991B1432),
+        color: colors.surface.withOpacity(0.6),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: colors.brand.withOpacity(0.14)),
       ),

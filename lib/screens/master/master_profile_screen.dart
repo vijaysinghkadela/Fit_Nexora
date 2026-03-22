@@ -228,14 +228,14 @@ class _ProfileHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFFFFD700),
-                        Color(0xFFFFA500),
+                        Color(0xFFFF3D5E),
+                        Color(0xFFFF8C00),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(999),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFFD700).withOpacity(0.4),
+                        color: const Color(0xFFFF3D5E).withOpacity(0.4),
                         blurRadius: 10,
                       ),
                     ],
@@ -451,7 +451,7 @@ class _AchievementStats extends StatelessWidget {
     final stats = [
       _StatData(value: '248', label: 'Workouts', icon: Icons.fitness_center_rounded, color: t.brand),
       _StatData(value: '67', label: 'Day Streak', icon: Icons.local_fire_department_rounded, color: t.accent),
-      const _StatData(value: '12', label: 'Wins', icon: Icons.emoji_events_rounded, color: Color(0xFFFFD700)),
+      const _StatData(value: '12', label: 'Wins', icon: Icons.emoji_events_rounded, color: Color(0xFFFF3D5E)),
     ];
 
     return Row(

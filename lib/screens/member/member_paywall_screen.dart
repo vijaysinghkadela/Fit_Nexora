@@ -15,8 +15,8 @@ class MemberPaywallScreen extends ConsumerWidget {
   const MemberPaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFF895AF6),
-    secondary: Color(0xFF1FD493),
+    primary: Color(0xFFFF5C00),
+    secondary: Color(0xFFFF8A3D),
   );
 
   @override

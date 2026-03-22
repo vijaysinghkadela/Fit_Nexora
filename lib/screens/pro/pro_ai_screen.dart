@@ -53,7 +53,7 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                    colors: [Color(0xFFFFD700), Color(0xFFFF8C00)]),
+                    colors: [Color(0xFF3AA8FF), Color(0xFF0066FF)]),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
@@ -77,8 +77,8 @@ class _ProAiScreenState extends ConsumerState<ProAiScreen>
         ),
         bottom: TabBar(
           controller: _tabs,
-          indicatorColor: const Color(0xFFFFD700),
-          labelColor: const Color(0xFFFFD700),
+          indicatorColor: const Color(0xFF3AA8FF),
+          labelColor: const Color(0xFF3AA8FF),
           unselectedLabelColor: t.textMuted,
           tabs: const [
             Tab(text: '💪 Workout'),
@@ -393,7 +393,7 @@ class _AiTabState extends State<_AiTab> {
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                                colors: [Color(0xFFFFD700), Color(0xFFFF8C00)]),
+                                colors: [Color(0xFF3AA8FF), Color(0xFF0066FF)]),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(Icons.smart_toy_rounded,

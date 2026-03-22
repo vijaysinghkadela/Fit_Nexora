@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../core/constants.dart';
 import '../core/enums.dart';
+import '../core/extensions.dart';
 import '../models/subscription_model.dart';
 
 /// Banner showing current plan, trial status, and upgrade CTA.
@@ -18,31 +18,32 @@ class SubscriptionBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (subscription == null) return _buildNoPlanBanner();
+    if (subscription == null) return _buildNoPlanBanner(context);
 
     final sub = subscription!;
 
-    if (sub.isTrialing) return _buildTrialBanner(sub);
-    return _buildActiveBanner(sub);
+    if (sub.isTrialing) return _buildTrialBanner(context, sub);
+    return _buildActiveBanner(context, sub);
   }
 
-  Widget _buildNoPlanBanner() {
+  Widget _buildNoPlanBanner(BuildContext context) {
+    final t = context.fitTheme;
     return _buildContainer(
       gradient: [
-        AppColors.primary.withOpacity(0.15),
-        AppColors.accent.withOpacity(0.08),
+        t.brand.withOpacity(0.15),
+        t.accent.withOpacity(0.08),
       ],
-      borderColor: AppColors.primary.withOpacity(0.3),
+      borderColor: t.brand.withOpacity(0.3),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: t.brand.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.rocket_launch_rounded,
-                color: AppColors.primary, size: 22),
+            child: Icon(Icons.rocket_launch_rounded,
+                color: t.brand, size: 22),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -50,11 +51,11 @@ class SubscriptionBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Get Started with GymOS',
+                  'Get Started with FitNexora',
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -62,43 +63,43 @@ class SubscriptionBanner extends StatelessWidget {
                   'Choose a plan to unlock all features',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: t.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          _buildUpgradeButton('View Plans'),
+          _buildUpgradeButton(context, 'View Plans'),
         ],
       ),
     );
   }
 
-  Widget _buildTrialBanner(Subscription sub) {
+  Widget _buildTrialBanner(BuildContext context, Subscription sub) {
+    final t = context.fitTheme;
     final daysLeft = sub.trialDaysRemaining;
     final isUrgent = daysLeft <= 3;
 
+    final baseColor = isUrgent ? t.warning : t.accent;
+    final secondaryColor = isUrgent ? t.danger : t.brand;
+
     return _buildContainer(
       gradient: [
-        (isUrgent ? AppColors.warning : AppColors.accent)
-            .withOpacity(0.12),
-        (isUrgent ? AppColors.error : AppColors.primary)
-            .withOpacity(0.06),
+        baseColor.withOpacity(0.12),
+        secondaryColor.withOpacity(0.06),
       ],
-      borderColor: (isUrgent ? AppColors.warning : AppColors.accent)
-          .withOpacity(0.3),
+      borderColor: baseColor.withOpacity(0.3),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: (isUrgent ? AppColors.warning : AppColors.accent)
-                  .withOpacity(0.15),
+              color: baseColor.withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               isUrgent ? Icons.timer_outlined : Icons.diamond_rounded,
-              color: isUrgent ? AppColors.warning : AppColors.accent,
+              color: baseColor,
               size: 22,
             ),
           ),
@@ -109,14 +110,14 @@ class SubscriptionBanner extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _buildPlanBadge(sub.planTier),
+                    _buildPlanBadge(context, sub.planTier),
                     const SizedBox(width: 8),
                     Text(
                       'TRIAL',
                       style: GoogleFonts.inter(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.accent,
+                        color: t.accent,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -130,28 +131,29 @@ class SubscriptionBanner extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     color:
-                        isUrgent ? AppColors.warning : AppColors.textSecondary,
+                        isUrgent ? t.warning : t.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          _buildUpgradeButton('Subscribe Now'),
+          _buildUpgradeButton(context, 'Subscribe Now'),
         ],
       ),
     );
   }
 
-  Widget _buildActiveBanner(Subscription sub) {
+  Widget _buildActiveBanner(BuildContext context, Subscription sub) {
+    final t = context.fitTheme;
     return _buildContainer(
       gradient: [
-        AppColors.bgCard,
-        AppColors.bgElevated.withOpacity(0.5),
+        t.surface,
+        t.surfaceAlt.withOpacity(0.5),
       ],
-      borderColor: AppColors.border,
+      borderColor: t.border,
       child: Row(
         children: [
-          _buildPlanBadge(sub.planTier),
+          _buildPlanBadge(context, sub.planTier),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -162,20 +164,20 @@ class SubscriptionBanner extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                 ),
                 Text(
                   '${sub.billingInterval.label} • ${sub.periodDaysRemaining} days remaining',
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: t.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          if (sub.planTier != PlanTier.elite) _buildUpgradeButton('Upgrade'),
+          if (sub.planTier != PlanTier.elite) _buildUpgradeButton(context, 'Upgrade'),
         ],
       ),
     );
@@ -197,12 +199,13 @@ class SubscriptionBanner extends StatelessWidget {
     ).animate().fadeIn(delay: 100.ms);
   }
 
-  Widget _buildPlanBadge(PlanTier tier) {
+  Widget _buildPlanBadge(BuildContext context, PlanTier tier) {
+    final t = context.fitTheme;
     final color = tier == PlanTier.elite
-        ? AppColors.primary
+        ? t.brand
         : tier == PlanTier.pro
-            ? AppColors.accent
-            : AppColors.textMuted;
+            ? t.accent
+            : t.textMuted;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -222,12 +225,13 @@ class SubscriptionBanner extends StatelessWidget {
     );
   }
 
-  Widget _buildUpgradeButton(String label) {
+  Widget _buildUpgradeButton(BuildContext context, String label) {
+    final t = context.fitTheme;
     return OutlinedButton(
       onPressed: onUpgrade,
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.primary,
-        side: const BorderSide(color: AppColors.primary),
+        foregroundColor: t.brand,
+        side: BorderSide(color: t.brand),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -261,6 +265,7 @@ class RevenueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -268,27 +273,27 @@ class RevenueCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.accent.withOpacity(0.08),
-            AppColors.primary.withOpacity(0.05),
+            t.accent.withOpacity(0.08),
+            t.brand.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: t.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.account_balance_wallet_rounded,
-                  color: AppColors.accent, size: 20),
+              Icon(Icons.account_balance_wallet_rounded,
+                  color: t.accent, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Revenue Overview',
                 style: GoogleFonts.inter(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: t.textPrimary,
                 ),
               ),
             ],
@@ -298,6 +303,7 @@ class RevenueCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildMetric(
+                  context,
                   'Monthly Revenue',
                   '₹${_formatCurrency(monthlyRevenue)}',
                   growthPercent != null
@@ -309,10 +315,11 @@ class RevenueCard extends StatelessWidget {
               Container(
                 width: 1,
                 height: 45,
-                color: AppColors.divider,
+                color: t.divider,
               ),
               Expanded(
                 child: _buildMetric(
+                  context,
                   'Active Subs',
                   '$activeSubscriptions',
                   null,
@@ -322,10 +329,11 @@ class RevenueCard extends StatelessWidget {
               Container(
                 width: 1,
                 height: 45,
-                color: AppColors.divider,
+                color: t.divider,
               ),
               Expanded(
                 child: _buildMetric(
+                  context,
                   'New This Month',
                   '$newThisMonth',
                   null,
@@ -340,7 +348,8 @@ class RevenueCard extends StatelessWidget {
   }
 
   Widget _buildMetric(
-      String label, String value, String? badge, bool isPositive) {
+      BuildContext context, String label, String value, String? badge, bool isPositive) {
+    final t = context.fitTheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -350,7 +359,7 @@ class RevenueCard extends StatelessWidget {
             label,
             style: GoogleFonts.inter(
               fontSize: 11,
-              color: AppColors.textMuted,
+              color: t.textMuted,
             ),
           ),
           const SizedBox(height: 4),
@@ -361,7 +370,7 @@ class RevenueCard extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+                  color: t.textPrimary,
                 ),
               ),
               if (badge != null) ...[
@@ -370,7 +379,7 @@ class RevenueCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: (isPositive ? AppColors.success : AppColors.error)
+                    color: (isPositive ? t.success : t.danger)
                         .withOpacity(0.12),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -379,7 +388,7 @@ class RevenueCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: isPositive ? AppColors.success : AppColors.error,
+                      color: isPositive ? t.success : t.danger,
                     ),
                   ),
                 ),

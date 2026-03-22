@@ -5,8 +5,13 @@ import '../core/extensions.dart';
 /// Sidebar item data.
 class SidebarItem {
   final IconData icon;
+  final String? iconPath;
   final String label;
-  const SidebarItem({required this.icon, required this.label});
+  const SidebarItem({
+    required this.icon,
+    this.iconPath,
+    required this.label,
+  });
 }
 
 /// Desktop sidebar navigation.
@@ -150,11 +155,24 @@ class SidebarNav extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    item.icon,
-                    size: 21,
-                    color: isSelected ? colors.brand : colors.textMuted,
-                  ),
+                  if (item.iconPath != null)
+                    Image.asset(
+                      item.iconPath!,
+                      width: 21,
+                      height: 21,
+                      color: isSelected ? colors.brand : colors.textMuted,
+                      errorBuilder: (_, __, ___) => Icon(
+                        item.icon,
+                        size: 21,
+                        color: isSelected ? colors.brand : colors.textMuted,
+                      ),
+                    )
+                  else
+                    Icon(
+                      item.icon,
+                      size: 21,
+                      color: isSelected ? colors.brand : colors.textMuted,
+                    ),
                   if (!isCollapsed) ...[
                     const SizedBox(width: 14),
                     Expanded(

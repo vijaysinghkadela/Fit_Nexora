@@ -17,23 +17,24 @@ import '../clients/add_client_screen.dart';
 const trainerDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
+    iconPath: 'assets/images/logo.png',
     label: 'Home',
     route: '/trainer',
   ),
   FitShellDestination(
     icon: Icons.people_alt_rounded,
     label: 'Clients',
-    route: '/clients',
+    route: '/trainer/clients',
   ),
   FitShellDestination(
-    icon: Icons.calendar_today_rounded,
-    label: 'Schedule',
+    icon: Icons.fitness_center_rounded,
+    label: 'Plans',
     route: '/workouts',
   ),
   FitShellDestination(
     icon: Icons.person_rounded,
     label: 'Profile',
-    route: '/settings',
+    route: '/trainer/settings',
   ),
 ];
 
@@ -95,9 +96,12 @@ class _TrainerDashboardBody extends ConsumerWidget {
     final colors = context.fitTheme;
     final gym = ref.watch(selectedGymProvider);
     final clientsAsync = ref.watch(trainerClientsProvider);
+    final todayActiveAsync = ref.watch(trainerTodayActiveClientsProvider);
+    final todayActive = todayActiveAsync.value ?? 0;
 
     Future<void> refreshAll() async {
       ref.invalidate(trainerClientsProvider);
+      ref.invalidate(trainerTodayActiveClientsProvider);
       await ref.read(trainerClientsProvider.future);
     }
 
@@ -111,12 +115,14 @@ class _TrainerDashboardBody extends ConsumerWidget {
           userName: userName,
           gymName: gym?.name ?? 'Trainer Pro',
           clients: const [],
+          todayActive: todayActive,
           onAddClient: onAddClient,
         ),
         data: (clients) => _TrainerContent(
           userName: userName,
           gymName: gym?.name ?? 'Trainer Pro',
           clients: clients,
+          todayActive: todayActive,
           onAddClient: onAddClient,
         ),
       ),
@@ -124,17 +130,32 @@ class _TrainerDashboardBody extends ConsumerWidget {
   }
 }
 
+class _WeekBar {
+  final String label;
+  final int count;
+  final double normalizedValue;
+  final bool isProjection;
+  const _WeekBar({
+    required this.label,
+    required this.count,
+    required this.normalizedValue,
+    this.isProjection = false,
+  });
+}
+
 class _TrainerContent extends StatelessWidget {
   const _TrainerContent({
     required this.userName,
     required this.gymName,
     required this.clients,
+    required this.todayActive,
     required this.onAddClient,
   });
 
   final String userName;
   final String gymName;
   final List<ClientProfile> clients;
+  final int todayActive;
   final VoidCallback onAddClient;
 
   @override
@@ -152,7 +173,14 @@ class _TrainerContent extends StatelessWidget {
         .where((client) => (client.adherencePercent ?? 100) < 75)
         .length;
     final schedule = _scheduleForClients(clients);
-    final trendValues = _clientTrendValues(clients);
+    final weekBars = _weeklyGrowthData(clients);
+    final lastWeekCount =
+        weekBars.length >= 2 ? weekBars[weekBars.length - 2].count : 0;
+    final prevWeekCount =
+        weekBars.length >= 3 ? weekBars[weekBars.length - 3].count : 0;
+    final growthPct = prevWeekCount == 0
+        ? 0
+        : ((lastWeekCount - prevWeekCount) / prevWeekCount * 100).round();
 
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -168,12 +196,15 @@ class _TrainerContent extends StatelessWidget {
             _RoundActionIcon(
               icon: Icons.notifications_rounded,
               dotColor: colors.accent,
-              onTap: () => context.go('/settings'),
+              onTap: () => context.push('/notifications'),
             ),
             const SizedBox(width: 10),
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: _TrainerAvatar(name: userName),
+              child: GestureDetector(
+                onTap: () => context.go('/trainer/settings'),
+                child: _TrainerAvatar(name: userName),
+              ),
             ),
           ],
         ),
@@ -238,6 +269,7 @@ class _TrainerContent extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: _TrainerMetricGrid(
               activeClients: clients.length,
+              todayActiveClients: todayActive,
               averageAdherence: avgAdherence,
               pendingTasks: pendingTasks,
             ),
@@ -266,7 +298,7 @@ class _TrainerContent extends StatelessWidget {
                           children: [
                             _ScheduleCard(schedule: schedule),
                             const SizedBox(height: 20),
-                            _GrowthTrendCard(values: trendValues),
+                            _GrowthTrendCard(weekBars: weekBars, growthPct: growthPct),
                           ],
                         ),
                       ),
@@ -283,7 +315,7 @@ class _TrainerContent extends StatelessWidget {
                   children: [
                     _ScheduleCard(schedule: schedule),
                     const SizedBox(height: 20),
-                    _GrowthTrendCard(values: trendValues),
+                    _GrowthTrendCard(weekBars: weekBars, growthPct: growthPct),
                     const SizedBox(height: 20),
                     _ClientManagementCard(clients: clients),
                   ],
@@ -345,21 +377,61 @@ class _TrainerContent extends StatelessWidget {
     }).toList();
   }
 
-  List<double> _clientTrendValues(List<ClientProfile> clients) {
-    final weekdays = List<double>.filled(7, 0.0);
+  List<_WeekBar> _weeklyGrowthData(List<ClientProfile> clients) {
+    final now = DateTime.now();
+    final weeks = <_WeekBar>[];
 
-    for (final client in clients) {
-      final day = client.createdAt.weekday - 1;
-      weekdays[day] += 1;
+    for (int i = 6; i >= 0; i--) {
+      final weekEnd = now.subtract(Duration(days: i * 7));
+      final weekStart = weekEnd.subtract(const Duration(days: 7));
+      final count = clients
+          .where(
+            (c) =>
+                c.createdAt.isAfter(weekStart) &&
+                c.createdAt.isBefore(weekEnd),
+          )
+          .length;
+      weeks.add(_WeekBar(label: 'W${7 - i}', count: count, normalizedValue: 0));
     }
 
-    final maxValue = weekdays.fold<double>(0, math.max);
-    if (maxValue == 0) {
-      return const [0.4, 0.58, 0.52, 0.74, 0.7, 0.95, 0.45];
+    // Projection: 3-week moving average of last 3 weeks.
+    final recent = weeks.sublist(4).map((w) => w.count).toList();
+    final avgGrowth = recent.isEmpty
+        ? 0
+        : (recent.reduce((a, b) => a + b) / recent.length).round();
+    weeks.add(
+      _WeekBar(
+        label: 'Proj',
+        count: avgGrowth,
+        normalizedValue: 0,
+        isProjection: true,
+      ),
+    );
+
+    final maxCount =
+        weeks.map((w) => w.count).fold<int>(0, (a, b) => b > a ? b : a);
+    if (maxCount == 0) {
+      return List.generate(
+        8,
+        (i) => _WeekBar(
+          label: i < 7 ? 'W${i + 1}' : 'Proj',
+          count: 0,
+          normalizedValue: 0.1 + (i / 7) * 0.5,
+          isProjection: i == 7,
+        ),
+      );
     }
 
-    return weekdays
-        .map((value) => (0.32 + (value / maxValue) * 0.63).clamp(0.28, 0.96))
+    return weeks
+        .map(
+          (w) => _WeekBar(
+            label: w.label,
+            count: w.count,
+            normalizedValue:
+                (0.08 + (w.count / maxCount) * 0.92).clamp(0.08, 1.0),
+            isProjection: w.isProjection,
+          ),
+        )
         .toList();
   }
 }
@@ -377,17 +449,16 @@ class _TrainerBrandHeader extends StatelessWidget {
         Container(
           width: 40,
           height: 40,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [colors.brand, colors.accent],
-            ),
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
-          child: const Icon(
-            Icons.fitness_center_rounded,
-            color: Colors.white,
-            size: 18,
+          clipBehavior: Clip.antiAlias,
+          child: Image.asset(
+            'assets/images/logo.png',
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
           ),
         ),
         const SizedBox(width: 12),
@@ -496,11 +567,13 @@ class _TrainerAvatar extends StatelessWidget {
 class _TrainerMetricGrid extends StatelessWidget {
   const _TrainerMetricGrid({
     required this.activeClients,
+    required this.todayActiveClients,
     required this.averageAdherence,
     required this.pendingTasks,
   });
 
   final int activeClients;
+  final int todayActiveClients;
   final int averageAdherence;
   final int pendingTasks;
 
@@ -519,10 +592,10 @@ class _TrainerMetricGrid extends StatelessWidget {
             SizedBox(
               width: width,
               child: _TrainerMetricCard(
-                label: 'Active Clients',
-                value: '$activeClients',
-                footnote: '+${math.max(1, activeClients ~/ 8)} this week',
-                accentIcon: Icons.group_rounded,
+                label: 'In Gym Today',
+                value: '$todayActiveClients',
+                footnote: '$activeClients total clients',
+                accentIcon: Icons.location_on_rounded,
                 accentColor: context.fitTheme.accent,
               ),
             ),
@@ -660,6 +733,11 @@ class _QuickActionRow extends StatelessWidget {
           icon: Icons.edit_note_rounded,
           label: 'Create Plan',
           onTap: () => context.go('/workouts'),
+        ),
+        _ActionButton(
+          icon: Icons.restaurant_menu_rounded,
+          label: 'Diet Plans',
+          onTap: () => context.go('/diet-plans'),
         ),
         _ActionButton(
           icon: Icons.campaign_rounded,
@@ -853,9 +931,10 @@ class _ScheduleRow extends StatelessWidget {
 }
 
 class _GrowthTrendCard extends StatelessWidget {
-  const _GrowthTrendCard({required this.values});
+  const _GrowthTrendCard({required this.weekBars, required this.growthPct});
 
-  final List<double> values;
+  final List<_WeekBar> weekBars;
+  final int growthPct;
 
   @override
   Widget build(BuildContext context) {
@@ -866,37 +945,73 @@ class _GrowthTrendCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Client Growth Trend',
-              style: GoogleFonts.inter(
-                fontSize: 17,
-                fontWeight: FontWeight.w800,
-                color: colors.textPrimary,
-              ),
+            Row(
+              children: [
+                Text(
+                  'Weekly Growth Trend',
+                  style: GoogleFonts.inter(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const Spacer(),
+                if (growthPct != 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (growthPct >= 0 ? colors.accent : colors.danger)
+                          .withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    child: Text(
+                      '${growthPct >= 0 ? '+' : ''}$growthPct%',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: growthPct >= 0 ? colors.accent : colors.danger,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 18),
             SizedBox(
               height: 140,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: values.asMap().entries.map((entry) {
-                  final isHighlight = entry.key == 5;
+                children: weekBars.asMap().entries.map((entry) {
+                  final bar = entry.value;
+                  final isHighlight = entry.key == weekBars.length - 2;
+                  final barColor = bar.isProjection
+                      ? colors.textMuted.withOpacity(0.4)
+                      : isHighlight
+                          ? colors.accent
+                          : colors.brand.withOpacity(0.28);
                   return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: 100 * entry.value,
-                          decoration: BoxDecoration(
-                            color: isHighlight
-                                ? colors.accent
-                                : colors.brand.withOpacity(0.28),
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(6),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: 100 * bar.normalizedValue,
+                            decoration: BoxDecoration(
+                              color: barColor,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(6),
+                              ),
+                              border: bar.isProjection
+                                  ? Border.all(
+                                      color: colors.textMuted.withOpacity(0.5),
+                                    )
+                                  : null,
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   );
@@ -906,12 +1021,17 @@ class _GrowthTrendCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: ['MON', 'WED', 'SAT', 'SUN']
+              children: weekBars
+                  .asMap()
+                  .entries
+                  .where(
+                    (e) => e.key % 2 == 0 || e.key == weekBars.length - 1,
+                  )
                   .map(
-                    (label) => Text(
-                      label,
+                    (entry) => Text(
+                      entry.value.label,
                       style: GoogleFonts.inter(
-                        fontSize: 10,
+                        fontSize: 9,
                         fontWeight: FontWeight.w700,
                         color: colors.textMuted,
                       ),

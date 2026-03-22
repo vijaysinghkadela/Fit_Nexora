@@ -102,7 +102,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             leading: BackButton(
-              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+              onPressed: () => context.canPop() ? context.pop() : context.go('/'),
             ),
             automaticallyImplyLeading: true,
             title: Text(

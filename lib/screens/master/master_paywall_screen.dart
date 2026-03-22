@@ -10,9 +10,8 @@ class MasterPaywallScreen extends ConsumerWidget {
   const MasterPaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFFFFD166),
-    secondary: Color(0xFFEF476F),
-    darkOnAccent: true,
+    primary: Color(0xFFFF3D5E),
+    secondary: Color(0xFFFF8C00),
   );
 
   @override

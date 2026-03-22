@@ -98,6 +98,17 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
 
       final db = ref.read(databaseServiceProvider);
 
+      final userState = ref.read(currentUserProvider);
+      final currentUser = userState.value;
+
+      // Auto-assign the trainer if the current user is a trainer and we're adding a new client
+      String? assignedTrainerId = widget.existingClient?.assignedTrainerId;
+      if (!_isEditMode &&
+          currentUser != null &&
+          currentUser.globalRole == UserRole.trainer) {
+        assignedTrainerId = currentUser.id;
+      }
+
       final clientData = ClientProfile(
         id: widget.existingClient?.id ?? '',
         userId: widget.existingClient?.userId,
@@ -124,7 +135,7 @@ class _AddClientScreenState extends ConsumerState<AddClientScreen> {
         injuries: _injuriesController.text.trim().isEmpty
             ? null
             : _injuriesController.text.trim(),
-        assignedTrainerId: widget.existingClient?.assignedTrainerId,
+        assignedTrainerId: assignedTrainerId,
         createdAt: widget.existingClient?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );

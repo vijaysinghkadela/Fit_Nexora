@@ -50,7 +50,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
           SliverAppBar(
             floating: true,
             leading: BackButton(
-              onPressed: () => context.canPop() ? context.pop() : context.go('/dashboard'),
+              onPressed: () => context.canPop() ? context.pop() : context.go('/'),
               color: t.textPrimary,
             ),
             backgroundColor: t.background,

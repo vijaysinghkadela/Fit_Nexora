@@ -10,8 +10,8 @@ class ElitePaywallScreen extends ConsumerWidget {
   const ElitePaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFF9C27B0),
-    secondary: Color(0xFF3F51B5),
+    primary: Color(0xFF9B5DE5),
+    secondary: Color(0xFF6A3DFF),
   );
 
   @override

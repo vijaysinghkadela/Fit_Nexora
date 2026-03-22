@@ -37,6 +37,7 @@ final dashboardMembershipPreviewProvider =
 const managementDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
+    iconPath: 'assets/images/logo.png',
     label: 'Dashboard',
     route: '/dashboard',
   ),
@@ -70,6 +71,7 @@ const managementDestinations = [
 const managementMobileDestinations = [
   FitShellDestination(
     icon: Icons.dashboard_rounded,
+    iconPath: 'assets/images/logo.png',
     label: 'Dashboard',
     route: '/dashboard',
   ),

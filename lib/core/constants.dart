@@ -53,46 +53,46 @@ class AppConstants {
   static const double desktopBreakpoint = 1200;
 }
 
-/// App color palette — dark-first premium aesthetic.
+/// App color palette — Power & Performance (Electric Orange + Slate Charcoal).
 class AppColors {
   AppColors._();
 
-  // Primary brand colors
-  static const Color primary = Color(0xFF7C3AED); // Deeper, more vibrant violet
-  static const Color primaryLight = Color(0xFFA78BFA);
-  static const Color primaryDark = Color(0xFF5B21B6);
+  // Primary brand colors — Electric Orange
+  static const Color primary = Color(0xFFFF5C00);
+  static const Color primaryLight = Color(0xFFFF8A3D);
+  static const Color primaryDark = Color(0xFFCC4200);
 
-  // Accent
-  static const Color accent = Color(0xFF10B981); // Bright neon mint/emerald
-  static const Color accentLight = Color(0xFF34D399);
-  static const Color accentDark = Color(0xFF047857);
+  // Accent — Electric Teal
+  static const Color accent = Color(0xFF00E5C3);
+  static const Color accentLight = Color(0xFF4DFAE8);
+  static const Color accentDark = Color(0xFF00A890);
 
-  // Backgrounds - deep, rich voids
-  static const Color bgDark = Color(0xFF030712); // Extreme near black
-  static const Color bgCard = Color(0xFF0F172A); // Slate-tinted card surface
-  static const Color bgElevated = Color(0xFF1E293B); // Elevated surface
-  static const Color bgInput = Color(0xFF161B22); // Input fields
+  // Backgrounds — warm charcoal (slate)
+  static const Color bgDark = Color(0xFF0C0C0E);
+  static const Color bgCard = Color(0xFF1A1A1E);
+  static const Color bgElevated = Color(0xFF222228);
+  static const Color bgInput = Color(0xFF141416);
 
-  // Text
-  static const Color textPrimary = Color(0xFFF8FAFC);
-  static const Color textSecondary = Color(0xFF94A3B8);
-  static const Color textMuted = Color(0xFF475569);
+  // Text — neutral
+  static const Color textPrimary = Color(0xFFF5F5F5);
+  static const Color textSecondary = Color(0xFFAAAAAA);
+  static const Color textMuted = Color(0xFF666672);
 
-  // Status (using slightly more tailored neon shades)
-  static const Color success = Color(0xFF10B981);
-  static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFEF4444);
-  static const Color info = Color(0xFF3B82F6);
+  // Status
+  static const Color success = Color(0xFF22D48A);
+  static const Color warning = Color(0xFFFFB830);
+  static const Color error = Color(0xFFFF4A6B);
+  static const Color info = Color(0xFF4A9FFF);
 
   // Borders & Dividers
-  static const Color border = Color(0xFF1E293B);
-  static const Color divider = Color(0xFF0F172A);
+  static const Color border = Color(0xFF2E2E38);
+  static const Color divider = Color(0xFF1E1E24);
 
-  // Glassmorphism - adjusting opacities for better depth
-  static const Color glassBg = Color(0x0CFFFFFF); // ~5% white for deeper blur
-  static const Color glassBorder = Color(0x26FFFFFF); // 15% white
+  // Glassmorphism — orange-tinted for P&P identity
+  static const Color glassBg = Color(0x26FF5C00);
+  static const Color glassBorder = Color(0x33FF5C00);
 
   // Outer Glows
-  static const Color primaryGlow = Color(0x407C3AED);
-  static const Color accentGlow = Color(0x4010B981);
+  static const Color primaryGlow = Color(0x55FF5C00);
+  static const Color accentGlow = Color(0x4000E5C3);
 }

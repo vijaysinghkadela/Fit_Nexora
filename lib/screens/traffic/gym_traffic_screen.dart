@@ -157,7 +157,7 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go('/dashboard');
+            context.go('/');
           }
         },
       ),

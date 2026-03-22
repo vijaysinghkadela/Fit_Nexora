@@ -159,7 +159,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                     if (context.canPop()) {
                       context.pop();
                     } else {
-                      context.go('/dashboard');
+                      context.go('/');
                     }
                   },
                 ),

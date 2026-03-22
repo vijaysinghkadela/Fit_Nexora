@@ -3,6 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import '../core/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import '../core/extensions.dart';
 
 /// A global error boundary that catches unhandled Flutter widget errors.
 ///
@@ -74,8 +75,9 @@ class _ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     return Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: t.background,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -87,11 +89,11 @@ class _ErrorScreen extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: AppColors.error.withOpacity(0.12),
+                    color: t.danger.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.error_outline_rounded,
-                      color: AppColors.error, size: 40),
+                  child: Icon(Icons.error_outline_rounded,
+                      color: t.danger, size: 40),
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -99,7 +101,7 @@ class _ErrorScreen extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: t.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -108,15 +110,15 @@ class _ErrorScreen extends StatelessWidget {
                   'Error: ${error.toString().split("\n").first}',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppColors.textSecondary,
+                    color: t.textSecondary,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   'Please check your internet connection and try starting the app again.',
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                  style: TextStyle(color: t.textSecondary, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
@@ -129,11 +131,12 @@ class _ErrorScreen extends StatelessWidget {
                     label: Text(
                       'Try Again',
                       style: GoogleFonts.inter(
-                          fontSize: 16, fontWeight: FontWeight.w700),
+                        fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: t.brand,
                       foregroundColor: Colors.white,
+                      elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
                     ),

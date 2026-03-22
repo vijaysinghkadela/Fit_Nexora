@@ -316,7 +316,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/settings',
         name: 'settings',
-        builder: (context, state) => const SettingsScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/settings',
+          child: SettingsScreen(),
+        ),
       ),
       GoRoute(
         path: '/pricing',
@@ -492,7 +495,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/todos',
         name: 'todos',
-        builder: (context, state) => const TodosScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/todos',
+          child: TodosScreen(),
+        ),
       ),
       GoRoute(
         path: '/traffic',
@@ -588,7 +594,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/support',
         name: 'support',
-        builder: (context, state) => const SupportScreen(),
+        builder: (context, state) => const SharedManagementWrapper(
+          currentRoute: '/support',
+          child: SupportScreen(),
+        ),
       ),
       GoRoute(
         path: '/clients/checkin',

@@ -19,8 +19,8 @@ class EliteAiTrainerScreen extends ConsumerStatefulWidget {
 }
 
 class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
-  static const _purple = Color(0xFF9C27B0);
-  static const _indigo = Color(0xFF3F51B5);
+  static const _elitePrimary = Color(0xFF9B5DE5);
+  static const _eliteSecondary = Color(0xFF6A3DFF);
 
   // Chat history for multi-turn conversation
   final List<_ChatMsg> _messages = [];
@@ -56,9 +56,9 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_purple, _indigo]),
+              gradient: const LinearGradient(colors: [_elitePrimary, _eliteSecondary]),
               borderRadius: BorderRadius.circular(6),
-              boxShadow: [BoxShadow(color: _purple.withOpacity(0.4), blurRadius: 8)],
+              boxShadow: [BoxShadow(color: _elitePrimary.withOpacity(0.4), blurRadius: 8)],
             ),
             child: Text('ELITE AI', style: GoogleFonts.inter(
                 fontSize: 10, fontWeight: FontWeight.w900,
@@ -141,11 +141,11 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
                     height: 46,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                          colors: [_purple, _indigo]),
+                          colors: [_elitePrimary, _eliteSecondary]),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                            color: _purple.withOpacity(0.4),
+                            color: _elitePrimary.withOpacity(0.4),
                             blurRadius: 12)
                       ],
                     ),
@@ -267,7 +267,7 @@ class _WelcomeView extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF9C27B0), Color(0xFF3F51B5)],
+                colors: [Color(0xFF9B5DE5), Color(0xFF6A3DFF)],
               ),
               shape: BoxShape.circle,
             ),
@@ -311,7 +311,7 @@ class _WelcomeView extends StatelessWidget {
                   ),
                   child: Row(children: [
                     const Icon(Icons.bolt_rounded,
-                        color: Color(0xFF9C27B0), size: 16),
+                        color: Color(0xFF9B5DE5), size: 16),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(e.value,
@@ -350,7 +350,7 @@ class _ChatBubble extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: isUser
               ? const LinearGradient(
-                  colors: [Color(0xFF9C27B0), Color(0xFF3F51B5)])
+                  colors: [Color(0xFF9B5DE5), Color(0xFF6A3DFF)])
               : null,
           color: isUser ? null : t.surfaceAlt,
           borderRadius: BorderRadius.only(
@@ -395,7 +395,7 @@ class _TypingIndicator extends StatelessWidget {
           const SizedBox(
               width: 18, height: 18,
               child: CircularProgressIndicator(
-                  color: Color(0xFF9C27B0), strokeWidth: 2)),
+                  color: Color(0xFF9B5DE5), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('AI is thinking...',
               style: GoogleFonts.inter(

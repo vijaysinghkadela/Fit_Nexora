@@ -13,7 +13,7 @@ import '../../widgets/glassmorphic_card.dart';
 class MasterAnalyticsScreen extends ConsumerWidget {
   const MasterAnalyticsScreen({super.key});
 
-  static const _gold  = Color(0xFFFFD700);
+  static const _masterPrimary  = Color(0xFFFF3D5E);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,7 +70,7 @@ class MasterAnalyticsScreen extends ConsumerWidget {
                       RepaintBoundary(
                         child: SizedBox(
                         height: 120,
-                        child: _BarChart(values: data, color: _gold),
+                        child: _BarChart(values: data, color: _masterPrimary),
                         ),
                       ),
                     ]),
@@ -168,7 +168,7 @@ class MasterAnalyticsScreen extends ConsumerWidget {
                           child: CustomPaint(
                             size: const Size(double.infinity, 120),
                             painter: _LineChart(
-                                data: pts, color: _gold,
+                                data: pts, color: _masterPrimary,
                                 dotStrokeColor: t.background),
                           ),
                           ),

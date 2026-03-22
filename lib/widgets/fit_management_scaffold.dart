@@ -7,11 +7,13 @@ import 'sidebar_nav.dart';
 
 class FitShellDestination {
   final IconData icon;
+  final String? iconPath;
   final String label;
   final String route;
 
   const FitShellDestination({
     required this.icon,
+    this.iconPath,
     required this.label,
     required this.route,
   });
@@ -255,11 +257,24 @@ class _FitMobileNavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              destination.icon,
-              size: 20,
-              color: isSelected ? colors.brand : colors.textMuted,
-            ),
+            if (destination.iconPath != null)
+              Image.asset(
+                destination.iconPath!,
+                width: 20,
+                height: 20,
+                color: isSelected ? colors.brand : colors.textMuted,
+                errorBuilder: (_, __, ___) => Icon(
+                  destination.icon,
+                  size: 20,
+                  color: isSelected ? colors.brand : colors.textMuted,
+                ),
+              )
+            else
+              Icon(
+                destination.icon,
+                size: 20,
+                color: isSelected ? colors.brand : colors.textMuted,
+              ),
             const SizedBox(height: 4),
             Text(
               destination.label,

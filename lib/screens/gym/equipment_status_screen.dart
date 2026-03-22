@@ -106,7 +106,7 @@ class EquipmentStatusScreen extends ConsumerWidget {
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
               onPressed: () =>
-                  context.canPop() ? context.pop() : context.go('/dashboard'),
+                  context.canPop() ? context.pop() : context.go('/'),
             ),
           ),
 

@@ -50,7 +50,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen>
             backgroundColor: t.surface,
             leading: IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: t.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/'),
             ),
             title: Text(
               'Notifications',

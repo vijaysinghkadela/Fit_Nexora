@@ -9,8 +9,8 @@ import '../../widgets/glassmorphic_card.dart';
 class MasterChallengesScreen extends ConsumerWidget {
   const MasterChallengesScreen({super.key});
 
-  static const _gold   = Color(0xFFFFD700);
-  static const _orange = Color(0xFFFF6F00);
+  static const _masterPrimary   = Color(0xFFFF3D5E);
+  static const _masterSecondary = Color(0xFFFF8C00);
   static const _silver = Color(0xFFC0C0C0);
   static const _bronze = Color(0xFFCD7F32);
 
@@ -20,7 +20,7 @@ class MasterChallengesScreen extends ConsumerWidget {
 
     // Static leaderboard entries for demo (will be populated by Supabase)
     final leaderboard = [
-      ('Rohit S.',    '🔥 28 day streak',   120, _gold),
+      ('Rohit S.',    '🔥 28 day streak',   120, _masterPrimary),
       ('Priya M.',    '⚡ 25 days',          105, _silver),
       ('Arjun K.',    '💪 22 days',          98,  _bronze),
       ('Neha P.',     '🏃 19 days',          87,  t.textMuted),
@@ -62,7 +62,7 @@ class MasterChallengesScreen extends ConsumerWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      _gold.withOpacity(0.15),
+                      _masterPrimary.withOpacity(0.15),
                       t.background,
                     ],
                   ),
@@ -71,9 +71,9 @@ class MasterChallengesScreen extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
                     child: Row(children: [
-                      _statPill(context, '🔥', 'Challenges', '4 active', _orange),
+                      _statPill(context, '🔥', 'Challenges', '4 active', _masterSecondary),
                       const SizedBox(width: 10),
-                      _statPill(context, '🏆', 'Leaderboard', 'Top 6', _gold),
+                      _statPill(context, '🏆', 'Leaderboard', 'Top 6', _masterPrimary),
                       const SizedBox(width: 10),
                       _statPill(context, '🎯', 'Your Rank', '#3', t.brand),
                     ]),

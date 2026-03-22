@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -42,9 +42,7 @@ class _TodosScreenState extends State<TodosScreen> {
     final colors = context.fitTheme;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
-    return Scaffold(
-      backgroundColor: colors.background,
-      body: DecoratedBox(
+    return DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -151,11 +149,6 @@ class _TodosScreenState extends State<TodosScreen> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: _TodosBottomBar(
-        currentRoute: '/todos',
-        bottomInset: bottomInset,
-      ),
     );
   }
 
@@ -975,116 +968,7 @@ class _TodosErrorView extends StatelessWidget {
   }
 }
 
-class _TodosBottomBar extends StatelessWidget {
-  const _TodosBottomBar({
-    required this.currentRoute,
-    required this.bottomInset,
-  });
 
-  final String currentRoute;
-  final double bottomInset;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.fitTheme;
-    final items = const [
-      _BottomNavItem(
-        icon: Icons.dashboard_outlined,
-        activeIcon: Icons.dashboard_rounded,
-        label: 'HOME',
-        route: '/trainer',
-      ),
-      _BottomNavItem(
-        icon: Icons.check_box_outline_blank_rounded,
-        activeIcon: Icons.check_box_rounded,
-        label: 'TASKS',
-        route: '/todos',
-      ),
-      _BottomNavItem(
-        icon: Icons.group_outlined,
-        activeIcon: Icons.group_rounded,
-        label: 'CLIENTS',
-        route: '/clients',
-      ),
-      _BottomNavItem(
-        icon: Icons.bar_chart_outlined,
-        activeIcon: Icons.bar_chart_rounded,
-        label: 'STATS',
-        route: '/traffic',
-      ),
-      _BottomNavItem(
-        icon: Icons.settings_outlined,
-        activeIcon: Icons.settings_rounded,
-        label: 'SETUP',
-        route: '/settings',
-      ),
-    ];
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(12, 10, 12, 10 + bottomInset),
-      decoration: BoxDecoration(
-        color: colors.surface.withOpacity(0.92),
-        border: Border(top: BorderSide(color: colors.divider)),
-        boxShadow: [
-          BoxShadow(
-            color: colors.background.withOpacity(0.35),
-            blurRadius: 20,
-            offset: const Offset(0, -8),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: items.map((item) {
-          final isSelected = item.route == currentRoute;
-          return InkWell(
-            onTap: () {
-              if (!isSelected) context.go(item.route);
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    isSelected ? item.activeIcon : item.icon,
-                    color: isSelected ? colors.brand : colors.textMuted,
-                    size: 22,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.label,
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight:
-                          isSelected ? FontWeight.w800 : FontWeight.w600,
-                      color: isSelected ? colors.brand : colors.textMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _BottomNavItem {
-  const _BottomNavItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.route,
-  });
-
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-  final String route;
-}
 
 class _GlowOrb extends StatelessWidget {
   const _GlowOrb({

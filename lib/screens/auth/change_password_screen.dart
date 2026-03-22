@@ -258,7 +258,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size.fromHeight(56),
                         backgroundColor: colors.accent,
-                        foregroundColor: const Color(0xFF062218),
+                        foregroundColor: Colors.white,
                         textStyle: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
@@ -271,7 +271,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                               height: 22,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.2,
-                                color: Color(0xFF062218),
+                                color: Colors.white,
                               ),
                             )
                           : const Row(

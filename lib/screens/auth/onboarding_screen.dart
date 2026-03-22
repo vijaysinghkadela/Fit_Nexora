@@ -81,7 +81,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
       ref.read(selectedGymProvider.notifier).state = gym;
       if (!mounted) return;
-      context.go('/dashboard');
+      context.go('/');
     } catch (error) {
       if (!mounted) return;
       context.showSnackBar('Error: $error', isError: true);

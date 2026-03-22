@@ -36,7 +36,7 @@ const _mockClients = [
 Color _membershipColor(String type, FitNexoraThemeTokens t) {
   switch (type.toLowerCase()) {
     case 'master':
-      return const Color(0xFFFFD700);
+      return const Color(0xFFFF3D5E);
     case 'elite':
       return t.brand;
     case 'pro':
@@ -92,7 +92,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
             backgroundColor: context.fitTheme.danger,
           ),
         );
-        context.go('/dashboard');
+        context.go('/');
       });
     }
   }
