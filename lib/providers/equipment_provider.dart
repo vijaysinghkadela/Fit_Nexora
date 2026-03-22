@@ -53,7 +53,7 @@ class EquipmentNotifier extends StateNotifier<AsyncValue<List<EquipmentStatus>>>
         'updated_at': DateTime.now().toIso8601String(),
       };
       await _client.from(_table).update(map).eq('id', id);
-    } catch (e, st) {
+    } catch (e) {
       // Rollback
       state = AsyncValue.data(prev);
       rethrow;
