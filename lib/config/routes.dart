@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/app_config.dart';
+import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/user_model.dart';
 import '../providers/auth_provider.dart';
@@ -40,26 +41,9 @@ import '../screens/member/member_diet_screen.dart';
 import '../screens/member/member_home_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
-import '../screens/member/member_profile_screen.dart';
 import '../screens/member/member_workout_screen.dart';
-import '../screens/member/member_add_workout_plan_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
-import '../screens/nutrition/barcode_scanner_screen.dart';
-import '../screens/nutrition/manual_nutrition_log_screen.dart';
-import '../screens/nutrition/daily_calorie_goal_screen.dart';
-import '../screens/workouts/active_workout_screen.dart';
-import '../screens/workouts/rest_timer_screen.dart';
-import '../screens/workouts/workout_completion_screen.dart';
-import '../screens/workouts/workout_history_screen.dart';
-import '../screens/workouts/search_exercise_screen.dart';
-import '../screens/workouts/exercise_progress_screen.dart';
-import '../screens/workouts/compare_exercises_screen.dart';
-import '../screens/master/master_profile_screen.dart';
-import '../screens/master/master_perks_screen.dart';
-import '../screens/master/master_transformation_screen.dart';
-import '../screens/support/support_screen.dart';
-import '../screens/clients/log_checkin_screen.dart';
 import '../screens/pro/pro_ai_screen.dart';
 import '../screens/pro/pro_home_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
@@ -68,101 +52,17 @@ import '../screens/pro/pro_paywall_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/subscription/pricing_screen.dart';
-import '../screens/notes/notes_screen.dart';
 import '../screens/todos/todos_screen.dart';
-
 import '../screens/trainer/trainer_dashboard_screen.dart';
-import '../screens/trainer/trainer_assign_workout_screen.dart';
-import '../screens/trainer/trainer_clients_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
-import '../screens/motivation/motivation_quote_screen.dart';
-import '../screens/health/steps_tracking_screen.dart';
-import '../screens/health/sleep_tracking_screen.dart';
-import '../screens/workouts/workout_calendar_screen.dart';
-import '../screens/notifications/notifications_screen.dart';
-import '../widgets/shared_management_wrapper.dart';
-import '../screens/health/body_measurements_screen.dart';
-import '../screens/health/water_tracker_screen.dart';
-import '../screens/workouts/personal_records_screen.dart';
-import '../screens/achievements/achievements_screen.dart';
-import '../screens/tools/macro_calculator_screen.dart';
-import '../screens/tools/one_rep_max_screen.dart';
-import '../screens/gym/equipment_status_screen.dart';
-import '../screens/gym/qr_checkin_screen.dart';
-import '../widgets/member_bottom_nav.dart';
 
-/// Fade transition — used for lateral auth screens (login ↔ register).
 Page<void> _fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage(
       key: state.pageKey,
       child: child,
-      transitionsBuilder: (_, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: FadeTransition(
-            opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
-            child: child,
-          ),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 280),
-      reverseTransitionDuration: const Duration(milliseconds: 220),
-    );
-
-/// Slide-from-right + fade — iOS-style push for all drill-down detail screens.
-Page<void> _pushPage(GoRouterState state, Widget child) =>
-    CustomTransitionPage(
-      key: state.pageKey,
-      child: child,
-      transitionsBuilder: (_, animation, secondaryAnimation, child) {
-        final slideIn = Tween<Offset>(
-          begin: const Offset(0.06, 0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-
-        final slideOut = Tween<Offset>(
-          begin: Offset.zero,
-          end: const Offset(-0.03, 0),
-        ).animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn));
-
-        return SlideTransition(
-          position: slideIn,
-          child: FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: slideOut,
-              child: FadeTransition(
-                opacity: Tween<double>(begin: 1.0, end: 0.0)
-                    .animate(CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn)),
-                child: child,
-              ),
-            ),
-          ),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 260),
-      reverseTransitionDuration: const Duration(milliseconds: 220),
-    );
-
-/// Slide-from-bottom + fade — for modal-style overlay screens.
-Page<void> _modalPage(GoRouterState state, Widget child) =>
-    CustomTransitionPage(
-      key: state.pageKey,
-      child: child,
-      transitionsBuilder: (_, animation, secondaryAnimation, child) {
-        final slideIn = Tween<Offset>(
-          begin: const Offset(0, 0.06),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-
-        return SlideTransition(
-          position: slideIn,
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 260),
-      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (_, animation, __, child) =>
+          FadeTransition(opacity: animation, child: child),
     );
 
 const _publicRoutes = [
@@ -319,122 +219,59 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const TrainerDashboardScreen(),
       ),
       GoRoute(
-        path: '/trainer/assign-workout',
-        name: 'trainer-assign-workout',
-        pageBuilder: (c, s) => _pushPage(s, const TrainerAssignWorkoutScreen()),
-      ),
-      GoRoute(
-        path: '/trainer/clients',
-        name: 'trainer-clients',
-        pageBuilder: (c, s) => _pushPage(s, const TrainerClientsScreen()),
-      ),
-      GoRoute(
-        path: '/trainer/settings',
-        name: 'trainer-settings',
-        pageBuilder: (c, s) => _pushPage(s, const SharedManagementWrapper(
-          currentRoute: '/trainer/settings',
-          child: SettingsScreen(),
-        )),
-      ),
-      GoRoute(
         path: '/clients',
         name: 'clients',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/clients',
-          child: ClientsScreen(),
-        ),
+        builder: (context, state) => const ClientsScreen(),
       ),
       GoRoute(
         path: '/memberships',
         name: 'memberships',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/memberships',
-          child: MembershipsScreen(),
-        ),
+        builder: (context, state) => const MembershipsScreen(),
       ),
       GoRoute(
         path: '/workouts',
         name: 'workouts',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/workouts',
-          child: WorkoutsScreen(),
-        ),
+        builder: (context, state) => const WorkoutsScreen(),
       ),
       GoRoute(
         path: '/diet-plans',
         name: 'diet-plans',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/diet-plans',
-          child: DietPlansScreen(),
-        ),
+        builder: (context, state) => const DietPlansScreen(),
       ),
       GoRoute(
         path: '/settings',
         name: 'settings',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/settings',
-          child: SettingsScreen(),
-        ),
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/pricing',
         name: 'pricing',
         builder: (context, state) => const PricingScreen(),
       ),
-      ShellRoute(
-        builder: (context, state, child) => Scaffold(
-          body: child,
-          bottomNavigationBar: MemberBottomNav(location: state.matchedLocation),
-        ),
-        routes: [
-          GoRoute(
-            path: '/member',
-            name: 'member',
-            builder: (context, state) => const MemberHomeScreen(),
-          ),
-          GoRoute(
-            path: '/member/workout',
-            name: 'member-workout',
-            builder: (context, state) => const MemberWorkoutScreen(),
-            routes: [
-              GoRoute(
-                path: 'add',
-                name: 'member-workout-add',
-                builder: (context, state) => const MemberAddWorkoutPlanScreen(),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/member/diet',
-            name: 'member-diet',
-            builder: (context, state) => const MemberDietScreen(),
-          ),
-          GoRoute(
-            path: '/member/progress',
-            name: 'member-progress',
-            builder: (context, state) => const MemberProgressScreen(),
-          ),
-          GoRoute(
-            path: '/member/announcements',
-            name: 'member-announcements',
-            builder: (context, state) => const MemberAnnouncementsScreen(),
-          ),
-          GoRoute(
-            path: '/member/traffic',
-            name: 'member-traffic',
-            pageBuilder: (context, state) => _pushPage(state, const GymTrafficScreen()),
-          ),
-          GoRoute(
-            path: '/member/profile',
-            name: 'member_profile',
-            pageBuilder: (context, state) => _pushPage(state, const MemberProfileScreen()),
-          ),
-          GoRoute(
-            path: '/member/notes',
-            name: 'member-notes',
-            pageBuilder: (context, state) => _pushPage(state, const NotesScreen()),
-          ),
-        ],
+      GoRoute(
+        path: '/member',
+        name: 'member',
+        builder: (context, state) => const MemberHomeScreen(),
+      ),
+      GoRoute(
+        path: '/member/workout',
+        name: 'member-workout',
+        builder: (context, state) => const MemberWorkoutScreen(),
+      ),
+      GoRoute(
+        path: '/member/diet',
+        name: 'member-diet',
+        builder: (context, state) => const MemberDietScreen(),
+      ),
+      GoRoute(
+        path: '/member/progress',
+        name: 'member-progress',
+        builder: (context, state) => const MemberProgressScreen(),
+      ),
+      GoRoute(
+        path: '/member/announcements',
+        name: 'member-announcements',
+        builder: (context, state) => const MemberAnnouncementsScreen(),
       ),
       GoRoute(
         path: '/member/paywall',
@@ -449,22 +286,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/pro/ai',
         name: 'pro-ai',
-        pageBuilder: (c, s) => _pushPage(s, const ProAiScreen()),
+        builder: (context, state) => const ProAiScreen(),
       ),
       GoRoute(
         path: '/pro/nutrition',
         name: 'pro-nutrition',
-        pageBuilder: (c, s) => _pushPage(s, const ProNutritionScreen()),
+        builder: (context, state) => const ProNutritionScreen(),
       ),
       GoRoute(
         path: '/pro/measurements',
         name: 'pro-measurements',
-        pageBuilder: (c, s) => _pushPage(s, const ProMeasurementsScreen()),
+        builder: (context, state) => const ProMeasurementsScreen(),
       ),
       GoRoute(
         path: '/pro/paywall',
         name: 'pro-paywall',
-        pageBuilder: (c, s) => _pushPage(s, const ProPaywallScreen()),
+        builder: (context, state) => const ProPaywallScreen(),
       ),
       GoRoute(
         path: '/elite',
@@ -474,32 +311,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/elite/ai',
         name: 'elite-ai',
-        pageBuilder: (c, s) => _pushPage(s, const EliteAiTrainerScreen()),
+        builder: (context, state) => const EliteAiTrainerScreen(),
       ),
       GoRoute(
         path: '/elite/chat',
         name: 'elite-chat',
-        pageBuilder: (c, s) => _pushPage(s, const EliteChatScreen()),
+        builder: (context, state) => const EliteChatScreen(),
       ),
       GoRoute(
         path: '/elite/supplements',
         name: 'elite-supplements',
-        pageBuilder: (c, s) => _pushPage(s, const EliteSupplementScreen()),
+        builder: (context, state) => const EliteSupplementScreen(),
       ),
       GoRoute(
         path: '/elite/progress',
         name: 'elite-progress',
-        pageBuilder: (c, s) => _pushPage(s, const EliteMuscleProgressScreen()),
+        builder: (context, state) => const EliteMuscleProgressScreen(),
       ),
       GoRoute(
         path: '/elite/transformation',
         name: 'elite-transformation',
-        pageBuilder: (c, s) => _pushPage(s, const EliteTransformationScreen()),
+        builder: (context, state) => const EliteTransformationScreen(),
       ),
       GoRoute(
         path: '/elite/paywall',
         name: 'elite-paywall',
-        pageBuilder: (c, s) => _pushPage(s, const ElitePaywallScreen()),
+        builder: (context, state) => const ElitePaywallScreen(),
       ),
       GoRoute(
         path: '/master',
@@ -509,32 +346,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/master/ai',
         name: 'master-ai',
-        pageBuilder: (c, s) => _pushPage(s, const MasterAiCoachScreen()),
+        builder: (context, state) => const MasterAiCoachScreen(),
       ),
       GoRoute(
         path: '/master/analytics',
         name: 'master-analytics',
-        pageBuilder: (c, s) => _pushPage(s, const MasterAnalyticsScreen()),
+        builder: (context, state) => const MasterAnalyticsScreen(),
       ),
       GoRoute(
         path: '/master/challenges',
         name: 'master-challenges',
-        pageBuilder: (c, s) => _pushPage(s, const MasterChallengesScreen()),
+        builder: (context, state) => const MasterChallengesScreen(),
       ),
       GoRoute(
         path: '/master/live',
         name: 'master-live',
-        pageBuilder: (c, s) => _pushPage(s, const MasterLiveSessionsScreen()),
+        builder: (context, state) => const MasterLiveSessionsScreen(),
       ),
       GoRoute(
         path: '/master/recovery',
         name: 'master-recovery',
-        pageBuilder: (c, s) => _pushPage(s, const MasterRecoveryScreen()),
+        builder: (context, state) => const MasterRecoveryScreen(),
       ),
       GoRoute(
         path: '/master/paywall',
         name: 'master-paywall',
-        pageBuilder: (c, s) => _pushPage(s, const MasterPaywallScreen()),
+        builder: (context, state) => const MasterPaywallScreen(),
       ),
       GoRoute(
         path: '/admin',
@@ -544,198 +381,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/todos',
         name: 'todos',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/todos',
-          child: TodosScreen(),
-        ),
+        builder: (context, state) => const TodosScreen(),
       ),
       GoRoute(
         path: '/traffic',
         name: 'traffic',
-        pageBuilder: (context, state) => _pushPage(
-          state,
-          const SharedManagementWrapper(
-            currentRoute: '/traffic',
-            child: GymTrafficScreen(),
-          ),
-        ),
+        pageBuilder: (context, state) => _fadePage(state, const GymTrafficScreen()),
       ),
-
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
-        pageBuilder: (context, state) => _pushPage(
-          state,
-          const SharedManagementWrapper(
-            currentRoute: '/nutrition',
-            child: NutritionScreen(),
-          ),
-        ),
+        pageBuilder: (context, state) => _fadePage(state, const NutritionScreen()),
       ),
-      GoRoute(
-        path: '/nutrition/scan',
-        name: 'nutrition-scan',
-        pageBuilder: (context, state) =>
-            _pushPage(state, const BarcodeScannerScreen()),
-      ),
-      GoRoute(
-        path: '/nutrition/log',
-        name: 'nutrition-log',
-        pageBuilder: (context, state) =>
-            _pushPage(state, const ManualNutritionLogScreen()),
-      ),
-      GoRoute(
-        path: '/nutrition/goal',
-        name: 'nutrition-goal',
-        pageBuilder: (context, state) =>
-            _pushPage(state, const DailyCalorieGoalScreen()),
-      ),
-      GoRoute(
-        path: '/workout/active',
-        name: 'workout-active',
-        pageBuilder: (context, state) => _modalPage(state, const ActiveWorkoutScreen()),
-      ),
-      GoRoute(
-        path: '/workout/timer',
-        name: 'workout-timer',
-        pageBuilder: (context, state) => _modalPage(state, const RestTimerScreen()),
-      ),
-      GoRoute(
-        path: '/workout/done',
-        name: 'workout-done',
-        pageBuilder: (context, state) => _modalPage(state, const WorkoutCompletionScreen()),
-      ),
-      GoRoute(
-        path: '/workout/history',
-        name: 'workout-history',
-        pageBuilder: (context, state) => _pushPage(state, const WorkoutHistoryScreen()),
-      ),
-      GoRoute(
-        path: '/workout/exercise-search',
-        name: 'workout-exercise-search',
-        pageBuilder: (context, state) => _pushPage(state, const SearchExerciseScreen()),
-      ),
-      GoRoute(
-        path: '/workout/exercise-progress',
-        name: 'workout-exercise-progress',
-        pageBuilder: (context, state) => _pushPage(state, const ExerciseProgressScreen()),
-      ),
-      GoRoute(
-        path: '/workout/compare',
-        name: 'workout-compare',
-        pageBuilder: (context, state) => _pushPage(state, const CompareExercisesScreen()),
-      ),
-      GoRoute(
-        path: '/master/profile',
-        name: 'master-profile',
-        pageBuilder: (c, s) => _pushPage(s, const MasterProfileScreen()),
-      ),
-      GoRoute(
-        path: '/master/perks',
-        name: 'master-perks',
-        pageBuilder: (c, s) => _pushPage(s, const MasterPerksScreen()),
-      ),
-      GoRoute(
-        path: '/master/transformation',
-        name: 'master-transformation',
-        pageBuilder: (c, s) => _pushPage(s, const MasterTransformationScreen()),
-      ),
-      GoRoute(
-        path: '/support',
-        name: 'support',
-        builder: (context, state) => const SharedManagementWrapper(
-          currentRoute: '/support',
-          child: SupportScreen(),
-        ),
-      ),
-      GoRoute(
-        path: '/clients/checkin',
-        name: 'clients-checkin',
-        pageBuilder: (c, s) => _pushPage(s, const LogCheckinScreen()),
-      ),
-      GoRoute(
-        path: '/health/steps',
-        name: 'steps-tracking',
-        pageBuilder: (c, s) => _pushPage(s, const StepsTrackingScreen()),
-      ),
-      GoRoute(
-        path: '/health/sleep',
-        name: 'sleep-tracking',
-        pageBuilder: (c, s) => _pushPage(s, const SleepTrackingScreen()),
-      ),
-      // ─── Motivation Routes ───────────────────────────────────────────────
-      GoRoute(
-        path: '/motivation/daily',
-        name: 'motivation-daily',
-        pageBuilder: (c, s) => _pushPage(s, const MotivationQuoteScreen()),
-      ),
-      GoRoute(
-        path: '/workout/calendar',
-        name: 'workout-calendar',
-        pageBuilder: (c, s) => _pushPage(s, const WorkoutCalendarScreen()),
-      ),
-      GoRoute(
-        path: '/notifications',
-        name: 'notifications',
-        pageBuilder: (c, s) => _pushPage(s, const NotificationsScreen()),
-      ),
-      // ── New Feature Routes ───────────────────────────────────────────────
-      GoRoute(
-        path: '/health/body-measurements',
-        name: 'body-measurements',
-        pageBuilder: (c, s) => _pushPage(s, const BodyMeasurementsScreen()),
-      ),
-      GoRoute(
-        path: '/health/water',
-        name: 'water-tracker',
-        pageBuilder: (c, s) => _pushPage(s, const WaterTrackerScreen()),
-      ),
-      GoRoute(
-        path: '/workout/personal-records',
-        name: 'personal-records',
-        pageBuilder: (c, s) => _pushPage(s, const PersonalRecordsScreen()),
-      ),
-      GoRoute(
-        path: '/achievements',
-        name: 'achievements',
-        pageBuilder: (c, s) => _pushPage(s, const AchievementsScreen()),
-      ),
-      GoRoute(
-        path: '/tools/macro-calculator',
-        name: 'macro-calculator',
-        pageBuilder: (c, s) => _pushPage(s, const MacroCalculatorScreen()),
-      ),
-      GoRoute(
-        path: '/tools/one-rep-max',
-        name: 'one-rep-max',
-        pageBuilder: (c, s) => _pushPage(s, const OneRepMaxScreen()),
-      ),
-      GoRoute(
-        path: '/gym/equipment',
-        name: 'equipment-status',
-        pageBuilder: (c, s) => _pushPage(s, const EquipmentStatusScreen()),
-      ),
-      GoRoute(
-        path: '/gym/checkin',
-        name: 'gym-checkin',
-        pageBuilder: (c, s) => _modalPage(s, const QrCheckinScreen()),
-      ),
-      GoRoute(
-        path: '/gym/checkout',
-        name: 'gym-checkout',
-        pageBuilder: (c, s) =>
-            _modalPage(s, QrCheckinScreen(isCheckOut: true, checkInId: s.extra as String?)),
-      ),
-
     ],
-
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: AppColors.bgDark,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
+            Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               'Page not found',

@@ -88,3 +88,6 @@ assets/app.env
 
 # Coverage
 coverage/
+
+# Internal AI Tools
+.claude/
