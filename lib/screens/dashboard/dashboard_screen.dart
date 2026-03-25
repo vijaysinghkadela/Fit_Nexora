@@ -63,6 +63,11 @@ const managementDestinations = [
     route: '/diet-plans',
   ),
   FitShellDestination(
+    icon: Icons.campaign_rounded,
+    label: 'Announcements',
+    route: '/manage-announcements',
+  ),
+  FitShellDestination(
     icon: Icons.settings_rounded,
     label: 'Settings',
     route: '/settings',
@@ -85,6 +90,11 @@ const managementMobileDestinations = [
     icon: Icons.fitness_center_rounded,
     label: 'Workouts',
     route: '/workouts',
+  ),
+  FitShellDestination(
+    icon: Icons.campaign_rounded,
+    label: 'News',
+    route: '/manage-announcements',
   ),
   FitShellDestination(
     icon: Icons.tune_rounded,
@@ -496,8 +506,8 @@ class _NotificationIconState extends State<_NotificationIcon>
           child: Stack(
             children: [
               Center(
-                child:
-                    Icon(Icons.notifications_rounded, color: colors.textSecondary, size: 20),
+                child: Icon(Icons.notifications_rounded,
+                    color: colors.textSecondary, size: 20),
               ),
               Positioned(
                 top: 10,
@@ -582,7 +592,12 @@ class _StatsShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final cardLabels = ['Active Members', 'Total Clients', 'AI Queries', 'Est. Revenue'];
+    final cardLabels = [
+      'Active Members',
+      'Total Clients',
+      'AI Queries',
+      'Est. Revenue'
+    ];
     return Wrap(
       spacing: 12,
       runSpacing: 12,
@@ -591,8 +606,7 @@ class _StatsShimmer extends StatelessWidget {
         (i) => SizedBox(
           width: context.isMobile
               ? (context.screenSize.width - 52) / 2
-              : (context.screenSize.width -
-                      (context.isDesktop ? 380 : 200)) /
+              : (context.screenSize.width - (context.isDesktop ? 380 : 200)) /
                   4,
           child: Container(
             height: 112,
@@ -701,8 +715,8 @@ class _NoGymBanner extends StatelessWidget {
                   isLoading
                       ? 'Setting up your dashboard'
                       : 'Create or join a gym to get started',
-                  style: GoogleFonts.inter(
-                      fontSize: 12, color: t.textSecondary),
+                  style:
+                      GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
                 ),
               ],
             ),
@@ -798,7 +812,9 @@ class _StatsGrid extends StatelessWidget {
       _StatCardData(
         label: 'AI Usage',
         value: '$aiQueries queries',
-        footnote: tier == PlanTier.basic ? 'Upgrade to unlock' : '${_safePercent(haikuUsed, haikuLimit == -1 ? haikuUsed * 2 : haikuLimit)}% of limit',
+        footnote: tier == PlanTier.basic
+            ? 'Upgrade to unlock'
+            : '${_safePercent(haikuUsed, haikuLimit == -1 ? haikuUsed * 2 : haikuLimit)}% of limit',
         footnoteColor: _FootnoteColor.muted,
         icon: Icons.auto_awesome_rounded,
         tone: _CardTone.muted,
@@ -808,8 +824,9 @@ class _StatsGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 860;
-        final width =
-            wide ? (constraints.maxWidth - 36) / 4 : (constraints.maxWidth - 12) / 2;
+        final width = wide
+            ? (constraints.maxWidth - 36) / 4
+            : (constraints.maxWidth - 12) / 2;
 
         return Wrap(
           spacing: 12,
@@ -845,6 +862,7 @@ class _StatsGrid extends StatelessWidget {
 }
 
 enum _CardTone { brand, success, warning, muted }
+
 enum _FootnoteColor { success, muted }
 
 class _StatCardData {
@@ -996,7 +1014,8 @@ class _GymOccupancyCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: colors.accent.withOpacity(0.14),
                     borderRadius: BorderRadius.circular(999),
@@ -1093,7 +1112,8 @@ class _OccupancyBarChart extends StatelessWidget {
             BarChartRodData(
               toY: val,
               width: 14,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(6)),
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
@@ -1110,63 +1130,67 @@ class _OccupancyBarChart extends StatelessWidget {
 
     return RepaintBoundary(
       child: BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceEvenly,
-        maxY: 22,
-        minY: 0,
-        barGroups: groups,
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: 5,
-          getDrawingHorizontalLine: (_) => FlLine(
-            color: colors.border.withOpacity(0.35),
-            strokeWidth: 1,
+        BarChartData(
+          alignment: BarChartAlignment.spaceEvenly,
+          maxY: 22,
+          minY: 0,
+          barGroups: groups,
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            horizontalInterval: 5,
+            getDrawingHorizontalLine: (_) => FlLine(
+              color: colors.border.withOpacity(0.35),
+              strokeWidth: 1,
+            ),
           ),
-        ),
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 28,
-              getTitlesWidget: (value, meta) {
-                final idx = value.toInt();
-                if (idx < 0 || idx >= labels.length) return const SizedBox.shrink();
-                return Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    labels[idx],
-                    style: GoogleFonts.inter(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w700,
-                      color: colors.textMuted,
+          borderData: FlBorderData(show: false),
+          titlesData: FlTitlesData(
+            leftTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 28,
+                getTitlesWidget: (value, meta) {
+                  final idx = value.toInt();
+                  if (idx < 0 || idx >= labels.length)
+                    return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      labels[idx],
+                      style: GoogleFonts.inter(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: colors.textMuted,
+                      ),
                     ),
+                  );
+                },
+              ),
+            ),
+          ),
+          barTouchData: BarTouchData(
+            enabled: true,
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                return BarTooltipItem(
+                  '${rod.toY.round()}',
+                  GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                   ),
                 );
               },
             ),
           ),
         ),
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              return BarTooltipItem(
-                '${rod.toY.round()}',
-                GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              );
-            },
-          ),
-        ),
-      ),
       ),
     );
   }
@@ -1192,99 +1216,101 @@ class _LiveSnapshotCards extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                   Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: colors.brand.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(Icons.people_rounded, color: colors.brand, size: 20),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: colors.accent.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: colors.accent,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'LIVE',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: colors.accent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Current Occupancy',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: colors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              occupancyAsync.when(
-                data: (count) => Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '$count',
-                      style: GoogleFonts.inter(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: colors.textPrimary,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: colors.brand.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      child: Icon(Icons.people_rounded,
+                          color: colors.brand, size: 20),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'members active',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: colors.textMuted,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: colors.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: colors.accent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'LIVE',
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: colors.accent,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                loading: () => const SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: CircularProgressIndicator.adaptive(strokeWidth: 3),
-                ),
-                error: (_, __) => Text(
-                  '--',
+                const SizedBox(height: 16),
+                Text(
+                  'Current Occupancy',
                   style: GoogleFonts.inter(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                     color: colors.textSecondary,
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(height: 4),
+                occupancyAsync.when(
+                  data: (count) => Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        '$count',
+                        style: GoogleFonts.inter(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          color: colors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'members active',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                  loading: () => const SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 3),
+                  ),
+                  error: (_, __) => Text(
+                    '--',
+                    style: GoogleFonts.inter(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
 
@@ -1292,129 +1318,132 @@ class _LiveSnapshotCards extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: colors.accent.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: colors.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.fitness_center_rounded,
+                          color: colors.accent, size: 20),
                     ),
-                    child: Icon(Icons.fitness_center_rounded, color: colors.accent, size: 20),
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/gym/equipment'),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'View All',
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: colors.brand,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 10, color: colors.brand),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Equipment Status',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: colors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              equipmentAsync.when(
-                data: (summary) {
-                  final total = summary.values.fold(0, (a, b) => a + b);
-                  final available = summary['available'] ?? 0;
-                  final outOfOrder = summary['out_of_order'] ?? 0;
-                  
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
+                    TextButton(
+                      onPressed: () => context.go('/gym/equipment'),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Row(
                         children: [
                           Text(
-                            '$available',
+                            'View All',
                             style: GoogleFonts.inter(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w800,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                          Text(
-                            '/$total',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
+                              fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              color: colors.textMuted,
+                              color: colors.brand,
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'ready',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: colors.textMuted,
-                            ),
-                          ),
+                          const SizedBox(width: 4),
+                          Icon(Icons.arrow_forward_ios_rounded,
+                              size: 10, color: colors.brand),
                         ],
                       ),
-                      if (outOfOrder > 0)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: colors.danger.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '$outOfOrder Down',
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: colors.danger,
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-                loading: () => const SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: CircularProgressIndicator.adaptive(strokeWidth: 3),
+                    ),
+                  ],
                 ),
-                error: (_, __) => Text(
-                  'No equipment added',
+                const SizedBox(height: 16),
+                Text(
+                  'Equipment Status',
                   style: GoogleFonts.inter(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: colors.textMuted,
-                    fontStyle: FontStyle.italic,
+                    color: colors.textSecondary,
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(height: 4),
+                equipmentAsync.when(
+                  data: (summary) {
+                    final total = summary.values.fold(0, (a, b) => a + b);
+                    final available = summary['available'] ?? 0;
+                    final outOfOrder = summary['out_of_order'] ?? 0;
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '$available',
+                              style: GoogleFonts.inter(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w800,
+                                color: colors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              '/$total',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: colors.textMuted,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'ready',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: colors.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (outOfOrder > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: colors.danger.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '$outOfOrder Down',
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: colors.danger,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                  loading: () => const SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 3),
+                  ),
+                  error: (_, __) => Text(
+                    'No equipment added',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textMuted,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
 
@@ -1517,11 +1546,11 @@ class _AiInsightsCard extends StatelessWidget {
             haikuLimit == -1 ? activeMembers * 3 : haikuLimit,
             math.max(0, activeMembers * 2),
           );
-    final opusUsed =
-        tier == PlanTier.elite ? math.min(opusLimit, math.max(0, activeMembers ~/ 3)) : 0;
-    final tokenUsed = tier == PlanTier.basic
-        ? 0
-        : math.min(tokenLimit, activeMembers * 5200);
+    final opusUsed = tier == PlanTier.elite
+        ? math.min(opusLimit, math.max(0, activeMembers ~/ 3))
+        : 0;
+    final tokenUsed =
+        tier == PlanTier.basic ? 0 : math.min(tokenLimit, activeMembers * 5200);
 
     // Derived meter percentages (0.0–1.0)
     final workoutPlansPct = tier == PlanTier.basic
@@ -1631,7 +1660,9 @@ class _AiInsightsCard extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
-                color: tier == PlanTier.basic ? colors.textSecondary : colors.brand,
+                color: tier == PlanTier.basic
+                    ? colors.textSecondary
+                    : colors.brand,
                 letterSpacing: 1,
               ),
             ),
@@ -1779,8 +1810,7 @@ class _RenewalQueueCard extends StatelessWidget {
                   return const _EmptyState(
                     icon: Icons.workspace_premium_outlined,
                     title: 'No memberships yet',
-                    subtitle:
-                        'Create a membership to start tracking renewals.',
+                    subtitle: 'Create a membership to start tracking renewals.',
                   );
                 }
 
@@ -2225,8 +2255,7 @@ class _TrafficSeries {
 
       return values
           .map(
-            (value) =>
-                (0.15 + ((value / maxValue) * 0.78)).clamp(0.12, 0.94),
+            (value) => (0.15 + ((value / maxValue) * 0.78)).clamp(0.12, 0.94),
           )
           .toList();
     }

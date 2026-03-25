@@ -42,6 +42,7 @@ import '../screens/member/member_profile_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
 import '../screens/member/member_workout_screen.dart';
+import '../screens/dashboard/manage_announcements_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
 import '../screens/notifications/notifications_screen.dart';
@@ -269,6 +270,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/diet-plans',
         name: 'diet-plans',
         builder: (context, state) => const DietPlansScreen(),
+      ),
+      GoRoute(
+        path: '/manage-announcements',
+        name: 'manage-announcements',
+        builder: (context, state) => const ManageAnnouncementsScreen(),
       ),
       GoRoute(
         path: '/settings',

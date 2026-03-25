@@ -230,6 +230,14 @@ class _AdminDashboardState extends ConsumerState<_AdminDashboard> {
 
     return Scaffold(
       backgroundColor: _colors.background,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/manage-announcements'),
+        backgroundColor: _colors.brand,
+        icon: const Icon(Icons.campaign_rounded, color: Colors.white),
+        label: Text('Global News',
+            style: GoogleFonts.inter(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -716,7 +724,8 @@ class _SubscriptionGrowthCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: colors.surface.withOpacity(0.04),
                   borderRadius: BorderRadius.circular(14),
@@ -779,93 +788,97 @@ class _GrowthLineChart extends StatelessWidget {
 
     return RepaintBoundary(
       child: LineChart(
-      LineChartData(
-        minX: 0,
-        maxX: (displayPoints.length - 1).toDouble(),
-        minY: 0,
-        maxY: maxY,
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: false,
-          horizontalInterval: maxY / 4,
-          getDrawingHorizontalLine: (_) => FlLine(
-            color: colors.border.withOpacity(0.3),
-            strokeWidth: 1,
+        LineChartData(
+          minX: 0,
+          maxX: (displayPoints.length - 1).toDouble(),
+          minY: 0,
+          maxY: maxY,
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            horizontalInterval: maxY / 4,
+            getDrawingHorizontalLine: (_) => FlLine(
+              color: colors.border.withOpacity(0.3),
+              strokeWidth: 1,
+            ),
           ),
-        ),
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 28,
-              getTitlesWidget: (value, meta) {
-                final idx = value.toInt();
-                if (idx < 0 || idx >= labels.length) return const SizedBox.shrink();
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    labels[idx],
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: colors.textMuted,
+          borderData: FlBorderData(show: false),
+          titlesData: FlTitlesData(
+            leftTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 28,
+                getTitlesWidget: (value, meta) {
+                  final idx = value.toInt();
+                  if (idx < 0 || idx >= labels.length)
+                    return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      labels[idx],
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: colors.textMuted,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                },
+              ),
+            ),
+          ),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              color: colors.brand,
+              barWidth: 3,
+              dotData: FlDotData(
+                show: true,
+                getDotPainter: (spot, percent, barData, index) =>
+                    FlDotCirclePainter(
+                  radius: 4,
+                  color: colors.brand,
+                  strokeWidth: 2,
+                  strokeColor: colors.background,
+                ),
+              ),
+              belowBarData: BarAreaData(
+                show: true,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    colors.brand.withOpacity(0.32),
+                    colors.brand.withOpacity(0.0),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              getTooltipItems: (touchedSpots) {
+                return touchedSpots.map((spot) {
+                  return LineTooltipItem(
+                    spot.y.round().toString(),
+                    GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  );
+                }).toList();
               },
             ),
           ),
         ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: colors.brand,
-            barWidth: 3,
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, barData, index) =>
-                  FlDotCirclePainter(
-                radius: 4,
-                color: colors.brand,
-                strokeWidth: 2,
-                strokeColor: colors.background,
-              ),
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  colors.brand.withOpacity(0.32),
-                  colors.brand.withOpacity(0.0),
-                ],
-              ),
-            ),
-          ),
-        ],
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipItems: (touchedSpots) {
-              return touchedSpots.map((spot) {
-                return LineTooltipItem(
-                  spot.y.round().toString(),
-                  GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                );
-              }).toList();
-            },
-          ),
-        ),
-      ),
       ),
     );
   }
@@ -913,7 +926,8 @@ class _RecentGymsCard extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    context.showSnackBar('Full registration list is coming next.');
+                    context
+                        .showSnackBar('Full registration list is coming next.');
                   },
                   child: const Text('View All'),
                 ),
@@ -940,8 +954,7 @@ class _RecentGymsCard extends StatelessWidget {
             endIndent: 16,
           ),
           if (loading)
-            for (var i = 0; i < 3; i++)
-              _GymRowPlaceholder(colors: colors)
+            for (var i = 0; i < 3; i++) _GymRowPlaceholder(colors: colors)
           else if (error != null && gyms.isEmpty)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
@@ -1330,7 +1343,8 @@ class _AdminBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.map((item) {
-          final isSelected = item.route == currentRoute || (item.route == '/admin' && currentRoute == '/admin');
+          final isSelected = item.route == currentRoute ||
+              (item.route == '/admin' && currentRoute == '/admin');
           return InkWell(
             onTap: () {
               if (!isSelected) context.go(item.route);
@@ -1435,7 +1449,8 @@ class _AdminSnapshot {
   int get estimatedRevenue => activeSubscriptions * 2199;
   int get retentionPercent {
     if (totalGyms == 0) return 0;
-    return math.min(99, math.max(0, ((activeSubscriptions / totalGyms) * 100).round()));
+    return math.min(
+        99, math.max(0, ((activeSubscriptions / totalGyms) * 100).round()));
   }
 
   /// 6 monthly data points for the growth chart

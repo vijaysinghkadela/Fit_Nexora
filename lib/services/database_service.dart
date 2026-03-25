@@ -793,7 +793,7 @@ class DatabaseService {
     return await _client
         .from(AppConstants.announcementsTable)
         .select()
-        .eq('gym_id', gymId)
+        .or('gym_id.eq.$gymId,announcement_type.eq.app')
         .order('is_pinned', ascending: false)
         .order('created_at', ascending: false)
         .limit(20);
@@ -808,17 +808,28 @@ class DatabaseService {
     final count = await _client
         .from(AppConstants.announcementsTable)
         .select()
-        .eq('gym_id', gymId)
+        .or('gym_id.eq.$gymId,announcement_type.eq.app')
         .count(CountOption.exact);
     final data = await _client
         .from(AppConstants.announcementsTable)
         .select()
-        .eq('gym_id', gymId)
+        .or('gym_id.eq.$gymId,announcement_type.eq.app')
         .order('is_pinned', ascending: false)
         .order('created_at', ascending: false)
         .range(offset, offset + limit - 1);
 
     final items = data.map(Announcement.fromJson).toList();
+    // Re-sort items locally to ensure App updates that are pinned show first, then Gym pinned, then unpinned newest
+    items.sort((a, b) {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      if (a.isPinned && b.isPinned) {
+        if (a.type == 'app' && b.type != 'app') return -1;
+        if (a.type != 'app' && b.type == 'app') return 1;
+      }
+      return b.createdAt.compareTo(a.createdAt);
+    });
+
     return PagedResult<Announcement>(
       items: items,
       hasMore: offset + items.length < count.count,
@@ -829,12 +840,18 @@ class DatabaseService {
 
   /// Stream gym announcements in real-time.
   Stream<List<Map<String, dynamic>>> streamAnnouncements(String gymId) {
+    // Note: Supabase stream filters don't currently support .or() directly on the client side in the same way.
+    // However, the RLS policy will restrict what the user sees anyway. So we omit the filter and rely on RLS,
+    // or filter locally if needed. We'll use a basic stream and filter out mismatches just in case.
     return _client
         .from(AppConstants.announcementsTable)
         .stream(primaryKey: ['id'])
-        .eq('gym_id', gymId)
         .order('created_at', ascending: false)
-        .limit(20);
+        .limit(20)
+        .map((events) => events
+            .where(
+                (e) => e['gym_id'] == gymId || e['announcement_type'] == 'app')
+            .toList());
   }
 
   /// Insert a progress check-in record (used by Pro member measurements screen).

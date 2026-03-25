@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../../core/dev_bypass.dart';
 import '../../core/extensions.dart';
 import '../../models/announcement_model.dart';
@@ -140,7 +139,8 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
               );
             }
 
-            if (announcementsState.items.isEmpty && announcementsState.hasError) {
+            if (announcementsState.items.isEmpty &&
+                announcementsState.hasError) {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
@@ -149,7 +149,8 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
                     child: ErrorStateWidget(
                       message: 'Unable to load announcements.',
                       onRetry: () => ref
-                          .read(pagedAnnouncementsControllerProvider(gym.id).notifier)
+                          .read(pagedAnnouncementsControllerProvider(gym.id)
+                              .notifier)
                           .loadInitial(),
                     ),
                   ),
@@ -198,9 +199,10 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(20),
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: announcementsState.items.length + 1,
-              separatorBuilder: (_, index) => index == announcementsState.items.length - 1
-                  ? const SizedBox.shrink()
-                  : const SizedBox(height: 12),
+              separatorBuilder: (_, index) =>
+                  index == announcementsState.items.length - 1
+                      ? const SizedBox.shrink()
+                      : const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 if (index == announcementsState.items.length) {
                   return LoadingFooter(
@@ -210,7 +212,8 @@ class MemberAnnouncementsScreen extends ConsumerWidget {
                         ? announcementsState.error
                         : null,
                     onPressed: () => ref
-                        .read(pagedAnnouncementsControllerProvider(gym.id).notifier)
+                        .read(pagedAnnouncementsControllerProvider(gym.id)
+                            .notifier)
                         .loadMore(),
                   );
                 }
@@ -240,18 +243,25 @@ class _AnnouncementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.fitTheme;
     final isPinned = announcement.isPinned;
-    final color = isPinned ? t.warning : t.info;
+    final isAppUpdate = announcement.type == 'app';
+
+    // App updates use brand colors, gym uses info/warning
+    final color = isAppUpdate ? t.brand : (isPinned ? t.warning : t.info);
+
+    final icon = isAppUpdate
+        ? Icons.system_update_rounded
+        : (isPinned ? Icons.push_pin_rounded : Icons.campaign_rounded);
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: t.surfaceAlt,
+        color: isAppUpdate ? t.brand.withOpacity(0.05) : t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isPinned
-              ? t.warning.withOpacity(0.3)
-              : t.border,
-          width: isPinned ? 1.5 : 1,
+          color: isAppUpdate
+              ? t.brand.withOpacity(0.3)
+              : (isPinned ? t.warning.withOpacity(0.3) : t.border),
+          width: (isPinned || isAppUpdate) ? 1.5 : 1,
         ),
       ),
       child: Column(
@@ -266,15 +276,34 @@ class _AnnouncementCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.campaign_rounded,
+                  icon,
                   color: color,
                   size: 16,
                 ),
               ),
               const SizedBox(width: 10),
-              if (isPinned)
+              if (isAppUpdate)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [t.brand, t.accent]),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'APP UPDATE',
+                    style: GoogleFonts.inter(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                )
+              else if (isPinned)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: t.warning.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(6),
@@ -324,6 +353,9 @@ class _AnnouncementCard extends StatelessWidget {
           ],
         ],
       ),
-    ).animate(delay: Duration(milliseconds: delay)).fadeIn().slideY(begin: 0.04);
+    )
+        .animate(delay: Duration(milliseconds: delay))
+        .fadeIn()
+        .slideY(begin: 0.04);
   }
 }

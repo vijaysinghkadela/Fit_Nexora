@@ -1155,16 +1155,22 @@ class _AnnouncementsCard extends StatelessWidget {
                         leading: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: (a.isPinned as bool)
-                                ? t.warning.withOpacity(0.12)
-                                : t.info.withOpacity(0.12),
+                            color: a.type == 'app'
+                                ? t.brand.withOpacity(0.12)
+                                : ((a.isPinned as bool)
+                                    ? t.warning.withOpacity(0.12)
+                                    : t.info.withOpacity(0.12)),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            (a.isPinned as bool)
-                                ? Icons.push_pin_rounded
-                                : Icons.campaign_rounded,
-                            color: (a.isPinned as bool) ? t.warning : t.info,
+                            a.type == 'app'
+                                ? Icons.system_update_rounded
+                                : ((a.isPinned as bool)
+                                    ? Icons.push_pin_rounded
+                                    : Icons.campaign_rounded),
+                            color: a.type == 'app'
+                                ? t.brand
+                                : ((a.isPinned as bool) ? t.warning : t.info),
                             size: 16,
                           ),
                         ),
