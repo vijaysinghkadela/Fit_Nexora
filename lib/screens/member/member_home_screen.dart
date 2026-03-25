@@ -592,9 +592,9 @@ class _MembershipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return async.when(
       loading: () => _shimmer(context),
-      error: (_, __) => _noMembership(context),
+      error: (_, __) => const SizedBox.shrink(),
       data: (membership) => membership == null
-          ? _noMembership(context)
+          ? const SizedBox.shrink()
           : _card(membership, context),
     );
   }
@@ -702,25 +702,6 @@ class _MembershipCard extends StatelessWidget {
   }
 
   String _fmt(DateTime dt) => dt.mediumFormatted;
-
-  Widget _noMembership(BuildContext context) {
-    final t = context.fitTheme;
-    return GlassmorphicCard(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Icon(Icons.card_membership_rounded, color: t.textMuted),
-            const SizedBox(width: 12),
-            Text(
-              'No active membership found',
-              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _shimmer(BuildContext context) {
     final t = context.fitTheme;
