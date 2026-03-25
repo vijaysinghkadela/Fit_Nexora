@@ -440,6 +440,75 @@ class _MemberDashboard extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  // ── Full Body Progress featured card ──
+                  GlassmorphicCard(
+                    borderRadius: 20,
+                    onTap: () => handlePremiumTap('/member/body-progress'),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            t.success.withOpacity(0.10),
+                            t.brand.withOpacity(0.06),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(11),
+                            decoration: BoxDecoration(
+                              color: t.success.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(
+                                Icons.accessibility_new_rounded,
+                                color: t.success,
+                                size: 22),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Full Body Progress',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: t.textPrimary,
+                                  ),
+                                ),
+                                Text(
+                                  'Muscle diagram · Nutrition · Strength',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: t.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              _StatusChip(
+                                  label: '14 muscles',
+                                  color: t.success),
+                              const SizedBox(height: 4),
+                              _StatusChip(
+                                  label: 'View Map',
+                                  color: t.brand),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.05),
             ),
@@ -1201,6 +1270,37 @@ class _AnnouncementsCard extends StatelessWidget {
           ),
         ).animate(delay: 200.ms).fadeIn();
       },
+    );
+  }
+}
+
+// ─── Status chip used in Full Body Progress card ──────────────────────────────
+
+class _StatusChip extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _StatusChip({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding:
+          const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(10),
+        border:
+            Border.all(color: color.withOpacity(0.35), width: 1),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
     );
   }
 }

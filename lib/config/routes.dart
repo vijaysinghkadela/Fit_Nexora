@@ -41,6 +41,7 @@ import '../screens/member/member_diet_screen.dart';
 import '../screens/member/member_home_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
+import '../screens/member/full_body_progress_screen.dart';
 import '../screens/member/member_workout_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
@@ -267,6 +268,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/member/progress',
         name: 'member-progress',
         builder: (context, state) => const MemberProgressScreen(),
+      ),
+      GoRoute(
+        path: '/member/body-progress',
+        name: 'member-body-progress',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const FullBodyProgressScreen()),
       ),
       GoRoute(
         path: '/member/announcements',
