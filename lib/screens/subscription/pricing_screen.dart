@@ -59,12 +59,16 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       FitPricingPlanData(
         title: 'Basic',
         price: _priceFor(PlanTier.basic),
-        period: _isAnnual ? '/mo • billed ₹7,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual
+            ? 'billed ${PlanLimits.formatAnnual(PlanTier.basic)}'
+            : null,
         description:
             'A focused starter plan for independent studios building a clean digital operation.',
         ctaLabel: 'Get Started',
         palette: _basicPalette,
-        badge: _isAnnual ? PlanLimits.formatAnnualSavings(PlanTier.basic) : null,
+        badge:
+            _isAnnual ? PlanLimits.formatAnnualSavings(PlanTier.basic) : null,
         features: const [
           FitPricingFeatureData(label: '50 clients capacity'),
           FitPricingFeatureData(label: '1 trainer seat'),
@@ -76,9 +80,12 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       FitPricingPlanData(
         title: 'Pro',
         price: _priceFor(PlanTier.pro),
-        period: _isAnnual ? '/mo • billed ₹14,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual
+            ? 'billed ${PlanLimits.formatAnnual(PlanTier.pro)}'
+            : null,
         description:
-            'Built for growing gyms that want better analytics and guided AI automation.',
+            'Built for growing gyms that want AI workout plans, AI diet plans, advanced analysis, and progress insights.',
         ctaLabel: 'Go Pro',
         palette: _proPalette,
         badge: _isAnnual ? PlanLimits.formatAnnualSavings(PlanTier.pro) : null,
@@ -86,14 +93,19 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
           FitPricingFeatureData(label: '200 clients capacity'),
           FitPricingFeatureData(label: '5 trainer seats'),
           FitPricingFeatureData(label: 'Advanced analytics'),
-          FitPricingFeatureData(label: 'AI Haiku assistant', emphasize: true),
+          FitPricingFeatureData(
+              label: 'AI workout + diet planning', emphasize: true),
+          FitPricingFeatureData(label: 'Full-body progress page'),
           FitPricingFeatureData(label: 'Custom branding', included: false),
         ],
       ),
       FitPricingPlanData(
         title: 'Elite',
         price: _priceFor(PlanTier.elite),
-        period: _isAnnual ? '/mo • billed ₹24,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual
+            ? 'billed ${PlanLimits.formatAnnual(PlanTier.elite)}'
+            : null,
         description:
             'The premium command center for ambitious fitness brands and high-volume teams.',
         ctaLabel: 'Go Elite',
@@ -106,7 +118,7 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
           FitPricingFeatureData(label: '500 clients capacity'),
           FitPricingFeatureData(label: 'Unlimited trainer seats'),
           FitPricingFeatureData(label: 'Full performance suite'),
-          FitPricingFeatureData(label: 'AI Opus access', emphasize: true),
+          FitPricingFeatureData(label: 'AI Kimi Elite access', emphasize: true),
           FitPricingFeatureData(label: 'White-label branding'),
         ],
       ),
@@ -125,11 +137,19 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       ),
       const FitComparisonRowData(
         label: 'AI intelligence',
-        values: ['None', 'Haiku', 'Opus + Haiku'],
+        values: ['None', 'Kimi Pro', 'Kimi Elite'],
         highlightedIndex: 2,
       ),
       const FitComparisonRowData(
         label: 'Automated workout generation',
+        values: ['No', 'Yes', 'Yes'],
+      ),
+      const FitComparisonRowData(
+        label: 'AI diet generation',
+        values: ['No', 'Yes', 'Yes'],
+      ),
+      const FitComparisonRowData(
+        label: 'Full-body progress page',
         values: ['No', 'Yes', 'Yes'],
       ),
       const FitComparisonRowData(
@@ -164,7 +184,7 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
     return FitPricingLandingPage(
       title: 'Elevate Your Fitness Journey',
       subtitle:
-          'Transform your training business with refined AI-driven tools. Choose the plan that matches your studio growth, team size, and ambition.',
+          'Transform your training business with AI workout plans, AI diet plans, and progress analysis. Choose the plan that matches your studio growth, team size, and ambition.',
       headerActionLabel: 'Back to App',
       plans: plans,
       comparisonRows: comparisonRows,
@@ -182,7 +202,8 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       onPlanSelected: (planData) async {
         final tier = _tierFromTitle(planData.title);
         if (tier == PlanTier.basic) {
-          context.showSnackBar('Basic plan selected. You are already on this plan or it is free.');
+          context.showSnackBar(
+              'Basic plan selected. You are already on this plan or it is free.');
           return;
         }
 
@@ -200,10 +221,10 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
         // Initiate Razorpay
         paymentService.startRazorpayCheckout(
           options: {
-            'amount': (amount * 100).toInt(), // Razorpay expects amount in paise
+            'amount':
+                (amount * 100).toInt(), // Razorpay expects amount in paise
             'name': 'FitNexora ${planData.title}',
-            'description':
-                '${_interval.label} subscription for ${gym.name}',
+            'description': '${_interval.label} subscription for ${gym.name}',
             'prefill': {
               'contact': user.phone ?? '',
               'email': user.email,
@@ -337,15 +358,13 @@ class _BillingToggle extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color:
-                    isSelected ? Colors.white : colors.textSecondary,
+                color: isSelected ? Colors.white : colors.textSecondary,
               ),
             ),
             if (badge != null && isSelected) ...[
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: colors.accent,
                   borderRadius: BorderRadius.circular(99),

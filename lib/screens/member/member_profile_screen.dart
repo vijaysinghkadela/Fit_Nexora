@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,6 +40,10 @@ class MemberProfileScreen extends ConsumerWidget {
       }
     }
 
+    final initial = (user?.fullName.isNotEmpty ?? false)
+        ? user!.fullName[0].toUpperCase()
+        : 'F';
+
     return Scaffold(
       backgroundColor: colors.background,
       body: DecoratedBox(
@@ -71,219 +76,412 @@ class MemberProfileScreen extends ConsumerWidget {
                 size: 300,
               ),
             ),
-            SafeArea(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                      child: Row(
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 220,
+                  pinned: true,
+                  backgroundColor: colors.background,
+                  elevation: 0,
+                  leading: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _RoundIconButton(
+                      icon: Icons.arrow_back_rounded,
+                      onTap: () {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).maybePop();
+                        } else {
+                          context.go('/member');
+                        }
+                      },
+                    ),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.only(left: 60, bottom: 16),
+                    title: Text(
+                      user?.fullName ?? 'Profile',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: colors.textPrimary,
+                      ),
+                    ),
+                    background: SafeArea(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _RoundIconButton(
-                            icon: Icons.arrow_back_rounded,
-                            onTap: () {
-                              if (Navigator.of(context).canPop()) {
-                                Navigator.of(context).maybePop();
-                              } else {
-                                context.go('/member');
-                              }
-                            },
+                          GestureDetector(
+                            onTap: () =>
+                                _showEditProfileSheet(context, ref, user),
+                            child: Hero(
+                              tag: 'profile_avatar',
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      gradient: colors.brandGradient,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: user?.avatarUrl != null
+                                        ? ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: user!.avatarUrl!,
+                                              fit: BoxFit.cover,
+                                              width: 100,
+                                              height: 100,
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(
+                                                      strokeWidth: 2),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Center(
+                                                child: Text(
+                                                  initial,
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 36,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              initial,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 36,
+                                                fontWeight: FontWeight.w800,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        color: colors.brand,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: colors.surface, width: 3),
+                                      ),
+                                      child: const Icon(
+                                        Icons.edit_rounded,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Profile',
-                            style: GoogleFonts.inter(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              color: colors.textPrimary,
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colors.brand.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              gym != null
+                                  ? '${gym.planTier.label} Tier'
+                                  : user?.globalRole.label ?? 'Member',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: colors.brand,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => _showEditProfileSheet(context, ref, user),
-                        child: _ProfileCard(
-                          user: user,
-                          gym: gym,
-                          colors: colors,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'ACCOUNT'),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.person_rounded,
-                            title: 'Personal Info',
-                            subtitle: user?.email ?? 'Not signed in',
-                            onTap: () {
-                              _showEditProfileSheet(context, ref, user);
-                            },
-                          ),
-                          _SettingsRow(
-                            icon: Icons.shield_rounded,
-                            title: 'Security & Password',
-                            subtitle: 'Update login and recovery settings',
-                            onTap: () => context.push('/change-password'),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.card_membership_rounded,
-                            title: 'Membership',
-                            subtitle: _membershipLabel(user, gym),
-                            onTap: () => context.push('/pricing'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'PREFERENCES'),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.notifications_rounded,
-                            title: 'Notifications',
-                            subtitle: 'Manage notification permissions',
-                            onTap: () async {
-                              final granted =
-                                  await NotificationService.requestPermissions();
-                              if (context.mounted) {
-                                context.showSnackBar(
-                                  granted
-                                      ? 'Notifications enabled!'
-                                      : 'Notification permission denied. Enable it in device settings.',
-                                  isError: !granted,
-                                );
-                              }
-                            },
-                          ),
-                          _SettingsRow(
-                            icon: Icons.straighten_rounded,
-                            title: 'Units',
-                            subtitle: _unitLabel(unitSystem),
-                            onTap: () => _showUnitPicker(context, ref),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.language_rounded,
-                            title: t.language,
-                            subtitle: _languageLabel(locale.languageCode),
-                            onTap: () => _showLanguagePicker(context, ref),
-                          ),
-                          _SettingsRow(
-                            icon: themeMode == ThemeMode.dark
-                                ? Icons.dark_mode_rounded
-                                : themeMode == ThemeMode.light
-                                    ? Icons.light_mode_rounded
-                                    : Icons.phone_android_rounded,
-                            title: 'Theme',
-                            subtitle: _themeLabel(themeMode),
-                            onTap: () => _showThemePicker(context, ref),
-                          ),
-                          _PerformanceSwitch(
-                            value: ref.watch(performanceProvider),
-                            onChanged: (val) => ref
-                                .read(performanceProvider.notifier)
-                                .setLowPerformanceMode(val),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'SUPPORT'),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.help_rounded,
-                            title: 'Help Center',
-                            subtitle: 'Guides, FAQs, and setup support',
-                            onTap: () => _showSupportSheet(context),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.policy_rounded,
-                            title: 'Privacy Policy',
-                            subtitle: 'How FitNexora handles your data',
-                            onTap: () => _showLegalSheet(context, 'Privacy Policy',
-                                'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.description_rounded,
-                            title: 'Terms of Service',
-                            subtitle: 'Platform usage and subscription terms',
-                            onTap: () => _showLegalSheet(context, 'Terms of Service',
-                                'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(56),
-                          side: BorderSide(
-                            color: colors.brand.withOpacity(0.2),
-                            width: 1.4,
-                          ),
-                          foregroundColor: colors.brand,
-                          backgroundColor: colors.surface.withOpacity(0.85),
-                        ),
-                        onPressed: signOut,
-                        icon: const Icon(Icons.logout_rounded),
-                        label: const Text('Log Out'),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
-                      child: Center(
-                        child: Text(
-                          'FITNEXORA V2.6.0 (MEMBER BUILD)',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.1,
-                            color: colors.textMuted,
+                ),
+                SliverPadding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  sliver: SliverToBoxAdapter(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GlassmorphicCard(
+                            borderRadius: 16,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  Icon(Icons.local_fire_department_rounded,
+                                      color: colors.warning, size: 28),
+                                  const SizedBox(height: 8),
+                                  Text('12',
+                                      style: GoogleFonts.inter(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w800,
+                                          color: colors.textPrimary)),
+                                  Text('Day Streak',
+                                      style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: colors.textSecondary)),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: GlassmorphicCard(
+                            borderRadius: 16,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  Icon(Icons.star_rounded,
+                                      color: colors.accent, size: 28),
+                                  const SizedBox(height: 8),
+                                  Text('Lvl 5',
+                                      style: GoogleFonts.inter(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w800,
+                                          color: colors.textPrimary)),
+                                  Text('2500 XP',
+                                      style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: colors.textSecondary)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                        .animate()
+                        .fadeIn(duration: 400.ms)
+                        .slideY(begin: 0.1, duration: 400.ms),
                   ),
-                ],
-              ),
+                ),
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: 'ACCOUNT'),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.person_rounded,
+                          title: 'Personal Info',
+                          subtitle: user?.email ?? 'Not signed in',
+                          iconColor: colors.brand,
+                          onTap: () {
+                            _showEditProfileSheet(context, ref, user);
+                          },
+                        ),
+                        _SettingsRow(
+                          icon: Icons.shield_rounded,
+                          title: 'Security & Password',
+                          subtitle: 'Update login and recovery settings',
+                          iconColor: colors.brand,
+                          onTap: () => context.push('/change-password'),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.card_membership_rounded,
+                          title: 'Membership',
+                          subtitle: _membershipLabel(user, gym),
+                          iconColor: colors.brand,
+                          onTap: () => context.push('/pricing'),
+                        ),
+                      ],
+                    )
+                        .animate()
+                        .fadeIn(duration: 400.ms, delay: 100.ms)
+                        .slideY(begin: 0.1, duration: 400.ms),
+                  ),
+                ),
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: 'PREFERENCES'),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.notifications_rounded,
+                          title: 'Notifications',
+                          subtitle: 'Manage notification permissions',
+                          iconColor: colors.accent,
+                          onTap: () async {
+                            final granted =
+                                await NotificationService.requestPermissions();
+                            if (context.mounted) {
+                              context.showSnackBar(
+                                granted
+                                    ? 'Notifications enabled!'
+                                    : 'Notification permission denied. Enable it in device settings.',
+                                isError: !granted,
+                              );
+                            }
+                          },
+                        ),
+                        _SettingsRow(
+                          icon: Icons.straighten_rounded,
+                          title: 'Units',
+                          subtitle: _unitLabel(unitSystem),
+                          iconColor: colors.accent,
+                          onTap: () => _showUnitPicker(context, ref),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.language_rounded,
+                          title: t.language,
+                          subtitle: _languageLabel(locale.languageCode),
+                          iconColor: colors.accent,
+                          onTap: () => _showLanguagePicker(context, ref),
+                        ),
+                        _SettingsRow(
+                          icon: themeMode == ThemeMode.dark
+                              ? Icons.dark_mode_rounded
+                              : themeMode == ThemeMode.light
+                                  ? Icons.light_mode_rounded
+                                  : Icons.phone_android_rounded,
+                          title: 'Theme',
+                          subtitle: _themeLabel(themeMode),
+                          iconColor: colors.accent,
+                          onTap: () => _showThemePicker(context, ref),
+                        ),
+                        _PerformanceSwitch(
+                          value: ref.watch(performanceProvider),
+                          onChanged: (val) => ref
+                              .read(performanceProvider.notifier)
+                              .setLowPerformanceMode(val),
+                        ),
+                      ],
+                    )
+                        .animate()
+                        .fadeIn(duration: 400.ms, delay: 200.ms)
+                        .slideY(begin: 0.1, duration: 400.ms),
+                  ),
+                ),
+                const SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: 'SUPPORT'),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.help_rounded,
+                          title: 'Help Center',
+                          subtitle: 'Guides, FAQs, and setup support',
+                          iconColor: colors.success,
+                          onTap: () => _showSupportSheet(context),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.policy_rounded,
+                          title: 'Privacy Policy',
+                          subtitle: 'How FitNexora handles your data',
+                          iconColor: colors.success,
+                          onTap: () => _showLegalSheet(
+                              context,
+                              'Privacy Policy',
+                              'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.description_rounded,
+                          title: 'Terms of Service',
+                          subtitle: 'Platform usage and subscription terms',
+                          iconColor: colors.success,
+                          onTap: () => _showLegalSheet(
+                              context,
+                              'Terms of Service',
+                              'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
+                        ),
+                      ],
+                    )
+                        .animate()
+                        .fadeIn(duration: 400.ms, delay: 300.ms)
+                        .slideY(begin: 0.1, duration: 400.ms),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: colors.danger.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border:
+                            Border.all(color: colors.danger.withOpacity(0.3)),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: signOut,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.logout_rounded,
+                                    color: colors.danger),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Log Out',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: colors.danger,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                        .animate()
+                        .fadeIn(duration: 400.ms, delay: 400.ms)
+                        .slideY(begin: 0.1, duration: 400.ms),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
+                    child: Center(
+                      child: Text(
+                        'FITNEXORA V2.6.0 (MEMBER BUILD)',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.1,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ).animate().fadeIn(duration: 400.ms, delay: 500.ms),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -443,7 +641,9 @@ class MemberProfileScreen extends ConsumerWidget {
                   title: Text(option.value.$1),
                   onChanged: (value) async {
                     if (value == null) return;
-                    await ref.read(themeModeProvider.notifier).setThemeMode(value);
+                    await ref
+                        .read(themeModeProvider.notifier)
+                        .setThemeMode(value);
                     if (context.mounted) Navigator.of(context).pop();
                   },
                 ),
@@ -469,13 +669,28 @@ class MemberProfileScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Help & Support',
-                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+                  style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary)),
               const SizedBox(height: 16),
-              _SupportTile(icon: Icons.email_rounded, label: 'Email Support', value: 'support@fitnexora.com', colors: colors),
+              _SupportTile(
+                  icon: Icons.email_rounded,
+                  label: 'Email Support',
+                  value: 'support@fitnexora.com',
+                  colors: colors),
               const SizedBox(height: 10),
-              _SupportTile(icon: Icons.chat_bubble_rounded, label: 'In-App Chat', value: 'Available Mon–Fri, 9AM–6PM IST', colors: colors),
+              _SupportTile(
+                  icon: Icons.chat_bubble_rounded,
+                  label: 'In-App Chat',
+                  value: 'Available Mon–Fri, 9AM–6PM IST',
+                  colors: colors),
               const SizedBox(height: 10),
-              _SupportTile(icon: Icons.menu_book_rounded, label: 'Documentation', value: 'Setup guides and FAQs', colors: colors),
+              _SupportTile(
+                  icon: Icons.menu_book_rounded,
+                  label: 'Documentation',
+                  value: 'Setup guides and FAQs',
+                  colors: colors),
               const SizedBox(height: 16),
             ],
           ),
@@ -501,13 +716,18 @@ class MemberProfileScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
           children: [
             Text(title,
-                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+                style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textPrimary)),
             const SizedBox(height: 16),
             Text(body,
-                style: GoogleFonts.inter(fontSize: 14, height: 1.65, color: colors.textSecondary)),
+                style: GoogleFonts.inter(
+                    fontSize: 14, height: 1.65, color: colors.textSecondary)),
             const SizedBox(height: 24),
             Text('Last updated: March 2026',
-                style: GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
+                style:
+                    GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
           ],
         ),
       ),
@@ -581,7 +801,8 @@ class MemberProfileScreen extends ConsumerWidget {
                                           const CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.person_rounded,
-                                              size: 50, color: colors.textMuted),
+                                              size: 50,
+                                              color: colors.textMuted),
                                     )
                                   : Icon(Icons.person_rounded,
                                       size: 50, color: colors.textMuted),
@@ -617,10 +838,10 @@ class MemberProfileScreen extends ConsumerWidget {
                                     });
                                   } catch (e) {
                                     if (sheetCtx.mounted) {
-                                      ScaffoldMessenger.of(sheetCtx).showSnackBar(
+                                      ScaffoldMessenger.of(sheetCtx)
+                                          .showSnackBar(
                                         SnackBar(
-                                            content:
-                                                Text('Upload failed: $e'),
+                                            content: Text('Upload failed: $e'),
                                             backgroundColor: Colors.red),
                                       );
                                     }
@@ -666,7 +887,8 @@ class MemberProfileScreen extends ConsumerWidget {
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: colors.danger, width: 2),
+                          borderSide:
+                              BorderSide(color: colors.danger, width: 2),
                         ),
                         filled: true,
                         fillColor: colors.surfaceMuted,
@@ -721,11 +943,13 @@ class MemberProfileScreen extends ConsumerWidget {
                             await ref
                                 .read(authServiceProvider)
                                 .updateProfile(updated);
-                            ref.read(currentUserProvider.notifier).updateUser(updated);
+                            ref
+                                .read(currentUserProvider.notifier)
+                                .updateUser(updated);
                             if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                             if (context.mounted) {
-                              context.showSnackBar(
-                                  'Profile updated successfully');
+                              context
+                                  .showSnackBar('Profile updated successfully');
                             }
                           } catch (e) {
                             if (context.mounted) {
@@ -752,139 +976,6 @@ class MemberProfileScreen extends ConsumerWidget {
 
     nameCtrl.dispose();
     phoneCtrl.dispose();
-  }
-}
-
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard({
-    required this.user,
-    required this.gym,
-    required this.colors,
-  });
-
-  final AppUser? user;
-  final Gym? gym;
-  final FitNexoraThemeTokens colors;
-
-  @override
-  Widget build(BuildContext context) {
-    final initial = (user?.fullName.isNotEmpty ?? false)
-        ? user!.fullName[0].toUpperCase()
-        : 'F';
-
-    return GlassmorphicCard(
-      borderRadius: 24,
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Row(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: 76,
-                  height: 76,
-                  decoration: BoxDecoration(
-                    gradient: colors.brandGradient,
-                    shape: BoxShape.circle,
-                  ),
-                  child: user?.avatarUrl != null
-                      ? ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: user!.avatarUrl!,
-                            fit: BoxFit.cover,
-                            width: 76,
-                            height: 76,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(strokeWidth: 2),
-                            errorWidget: (context, url, error) => Center(
-                              child: Text(
-                                initial,
-                                style: GoogleFonts.inter(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Center(
-                           child: Text(
-                             initial,
-                             style: GoogleFonts.inter(
-                               fontSize: 28,
-                               fontWeight: FontWeight.w800,
-                               color: Colors.white,
-                             ),
-                           ),
-                         ),
-                ),
-                Positioned(
-                  bottom: 2,
-                  right: 2,
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: colors.brand,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: colors.surface, width: 2),
-                    ),
-                    child: const Icon(
-                      Icons.verified_rounded,
-                      size: 14,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user?.fullName ?? 'FitNexora User',
-                    style: GoogleFonts.inter(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: colors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    user?.email ?? 'Not signed in',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: colors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: colors.brand.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      gym != null
-                          ? '${gym!.planTier.label} Tier'
-                          : user?.globalRole.label ?? 'Member',
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: colors.brand,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -937,12 +1028,14 @@ class _SettingsRow extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    required this.iconColor,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -954,10 +1047,10 @@ class _SettingsRow extends StatelessWidget {
         width: 42,
         height: 42,
         decoration: BoxDecoration(
-          color: colors.brand.withOpacity(0.1),
+          color: iconColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: Icon(icon, color: colors.brand),
+        child: Icon(icon, color: iconColor),
       ),
       title: Text(
         title,
@@ -1056,7 +1149,11 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 class _SupportTile extends StatelessWidget {
-  const _SupportTile({required this.icon, required this.label, required this.value, required this.colors});
+  const _SupportTile(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.colors});
   final IconData icon;
   final String label;
   final String value;
@@ -1079,8 +1176,14 @@ class _SupportTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: colors.textPrimary)),
-                Text(value, style: GoogleFonts.inter(fontSize: 12, color: colors.textSecondary)),
+                Text(label,
+                    style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textPrimary)),
+                Text(value,
+                    style: GoogleFonts.inter(
+                        fontSize: 12, color: colors.textSecondary)),
               ],
             ),
           ),

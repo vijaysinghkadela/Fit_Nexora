@@ -5,7 +5,7 @@ import '../core/enums.dart';
 ///
 /// All fields that appear in the master system prompt's CLIENT PROFILE SCHEMA
 /// are represented here, ensuring `toAiContext()` produces a complete profile
-/// injection for Claude API calls.
+/// injection for NVIDIA-hosted Kimi calls.
 class ClientProfile extends Equatable {
   final String id;
   final String? userId;
@@ -111,7 +111,7 @@ class ClientProfile extends Equatable {
   }
 
   /// Build the complete AI context string matching the master prompt schema.
-  /// This output is injected into the Claude API system message.
+  /// This output is injected into the AI system message.
   String toAiContext() {
     final bmiValue = bmi?.toStringAsFixed(1) ?? 'N/A';
     return '''
@@ -146,7 +146,7 @@ Gym Plan: ${gymPlan ?? 'basic'} | AI Quota Remaining: ${aiQuotaRemaining ?? 'N/A
 Gym: ${gymName ?? 'Unknown'}''';
   }
 
-  /// Alias for [toAiContext] — matches the Claude API call pattern.
+  /// Alias for [toAiContext] — matches the AI call pattern.
   String toProfileBlock() => toAiContext();
 
   factory ClientProfile.fromJson(Map<String, dynamic> json) {
@@ -246,7 +246,7 @@ Gym: ${gymName ?? 'Unknown'}''';
         'assigned_trainer_name': assignedTrainerName,
         'current_plan_name': currentPlanName,
         'language_preference': languagePreference.value,
-        // v2.0 additions below are excluded from direct table persistence 
+        // v2.0 additions below are excluded from direct table persistence
         // until the schema is explicitly expanded to include them.
         /*
         'secondary_goal': secondaryGoal?.value,

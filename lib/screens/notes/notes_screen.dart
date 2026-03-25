@@ -285,136 +285,169 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setState) => Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.85,
-            ),
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: t.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: t.textMuted.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(2),
+      // useSafeArea ensures the sheet respects the keyboard insets
+      useSafeArea: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) {
+          // Read viewInsets from the inner builder context so the sheet
+          // reacts immediately when the keyboard opens.
+          final keyboardHeight = MediaQuery.of(ctx).viewInsets.bottom;
+          return Padding(
+            padding: EdgeInsets.only(bottom: keyboardHeight),
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(ctx).size.height * 0.85,
+              ),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: t.surface,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: SingleChildScrollView(
+                // Scroll automatically so the focused field is visible
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle bar
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: t.textMuted.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    note == null ? 'New Note' : 'Edit Note',
-                    style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: t.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: titleCtrl,
-                    style: GoogleFonts.inter(color: t.textPrimary),
-                    decoration: const InputDecoration(labelText: 'Title'),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: bodyCtrl,
-                    maxLines: 8,
-                    style: GoogleFonts.inter(
-                        color: t.textPrimary, fontSize: 14),
-                    decoration: const InputDecoration(
-                      labelText: 'Write your note...',
-                      alignLabelWithHint: true,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text('Tags',
-                      style: GoogleFonts.inter(
-                          fontSize: 13, color: t.textSecondary)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _allTags
-                        .where((tag) => tag != 'All')
-                        .map((tag) {
-                      final isSel = selectedTags.contains(tag);
-                      return FilterChip(
-                        label: Text(tag,
+                    const SizedBox(height: 20),
+                    // Title row with optional Delete button
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            note == null ? 'New Note' : 'Edit Note',
                             style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: isSel ? Colors.white : t.textSecondary,
-                            )),
-                        selected: isSel,
-                        onSelected: (_) => setState(() {
-                          if (isSel) {
-                            selectedTags.remove(tag);
-                          } else {
-                            selectedTags.add(tag);
-                          }
-                        }),
-                        backgroundColor: t.surfaceAlt,
-                        selectedColor: t.brand,
-                        checkmarkColor: Colors.white,
-                        side: BorderSide(
-                            color: isSel ? t.brand : t.border),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final title = titleCtrl.text.trim();
-                        final body = bodyCtrl.text.trim();
-                        if (title.isEmpty) return;
-                        if (note == null) {
-                          ref
-                              .read(notesProvider.notifier)
-                              .addNote(title, body, List.from(selectedTags));
-                        } else {
-                          ref.read(notesProvider.notifier).updateNote(
-                              note.id, title, body, List.from(selectedTags));
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: t.brand,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: t.textPrimary,
+                            ),
+                          ),
                         ),
+                        if (note != null)
+                          IconButton(
+                            tooltip: 'Delete note',
+                            icon: Icon(Icons.delete_outline_rounded,
+                                color: t.danger),
+                            onPressed: () {
+                              ref
+                                  .read(notesProvider.notifier)
+                                  .deleteNote(note.id);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: titleCtrl,
+                      style: GoogleFonts.inter(color: t.textPrimary),
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(labelText: 'Title'),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: bodyCtrl,
+                      maxLines: 8,
+                      style: GoogleFonts.inter(
+                          color: t.textPrimary, fontSize: 14),
+                      decoration: const InputDecoration(
+                        labelText: 'Write your note...',
+                        alignLabelWithHint: true,
                       ),
-                      child: Text(
-                        note == null ? 'Save Note' : 'Update Note',
+                    ),
+                    const SizedBox(height: 16),
+                    Text('Tags',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                            fontSize: 13, color: t.textSecondary)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: _allTags
+                          .where((tag) => tag != 'All')
+                          .map((tag) {
+                        final isSel = selectedTags.contains(tag);
+                        return FilterChip(
+                          label: Text(tag,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color:
+                                    isSel ? Colors.white : t.textSecondary,
+                              )),
+                          selected: isSel,
+                          onSelected: (_) => setState(() {
+                            if (isSel) {
+                              selectedTags.remove(tag);
+                            } else {
+                              selectedTags.add(tag);
+                            }
+                          }),
+                          backgroundColor: t.surfaceAlt,
+                          selectedColor: t.brand,
+                          checkmarkColor: Colors.white,
+                          side: BorderSide(
+                              color: isSel ? t.brand : t.border),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final title = titleCtrl.text.trim();
+                          final body = bodyCtrl.text.trim();
+                          if (title.isEmpty) return;
+                          if (note == null) {
+                            ref.read(notesProvider.notifier).addNote(
+                                title, body, List.from(selectedTags));
+                          } else {
+                            ref.read(notesProvider.notifier).updateNote(
+                                note.id,
+                                title,
+                                body,
+                                List.from(selectedTags));
+                          }
+                          Navigator.pop(ctx);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: t.brand,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: Text(
+                          note == null ? 'Save Note' : 'Update Note',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
+                    const SizedBox(height: 8),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

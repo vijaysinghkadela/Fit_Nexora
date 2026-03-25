@@ -11,6 +11,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 /// Weight progress tracking screen — chart + log weight button.
 class MemberProgressScreen extends ConsumerStatefulWidget {
@@ -21,8 +22,7 @@ class MemberProgressScreen extends ConsumerStatefulWidget {
       _MemberProgressScreenState();
 }
 
-class _MemberProgressScreenState
-    extends ConsumerState<MemberProgressScreen> {
+class _MemberProgressScreenState extends ConsumerState<MemberProgressScreen> {
   final _weightController = TextEditingController();
 
   @override
@@ -38,6 +38,7 @@ class _MemberProgressScreenState
 
     return Scaffold(
       backgroundColor: t.background,
+      bottomNavigationBar: const MemberBottomNav(),
       appBar: AppBar(
         backgroundColor: t.background,
         leading: IconButton(
@@ -68,8 +69,8 @@ class _MemberProgressScreenState
       body: progressAsync.when(
         loading: () => _ProgressSkeleton(t: t),
         error: (e, _) => Center(
-            child: Text('Error: $e',
-                style: GoogleFonts.inter(color: t.danger))),
+            child:
+                Text('Error: $e', style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
@@ -84,15 +85,14 @@ class _MemberProgressScreenState
                           color: t.textSecondary, fontSize: 16)),
                   const SizedBox(height: 8),
                   Text('Tap "Log Weight" to start tracking',
-                      style: GoogleFonts.inter(
-                          color: t.textMuted, fontSize: 13)),
+                      style:
+                          GoogleFonts.inter(color: t.textMuted, fontSize: 13)),
                   const SizedBox(height: 24),
                   FilledButton.icon(
                     onPressed: () => _showLogSheet(context),
                     icon: const Icon(Icons.add_rounded),
                     label: const Text('Log First Entry'),
-                    style: FilledButton.styleFrom(
-                        backgroundColor: t.brand),
+                    style: FilledButton.styleFrom(backgroundColor: t.brand),
                   ),
                 ],
               ),
@@ -100,9 +100,8 @@ class _MemberProgressScreenState
           }
 
           // Filter entries with weight
-          final withWeight = entries
-              .where((e) => e['weight_kg'] != null)
-              .toList();
+          final withWeight =
+              entries.where((e) => e['weight_kg'] != null).toList();
           final current =
               withWeight.isNotEmpty ? withWeight.first['weight_kg'] as num : 0;
           final oldest =
@@ -160,7 +159,8 @@ class _MemberProgressScreenState
                           const SizedBox(height: 16),
                           SizedBox(
                             height: 160,
-                            child: _WeightChart(entries: withWeight.reversed.toList()),
+                            child: _WeightChart(
+                                entries: withWeight.reversed.toList()),
                           ),
                         ],
                       ),
@@ -189,8 +189,7 @@ class _MemberProgressScreenState
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
-                        children:
-                            withWeight.asMap().entries.map((entry) {
+                        children: withWeight.asMap().entries.map((entry) {
                           final i = entry.key;
                           final e = entry.value;
                           final prevWeight = i < withWeight.length - 1
@@ -204,14 +203,12 @@ class _MemberProgressScreenState
                           return Column(
                             children: [
                               ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 2),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 2),
                                 title: Text(
                                   _formatDate(date),
                                   style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      color: t.textSecondary),
+                                      fontSize: 14, color: t.textSecondary),
                                 ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -311,8 +308,7 @@ class _MemberProgressScreenState
               controller: _weightController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              style:
-                  GoogleFonts.inter(color: t.textPrimary, fontSize: 24),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 24),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hintText: '75.0',
@@ -381,10 +377,17 @@ class _MemberProgressScreenState
     if (gym == null) return;
 
     try {
+      final membership = ref.read(memberMembershipProvider).valueOrNull;
+      final clientId =
+          membership?.clientId ?? await ref.read(memberClientIdProvider.future);
+      if (clientId == null) {
+        throw Exception('Member profile not found for this gym.');
+      }
+
       final db = ref.read(databaseServiceProvider);
       await db.logWeight(
         gymId: gym.id,
-        clientId: user.id,
+        clientId: clientId,
         weightKg: val,
       );
       ref.invalidate(memberProgressProvider);
@@ -400,9 +403,7 @@ class _MemberProgressScreenState
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Failed: $e'),
-              backgroundColor: t.danger),
+          SnackBar(content: Text('Failed: $e'), backgroundColor: t.danger),
         );
       }
     }
@@ -432,13 +433,10 @@ class _StatCard extends StatelessWidget {
         children: [
           Text(value,
               style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: color)),
+                  fontSize: 18, fontWeight: FontWeight.w900, color: color)),
           const SizedBox(height: 2),
           Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 11, color: t.textSecondary)),
+              style: GoogleFonts.inter(fontSize: 11, color: t.textSecondary)),
         ],
       ),
     );
@@ -454,9 +452,8 @@ class _WeightChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
     final brandColor = context.fitTheme.brand;
-    final weights = entries
-        .map((e) => (e['weight_kg'] as num).toDouble())
-        .toList();
+    final weights =
+        entries.map((e) => (e['weight_kg'] as num).toDouble()).toList();
     return CustomPaint(
       painter: _ChartPainter(weights: weights, brandColor: brandColor),
       size: const Size(double.infinity, 160),
@@ -587,28 +584,31 @@ class _ProgressSkeletonState extends State<_ProgressSkeleton>
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
           sliver: SliverToBoxAdapter(
             child: Row(
-              children: List.generate(3, (i) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: i == 0 ? 0 : 6, right: i == 2 ? 0 : 6),
-                  child: Container(
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: t.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: t.border),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _bone(40, 10),
-                        _bone(55, 18, radius: 6),
-                      ],
-                    ),
-                  ),
-                ),
-              )),
+              children: List.generate(
+                  3,
+                  (i) => Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: i == 0 ? 0 : 6, right: i == 2 ? 0 : 6),
+                          child: Container(
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: t.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: t.border),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _bone(40, 10),
+                                _bone(55, 18, radius: 6),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )),
             ),
           ),
         ),

@@ -27,6 +27,7 @@ class DietPlan extends Equatable {
   final PlanStatus status;
   final bool isTemplate;
 
+  final DateTime? startDate;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -46,6 +47,7 @@ class DietPlan extends Equatable {
     this.meals = const [],
     this.status = PlanStatus.active,
     this.isTemplate = false,
+    this.startDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -55,6 +57,12 @@ class DietPlan extends Equatable {
 
   /// Total actual protein from all meals.
   int get actualProtein => meals.fold(0, (sum, m) => sum + m.totalProtein);
+
+  /// True when this plan was assigned by a trainer.
+  bool get isTrainerAssigned => trainerId != null;
+
+  /// True when the member created this plan themselves.
+  bool get isSelfCreated => trainerId == null && !isTemplate;
 
   factory DietPlan.fromJson(Map<String, dynamic> json) {
     final mealsJson = json['meals'] as List<dynamic>? ?? [];
@@ -76,6 +84,9 @@ class DietPlan extends Equatable {
           .toList(),
       status: PlanStatus.fromString(json['status'] as String? ?? 'active'),
       isTemplate: json['is_template'] as bool? ?? false,
+      startDate: json['start_date'] == null
+          ? null
+          : DateTime.parse(json['start_date'].toString()),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -97,12 +108,13 @@ class DietPlan extends Equatable {
         'meals': meals.map((m) => m.toJson()).toList(),
         'status': status.value,
         'is_template': isTemplate,
+        'start_date': startDate?.toIso8601String().split('T').first,
         'created_at': createdAt.toIso8601String(),
         'updated_at': updatedAt.toIso8601String(),
       };
 
   @override
-  List<Object?> get props => [id, name, gymId];
+  List<Object?> get props => [id, name, gymId, startDate];
 }
 
 /// A single meal within a diet plan.

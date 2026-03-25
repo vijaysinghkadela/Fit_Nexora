@@ -1,0 +1,291 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../config/app_config.dart';
+import 'auth_provider.dart';
+
+final _supabase = AppConfig.hasSupabase ? Supabase.instance.client : null;
+
+// ─── Steps ────────────────────────────────────────────────────────────────────
+
+class StepsState {
+  final int stepsToday;
+  final int dailyGoal;
+  final List<int> weeklySteps; // Mon–Sun
+  final int monthlyGoal;
+  final bool isLoading;
+
+  const StepsState({
+    required this.stepsToday,
+    required this.dailyGoal,
+    required this.weeklySteps,
+    required this.monthlyGoal,
+    this.isLoading = false,
+  });
+
+  StepsState copyWith({
+    int? stepsToday,
+    int? dailyGoal,
+    List<int>? weeklySteps,
+    int? monthlyGoal,
+    bool? isLoading,
+  }) =>
+      StepsState(
+        stepsToday: stepsToday ?? this.stepsToday,
+        dailyGoal: dailyGoal ?? this.dailyGoal,
+        weeklySteps: weeklySteps ?? this.weeklySteps,
+        monthlyGoal: monthlyGoal ?? this.monthlyGoal,
+        isLoading: isLoading ?? this.isLoading,
+      );
+}
+
+class StepsNotifier extends StateNotifier<StepsState> {
+  final String? userId;
+
+  StepsNotifier(this.userId)
+      : super(const StepsState(
+          stepsToday: 0,
+          dailyGoal: 10000,
+          weeklySteps: [0, 0, 0, 0, 0, 0, 0],
+          monthlyGoal: 300000,
+          isLoading: true,
+        )) {
+    if (userId != null && _supabase != null) {
+      _loadData();
+    } else {
+      // Mock data for missing supabase
+      state = const StepsState(
+        stepsToday: 8420,
+        dailyGoal: 10000,
+        weeklySteps: [9200, 7800, 10400, 8420, 6100, 11200, 5400],
+        monthlyGoal: 300000,
+        isLoading: false,
+      );
+    }
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final today = DateTime.now();
+      final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+
+      // Get last 7 days
+      final weekAgo = today.subtract(const Duration(days: 7));
+      final weekAgoStr = "${weekAgo.year}-${weekAgo.month.toString().padLeft(2, '0')}-${weekAgo.day.toString().padLeft(2, '0')}";
+
+      final logs = await _supabase!
+          .from('step_logs')
+          .select()
+          .eq('user_id', userId!)
+          .gte('date', weekAgoStr)
+          .order('date', ascending: true);
+
+      int todaySteps = 0;
+      int goal = 10000;
+      List<int> week = List.filled(7, 0);
+
+      for (var log in logs) {
+        final date = DateTime.parse(log['date'] as String);
+        final steps = log['steps'] as int;
+        
+        if (log['date'] == todayStr) {
+          todaySteps = steps;
+          goal = log['daily_goal'] as int;
+        }
+
+        // Map to weekday (0 = Mon, 6 = Sun)
+        final wd = date.weekday - 1;
+        // Only map if within current week roughly (simple approach)
+        week[wd] = steps;
+      }
+
+      if (mounted) {
+        state = state.copyWith(
+          stepsToday: todaySteps,
+          dailyGoal: goal,
+          weeklySteps: week,
+          isLoading: false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+
+  Future<void> logSteps(int steps) async {
+    final updatedSteps = state.stepsToday + steps;
+    
+    // Optimistic UI update
+    final updatedWeek = List<int>.from(state.weeklySteps);
+    updatedWeek[DateTime.now().weekday - 1] = updatedSteps;
+    
+    state = state.copyWith(
+      stepsToday: updatedSteps,
+      weeklySteps: updatedWeek,
+    );
+
+    if (userId != null && _supabase != null) {
+      try {
+        final today = DateTime.now();
+        final todayStr = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+        
+        await _supabase!.from('step_logs').upsert({
+          'user_id': userId,
+          'date': todayStr,
+          'steps': updatedSteps,
+          'daily_goal': state.dailyGoal,
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      } catch (e) {
+        // Rollback on fail
+        _loadData();
+      }
+    }
+  }
+
+  void setGoal(int goal) {
+    state = state.copyWith(dailyGoal: goal);
+    // Ideally persist goal to db here too
+  }
+}
+
+final stepsProvider = StateNotifierProvider.autoDispose<StepsNotifier, StepsState>(
+  (ref) {
+    final user = ref.watch(currentUserProvider).value;
+    return StepsNotifier(user?.id);
+  },
+);
+
+// ─── Sleep ────────────────────────────────────────────────────────────────────
+
+class SleepEntry {
+  final DateTime date;
+  final double hoursSlept;
+  final String quality; // 'poor' | 'fair' | 'good'
+  final String bedtime;
+  final String wakeTime;
+
+  const SleepEntry({
+    required this.date,
+    required this.hoursSlept,
+    required this.quality,
+    required this.bedtime,
+    required this.wakeTime,
+  });
+}
+
+class SleepState {
+  final List<SleepEntry> entries;
+  final String viewMode; // 'week' | 'month'
+  final bool isLoading;
+
+  const SleepState({
+    required this.entries,
+    required this.viewMode,
+    this.isLoading = false,
+  });
+
+  SleepState copyWith({
+    List<SleepEntry>? entries,
+    String? viewMode,
+    bool? isLoading,
+  }) =>
+      SleepState(
+        entries: entries ?? this.entries,
+        viewMode: viewMode ?? this.viewMode,
+        isLoading: isLoading ?? this.isLoading,
+      );
+}
+
+class SleepNotifier extends StateNotifier<SleepState> {
+  final String? userId;
+
+  SleepNotifier(this.userId)
+      : super(const SleepState(
+          viewMode: 'week',
+          entries: [],
+          isLoading: true,
+        )) {
+    if (userId != null && _supabase != null) {
+      _loadData();
+    } else {
+      state = SleepState(
+        viewMode: 'week',
+        entries: _mockEntries(),
+        isLoading: false,
+      );
+    }
+  }
+
+  Future<void> _loadData() async {
+    try {
+      final today = DateTime.now();
+      final monthAgo = today.subtract(const Duration(days: 30));
+      final monthAgoStr = "${monthAgo.year}-${monthAgo.month.toString().padLeft(2, '0')}-${monthAgo.day.toString().padLeft(2, '0')}";
+
+      final logs = await _supabase!
+          .from('sleep_logs')
+          .select()
+          .eq('user_id', userId!)
+          .gte('date', monthAgoStr)
+          .order('date', ascending: true);
+
+      final entries = logs.map((log) {
+        return SleepEntry(
+          date: DateTime.parse(log['date'] as String),
+          hoursSlept: (log['hours_slept'] as num).toDouble(),
+          quality: log['quality'] as String,
+          bedtime: log['bedtime'] as String,
+          wakeTime: log['wake_time'] as String,
+        );
+      }).toList();
+
+      if (mounted) {
+        state = state.copyWith(entries: entries, isLoading: false);
+      }
+    } catch (e) {
+      if (mounted) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+
+  static List<SleepEntry> _mockEntries() {
+    final now = DateTime.now();
+    return List.generate(28, (i) {
+      final date = now.subtract(Duration(days: 27 - i));
+      final hours = [5.5, 6.0, 7.5, 8.0, 6.5, 7.0, 7.5, 5.0, 6.8, 7.2,
+                     8.1, 7.8, 6.2, 7.3, 7.5, 8.2, 6.0, 7.1, 7.8, 5.5,
+                     6.9, 7.4, 8.0, 7.6, 6.3, 7.0, 7.3, 7.5][i];
+      final quality = hours >= 7.0 ? 'good' : hours >= 6.0 ? 'fair' : 'poor';
+      return SleepEntry(
+        date: date,
+        hoursSlept: hours,
+        quality: quality,
+        bedtime: '10:30 PM',
+        wakeTime: '${(6 + hours ~/ 1).toInt()}:${hours % 1 >= 0.5 ? '30' : '00'} AM',
+      );
+    });
+  }
+
+  Future<void> logSleep(SleepEntry entry) async {
+    // Optimistic update
+    final newEntries = [...state.entries];
+    final existingIdx = newEntries.indexWhere((e) => 
+      e.date.year == entry.date.year && 
+      e.date.month == entry.date.month && 
+      e.date.day == entry.date.day
+    );
+    
+    if (existingIdx >= 0) {
+      newEntries[existingIdx] = entry;
+    } else {
+      newEntries.add(entry);
+    }
+    
+    state = state.copyWith(entries: newEntries);
+
+    if (userId != null && _supabase != null) {
+      try {
+        final dateStr = "${entry.date.year}-${

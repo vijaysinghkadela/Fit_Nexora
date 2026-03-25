@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/member_provider.dart';
 import '../../providers/pro_member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 
@@ -18,8 +19,7 @@ class ProMeasurementsScreen extends ConsumerStatefulWidget {
       _ProMeasurementsScreenState();
 }
 
-class _ProMeasurementsScreenState
-    extends ConsumerState<ProMeasurementsScreen> {
+class _ProMeasurementsScreenState extends ConsumerState<ProMeasurementsScreen> {
   final _weightCtrl = TextEditingController();
   final _bodyFatCtrl = TextEditingController();
   final _waistCtrl = TextEditingController();
@@ -58,28 +58,23 @@ class _ProMeasurementsScreenState
           TextButton.icon(
             onPressed: () => _showLogSheet(context),
             icon: const Icon(Icons.add_rounded, size: 18),
-            label: Text('Log',
-                style: GoogleFonts.inter(fontSize: 13)),
-            style: TextButton.styleFrom(
-                foregroundColor: t.accent),
+            label: Text('Log', style: GoogleFonts.inter(fontSize: 13)),
+            style: TextButton.styleFrom(foregroundColor: t.accent),
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: allAsync.when(
-        loading: () => Center(
-            child: CircularProgressIndicator(color: t.brand)),
+        loading: () => Center(child: CircularProgressIndicator(color: t.brand)),
         error: (e, _) => Center(
-            child: Text('$e',
-                style: GoogleFonts.inter(color: t.danger))),
+            child: Text('$e', style: GoogleFonts.inter(color: t.danger))),
         data: (entries) {
           if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.straighten_rounded,
-                      size: 56, color: t.textMuted),
+                  Icon(Icons.straighten_rounded, size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text('No measurements logged yet',
                       style: GoogleFonts.inter(
@@ -89,8 +84,7 @@ class _ProMeasurementsScreenState
                     onPressed: () => _showLogSheet(context),
                     icon: const Icon(Icons.add_rounded),
                     label: const Text('Log First Measurement'),
-                    style: FilledButton.styleFrom(
-                        backgroundColor: t.accent),
+                    style: FilledButton.styleFrom(backgroundColor: t.accent),
                   ),
                 ],
               ),
@@ -121,28 +115,22 @@ class _ProMeasurementsScreenState
                         runSpacing: 10,
                         children: [
                           if (latest.weightKg != null)
-                            _MeasCard('Weight',
-                                latest.weightKg!, 'kg',
+                            _MeasCard('Weight', latest.weightKg!, 'kg',
                                 prev?.weightKg, t.brand),
                           if (latest.bodyFatPercent != null)
-                            _MeasCard('Body Fat',
-                                latest.bodyFatPercent!, '%',
+                            _MeasCard('Body Fat', latest.bodyFatPercent!, '%',
                                 prev?.bodyFatPercent, t.warning),
                           if (latest.waistCm != null)
-                            _MeasCard('Waist',
-                                latest.waistCm!, 'cm',
+                            _MeasCard('Waist', latest.waistCm!, 'cm',
                                 prev?.waistCm, t.danger),
                           if (latest.chestCm != null)
-                            _MeasCard('Chest',
-                                latest.chestCm!, 'cm',
+                            _MeasCard('Chest', latest.chestCm!, 'cm',
                                 prev?.chestCm, t.accent),
                           if (latest.armCm != null)
-                            _MeasCard('Arms',
-                                latest.armCm!, 'cm',
-                                prev?.armCm, t.info),
+                            _MeasCard('Arms', latest.armCm!, 'cm', prev?.armCm,
+                                t.info),
                           if (latest.hipsCm != null)
-                            _MeasCard('Hips',
-                                latest.hipsCm!, 'cm',
+                            _MeasCard('Hips', latest.hipsCm!, 'cm',
                                 prev?.hipsCm, t.success),
                         ],
                       ),
@@ -179,9 +167,8 @@ class _ProMeasurementsScreenState
                           return Column(
                             children: [
                               ListTile(
-                                contentPadding:
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 4),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
                                 title: Text(dateStr,
                                     style: GoogleFonts.inter(
                                         fontSize: 14,
@@ -190,8 +177,7 @@ class _ProMeasurementsScreenState
                                 subtitle: Text(
                                   _buildSubtitle(m),
                                   style: GoogleFonts.inter(
-                                      fontSize: 11,
-                                      color: t.textSecondary),
+                                      fontSize: 11, color: t.textSecondary),
                                 ),
                                 trailing: m.weightKg != null
                                     ? Text(
@@ -204,8 +190,7 @@ class _ProMeasurementsScreenState
                                     : null,
                               ),
                               if (i < entries.length - 1)
-                                Divider(
-                                    color: t.divider, height: 1),
+                                Divider(color: t.divider, height: 1),
                             ],
                           );
                         }).toList(),
@@ -238,8 +223,20 @@ class _ProMeasurementsScreenState
   }
 
   String _fmt(DateTime dt) {
-    const months = ['Jan','Feb','Mar','Apr','May','Jun',
-        'Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
   }
 
@@ -253,7 +250,9 @@ class _ProMeasurementsScreenState
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (_) => Padding(
         padding: EdgeInsets.only(
-          left: 24, right: 24, top: 24,
+          left: 24,
+          right: 24,
+          top: 24,
           bottom: MediaQuery.of(context).viewInsets.bottom + 24,
         ),
         child: SingleChildScrollView(
@@ -263,7 +262,8 @@ class _ProMeasurementsScreenState
             children: [
               Center(
                 child: Container(
-                  width: 40, height: 4,
+                  width: 40,
+                  height: 4,
                   decoration: BoxDecoration(
                     color: t.textMuted.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2),
@@ -325,8 +325,10 @@ class _ProMeasurementsScreenState
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
-        filled: true, fillColor: t.surfaceMuted,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        filled: true,
+        fillColor: t.surfaceMuted,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: t.border)),
@@ -344,14 +346,21 @@ class _ProMeasurementsScreenState
     final t = context.fitTheme;
     final user = ref.read(currentUserProvider).value;
     final gym = ref.read(selectedGymProvider);
+    final membership = ref.read(memberMembershipProvider).valueOrNull;
     if (user == null || gym == null) return;
 
     setState(() => _saving = true);
     try {
+      final clientId =
+          membership?.clientId ?? await ref.read(memberClientIdProvider.future);
+      if (clientId == null) {
+        throw Exception('Member profile not found for this gym.');
+      }
+
       final db = ref.read(databaseServiceProvider);
       final data = {
         'gym_id': gym.id,
-        'client_id': user.id,
+        'client_id': clientId,
         'checkin_date': DateTime.now().toIso8601String().split('T').first,
         if (_weightCtrl.text.isNotEmpty)
           'weight_kg': double.parse(_weightCtrl.text),
@@ -361,10 +370,8 @@ class _ProMeasurementsScreenState
           'waist_cm': double.parse(_waistCtrl.text),
         if (_chestCtrl.text.isNotEmpty)
           'chest_cm': double.parse(_chestCtrl.text),
-        if (_armsCtrl.text.isNotEmpty)
-          'arm_cm': double.parse(_armsCtrl.text),
-        if (_hipsCtrl.text.isNotEmpty)
-          'hips_cm': double.parse(_hipsCtrl.text),
+        if (_armsCtrl.text.isNotEmpty) 'arm_cm': double.parse(_armsCtrl.text),
+        if (_hipsCtrl.text.isNotEmpty) 'hips_cm': double.parse(_hipsCtrl.text),
       };
 
       await db.addProgressCheckIn(data);
@@ -379,8 +386,8 @@ class _ProMeasurementsScreenState
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed: $e'), backgroundColor: t.danger));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed: $e'), backgroundColor: t.danger));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -396,14 +403,13 @@ class _MeasCard extends StatelessWidget {
   final String unit;
   final double? prevValue;
   final Color color;
-  const _MeasCard(this.label, this.value, this.unit, this.prevValue,
-      this.color);
+  const _MeasCard(
+      this.label, this.value, this.unit, this.prevValue, this.color);
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final diff =
-        prevValue != null ? value - prevValue! : null;
+    final diff = prevValue != null ? value - prevValue! : null;
     final isGood = diff != null &&
         (label == 'Weight' || label == 'Body Fat' || label == 'Waist'
             ? diff < 0
@@ -420,14 +426,11 @@ class _MeasCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 11, color: t.textSecondary)),
+              style: GoogleFonts.inter(fontSize: 11, color: t.textSecondary)),
           const SizedBox(height: 2),
           Text('${value.toStringAsFixed(1)} $unit',
               style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: color)),
+                  fontSize: 16, fontWeight: FontWeight.w900, color: color)),
           if (diff != null)
             Text(
               '${diff > 0 ? '+' : ''}${diff.toStringAsFixed(1)} $unit',

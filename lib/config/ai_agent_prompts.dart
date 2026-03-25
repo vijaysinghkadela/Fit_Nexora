@@ -3,7 +3,7 @@ import '../models/ai_generated_plan_model.dart';
 
 /// Prompt builders for the FitNexora AI Agent pipeline.
 ///
-/// Each function returns a user-message string that instructs Claude to respond
+/// Each function returns a user-message string that instructs Kimi to respond
 /// with ONLY valid JSON matching the expected schema.
 class AiAgentPrompts {
   AiAgentPrompts._();
@@ -48,11 +48,19 @@ Respond with a JSON object matching EXACTLY this structure:
   static String buildWorkoutPlanPrompt(
     FitnessProfile profile,
     Map<String, dynamic> bodyAnalysis,
-    MemberVisitSummary? visitStats,
-  ) {
+    MemberVisitSummary? visitStats, {
+    String? planObjective,
+    String? planName,
+    String? planDescription,
+  }) {
     return '''
 You are a certified strength and conditioning coach creating a monthly workout plan.
 Return ONLY valid JSON. No markdown, no explanations outside the JSON.
+
+PLAN BRIEF:
+- Objective: ${planObjective?.trim().isNotEmpty == true ? planObjective!.trim() : profile.primaryGoal ?? 'general_fitness'}
+- Requested Plan Name: ${planName?.trim().isNotEmpty == true ? planName!.trim() : 'Create a strong descriptive name'}
+- Requested Plan Description: ${planDescription?.trim().isNotEmpty == true ? planDescription!.trim() : 'Not provided'}
 
 MEMBER DATA:
 - Somatotype: ${bodyAnalysis['somatotype'] ?? 'mesomorph'}
@@ -68,8 +76,9 @@ Create a 4-week progressive workout plan. Each week should be slightly harder th
 
 JSON structure:
 {
-  "plan_name": "e.g. 4-Week Fat Burn Accelerator",
+  "plan_name": "Use the requested plan name when provided, otherwise create one",
   "weekly_structure": "e.g. 5 days on, 2 days rest",
+  "plan_summary": "2-3 sentence overview of how this plan serves the stated objective",
   "progression_logic": "brief explanation of how intensity increases each week",
   "weeks": [
     {
@@ -86,7 +95,12 @@ JSON structure:
               "sets": 3,
               "reps": "10-12",
               "rest_seconds": 60,
-              "notes": "Keep elbows at 45 degrees"
+              "tempo": "3-1-1-0",
+              "equipment": "Barbell + bench",
+              "cue": "Keep elbows at 45 degrees",
+              "substitute": "Dumbbell bench press",
+              "rpe": 7,
+              "notes": "Any important execution or progression note"
             }
           ],
           "cardio": "e.g. 20 min moderate treadmill",
@@ -106,8 +120,11 @@ JSON structure:
 
   static String buildDietPlanPrompt(
     FitnessProfile profile,
-    Map<String, dynamic> bodyAnalysis,
-  ) {
+    Map<String, dynamic> bodyAnalysis, {
+    String? planObjective,
+    String? planName,
+    String? planDescription,
+  }) {
     // Estimate TDEE
     final weight = profile.weightKg ?? 70;
     final height = profile.heightCm ?? 170;
@@ -124,6 +141,11 @@ JSON structure:
     return '''
 You are a certified sports nutritionist. Return ONLY valid JSON. No text outside the JSON.
 
+PLAN BRIEF:
+- Objective: ${planObjective?.trim().isNotEmpty == true ? planObjective!.trim() : profile.primaryGoal ?? 'general_fitness'}
+- Requested Plan Name: ${planName?.trim().isNotEmpty == true ? planName!.trim() : 'Create a strong descriptive name'}
+- Requested Plan Description: ${planDescription?.trim().isNotEmpty == true ? planDescription!.trim() : 'Not provided'}
+
 MEMBER PROFILE:
 - Age: ${profile.age ?? 25}, Gender: ${profile.gender ?? 'male'}
 - Weight: ${profile.weightKg ?? 70}kg, Height: ${profile.heightCm ?? 170}cm
@@ -139,6 +161,8 @@ Create a practical, culturally appropriate (Indian context) diet plan.
 
 JSON structure:
 {
+  "plan_name": "Use the requested plan name when provided, otherwise create one",
+  "plan_summary": "2-3 sentence overview of how the diet supports the stated objective",
   "calorie_target": 2200,
   "protein_g": 160,
   "carbs_g": 250,
@@ -148,7 +172,14 @@ JSON structure:
     "early_morning": {
       "time": "6:00 AM",
       "items": [
-        { "food": "Warm water with lemon", "quantity": "1 glass", "calories": 5 }
+        {
+          "food": "Warm water with lemon",
+          "quantity": "1 glass",
+          "calories": 5,
+          "protein_g": 0,
+          "carbs_g": 1,
+          "fat_g": 0
+        }
       ]
     },
     "breakfast": { "time": "7:30 AM", "items": [] },
@@ -216,7 +247,17 @@ JSON structure:
   }
 
   static const _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 }

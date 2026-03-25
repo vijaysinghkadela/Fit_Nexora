@@ -80,7 +80,7 @@ class Subscription extends Equatable {
   bool get hasAiAccess =>
       planTier == PlanTier.pro || planTier == PlanTier.elite;
 
-  /// Whether the gym has full AI access (Elite only — Claude Opus).
+  /// Whether the gym has full AI access (Elite only — Kimi Opus quota).
   bool get hasFullAiAccess => planTier == PlanTier.elite;
 
   /// Whether the trial has expired.
@@ -129,8 +129,7 @@ class Subscription extends Equatable {
           ? DateTime.parse(json['trial_end'] as String)
           : null,
       amountPaid: (json['amount_paid'] as num?)?.toDouble(),
-      currency:
-          json['currency'] as String? ?? DatabaseValues.defaultCurrency,
+      currency: json['currency'] as String? ?? DatabaseValues.defaultCurrency,
       overageCharges: (json['overage_charges'] as num?)?.toDouble(),
       gstNumber: json['gst_number'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),

@@ -123,11 +123,16 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
       await db.createMembership(membership);
 
       if (mounted) {
+        final messenger = ScaffoldMessenger.of(context);
+        final t = context.fitTheme;
+        final name = widget.client.fullName;
+
         Navigator.of(context).pop(true);
-        ScaffoldMessenger.of(context).showSnackBar(
+
+        messenger.showSnackBar(
           SnackBar(
-            content: Text('Membership created for ${widget.client.fullName}'),
-            backgroundColor: context.fitTheme.success,
+            content: Text('Membership created for $name'),
+            backgroundColor: t.success,
           ),
         );
       }

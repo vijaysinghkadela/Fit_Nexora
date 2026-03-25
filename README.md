@@ -5,12 +5,12 @@
 # 🏋️ FitNexora
 ### AI-Powered Gym Management SaaS Platform
 
-*Built for India & Emerging Markets · Powered by Claude AI & Supabase*
+*Built for India & Emerging Markets · Powered by NVIDIA-hosted Kimi AI & Supabase*
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.6+-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.6.1+-0175C2?logo=dart)](https://dart.dev)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com)
-[![Claude AI](https://img.shields.io/badge/AI-Claude_Opus_%26_Haiku-blueviolet)](https://anthropic.com)
+[![Kimi AI](https://img.shields.io/badge/AI-Kimi_K2_Thinking-blueviolet)](https://build.nvidia.com/moonshotai/kimi-k2-thinking)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Riverpod](https://img.shields.io/badge/State-Riverpod_2.6-orange)](https://riverpod.dev)
 [![Version](https://img.shields.io/badge/Version-v2.7-red)](https://github.com/vijaysinghkadela/Fit_Nexora)
@@ -39,7 +39,7 @@
 
 ## 01 — Project Overview
 
-**FitNexora** is a full-stack, multi-tenant SaaS platform that transforms how gym owners manage their business. Unlike traditional gym CRMs, FitNexora embeds a **tiered AI coaching engine** (Claude Opus & Haiku) directly into the platform, providing professional-grade, personalized workout and nutrition plans to every member at scale.
+**FitNexora** is a full-stack, multi-tenant SaaS platform that transforms how gym owners manage their business. Unlike traditional gym CRMs, FitNexora embeds a **tiered AI coaching engine** powered by NVIDIA-hosted `moonshotai/kimi-k2-thinking` directly into the platform, providing professional-grade, personalized workout and nutrition plans to every member at scale.
 
 ### The Problem
 Gym owners in India and emerging markets face a "coaching gap" — they have the space, equipment, and clients, but lack the bandwidth to deliver high-quality, personalized coaching that keeps members retained. Hiring specialist trainers is expensive; generic printed plans don't work.
@@ -63,8 +63,8 @@ FitNexora operates on a **3-tier SaaS model**:
 | **Annual Price** | ₹7,999/yr | ₹14,999/yr | ₹24,999/yr |
 | **Max Clients** | 50 | 200 | 500 |
 | **Trainer Seats** | 1 | 5 | Unlimited |
-| **AI Model** | ❌ None | ✅ Claude Haiku | ✅ Claude Opus + Haiku |
-| **Monthly AI Calls** | 0 | 100 Haiku | 50 Opus + Unlimited Haiku |
+| **AI Model** | ❌ None | ✅ Kimi K2 Thinking | ✅ Kimi K2 Thinking |
+| **Monthly AI Calls** | 0 | 100 | 50 + Unlimited |
 | **AI Token Budget** | 0 | 500K tokens | 2M tokens |
 | **Free Trial** | ❌ | ✅ 14 days | ✅ 14 days |
 
@@ -72,9 +72,9 @@ FitNexora operates on a **3-tier SaaS model**:
 
 **Basic includes:** Client management, membership tracking, dashboard, expiry alerts, manual workout plans, GST invoice generator, UPI/Razorpay, Hindi language support, offline mode.
 
-**Pro adds:** Claude Haiku AI suggestions, Indian food database, supplement advisor, diet plans, trainer management, streak system, gym leaderboard, milestone rewards, progress tracking, attendance & payment tracking, at-risk client alerts, WhatsApp notifications, broadcast messaging.
+**Pro adds:** Kimi K2 Thinking AI suggestions, Indian food database, supplement advisor, diet plans, trainer management, streak system, gym leaderboard, milestone rewards, progress tracking, attendance & payment tracking, at-risk client alerts, WhatsApp notifications, broadcast messaging.
 
-**Elite exclusively:** Claude Opus coaching, AI live chat, agent performance scoring, video messaging, MRR/churn dashboard, revenue forecasting, peak-hours heatmap, advanced analytics, multi-gym support, white-label, custom templates, API access, priority support.
+**Elite exclusively:** Kimi K2 Thinking advanced coaching, AI live chat, agent performance scoring, video messaging, MRR/churn dashboard, revenue forecasting, peak-hours heatmap, advanced analytics, multi-gym support, white-label, custom templates, API access, priority support.
 
 ---
 
@@ -101,8 +101,8 @@ FitNexora operates on a **3-tier SaaS model**:
 └──────────────────────────────┬────────────────────────────┘
                                │
                     ┌──────────▼──────────┐
-                    │    Claude AI API     │
-                    │  (Opus + Haiku)      │
+                    │ NVIDIA Kimi AI API   │
+                    │   (Kimi K2 Thinking) │
                     └─────────────────────┘
 ```
 
@@ -127,13 +127,13 @@ lib/
 ├── app.dart                   # Root app widget
 ├── main.dart                  # Entry point, env loading
 ├── config/
-│   ├── app_config.dart        # Env vars (Supabase, Stripe, Claude keys)
+│   ├── app_config.dart        # Env vars (Supabase, Stripe, NVIDIA AI keys)
 │   ├── plan_limits.dart       # Single source of truth for SaaS limits
 │   ├── routes.dart            # GoRouter config, role-based guards
 │   ├── routes_new_additions.dart # Extended route definitions
 │   ├── theme.dart             # Design tokens, color palettes
 │   ├── theme_mode_provider.dart  # Dark/Light/System theme switching
-│   ├── ai_system_prompt.txt   # Master Claude system prompt
+│   ├── ai_system_prompt.txt   # Master Kimi system prompt
 │   └── ai_agent_prompts.dart  # AI Agent structured prompt builders
 ├── core/
 │   ├── enums.dart             # All domain enums (15+ enums)
@@ -164,10 +164,10 @@ The AI engine uses a smart routing system to balance performance and cost:
 ```
 Request → PlanLimits.canMakeAiCall() → Decision
    ├── Basic:      DENIED (upgrade wall)
-   ├── Pro:        → Claude Haiku (fast, cost-efficient)
+   ├── Pro:        → Kimi K2 Thinking (fast, cost-efficient)
    └── Elite:
-        ├── Within 50 Opus calls → Claude Opus (best reasoning)
-        ├── Opus cap exceeded   → Auto-downgrade to Haiku
+        ├── Within AI budget     → Kimi K2 Thinking (best reasoning)
+        ├── Budget cap exceeded  → Auto-downgrade to standard limits
         └── Overage enabled     → Metered billing ($0.10/call)
 ```
 
@@ -188,28 +188,28 @@ Every AI call is enriched with a **4,000+ token context window** synthesized fro
 | Module | AI Feature | Tier |
 |---|---|---|
 | Elite Home | Personalized welcome + daily coaching tip | Elite |
-| AI Trainer | Full 12-week periodization plan | Elite (Opus) |
+| AI Trainer | Full 12-week periodization plan | Elite |
 | Elite Chat | Live multi-turn AI coaching conversation | Elite |
 | Supplements | AI supplement stack recommendations | Pro + Elite |
 | Diet Plan | Custom macro-based meal plans | Pro + Elite |
 | Progress | AI-driven trend analysis & adjustment | Elite |
-| Pro AI Screen | Haiku-based quick coaching suggestions | Pro |
-| **AI Agent** | Full body analysis + 4-week workout + diet + monthly report | Elite (Opus) |
+| Pro AI Screen | Kimi-based quick coaching suggestions | Pro |
+| **AI Agent** | Full body analysis + 4-week workout + diet + monthly report | Elite |
 
 ---
 
 ## 05 — AI Agent (Full Report Pipeline)
 
-The **AI Agent** is a server-side intelligence layer that generates comprehensive member reports by orchestrating multiple Claude API calls in a single pipeline:
+The **AI Agent** is a server-side intelligence layer that generates comprehensive member reports by orchestrating multiple NVIDIA-hosted Kimi API calls in a single pipeline:
 
 ### Pipeline Architecture
 
 ```
 Member ID → Fetch Fitness Profile → Fetch Visit Stats
-  → Step 1: Claude Opus → Body Type Analysis (somatotype, BMI, risk flags)
-  → Step 2: Claude Opus → 4-Week Progressive Workout Plan  ┐ (parallel)
-  → Step 3: Claude Opus → Indian-Context Diet Plan          ┘
-  → Step 4: Claude Opus → Monthly Progress Report
+  → Step 1: Kimi K2 Thinking → Body Type Analysis (somatotype, BMI, risk flags)
+  → Step 2: Kimi K2 Thinking → 4-Week Progressive Workout Plan  ┐ (parallel)
+  → Step 3: Kimi K2 Thinking → Indian-Context Diet Plan          ┘
+  → Step 4: Kimi K2 Thinking → Monthly Progress Report
   → Save all outputs to Supabase → Display in 4-tab UI
 ```
 
@@ -227,7 +227,7 @@ Member ID → Fetch Fitness Profile → Fetch Visit Stats
 | File | Purpose |
 |---|---|
 | `lib/config/ai_agent_prompts.dart` | 4 structured prompt builders (body, workout, diet, report) |
-| `lib/services/ai_agent_service.dart` | Claude API orchestrator with rate limiting |
+| `lib/services/ai_agent_service.dart` | NVIDIA Kimi AI orchestrator with rate limiting |
 | `lib/models/fitness_profile_model.dart` | Member body metrics and fitness context |
 | `lib/models/ai_generated_plan_model.dart` | AI output storage model |
 | `lib/providers/ai_agent_provider.dart` | Riverpod state management |
@@ -239,7 +239,7 @@ Member ID → Fetch Fitness Profile → Fetch Visit Stats
 - **Rate limiting** — max 1 report per member per day
 - **Plan gating** — only Elite/Master plan gyms can access the AI Agent
 - **RLS enforcement** — gym-isolated data at the database level
-- **JSON sanitization** — strips markdown fences from Claude responses before parsing
+- **JSON sanitization** — strips markdown fences from Kimi responses before parsing
 
 ---
 
@@ -315,7 +315,7 @@ Membership lifecycle management — create, renew, pause, cancel. GST invoice ge
 ### 🥇 Elite Member Portal
 Premium member-facing screens for Elite gym subscriptions:
 - **Elite Home** — AI daily coaching brief + streak
-- **Elite AI Trainer** — Full periodization workout plan (Claude Opus)
+- **Elite AI Trainer** — Full periodization workout plan (NVIDIA-hosted Kimi)
 - **Elite Chat** — Real-time AI coaching conversation
 - **Elite Supplements** — AI supplement advisor
 - **Elite Muscle Progress** — Body composition trend charts
@@ -323,7 +323,7 @@ Premium member-facing screens for Elite gym subscriptions:
 ### 💎 Pro Member Portal
 AI-enhanced screens for Pro subscriptions:
 - **Pro Home** — Dashboard with nutrition & workout summary
-- **Pro AI Screen** — Haiku-powered quick coaching
+- **Pro AI Screen** — Kimi-powered quick coaching
 - **Pro Nutrition** — Macro tracking with AI meal suggestions
 - **Pro Measurements** — Body stat logging and trend charting
 
@@ -369,7 +369,7 @@ Gamified milestone system with badges and streak tracking.
 - **Equipment Status** — Live equipment availability board
 
 ### 🤖 AI Agent (Master/Elite)
-- **AI Agent Screen** — Generate comprehensive body analysis, 4-week workout plan, Indian diet plan, and monthly progress report via Claude Opus — all in one pipeline
+- **AI Agent Screen** — Generate comprehensive body analysis, 4-week workout plan, Indian diet plan, and monthly progress report via NVIDIA-hosted Kimi — all in one pipeline
 
 ### 🏠 Master Member Portal
 - **Master Home** — Premium dashboard with AI coaching
@@ -473,7 +473,7 @@ The application logic is driven by type-safe Dart enums (`lib/core/enums.dart`):
 
 - Flutter 3.6+ with Dart 3.6.1+
 - Supabase account
-- Anthropic Claude API key
+- NVIDIA Kimi API key (`NVIDIA_API_KEY`)
 - Razorpay account (for Indian payments)
 - Java JDK 17+ (for Android builds)
 
@@ -485,7 +485,9 @@ Create `assets/app.env` in the project root:
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-CLAUDE_API_KEY=your-anthropic-api-key
+NVIDIA_API_KEY=your-nvidia-api-key
+# Optional legacy alias:
+# KIMI_API_KEY=your-nvidia-api-key
 RAZORPAY_KEY_ID=your-razorpay-key-id
 RAZORPAY_KEY_SECRET=your-razorpay-secret
 STRIPE_PUBLISHABLE_KEY=your-stripe-pk
@@ -523,7 +525,7 @@ flutter run
 
 ### Offline Development (No Backend Required)
 
-The `dev_bypass.dart` module provides full mock data injection. Set the bypass flag to `true` to run the app without any Supabase or Claude credentials — ideal for UI development and testing.
+The `dev_bypass.dart` module provides full mock data injection. Set the bypass flag to `true` to run the app without any Supabase or NVIDIA AI credentials — ideal for UI development and testing.
 
 ### Key Services (13 total)
 
@@ -532,8 +534,7 @@ The `dev_bypass.dart` module provides full mock data injection. Set the bypass f
 | `auth_service.dart` | Supabase Auth (login, register, Google OAuth, session management) |
 | `biometric_service.dart` | Fingerprint/Face ID authentication & secure credential storage |
 | `database_service.dart` | All Supabase CRUD operations |
-| `claude_service.dart` | Claude API calls with tier routing |
-| `ai_agent_service.dart` | **AI Agent pipeline** — body analysis, plans, reports via Claude Opus |
+| `ai_agent_service.dart` | **AI Agent pipeline** — body analysis, plans, reports via NVIDIA-hosted Kimi |
 | `ai_prompt_builder.dart` | Context enrichment for AI prompts |
 | `plan_enforcement_service.dart` | Feature gate checks at runtime |
 | `payment_service.dart` | Razorpay & Stripe integration |

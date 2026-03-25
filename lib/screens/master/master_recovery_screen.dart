@@ -5,10 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../core/enums.dart';
 import '../../models/client_profile_model.dart';
+import '../../providers/ai_agent_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/master_member_provider.dart';
 import '../../providers/member_provider.dart';
-import '../../services/claude_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Master: Smart Recovery Suggestions — AI-driven rest and recovery advice.
@@ -32,9 +32,11 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
       appBar: AppBar(
         backgroundColor: t.background,
         leading: BackButton(color: t.textSecondary),
-        title: Text('Smart Recovery', style: GoogleFonts.inter(
-            fontSize: 19, fontWeight: FontWeight.w800,
-            color: t.textPrimary)),
+        title: Text('Smart Recovery',
+            style: GoogleFonts.inter(
+                fontSize: 19,
+                fontWeight: FontWeight.w800,
+                color: t.textPrimary)),
       ),
       body: CustomScrollView(
         slivers: [
@@ -56,19 +58,27 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             sliver: SliverToBoxAdapter(
               child: Column(children: [
-                _pillar('😴', 'Sleep Optimisation',
+                _pillar(
+                    '😴',
+                    'Sleep Optimisation',
                     'Aim for 7–9 hours of sleep in a cool, dark room. Sleep is when muscles rebuild.',
                     t.info),
                 const SizedBox(height: 10),
-                _pillar('💧', 'Hydration',
+                _pillar(
+                    '💧',
+                    'Hydration',
                     'Drink 35ml per kg of bodyweight daily. Add electrolytes on heavy training days.',
                     t.brand),
                 const SizedBox(height: 10),
-                _pillar('🥩', 'Protein Timing',
+                _pillar(
+                    '🥩',
+                    'Protein Timing',
                     '20–40g protein within 2 hours of training to maximise muscle protein synthesis.',
                     t.accent),
                 const SizedBox(height: 10),
-                _pillar('🧘', 'Active Recovery',
+                _pillar(
+                    '🧘',
+                    'Active Recovery',
                     'Light walks, yoga, or stretching on rest days speed up recovery without damage.',
                     t.success),
               ]).animate().fadeIn(),
@@ -83,14 +93,16 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
               child: Column(children: [
                 if (_advice == null && !_loading)
                   SizedBox(
-                    width: double.infinity, height: 52,
+                    width: double.infinity,
+                    height: 52,
                     child: FilledButton.icon(
                       onPressed: _generateAdvice,
                       style: FilledButton.styleFrom(
                           backgroundColor: t.success,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14))),
-                      icon: const Icon(Icons.battery_charging_full_rounded, size: 20),
+                      icon: const Icon(Icons.battery_charging_full_rounded,
+                          size: 20),
                       label: Text('Get My Recovery Plan',
                           style: GoogleFonts.inter(
                               fontSize: 15, fontWeight: FontWeight.w700)),
@@ -105,25 +117,33 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
                   GlassmorphicCard(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Row(children: [
-                          Icon(Icons.battery_charging_full_rounded,
-                              color: t.success, size: 20),
-                          const SizedBox(width: 8),
-                          Text('Your Recovery Plan', style: GoogleFonts.inter(
-                              fontSize: 14, fontWeight: FontWeight.w700,
-                              color: t.textPrimary)),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: () => setState(() => _advice = null),
-                            child: Text('Refresh', style: GoogleFonts.inter(
-                                fontSize: 12, color: t.success)),
-                          ),
-                        ]),
-                        Divider(color: t.divider),
-                        Text(_advice!, style: GoogleFonts.inter(
-                            fontSize: 14, color: t.textSecondary, height: 1.6)),
-                      ]),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Icon(Icons.battery_charging_full_rounded,
+                                  color: t.success, size: 20),
+                              const SizedBox(width: 8),
+                              Text('Your Recovery Plan',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: t.textPrimary)),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () => setState(() => _advice = null),
+                                child: Text('Refresh',
+                                    style: GoogleFonts.inter(
+                                        fontSize: 12, color: t.success)),
+                              ),
+                            ]),
+                            Divider(color: t.divider),
+                            Text(_advice!,
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: t.textSecondary,
+                                    height: 1.6)),
+                          ]),
                     ),
                   ).animate().fadeIn().slideY(begin: 0.04),
               ]),
@@ -137,9 +157,12 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
   Widget _hdr(String t) => SliverPadding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         sliver: SliverToBoxAdapter(
-          child: Text(t, style: GoogleFonts.inter(fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: context.fitTheme.textMuted, letterSpacing: 1.2)),
+          child: Text(t,
+              style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: context.fitTheme.textMuted,
+                  letterSpacing: 1.2)),
         ),
       );
 
@@ -155,12 +178,18 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
       child: Row(children: [
         Text(emoji, style: const TextStyle(fontSize: 26)),
         const SizedBox(width: 14),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: GoogleFonts.inter(fontSize: 14,
-              fontWeight: FontWeight.w700, color: t.textPrimary)),
+        Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title,
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: t.textPrimary)),
           const SizedBox(height: 3),
-          Text(body, style: GoogleFonts.inter(fontSize: 12,
-              color: t.textSecondary, height: 1.4)),
+          Text(body,
+              style: GoogleFonts.inter(
+                  fontSize: 12, color: t.textSecondary, height: 1.4)),
         ])),
       ]),
     );
@@ -190,14 +219,14 @@ class _RecoveryState extends ConsumerState<MasterRecoveryScreen> {
         createdAt: now,
         updatedAt: now,
       );
-      final advice = await gymOSAI(
-        client: profile,
-        userRole: 'Master Member',
-        userMessage:
-            'My current recovery score is $score/100. Give me a personalised '
-            'recovery plan for today including sleep tips, nutrition adjustments, '
-            'active recovery activities, and supplement timing. Be specific and practical.',
-      );
+      final advice = await ref.read(aiAgentServiceProvider).generateChatReply(
+            client: profile,
+            role: UserRole.client,
+            userMessage:
+                'My current recovery score is $score/100. Give me a personalised '
+                'recovery plan for today including sleep tips, nutrition adjustments, '
+                'active recovery activities, and supplement timing. Be specific and practical.',
+          );
       setState(() => _advice = advice);
     } catch (e) {
       setState(() => _advice = '⚠️ $e');
@@ -216,12 +245,18 @@ class _ScoreHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final color = score >= 80 ? t.success
-        : score >= 50 ? t.warning : t.danger;
-    final label = score >= 80 ? '🟢 Fully Recovered — Ready to train hard'
-        : score >= 65 ? '🟡 Moderate — Train at 80% intensity'
-        : score >= 50 ? '🟠 Tired — Reduce volume today'
-        : '🔴 Exhausted — Rest day recommended';
+    final color = score >= 80
+        ? t.success
+        : score >= 50
+            ? t.warning
+            : t.danger;
+    final label = score >= 80
+        ? '🟢 Fully Recovered — Ready to train hard'
+        : score >= 65
+            ? '🟡 Moderate — Train at 80% intensity'
+            : score >= 50
+                ? '🟠 Tired — Reduce volume today'
+                : '🔴 Exhausted — Rest day recommended';
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -235,7 +270,8 @@ class _ScoreHero extends StatelessWidget {
       ),
       child: Row(children: [
         SizedBox(
-          width: 80, height: 80,
+          width: 80,
+          height: 80,
           child: Stack(alignment: Alignment.center, children: [
             CircularProgressIndicator(
               value: score / 100,
@@ -244,21 +280,27 @@ class _ScoreHero extends StatelessWidget {
               valueColor: AlwaysStoppedAnimation(color),
             ),
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text('$score', style: GoogleFonts.inter(
-                  fontSize: 22, fontWeight: FontWeight.w900, color: color)),
-              Text('/100', style: GoogleFonts.inter(
-                  fontSize: 10, color: t.textMuted)),
+              Text('$score',
+                  style: GoogleFonts.inter(
+                      fontSize: 22, fontWeight: FontWeight.w900, color: color)),
+              Text('/100',
+                  style: GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
             ]),
           ]),
         ),
         const SizedBox(width: 20),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Recovery Score', style: GoogleFonts.inter(
-              fontSize: 13, color: t.textSecondary)),
+        Expanded(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Recovery Score',
+              style: GoogleFonts.inter(fontSize: 13, color: t.textSecondary)),
           const SizedBox(height: 4),
-          Text(label, style: GoogleFonts.inter(
-              fontSize: 13, color: t.textPrimary,
-              fontWeight: FontWeight.w600, height: 1.4)),
+          Text(label,
+              style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: t.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  height: 1.4)),
         ])),
       ]),
     ).animate().fadeIn().slideY(begin: 0.04);

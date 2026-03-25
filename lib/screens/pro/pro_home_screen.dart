@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
 
@@ -16,9 +17,6 @@ import '../../core/responsive.dart';
 import '../member/member_paywall_screen.dart';
 
 import 'pro_paywall_screen.dart';
-import 'pro_nutrition_screen.dart';
-import 'pro_measurements_screen.dart';
-import 'pro_ai_screen.dart';
 
 /// Pro Plan Home — shows paywall if not Pro, falls back to Basic if only Basic.
 class ProHomeScreen extends ConsumerWidget {
@@ -93,149 +91,135 @@ class _ProDashboard extends ConsumerWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-          // ─── Header ─────────────────────────────────────────────
-          SliverAppBar(
-            floating: true,
-            backgroundColor: t.background,
-            toolbarHeight: 80,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+              // ─── Header ─────────────────────────────────────────────
+              SliverAppBar(
+                floating: true,
+                backgroundColor: t.background,
+                toolbarHeight: 80,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Welcome, ',
-                      style: GoogleFonts.inter(
-                        fontSize: 13, color: t.textSecondary),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF3AA8FF), Color(0xFF0066FF)]),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        'PRO',
-                        style: GoogleFonts.inter(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
+                    Row(
+                      children: [
+                        Text(
+                          'Welcome, ',
+                          style: GoogleFonts.inter(
+                              fontSize: 13, color: t.textSecondary),
                         ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                                colors: [Color(0xFF3AA8FF), Color(0xFF0066FF)]),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            'PRO',
+                            style: GoogleFonts.inter(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      firstName,
+                      style: GoogleFonts.inter(
+                        fontSize: rs.sp(24),
+                        fontWeight: FontWeight.w900,
+                        color: t.textPrimary,
                       ),
                     ),
                   ],
                 ),
-                Text(
-                  firstName,
-                  style: GoogleFonts.inter(
-                    fontSize: rs.sp(24),
-                    fontWeight: FontWeight.w900,
-                    color: t.textPrimary,
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.smart_toy_rounded, color: t.brand),
+                    tooltip: 'AI Suggestions',
+                    onPressed: () => context.push('/pro/ai'),
                   ),
-                ),
-              ],
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.smart_toy_rounded,
-                    color: t.brand),
-                tooltip: 'AI Suggestions',
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => const ProAiScreen()),
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
-
-          // ─── Membership + Attendance Row ─────────────────────────
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  Expanded(child: _MiniMembershipCard(async: membershipAsync)),
-                  const SizedBox(width: 12),
-                  _StatChip(
-                    icon: Icons.calendar_today_rounded,
-                    label: 'Attendance',
-                    value: attendanceAsync.when(
-                      data: (v) => '$v days',
-                      loading: () => '...',
-                      error: (_, __) => '—',
-                    ),
-                    color: t.info,
-                  ),
+                  const SizedBox(width: 8),
                 ],
               ),
-            ),
-          ),
 
-          // ─── Calories Ring Card ───────────────────────────────────
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: nutritionAsync.when(
-                loading: () => _shimmer(context, height: 180, t: t),
-                error: (_, __) => const SizedBox.shrink(),
-
-                data: (summary) => _CaloriesCard(
-                  summary: summary,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (_) => const ProNutritionScreen()),
+              // ─── Membership + Attendance Row ─────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: _MiniMembershipCard(async: membershipAsync)),
+                      const SizedBox(width: 12),
+                      _StatChip(
+                        icon: Icons.calendar_today_rounded,
+                        label: 'Attendance',
+                        value: attendanceAsync.when(
+                          data: (v) => '$v days',
+                          loading: () => '...',
+                          error: (_, __) => '—',
+                        ),
+                        color: t.info,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-          ),
 
-          // ─── 7-Day Calorie Chart ──────────────────────────────────
-          _sectionHeader('WEEKLY CALORIES', t),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: weeklyAsync.when(
-                loading: () => _shimmer(context, height: 140, t: t),
-                error: (_, __) => const SizedBox.shrink(),
-
-                data: (days) => _WeeklyCaloriesChart(days: days),
-              ),
-            ),
-          ),
-
-          // ─── Body Measurements ───────────────────────────────────
-          _sectionHeader('BODY MEASUREMENTS', t),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: measurementsAsync.when(
-                loading: () => _shimmer(context, height: 100, t: t),
-                error: (_, __) => const SizedBox.shrink(),
-
-                data: (m) => _MeasurementsCard(
-                  measurement: m,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (_) => const ProMeasurementsScreen()),
+              // ─── Calories Ring Card ───────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: nutritionAsync.when(
+                    loading: () => _shimmer(context, height: 180, t: t),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (summary) => _CaloriesCard(
+                      summary: summary,
+                      onTap: () => context.push('/pro/nutrition'),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
 
-          // ─── Quick Actions ────────────────────────────────────────
-          _sectionHeader('QUICK ACTIONS', t),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-            sliver: SliverToBoxAdapter(
-              child: _QuickActionsGrid(context: context),
-            ),
-          ),
+              // ─── 7-Day Calorie Chart ──────────────────────────────────
+              _sectionHeader('WEEKLY CALORIES', t),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: weeklyAsync.when(
+                    loading: () => _shimmer(context, height: 140, t: t),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (days) => _WeeklyCaloriesChart(days: days),
+                  ),
+                ),
+              ),
+
+              // ─── Body Measurements ───────────────────────────────────
+              _sectionHeader('BODY MEASUREMENTS', t),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: measurementsAsync.when(
+                    loading: () => _shimmer(context, height: 100, t: t),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (m) => _MeasurementsCard(
+                      measurement: m,
+                      onTap: () => context.push('/pro/measurements'),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ─── Quick Actions ────────────────────────────────────────
+              _sectionHeader('QUICK ACTIONS', t),
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 40),
+                sliver: SliverToBoxAdapter(child: _QuickActionsGrid()),
+              ),
             ],
           ),
         ),
@@ -258,7 +242,8 @@ class _ProDashboard extends ConsumerWidget {
         ),
       );
 
-  Widget _shimmer(BuildContext context, {required double height, required dynamic t}) {
+  Widget _shimmer(BuildContext context,
+      {required double height, required dynamic t}) {
     final rs = ResponsiveSize.of(context);
     return Container(
       height: rs.sp(height),
@@ -266,9 +251,9 @@ class _ProDashboard extends ConsumerWidget {
         color: t.surfaceAlt,
         borderRadius: BorderRadius.circular(16),
       ),
-    ).animate(onPlay: (c) => c.repeat()).shimmer(
-        duration: 1200.ms,
-        color: t.surface.withOpacity(0.5));
+    )
+        .animate(onPlay: (c) => c.repeat())
+        .shimmer(duration: 1200.ms, color: t.surface.withOpacity(0.5));
   }
 }
 
@@ -302,8 +287,7 @@ class _CaloriesCard extends StatelessWidget {
             ],
           ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: t.brand.withOpacity(0.25)),
+          border: Border.all(color: t.brand.withOpacity(0.25)),
         ),
         child: Row(
           children: [
@@ -316,8 +300,7 @@ class _CaloriesCard extends StatelessWidget {
                 children: [
                   CustomPaint(
                     size: Size(rs.sp(110), rs.sp(110)),
-                    painter:
-                        _RingPainter(progress: progress, color: t.brand),
+                    painter: _RingPainter(progress: progress, color: t.brand),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -332,8 +315,8 @@ class _CaloriesCard extends StatelessWidget {
                       ),
                       Text(
                         'kcal',
-                        style: GoogleFonts.inter(
-                            fontSize: 10, color: t.textMuted),
+                        style:
+                            GoogleFonts.inter(fontSize: 10, color: t.textMuted),
                       ),
                     ],
                   ),
@@ -349,15 +332,14 @@ class _CaloriesCard extends StatelessWidget {
                   _MacroRow('Protein', summary.protein, DailyTargets.protein,
                       t.brand),
                   const SizedBox(height: 8),
-                  _MacroRow('Carbs', summary.carbs, DailyTargets.carbs,
-                      t.accent),
-                  const SizedBox(height: 8),
                   _MacroRow(
-                      'Fat', summary.fat, DailyTargets.fat, t.warning),
+                      'Carbs', summary.carbs, DailyTargets.carbs, t.accent),
+                  const SizedBox(height: 8),
+                  _MacroRow('Fat', summary.fat, DailyTargets.fat, t.warning),
                   const SizedBox(height: 14),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                       color: t.surface,
                       borderRadius: BorderRadius.circular(8),
@@ -396,13 +378,10 @@ class _MacroRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label,
-                style: GoogleFonts.inter(
-                    fontSize: 11, color: t.textSecondary)),
+                style: GoogleFonts.inter(fontSize: 11, color: t.textSecondary)),
             Text('${current.toStringAsFixed(0)}g',
                 style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: color)),
+                    fontSize: 11, fontWeight: FontWeight.w700, color: color)),
           ],
         ),
         const SizedBox(height: 3),
@@ -502,8 +481,7 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text('Target',
-                    style: GoogleFonts.inter(
-                        fontSize: 12, color: t.textMuted)),
+                    style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
               ],
             ),
             const SizedBox(height: 16),
@@ -513,9 +491,8 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: days.asMap().entries.map((entry) {
                   final day = entry.value;
-                  final barHeight = chartMax > 0
-                      ? (day.kcal / chartMax) * 80
-                      : 0.0;
+                  final barHeight =
+                      chartMax > 0 ? (day.kcal / chartMax) * 80 : 0.0;
                   final isToday = entry.key == days.length - 1;
                   final dayLabel = _dayLabel(day.date);
 
@@ -530,9 +507,7 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                               '${(day.kcal / 1000).toStringAsFixed(1)}k',
                               style: GoogleFonts.inter(
                                   fontSize: 8,
-                                  color: isToday
-                                      ? t.brand
-                                      : t.textMuted),
+                                  color: isToday ? t.brand : t.textMuted),
                             ),
                           ),
                         Container(
@@ -557,12 +532,9 @@ class _WeeklyCaloriesChart extends StatelessWidget {
                           dayLabel,
                           style: GoogleFonts.inter(
                             fontSize: 9,
-                            fontWeight: isToday
-                                ? FontWeight.w800
-                                : FontWeight.w400,
-                            color: isToday
-                                ? t.brand
-                                : t.textMuted,
+                            fontWeight:
+                                isToday ? FontWeight.w800 : FontWeight.w400,
+                            color: isToday ? t.brand : t.textMuted,
                           ),
                         ),
                       ],
@@ -588,8 +560,7 @@ class _WeeklyCaloriesChart extends StatelessWidget {
 class _MeasurementsCard extends StatelessWidget {
   final dynamic measurement;
   final VoidCallback onTap;
-  const _MeasurementsCard(
-      {required this.measurement, required this.onTap});
+  const _MeasurementsCard({required this.measurement, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -609,8 +580,7 @@ class _MeasurementsCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                           color: t.textSecondary, fontSize: 14)),
                 ),
-                Icon(Icons.chevron_right_rounded,
-                    color: t.textMuted),
+                Icon(Icons.chevron_right_rounded, color: t.textMuted),
               ],
             ),
           ),
@@ -637,8 +607,7 @@ class _MeasurementsCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.straighten_rounded,
-                      color: t.accent, size: 18),
+                  Icon(Icons.straighten_rounded, color: t.accent, size: 18),
                   const SizedBox(width: 8),
                   Text('Latest Measurements',
                       style: GoogleFonts.inter(
@@ -648,8 +617,7 @@ class _MeasurementsCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     _formatDate(m.checkInDate as DateTime),
-                    style: GoogleFonts.inter(
-                        fontSize: 11, color: t.textMuted),
+                    style: GoogleFonts.inter(fontSize: 11, color: t.textMuted),
                   ),
                 ],
               ),
@@ -660,8 +628,13 @@ class _MeasurementsCard extends StatelessWidget {
                 children: chips.entries
                     .where((e) => e.value != null)
                     .map((e) => _MeasChip(
-                        label: e.key, value: e.value!,
-                        unit: e.key == 'Body Fat' ? '%' : e.key == 'Weight' ? ' kg' : ' cm'))
+                        label: e.key,
+                        value: e.value!,
+                        unit: e.key == 'Body Fat'
+                            ? '%'
+                            : e.key == 'Weight'
+                                ? ' kg'
+                                : ' cm'))
                     .toList(),
               ),
             ],
@@ -672,7 +645,20 @@ class _MeasurementsCard extends StatelessWidget {
   }
 
   String _formatDate(DateTime dt) {
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${dt.day} ${months[dt.month - 1]}';
   }
 }
@@ -705,8 +691,7 @@ class _MeasChip extends StatelessWidget {
             ),
           ),
           Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 10, color: t.textSecondary)),
+              style: GoogleFonts.inter(fontSize: 10, color: t.textSecondary)),
         ],
       ),
     );
@@ -736,8 +721,7 @@ class _MiniMembershipCard extends StatelessWidget {
               t.brand.withOpacity(0.06),
             ]),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-                color: const Color(0xFF3AA8FF).withOpacity(0.3)),
+            border: Border.all(color: const Color(0xFF3AA8FF).withOpacity(0.3)),
           ),
           child: Row(
             children: [
@@ -798,12 +782,10 @@ class _StatChip extends StatelessWidget {
             children: [
               Text(value,
                   style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: color)),
+                      fontSize: 13, fontWeight: FontWeight.w800, color: color)),
               Text(label,
-                  style: GoogleFonts.inter(
-                      fontSize: 10, color: t.textSecondary)),
+                  style:
+                      GoogleFonts.inter(fontSize: 10, color: t.textSecondary)),
             ],
           ),
         ],
@@ -815,25 +797,36 @@ class _StatChip extends StatelessWidget {
 // ─── Quick Actions Grid ───────────────────────────────────────────────────────
 
 class _QuickActionsGrid extends StatelessWidget {
-  final BuildContext context;
-  const _QuickActionsGrid({required this.context});
+  const _QuickActionsGrid();
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
     final actions = [
-      (Icons.add_circle_rounded, 'Log Food', t.brand,
-          () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProNutritionScreen()))),
-      (Icons.qr_code_scanner_rounded, 'Scan Barcode', t.accent,
-          () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProNutritionScreen()))),
-      (Icons.straighten_rounded, 'Measurements', t.info,
-          () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProMeasurementsScreen()))),
-      (Icons.smart_toy_rounded, 'AI Advice', t.warning,
-          () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ProAiScreen()))),
+      (
+        Icons.auto_awesome_rounded,
+        'AI Planner',
+        t.brand,
+        () => context.push('/pro/ai')
+      ),
+      (
+        Icons.monitor_heart_rounded,
+        'AI Progress',
+        t.accent,
+        () => context.push('/pro/progress')
+      ),
+      (
+        Icons.restaurant_rounded,
+        'Nutrition',
+        t.info,
+        () => context.push('/pro/nutrition')
+      ),
+      (
+        Icons.straighten_rounded,
+        'Measurements',
+        t.warning,
+        () => context.push('/pro/measurements')
+      ),
     ];
 
     return GridView.count(

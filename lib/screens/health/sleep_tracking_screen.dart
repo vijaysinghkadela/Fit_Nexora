@@ -41,7 +41,8 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
         backgroundColor: t.brand,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.bedtime_rounded),
-        label: Text('Log Sleep', style: GoogleFonts.inter(fontWeight: FontWeight.w700)),
+        label: Text('Log Sleep',
+            style: GoogleFonts.inter(fontWeight: FontWeight.w700)),
       ),
       body: CustomScrollView(
         slivers: [
@@ -278,7 +279,11 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                       const SizedBox(height: 16),
                       RepaintBoundary(
                         child: _SleepLineChart(
-                          entries: state.entries.reversed.take(7).toList().reversed.toList(),
+                          entries: state.entries.reversed
+                              .take(7)
+                              .toList()
+                              .reversed
+                              .toList(),
                         ),
                       ),
                     ],
@@ -313,7 +318,8 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: t.surface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(28)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -394,8 +400,7 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                             : t.danger;
                     return Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            right: q != 'good' ? 8 : 0),
+                        padding: EdgeInsets.only(right: q != 'good' ? 8 : 0),
                         child: GestureDetector(
                           onTap: () => setState(() => quality = q),
                           child: Container(
@@ -405,23 +410,18 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                                   ? c.withOpacity(0.15)
                                   : t.surfaceAlt,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: isSelected
-                                      ? c
-                                      : t.border),
+                              border:
+                                  Border.all(color: isSelected ? c : t.border),
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              q.toUpperCase()[0] +
-                                  q.substring(1),
+                              q.toUpperCase()[0] + q.substring(1),
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 fontWeight: isSelected
                                     ? FontWeight.w700
                                     : FontWeight.w500,
-                                color: isSelected
-                                    ? c
-                                    : t.textMuted,
+                                color: isSelected ? c : t.textMuted,
                               ),
                             ),
                           ),
@@ -437,13 +437,11 @@ class _SleepTrackingScreenState extends ConsumerState<SleepTrackingScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       ref.read(sleepProvider.notifier).logSleep(
-                            SleepEntry(
-                              date: DateTime.now(),
-                              hoursSlept: 7.5,
-                              quality: quality,
-                              bedtime: bedtime,
-                              wakeTime: wakeTime,
-                            ),
+                            hoursSlept:
+                                7.5, // TODO: calculate from bedtime/waketime
+                            quality: quality,
+                            bedtime: bedtime,
+                            wakeTime: wakeTime,
                           );
                       Navigator.pop(context);
                     },
@@ -559,8 +557,7 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 5),
-        Text(label,
-            style: GoogleFonts.inter(fontSize: 11, color: t.textMuted)),
+        Text(label, style: GoogleFonts.inter(fontSize: 11, color: t.textMuted)),
       ],
     );
   }
@@ -604,8 +601,7 @@ class _TimePickerTile extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: t.textPrimary)),
             Text(label,
-                style:
-                    GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
+                style: GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
           ],
         ),
       ),
@@ -625,7 +621,8 @@ class _SleepLineChart extends StatelessWidget {
       height: 80,
       child: CustomPaint(
         size: const Size(double.infinity, 80),
-        painter: _LinePainter(entries: entries, lineColor: t.brand, gridColor: t.ringTrack),
+        painter: _LinePainter(
+            entries: entries, lineColor: t.brand, gridColor: t.ringTrack),
       ),
     );
   }

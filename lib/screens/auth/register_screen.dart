@@ -181,13 +181,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         }
 
                         return DropdownButtonFormField<String>(
+                          isExpanded: true,
                           value: _selectedCity,
                           decoration: const InputDecoration(
                             labelText: 'Select City',
                             prefixIcon: Icon(Icons.location_city_rounded),
                           ),
                           items: cities.map((city) {
-                            return DropdownMenuItem(value: city, child: Text(city));
+                            return DropdownMenuItem(value: city, child: Text(city, overflow: TextOverflow.ellipsis));
                           }).toList(),
                           onChanged: (value) {
                             setState(() {
@@ -227,13 +228,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             );
                           }
                           return DropdownButtonFormField<Gym>(
+                            isExpanded: true,
                             value: _selectedGym,
                             decoration: const InputDecoration(
                               labelText: 'Select Gym',
                               prefixIcon: Icon(Icons.storefront_rounded),
                             ),
                             items: gyms.map((gym) {
-                              return DropdownMenuItem(value: gym, child: Text(gym.name));
+                              return DropdownMenuItem(value: gym, child: Text(gym.name, overflow: TextOverflow.ellipsis));
                             }).toList(),
                             onChanged: (value) {
                               setState(() {

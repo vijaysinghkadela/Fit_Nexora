@@ -15,10 +15,12 @@ class NotificationTriggerManager extends ConsumerStatefulWidget {
   const NotificationTriggerManager({super.key});
 
   @override
-  ConsumerState<NotificationTriggerManager> createState() => _NotificationTriggerManagerState();
+  ConsumerState<NotificationTriggerManager> createState() =>
+      _NotificationTriggerManagerState();
 }
 
-class _NotificationTriggerManagerState extends ConsumerState<NotificationTriggerManager> {
+class _NotificationTriggerManagerState
+    extends ConsumerState<NotificationTriggerManager> {
   // Track which notifications have been shown today to avoid spamming
   final Set<String> _shownToday = {};
   DateTime _lastCheckDate = DateTime.now();
@@ -46,7 +48,7 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
       if (next.hasValue && next.value != null) {
         final membership = next.value!;
         final daysLeft = membership.endDate.difference(DateTime.now()).inDays;
-        
+
         // Push Notification logic (always ensure scheduled)
         final gym = ref.read(selectedGymProvider);
         NotificationService.scheduleMembershipExpiryWarning(
@@ -79,7 +81,7 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
       } else {
         NotificationService.cancelHydrationReminder();
       }
-      
+
       // Overlay Trigger at specific milestones (50%, 100%)
       if (progress >= 1.0 && !_shownToday.contains('hydration_100')) {
         _showOverlay(AppNotification.hydration(
@@ -87,7 +89,9 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
           goalMl: state.dailyGoalMl,
         ));
         _shownToday.add('hydration_100');
-      } else if (progress >= 0.5 && progress < 0.6 && !_shownToday.contains('hydration_50')) {
+      } else if (progress >= 0.5 &&
+          progress < 0.6 &&
+          !_shownToday.contains('hydration_50')) {
         _showOverlay(AppNotification.hydration(
           currentMl: state.totalTodayMl,
           goalMl: state.dailyGoalMl,
@@ -100,7 +104,7 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
     ref.listen(stepsProvider, (previous, next) {
       final state = next;
       final progress = state.stepsToday / state.dailyGoal;
-      
+
       if (progress >= 1.0 && !_shownToday.contains('steps_100')) {
         _showOverlay(AppNotification.steps(
           currentSteps: state.stepsToday,
@@ -108,7 +112,9 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
           isComplete: true,
         ));
         _shownToday.add('steps_100');
-      } else if (progress >= 0.9 && progress < 1.0 && !_shownToday.contains('steps_90')) {
+      } else if (progress >= 0.9 &&
+          progress < 1.0 &&
+          !_shownToday.contains('steps_90')) {
         _showOverlay(AppNotification.steps(
           currentSteps: state.stepsToday,
           goalSteps: state.dailyGoal,
@@ -122,10 +128,17 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
       if (next.hasValue && next.value != null) {
         final plan = next.value!;
         final now = DateTime.now();
+        final today = DateUtils.dateOnly(now);
+        final startDate =
+            plan.startDate == null ? null : DateUtils.dateOnly(plan.startDate!);
+        if (startDate != null && today.isBefore(startDate)) {
+          return;
+        }
         final currentTimeStr = DateFormat('hh:mm a').format(now);
 
         for (final meal in plan.meals) {
-          if (meal.timing == currentTimeStr && !_shownToday.contains('meal_${meal.name}')) {
+          if (meal.timing == currentTimeStr &&
+              !_shownToday.contains('meal_${meal.name}')) {
             _showOverlay(AppNotification.diet(
               mealName: meal.name,
               timing: meal.timing,
@@ -144,7 +157,7 @@ class _NotificationTriggerManagerState extends ConsumerState<NotificationTrigger
       minute: settings.workoutTime.minute,
       enabled: settings.workoutEnabled,
     );
-    
+
     // 2. Hydration
     final waterState = ref.read(waterTrackerProvider);
     if (settings.hydrationEnabled) {

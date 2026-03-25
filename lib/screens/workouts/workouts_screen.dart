@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../config/theme.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/workout_plan_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
@@ -33,6 +34,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
+    final l = AppLocalizations.of(context)!;
     final subscriptionAsync = ref.watch(currentGymSubscriptionProvider);
     final hasAiAccess = subscriptionAsync.value?.hasAiAccess ?? false;
     final plansAsync = ref.watch(gymWorkoutPlansProvider);
@@ -82,7 +84,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           ),
           backgroundColor: t.background,
           title: Text(
-            'Workout Plans',
+            l.workoutPlans,
             style: GoogleFonts.inter(
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -100,7 +102,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               onPressed: _showCreatePlanSheet,
               icon: const Icon(Icons.add_rounded, size: 18),
               label: Text(
-                'Create Plan',
+                l.createPlan,
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -127,7 +129,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
             child: _AiGenerationBanner(
               title: 'Generate AI Workout Plan',
               subtitle:
-                  'Claude creates a personalized plan based on client goals, level & equipment',
+                  'Kimi creates a personalized plan based on client goals, level & equipment',
               isLocked: !hasAiAccess,
               color: t.brand,
               icon: Icons.fitness_center_rounded,
@@ -152,7 +154,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
           sliver: SliverToBoxAdapter(
             child: Text(
-              'Quick Start Templates',
+              l.workoutPlans,
               style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -169,7 +171,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               maxCrossAxisExtent: 280,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 1.55,
+              mainAxisExtent: 120,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) => _buildTemplateCard(templates[index], index, t),
@@ -186,7 +188,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Recent Plans',
+                  l.workoutHistory,
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -195,7 +197,7 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
                 ),
                 TextButton(
                   onPressed: () => context.push('/workout/history'),
-                  child: const Text('View All'),
+                  child: Text(l.viewAll),
                 ),
               ],
             ),

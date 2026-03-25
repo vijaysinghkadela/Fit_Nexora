@@ -11,6 +11,7 @@ import '../models/food_log_model.dart';
 import '../models/membership_model.dart';
 import '../models/membership_counts.dart';
 import '../models/subscription_model.dart';
+import '../models/diet_plan_model.dart';
 import '../models/workout_plan_model.dart';
 
 /// Database service wrapping Supabase queries.
@@ -22,7 +23,7 @@ class DatabaseService {
   final SupabaseClient _client;
 
   DatabaseService(this._client);
- 
+
   static const String _clientColumns =
       'id, user_id, gym_id, full_name, email, phone, age, sex, weight_kg, '
       'height_cm, goal, training_level, days_per_week, equipment, diet_type, '
@@ -84,7 +85,7 @@ class DatabaseService {
         .eq('city', city)
         .eq('is_active', true)
         .order('name');
-    
+
     return data.map((json) => Gym.fromJson(json)).toList();
   }
 
@@ -200,11 +201,14 @@ class DatabaseService {
       );
 
       if (sort == 'name_desc') {
-        dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: false);
+        dataQuery = (dataQuery as PostgrestFilterBuilder)
+            .order('full_name', ascending: false);
       } else if (sort == 'recent') {
-        dataQuery = (dataQuery as PostgrestFilterBuilder).order('created_at', ascending: false);
+        dataQuery = (dataQuery as PostgrestFilterBuilder)
+            .order('created_at', ascending: false);
       } else {
-        dataQuery = (dataQuery as PostgrestFilterBuilder).order('full_name', ascending: true);
+        dataQuery = (dataQuery as PostgrestFilterBuilder)
+            .order('full_name', ascending: true);
       }
 
       final count = await countQuery.count(CountOption.exact);
@@ -218,7 +222,8 @@ class DatabaseService {
         totalCount: count.count.toInt(),
       );
     } catch (e, stack) {
-      debugPrint('❌ [getClientsForGymPaged] ERROR for gym=$gymId offset=$offset: $e');
+      debugPrint(
+          '❌ [getClientsForGymPaged] ERROR for gym=$gymId offset=$offset: $e');
       debugPrint(stack.toString());
       rethrow;
     }
@@ -249,6 +254,38 @@ class DatabaseService {
         .single();
 
     return ClientProfile.fromJson(data);
+  }
+
+  /// Get a single client by ID.
+  Future<ClientProfile?> getClientById(String clientId) async {
+    final data = await _client
+        .from(AppConstants.clientsTable)
+        .select(_clientColumns)
+        .eq('id', clientId)
+        .maybeSingle();
+
+    return data != null ? ClientProfile.fromJson(data) : null;
+  }
+
+  /// Get the member's client profile row by auth user id.
+  Future<ClientProfile?> getClientForUser({
+    required String userId,
+    String? gymId,
+  }) async {
+    dynamic query = _client
+        .from(AppConstants.clientsTable)
+        .select(_clientColumns)
+        .eq('user_id', userId);
+
+    if (gymId != null && gymId.isNotEmpty) {
+      query = query.eq('gym_id', gymId);
+    }
+
+    final data = await query
+        .order('created_at', ascending: false)
+        .limit(1)
+        .maybeSingle();
+    return data != null ? ClientProfile.fromJson(data) : null;
   }
 
   /// Delete a client.
@@ -306,9 +343,8 @@ class DatabaseService {
     String filter = 'all',
   }) async {
     final now = DateTime.now().toIso8601String();
-    final inSevenDays = DateTime.now()
-        .add(const Duration(days: 7))
-        .toIso8601String();
+    final inSevenDays =
+        DateTime.now().add(const Duration(days: 7)).toIso8601String();
 
     dynamic applyFilters(
       PostgrestFilterBuilder<List<Map<String, dynamic>>> query,
@@ -358,9 +394,8 @@ class DatabaseService {
   /// full membership list into memory.
   Future<MembershipCounts> getMembershipCounts(String gymId) async {
     final now = DateTime.now().toIso8601String();
-    final inSevenDays = DateTime.now()
-        .add(const Duration(days: 7))
-        .toIso8601String();
+    final inSevenDays =
+        DateTime.now().add(const Duration(days: 7)).toIso8601String();
 
     final total = await _client
         .from(AppConstants.membershipsTable)
@@ -487,10 +522,9 @@ class DatabaseService {
 
   /// Check out by setting checked_out_at on an existing check-in.
   Future<void> checkOutFromGym(String checkInId) async {
-    await _client
-        .from(AppConstants.gymCheckinsTable)
-        .update({'checked_out_at': DateTime.now().toUtc().toIso8601String()})
-        .eq('id', checkInId);
+    await _client.from(AppConstants.gymCheckinsTable).update({
+      'checked_out_at': DateTime.now().toUtc().toIso8601String()
+    }).eq('id', checkInId);
   }
 
   /// Returns the user's current active check-in for a gym, or null.
@@ -511,17 +545,14 @@ class DatabaseService {
   Stream<List<Map<String, dynamic>>> streamGymCheckIns(String gymId) {
     return _client
         .from(AppConstants.gymCheckinsTable)
-        .stream(primaryKey: ['id'])
-        .eq('gym_id', gymId);
+        .stream(primaryKey: ['id']).eq('gym_id', gymId);
   }
 
   // ─── FOOD LOGS ────────────────────────────────────────────────────
 
   /// Insert a food log entry.
   Future<void> logFood(FoodLog log) async {
-    await _client
-        .from(AppConstants.foodLogsTable)
-        .insert(log.toInsertJson());
+    await _client.from(AppConstants.foodLogsTable).insert(log.toInsertJson());
   }
 
   /// Fetch food logs for a user within a date range.
@@ -589,10 +620,8 @@ class DatabaseService {
     required String gymId,
     int days = 28,
   }) async {
-    final since = DateTime.now()
-        .subtract(Duration(days: days))
-        .toUtc()
-        .toIso8601String();
+    final since =
+        DateTime.now().subtract(Duration(days: days)).toUtc().toIso8601String();
     return await _client
         .from(AppConstants.gymCheckinsTable)
         .select('checked_in_at, checked_out_at')
@@ -617,8 +646,7 @@ class DatabaseService {
   }
 
   /// Workout plan assigned to a client.
-  Future<Map<String, dynamic>?> getWorkoutPlanForClient(
-      String clientId) async {
+  Future<Map<String, dynamic>?> getWorkoutPlanForClient(String clientId) async {
     final data = await _client
         .from(AppConstants.workoutPlansTable)
         .select()
@@ -665,6 +693,36 @@ class DatabaseService {
         .limit(1);
     if (data.isEmpty) return null;
     return data.first;
+  }
+
+  /// Create a new diet plan and return the persisted record.
+  Future<DietPlan> createDietPlan(Map<String, dynamic> data) async {
+    final result = await _client
+        .from(AppConstants.dietPlansTable)
+        .insert(data)
+        .select()
+        .single();
+    return DietPlan.fromJson(result);
+  }
+
+  /// Fetch ALL non-cancelled diet plans for a client —
+  /// both trainer-assigned (trainer_id != null) and self-created (trainer_id == null).
+  Future<List<Map<String, dynamic>>> getAllDietPlansForClient(
+      String clientId) async {
+    final data = await _client
+        .from(AppConstants.dietPlansTable)
+        .select()
+        .eq('client_id', clientId)
+        .neq('status', DatabaseValues.cancelledStatus)
+        .order('updated_at', ascending: false);
+    return List<Map<String, dynamic>>.from(data);
+  }
+
+  /// Soft-delete a diet plan by setting its status to 'cancelled'.
+  Future<void> deleteDietPlan(String planId) async {
+    await _client
+        .from(AppConstants.dietPlansTable)
+        .update({'status': DatabaseValues.cancelledStatus}).eq('id', planId);
   }
 
   /// Weight progress check-ins for a client (last 30 entries).
@@ -778,6 +836,7 @@ class DatabaseService {
         .order('created_at', ascending: false)
         .limit(20);
   }
+
   /// Insert a progress check-in record (used by Pro member measurements screen).
   Future<void> addProgressCheckIn(Map<String, dynamic> data) async {
     await _client.from(AppConstants.progressCheckInsTable).insert(data);
@@ -861,7 +920,8 @@ class DatabaseService {
       totalOutOfOrder += (row['out_of_service'] as int?) ?? 0;
     }
 
-    final totalAvailable = (totalUnits - totalInUse - totalOutOfOrder).clamp(0, totalUnits);
+    final totalAvailable =
+        (totalUnits - totalInUse - totalOutOfOrder).clamp(0, totalUnits);
 
     return {
       'available': totalAvailable,

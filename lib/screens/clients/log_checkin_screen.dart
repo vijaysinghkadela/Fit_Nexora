@@ -93,7 +93,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
             backgroundColor: context.fitTheme.danger,
           ),
         );
-        context.go('/');
+        context.go('/dashboard');
       });
     }
   }
@@ -119,8 +119,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
       ? null
       : _mockClients.firstWhere(
           (c) => c.id == _selectedClientId,
-          orElse: () => const _MockClient(
-              id: '', name: '', membershipType: ''),
+          orElse: () => const _MockClient(id: '', name: '', membershipType: ''),
         );
 
   Future<void> _pickTime() async {
@@ -180,7 +179,8 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
 
     // Guard: if no gym is selected, show empty scaffold while redirect is pending
     if (gym == null) {
-      return Scaffold(backgroundColor: t.background, body: const SizedBox.shrink());
+      return Scaffold(
+          backgroundColor: t.background, body: const SizedBox.shrink());
     }
 
     final filtered = _filtered;
@@ -217,10 +217,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                       controller: _searchController,
                       t: t,
                       onChanged: (v) => setState(() => _query = v),
-                    )
-                        .animate()
-                        .fadeIn(duration: 400.ms)
-                        .slideY(begin: 0.1),
+                    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
                   ),
                 ),
 
@@ -235,8 +232,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                         decoration: BoxDecoration(
                           color: t.accent.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: t.accent.withOpacity(0.35)),
+                          border: Border.all(color: t.accent.withOpacity(0.35)),
                         ),
                         child: Row(
                           children: [
@@ -291,17 +287,15 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                         children: filtered.asMap().entries.map((entry) {
                           final i = entry.key;
                           final client = entry.value;
-                          final isSelected =
-                              _selectedClientId == client.id;
+                          final isSelected = _selectedClientId == client.id;
                           final memberColor =
                               _membershipColor(client.membershipType, t);
 
                           return Column(
                             children: [
                               InkWell(
-                                onTap: () => setState(() =>
-                                    _selectedClientId =
-                                        isSelected ? null : client.id),
+                                onTap: () => setState(() => _selectedClientId =
+                                    isSelected ? null : client.id),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 14, vertical: 12),
@@ -447,8 +441,7 @@ class _LogCheckinScreenState extends ConsumerState<LogCheckinScreen> {
                               color: t.textPrimary,
                             ),
                             decoration: InputDecoration(
-                              hintText:
-                                  'Add any notes about this check-in...',
+                              hintText: 'Add any notes about this check-in...',
                               hintStyle: GoogleFonts.inter(
                                 fontSize: 13,
                                 color: t.textMuted,
@@ -511,8 +504,8 @@ class _ClientSearchBar extends StatelessWidget {
           hintStyle: GoogleFonts.inter(fontSize: 14, color: t.textMuted),
           prefixIcon: Icon(Icons.search_rounded, color: t.textMuted, size: 20),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-              vertical: 14, horizontal: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         ),
       ),
     );
@@ -535,10 +528,24 @@ class _CheckInTimeRow extends StatelessWidget {
 
   String _formatDateTime(DateTime dt) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour == 0 ? 12 : dt.hour;
+    final hour = dt.hour > 12
+        ? dt.hour - 12
+        : dt.hour == 0
+            ? 12
+            : dt.hour;
     final minute = dt.minute.toString().padLeft(2, '0');
     final period = dt.hour >= 12 ? 'PM' : 'AM';
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}  •  $hour:$minute $period';
@@ -561,8 +568,7 @@ class _CheckInTimeRow extends StatelessWidget {
         const SizedBox(height: 10),
         GlassmorphicCard(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
                 Container(
@@ -571,8 +577,8 @@ class _CheckInTimeRow extends StatelessWidget {
                     color: t.brand.withOpacity(0.13),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(Icons.access_time_rounded,
-                      color: t.brand, size: 18),
+                  child:
+                      Icon(Icons.access_time_rounded, color: t.brand, size: 18),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -589,8 +595,8 @@ class _CheckInTimeRow extends StatelessWidget {
                   onPressed: onChangeTime,
                   style: TextButton.styleFrom(
                     foregroundColor: t.brand,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   ),
                   child: Text(
                     'Change',

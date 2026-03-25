@@ -2,7 +2,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../core/enums.dart';
 import '../models/client_profile_model.dart';
 
-/// Manages the AI system prompt and context injection for Claude API calls.
+/// Manages the AI system prompt and context injection for Kimi API calls.
 class AiPromptBuilder {
   static String? _cachedSystemPrompt;
 
@@ -19,7 +19,7 @@ class AiPromptBuilder {
     return _cachedSystemPrompt!;
   }
 
-  /// Build the complete system message for a Claude API call.
+  /// Build the complete system message for a Kimi API call.
   ///
   /// Injects the role context and client profile data into the master prompt.
   static Future<String> buildPrompt({
@@ -59,26 +59,15 @@ class AiPromptBuilder {
     return parts.join('\n');
   }
 
-  /// Determine which Claude model to use based on the plan and request type.
+  /// Determine which Kimi model to use based on the plan and request type.
   static String getModel({
     required PlanTier tier,
     required AiRequestType requestType,
   }) {
     switch (tier) {
       case PlanTier.elite:
-        // Elite gets Opus for complex tasks, Haiku for quick ones
-        switch (requestType) {
-          case AiRequestType.fullPlanGeneration:
-          case AiRequestType.progressAnalysis:
-          case AiRequestType.businessIntelligence:
-            return 'claude-opus-4-5';
-          case AiRequestType.quickQuestion:
-          case AiRequestType.substitution:
-          case AiRequestType.supplementAdvice:
-            return 'claude-haiku-4-5-20251001';
-        }
       case PlanTier.pro:
-        return 'claude-haiku-4-5-20251001'; // Pro = Haiku only
+        return 'moonshotai/kimi-k2-thinking';
       case PlanTier.basic:
         return ''; // Basic = no AI access
     }

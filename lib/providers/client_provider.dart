@@ -114,3 +114,10 @@ final trainerTodayActiveClientsProvider =
         last.day == today.day;
   }).length;
 });
+
+/// A specific client profile by ID.
+final clientByIdProvider =
+    FutureProvider.autoDispose.family<ClientProfile?, String>((ref, id) async {
+  final db = ref.watch(databaseServiceProvider);
+  return db.getClientById(id);
+});

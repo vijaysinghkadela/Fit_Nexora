@@ -15,10 +15,12 @@ class MemberAddWorkoutPlanScreen extends ConsumerStatefulWidget {
   const MemberAddWorkoutPlanScreen({super.key});
 
   @override
-  ConsumerState<MemberAddWorkoutPlanScreen> createState() => _MemberAddWorkoutPlanScreenState();
+  ConsumerState<MemberAddWorkoutPlanScreen> createState() =>
+      _MemberAddWorkoutPlanScreenState();
 }
 
-class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPlanScreen> {
+class _MemberAddWorkoutPlanScreenState
+    extends ConsumerState<MemberAddWorkoutPlanScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -52,7 +54,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
       for (int i = 0; i < _days.length; i++) {
         final day = _days[i];
         _days[i] = TrainingDay(
-          dayName: day.dayName.startsWith('Day ') ? 'Day ${i + 1}' : day.dayName,
+          dayName:
+              day.dayName.startsWith('Day ') ? 'Day ${i + 1}' : day.dayName,
           dayIndex: i,
           exercises: day.exercises,
           muscleGroup: day.muscleGroup,
@@ -119,7 +122,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
     });
   }
 
-  void _updateExercise(int dayIndex, int exerciseIndex, Exercise updatedExercise) {
+  void _updateExercise(
+      int dayIndex, int exerciseIndex, Exercise updatedExercise) {
     setState(() {
       final day = _days[dayIndex];
       final newExercises = List<Exercise>.from(day.exercises);
@@ -147,6 +151,7 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
 
     final user = ref.read(currentUserProvider).value;
     final gym = ref.read(selectedGymProvider);
+    final membership = ref.read(memberMembershipProvider).valueOrNull;
 
     if (user == null || gym == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -155,11 +160,21 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
       return;
     }
 
+    final clientId =
+        membership?.clientId ?? await ref.read(memberClientIdProvider.future);
+    if (clientId == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error: Member profile not found')),
+      );
+      return;
+    }
+
     final db = ref.read(databaseServiceProvider);
 
     final planData = {
       'gym_id': gym.id,
-      'client_id': user.id,
+      'client_id': clientId,
       'name': _nameController.text.trim(),
       'description': _descriptionController.text.trim(),
       'goal': _selectedGoal,
@@ -215,7 +230,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                       controller: _nameController,
                       label: 'Plan Name',
                       hint: 'e.g., Summer Shred, Strength Alpha',
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
@@ -231,11 +247,17 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                       label: 'Fitness Goal',
                       value: _selectedGoal,
                       items: const [
-                        DropdownMenuItem(value: 'fat_loss', child: Text('Fat Loss')),
-                        DropdownMenuItem(value: 'muscle_gain', child: Text('Muscle Gain')),
-                        DropdownMenuItem(value: 'strength', child: Text('Strength Build')),
-                        DropdownMenuItem(value: 'endurance', child: Text('Endurance')),
-                        DropdownMenuItem(value: 'general_fitness', child: Text('General Fitness')),
+                        DropdownMenuItem(
+                            value: 'fat_loss', child: Text('Fat Loss')),
+                        DropdownMenuItem(
+                            value: 'muscle_gain', child: Text('Muscle Gain')),
+                        DropdownMenuItem(
+                            value: 'strength', child: Text('Strength Build')),
+                        DropdownMenuItem(
+                            value: 'endurance', child: Text('Endurance')),
+                        DropdownMenuItem(
+                            value: 'general_fitness',
+                            child: Text('General Fitness')),
                       ],
                       onChanged: (v) => setState(() => _selectedGoal = v!),
                     ),
@@ -244,27 +266,40 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                       label: 'Athlete Discipline',
                       value: _selectedAthleteType,
                       items: const [
-                        DropdownMenuItem(value: 'General', child: Text('General Fitness')),
-                        DropdownMenuItem(value: 'Powerlifting', child: Text('Powerlifting')),
-                        DropdownMenuItem(value: 'Bodybuilding', child: Text('Bodybuilding')),
-                        DropdownMenuItem(value: 'Arm Wrestling', child: Text('Arm Wrestling')),
-                        DropdownMenuItem(value: 'Olympic Weightlifting', child: Text('Olympic Weightlifting')),
+                        DropdownMenuItem(
+                            value: 'General', child: Text('General Fitness')),
+                        DropdownMenuItem(
+                            value: 'Powerlifting', child: Text('Powerlifting')),
+                        DropdownMenuItem(
+                            value: 'Bodybuilding', child: Text('Bodybuilding')),
+                        DropdownMenuItem(
+                            value: 'Arm Wrestling',
+                            child: Text('Arm Wrestling')),
+                        DropdownMenuItem(
+                            value: 'Olympic Weightlifting',
+                            child: Text('Olympic Weightlifting')),
                       ],
-                      onChanged: (v) => setState(() => _selectedAthleteType = v!),
+                      onChanged: (v) =>
+                          setState(() => _selectedAthleteType = v!),
                     ),
                     const SizedBox(height: 12),
                     OutlinedButton.icon(
                       onPressed: () {
                         setState(() {
                           _days.clear();
-                          _days.addAll(WorkoutTemplates.getTemplate(_selectedAthleteType));
+                          _days.addAll(WorkoutTemplates.getTemplate(
+                              _selectedAthleteType));
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('$_selectedAthleteType template loaded!')),
+                          SnackBar(
+                              content: Text(
+                                  '$_selectedAthleteType template loaded!')),
                         );
                       },
-                      icon: Icon(Icons.download_rounded, size: 16, color: t.brandSecondary),
-                      label: Text('Load Pre-filled Template', style: TextStyle(color: t.brandSecondary)),
+                      icon: Icon(Icons.download_rounded,
+                          size: 16, color: t.brandSecondary),
+                      label: Text('Load Pre-filled Template',
+                          style: TextStyle(color: t.brandSecondary)),
                     ),
                     const SizedBox(height: 16),
                     _buildDurationSelector(),
@@ -296,7 +331,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         icon: const Icon(Icons.save_rounded, color: Colors.white),
         label: Text(
           'Save Workout Plan',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.inter(
+              fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ).animate().scale(delay: 400.ms, curve: Curves.easeOutBack),
     );
@@ -529,7 +565,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                ...List.generate(day.exercises.length, (exIdx) => _buildExerciseRow(dayIdx, exIdx)),
+                ...List.generate(day.exercises.length,
+                    (exIdx) => _buildExerciseRow(dayIdx, exIdx)),
                 const SizedBox(height: 12),
                 _buildAddExerciseButton(dayIdx),
               ],
@@ -604,9 +641,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Exercise name',
                   initialValue: exercise.name,
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: v, sets: exercise.sets, reps: exercise.reps, setTime: exercise.setTime, rpe: exercise.rpe, tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: v,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               const SizedBox(width: 8),
@@ -615,9 +663,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                   hint: 'Sets',
                   initialValue: exercise.sets.toString(),
                   keyboardType: TextInputType.number,
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: int.tryParse(v) ?? 3, reps: exercise.reps, setTime: exercise.setTime, rpe: exercise.rpe, tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: int.tryParse(v) ?? 3,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               const SizedBox(width: 8),
@@ -625,9 +684,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Reps',
                   initialValue: exercise.reps,
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: v, setTime: exercise.setTime, rpe: exercise.rpe, tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: v,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               IconButton(
@@ -644,9 +714,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                   hint: 'RPE (1-10)',
                   initialValue: exercise.rpe?.toString() ?? '',
                   keyboardType: TextInputType.number,
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: exercise.reps, setTime: exercise.setTime, rpe: int.tryParse(v), tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: int.tryParse(v),
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               const SizedBox(width: 8),
@@ -654,9 +735,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Tempo (3110)',
                   initialValue: exercise.tempo ?? '',
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: exercise.reps, setTime: exercise.setTime, rpe: exercise.rpe, tempo: v, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: v,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               const SizedBox(width: 8),
@@ -664,9 +756,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Time/Dur',
                   initialValue: exercise.setTime ?? '',
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: exercise.reps, setTime: v, rpe: exercise.rpe, tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: v,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
             ],
@@ -678,9 +781,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Superset Grp (e.g. A)',
                   initialValue: exercise.supersetGroupId ?? '',
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: exercise.reps, setTime: exercise.setTime, rpe: exercise.rpe, tempo: exercise.tempo, intensity: exercise.intensity, supersetGroupId: v, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: exercise.intensity,
+                        supersetGroupId: v,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
               const SizedBox(width: 8),
@@ -688,9 +802,20 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
                 child: _buildInlineField(
                   hint: 'Intensity (High/Mid/Low)',
                   initialValue: exercise.intensity ?? '',
-                  onChanged: (v) => _updateExercise(dayIdx, exIdx, Exercise(
-                    name: exercise.name, sets: exercise.sets, reps: exercise.reps, setTime: exercise.setTime, rpe: exercise.rpe, tempo: exercise.tempo, intensity: v, supersetGroupId: exercise.supersetGroupId, orderIndex: exercise.orderIndex,
-                  )),
+                  onChanged: (v) => _updateExercise(
+                      dayIdx,
+                      exIdx,
+                      Exercise(
+                        name: exercise.name,
+                        sets: exercise.sets,
+                        reps: exercise.reps,
+                        setTime: exercise.setTime,
+                        rpe: exercise.rpe,
+                        tempo: exercise.tempo,
+                        intensity: v,
+                        supersetGroupId: exercise.supersetGroupId,
+                        orderIndex: exercise.orderIndex,
+                      )),
                 ),
               ),
             ],
@@ -718,7 +843,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
         filled: true,
         fillColor: t.surfaceAlt,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
@@ -758,7 +884,8 @@ class _MemberAddWorkoutPlanScreenState extends ConsumerState<MemberAddWorkoutPla
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.calendar_today_rounded, color: t.brandSecondary, size: 20),
+              Icon(Icons.calendar_today_rounded,
+                  color: t.brandSecondary, size: 20),
               const SizedBox(width: 12),
               Text(
                 'Add Training Day',

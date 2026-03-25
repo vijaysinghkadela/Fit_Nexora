@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/pagination.dart';
 import '../core/dev_bypass.dart';
+import '../models/client_profile_model.dart';
 import '../models/membership_model.dart';
 import '../models/workout_plan_model.dart';
 import '../models/diet_plan_model.dart';
@@ -43,11 +44,11 @@ final memberMembershipProvider =
 /// Free tier features are ALWAYS accessible regardless of membership status.
 final memberHasAccessProvider = FutureProvider.autoDispose<bool>((ref) async {
   final membership = await ref.watch(memberMembershipProvider.future);
-  
+
   // Developer bypass (uncomment for testing with dev emails)
   // final user = ref.watch(currentUserProvider).value;
   // if (user != null && isDevUser(user.email)) return true;
-  
+
   // For premium features only - check if membership is active
   if (membership == null) return false;
   return !membership.isExpired;
@@ -55,46 +56,71 @@ final memberHasAccessProvider = FutureProvider.autoDispose<bool>((ref) async {
 
 /// Determines if a member can access FREE tier features.
 /// Returns true for ALL authenticated users (members don't need paid plans for free features).
-final memberCanAccessFreeFeaturesProvider = FutureProvider.autoDispose<bool>((ref) async {
+final memberCanAccessFreeFeaturesProvider =
+    FutureProvider.autoDispose<bool>((ref) async {
   final user = ref.watch(currentUserProvider).value;
-  
+
   // Developer bypass (uncomment for testing with dev emails)
   // if (user != null && isDevUser(user.email)) return true;
-  
+
   // Any authenticated member has access to free features
   // Membership/payment is ONLY required for premium features
   return user != null;
 });
 
 /// Maps specific features to their access level (free vs premium)
-/// 
-/// Usage: 
+///
+/// Usage:
 /// final canAccess = ref.watch(memberCanAccessFeatureProvider('feature_id'));
 /// if (!canAccess) { return const UpgradePrompt(); }
-final memberCanAccessFeatureProvider = Provider.family<bool, String>((ref, featureId) {
+final memberCanAccessFeatureProvider =
+    Provider.family<bool, String>((ref, featureId) {
   final user = ref.watch(currentUserProvider).value;
-  
+
   if (user == null) return false; // Must be authenticated
-  
+
   // FREE TIER - These 5 features are ALWAYS accessible
   const freeFeatures = {
-    'attendance',           // Attendance tracking
-    'gym_traffic',          // Live gym traffic
-    'calendar',             // Workout calendar
-    'motivation_quotes',    // Motivation quotes (NEW)
-    'checkin_checkout',     // Check-in/check-out
+    'attendance', // Attendance tracking
+    'gym_traffic', // Live gym traffic
+    'calendar', // Workout calendar
+    'motivation_quotes', // Motivation quotes (NEW)
+    'checkin_checkout', // Check-in/check-out
   };
-  
+
   if (freeFeatures.contains(featureId)) {
     return true; // These features are always free
   }
-  
+
   // PREMIUM FEATURES = require paid membership
   final membership = ref.watch(memberMembershipProvider).value;
   if (membership == null) return false;
   if (membership.isExpired) return false;
-  
+
   return true; // Has active membership → can access premium features
+});
+
+final memberClientProfileProvider =
+    FutureProvider.autoDispose<ClientProfile?>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user == null) return null;
+
+  Membership? membership;
+  try {
+    membership = await ref.watch(memberMembershipProvider.future);
+  } catch (_) {
+    membership = null;
+  }
+  final selectedGym = ref.read(selectedGymProvider);
+  final gymId = membership?.gymId ?? selectedGym?.id;
+
+  final db = ref.watch(databaseServiceProvider);
+  return db.getClientForUser(userId: user.id, gymId: gymId);
+});
+
+final memberClientIdProvider = FutureProvider.autoDispose<String?>((ref) async {
+  final client = await ref.watch(memberClientProfileProvider.future);
+  return client?.id;
 });
 
 // ─── Workout ─────────────────────────────────────────────────────────────────
@@ -108,8 +134,11 @@ final memberWorkoutPlanProvider =
   // Developer Bypass: Return mock workout plan
   if (isDevUser(user.email)) return devWorkoutPlan();
 
+  final clientId = await ref.watch(memberClientIdProvider.future);
+  if (clientId == null) return null;
+
   final db = ref.watch(databaseServiceProvider);
-  final raw = await db.getWorkoutPlanForClient(user.id);
+  final raw = await db.getWorkoutPlanForClient(clientId);
   if (raw == null) return null;
   return WorkoutPlan.fromJson(raw);
 });
@@ -125,10 +154,31 @@ final memberDietPlanProvider =
   // Developer Bypass: Return mock diet plan
   if (isDevUser(user.email)) return devDietPlan();
 
+  final clientId = await ref.watch(memberClientIdProvider.future);
+  if (clientId == null) return null;
+
   final db = ref.watch(databaseServiceProvider);
-  final raw = await db.getDietPlanForClient(user.id);
+  final raw = await db.getDietPlanForClient(clientId);
   if (raw == null) return null;
   return DietPlan.fromJson(raw);
+});
+
+/// ALL diet plans for this member — both trainer-assigned AND self-created.
+/// Sorted by updated_at DESC so the latest plan is always first.
+final memberAllDietPlansProvider =
+    FutureProvider.autoDispose<List<DietPlan>>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user == null) return [];
+
+  // Developer bypass: return a single mock plan
+  if (isDevUser(user.email)) return [devDietPlan()];
+
+  final clientId = await ref.watch(memberClientIdProvider.future);
+  if (clientId == null) return [];
+
+  final db = ref.watch(databaseServiceProvider);
+  final raws = await db.getAllDietPlansForClient(clientId);
+  return raws.map(DietPlan.fromJson).toList();
 });
 
 // ─── Workout History ──────────────────────────────────────────────────────────
@@ -153,8 +203,11 @@ final memberProgressProvider =
   // Developer Bypass: Return mock progress data
   if (isDevUser(user.email)) return devProgressData();
 
+  final clientId = await ref.watch(memberClientIdProvider.future);
+  if (clientId == null) return [];
+
   final db = ref.watch(databaseServiceProvider);
-  return db.getProgressCheckIns(user.id);
+  return db.getProgressCheckIns(clientId);
 });
 
 // ─── Attendance ───────────────────────────────────────────────────────────────

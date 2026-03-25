@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
+import '../../providers/ai_agent_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/member_provider.dart';
-import '../../services/claude_service.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Master: Full AI Fitness Coach — multi-turn chat + daily adaptive plan.
@@ -27,7 +27,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
   String? _dailyPlan;
   bool _planLoading = false;
 
-  static const _masterPrimary   = Color(0xFFFF3D5E);
+  static const _masterPrimary = Color(0xFFFF3D5E);
   static const _masterSecondary = Color(0xFFFF8C00);
 
   final _quickStarts = [
@@ -65,19 +65,27 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_masterPrimary, _masterSecondary]),
+              gradient: const LinearGradient(
+                  colors: [_masterPrimary, _masterSecondary]),
               borderRadius: BorderRadius.circular(6),
-              boxShadow: [BoxShadow(
-                  color: _masterPrimary.withOpacity(0.5), blurRadius: 10)],
+              boxShadow: [
+                BoxShadow(
+                    color: _masterPrimary.withOpacity(0.5), blurRadius: 10)
+              ],
             ),
-            child: Text('MASTER AI', style: GoogleFonts.inter(
-                fontSize: 9, fontWeight: FontWeight.w900,
-                color: Colors.white, letterSpacing: 1.2)),
+            child: Text('MASTER AI',
+                style: GoogleFonts.inter(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 1.2)),
           ),
           const SizedBox(width: 10),
-          Text('Fitness Coach', style: GoogleFonts.inter(
-              fontSize: 18, fontWeight: FontWeight.w800,
-              color: t.textPrimary)),
+          Text('Fitness Coach',
+              style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: t.textPrimary)),
         ]),
         bottom: TabBar(
           controller: _tabs,
@@ -97,9 +105,7 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
           Column(children: [
             Expanded(
               child: _chat.isEmpty
-                  ? _WelcomeView(
-                      prompts: _quickStarts,
-                      onTap: _sendChat)
+                  ? _WelcomeView(prompts: _quickStarts, onTap: _sendChat)
                   : ListView.builder(
                       controller: _scroll,
                       padding: const EdgeInsets.all(16),
@@ -121,24 +127,32 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
           // ─── Daily Adaptive Plan
           SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               GlassmorphicCard(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      const Icon(Icons.bolt_rounded, color: _masterPrimary, size: 22),
-                      const SizedBox(width: 10),
-                      Text('Today\'s Adaptive Plan',
-                          style: GoogleFonts.inter(fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: t.textPrimary)),
-                    ]),
-                    const SizedBox(height: 8),
-                    Text('AI generates a fresh plan every day based on your fatigue, goals, and progress.',
-                        style: GoogleFonts.inter(fontSize: 13,
-                            color: t.textSecondary, height: 1.5)),
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const Icon(Icons.bolt_rounded,
+                              color: _masterPrimary, size: 22),
+                          const SizedBox(width: 10),
+                          Text('Today\'s Adaptive Plan',
+                              style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: t.textPrimary)),
+                        ]),
+                        const SizedBox(height: 8),
+                        Text(
+                            'AI generates a fresh plan every day based on your fatigue, goals, and progress.',
+                            style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: t.textSecondary,
+                                height: 1.5)),
+                      ]),
                 ),
               ).animate().fadeIn(),
               const SizedBox(height: 16),
@@ -157,12 +171,14 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                     icon: const Icon(Icons.auto_awesome_rounded, size: 20),
                     label: Text('Generate Today\'s Plan',
                         style: GoogleFonts.inter(
-                            fontSize: 15, fontWeight: FontWeight.w800,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
                             color: Colors.white)),
                   ).animate().fadeIn(),
                 ),
               if (_planLoading)
-                const Center(child: Padding(
+                const Center(
+                    child: Padding(
                   padding: EdgeInsets.all(24),
                   child: CircularProgressIndicator(color: _masterPrimary),
                 )),
@@ -170,37 +186,42 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                 GlassmorphicCard(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                colors: [_masterPrimary, _masterSecondary]),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(Icons.smart_toy_rounded,
-                              color: Colors.white, size: 16),
-                        ),
-                        const SizedBox(width: 10),
-                        Text('Your Adaptive Plan',
-                            style: GoogleFonts.inter(fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: t.textPrimary)),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () =>
-                              setState(() => _dailyPlan = null),
-                          child: Text('Regenerate',
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                    colors: [_masterPrimary, _masterSecondary]),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.smart_toy_rounded,
+                                  color: Colors.white, size: 16),
+                            ),
+                            const SizedBox(width: 10),
+                            Text('Your Adaptive Plan',
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: t.textPrimary)),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () =>
+                                  setState(() => _dailyPlan = null),
+                              child: Text('Regenerate',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 12, color: _masterPrimary)),
+                            ),
+                          ]),
+                          Divider(color: t.divider),
+                          Text(_dailyPlan!,
                               style: GoogleFonts.inter(
-                                  fontSize: 12, color: _masterPrimary)),
-                        ),
-                      ]),
-                      Divider(color: t.divider),
-                      Text(_dailyPlan!,
-                          style: GoogleFonts.inter(fontSize: 14,
-                              color: t.textSecondary, height: 1.6)),
-                    ]),
+                                  fontSize: 14,
+                                  color: t.textSecondary,
+                                  height: 1.6)),
+                        ]),
                   ),
                 ).animate().fadeIn().slideY(begin: 0.04),
               ],
@@ -215,7 +236,10 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
     final t = text.trim();
     if (t.isEmpty || _loading) return;
     _ctrl.clear();
-    setState(() { _chat.add(_Msg(t, true)); _loading = true; });
+    setState(() {
+      _chat.add(_Msg(t, true));
+      _loading = true;
+    });
     _scrollToBottom();
     try {
       final reply = await _callAI(t, asMaster: true);
@@ -267,23 +291,25 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
       updatedAt: now,
     );
     final history = asMaster
-        ? _chat.take(_chat.length - 1).map((m) =>
-            {'role': m.isUser ? 'user' : 'assistant', 'content': m.text}).toList()
+        ? _chat
+            .take(_chat.length - 1)
+            .map((m) =>
+                {'role': m.isUser ? 'user' : 'assistant', 'content': m.text})
+            .toList()
         : <Map<String, String>>[];
-    return gymOSAI(
-      client: profile,
-      userRole: 'Master Member',
-      userMessage: message,
-      conversationHistory: history,
-    );
+    return ref.read(aiAgentServiceProvider).generateChatReply(
+          client: profile,
+          role: UserRole.client,
+          userMessage: message,
+          conversationHistory: history,
+        );
   }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scroll.hasClients) {
         _scroll.animateTo(_scroll.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut);
+            duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
       }
     });
   }
@@ -313,52 +339,61 @@ class _WelcomeView extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                  colors: [Color(0xFFFF3D5E), Color(0xFFFF8C00),
-                      Color(0xFFB71C1C)]),
+              gradient: RadialGradient(colors: [
+                Color(0xFFFF3D5E),
+                Color(0xFFFF8C00),
+                Color(0xFFB71C1C)
+              ]),
               shape: BoxShape.circle),
           child: const Icon(Icons.smart_toy_rounded,
               color: Colors.white, size: 40),
         ).animate().scale(duration: 500.ms, curve: Curves.elasticOut),
         const SizedBox(height: 14),
         Text('Master AI Fitness Coach',
-            style: GoogleFonts.inter(fontSize: 20,
+            style: GoogleFonts.inter(
+                fontSize: 20,
                 fontWeight: FontWeight.w800,
                 color: t.textPrimary)),
         const SizedBox(height: 6),
-        Text('Your 24/7 AI coach — powered by the most advanced AI model',
+        Text('Your 24/7 AI coach — powered by NVIDIA-hosted Kimi',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(fontSize: 13,
-                color: t.textSecondary, height: 1.5)),
+            style: GoogleFonts.inter(
+                fontSize: 13, color: t.textSecondary, height: 1.5)),
         const SizedBox(height: 28),
-        Text('QUICK STARTS', style: GoogleFonts.inter(
-            fontSize: 11, fontWeight: FontWeight.w700,
-            color: t.textMuted, letterSpacing: 1.2)),
+        Text('QUICK STARTS',
+            style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: t.textMuted,
+                letterSpacing: 1.2)),
         const SizedBox(height: 12),
         ...prompts.asMap().entries.map((e) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: GestureDetector(
-            onTap: () => onTap(e.value),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-              decoration: BoxDecoration(
-                color: t.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: t.border),
+              padding: const EdgeInsets.only(bottom: 8),
+              child: GestureDetector(
+                onTap: () => onTap(e.value),
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                  decoration: BoxDecoration(
+                    color: t.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: t.border),
+                  ),
+                  child: Row(children: [
+                    const Icon(Icons.bolt_rounded,
+                        color: _masterPrimary, size: 16),
+                    const SizedBox(width: 10),
+                    Expanded(
+                        child: Text(e.value,
+                            style: GoogleFonts.inter(
+                                fontSize: 13, color: t.textSecondary))),
+                    Icon(Icons.play_arrow_rounded,
+                        color: t.textMuted, size: 18),
+                  ]),
+                ).animate(delay: (e.key * 60).ms).fadeIn(),
               ),
-              child: Row(children: [
-                const Icon(Icons.bolt_rounded, color: _masterPrimary, size: 16),
-                const SizedBox(width: 10),
-                Expanded(child: Text(e.value,
-                    style: GoogleFonts.inter(fontSize: 13,
-                        color: t.textSecondary))),
-                Icon(Icons.play_arrow_rounded,
-                    color: t.textMuted, size: 18),
-              ]),
-            ).animate(delay: (e.key * 60).ms).fadeIn(),
-          ),
-        )),
+            )),
       ]),
     );
   }
@@ -377,12 +412,13 @@ class _ChatBubble extends StatelessWidget {
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.82),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.82),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          gradient: isUser ? const LinearGradient(
-              colors: [_masterPrimary, _masterSecondary]) : null,
+          gradient: isUser
+              ? const LinearGradient(colors: [_masterPrimary, _masterSecondary])
+              : null,
           color: isUser ? null : t.surface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
@@ -393,10 +429,13 @@ class _ChatBubble extends StatelessWidget {
           border: isUser ? null : Border.all(color: t.border),
         ),
         child: Text(msg.text,
-            style: GoogleFonts.inter(fontSize: 14,
-                color: isUser ? Colors.white
-                    : msg.isError ? t.danger
-                    : t.textPrimary,
+            style: GoogleFonts.inter(
+                fontSize: 14,
+                color: isUser
+                    ? Colors.white
+                    : msg.isError
+                        ? t.danger
+                        : t.textPrimary,
                 height: 1.5)),
       ).animate().fadeIn(duration: 200.ms),
     );
@@ -418,16 +457,16 @@ class _TypingBubble extends StatelessWidget {
           border: Border.all(color: t.border),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(width: 18, height: 18,
+          const SizedBox(
+              width: 18,
+              height: 18,
               child: CircularProgressIndicator(
                   color: Color(0xFFFF3D5E), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('Coach is thinking...',
-              style: GoogleFonts.inter(fontSize: 12,
-                  color: t.textMuted)),
+              style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
         ]),
-      ).animate(onPlay: (c) => c.repeat())
-          .shimmer(duration: 1200.ms),
+      ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 1200.ms),
     );
   }
 }
@@ -436,7 +475,8 @@ class _InputBar extends StatelessWidget {
   final TextEditingController ctrl;
   final bool loading;
   final void Function(String) onSend;
-  const _InputBar({required this.ctrl, required this.loading, required this.onSend});
+  const _InputBar(
+      {required this.ctrl, required this.loading, required this.onSend});
   static const _masterPrimary = Color(0xFFFF3D5E);
   @override
   Widget build(BuildContext context) {
@@ -451,17 +491,15 @@ class _InputBar extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: ctrl,
-            style: GoogleFonts.inter(
-                color: t.textPrimary, fontSize: 14),
+            style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
             onSubmitted: onSend,
             decoration: InputDecoration(
               hintText: 'Ask your Master AI coach...',
-              hintStyle: GoogleFonts.inter(
-                  color: t.textMuted, fontSize: 13),
+              hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 13),
               filled: true,
               fillColor: t.surfaceMuted,
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 10),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none),
@@ -472,19 +510,23 @@ class _InputBar extends StatelessWidget {
         GestureDetector(
           onTap: () => onSend(ctrl.text),
           child: Container(
-            width: 46, height: 46,
+            width: 46,
+            height: 46,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_masterPrimary, Color(0xFFFF8C00)]),
+              gradient: const LinearGradient(
+                  colors: [_masterPrimary, Color(0xFFFF8C00)]),
               shape: BoxShape.circle,
-              boxShadow: [BoxShadow(
-                  color: _masterPrimary.withOpacity(0.5), blurRadius: 12)],
+              boxShadow: [
+                BoxShadow(
+                    color: _masterPrimary.withOpacity(0.5), blurRadius: 12)
+              ],
             ),
             child: loading
-                ? const Padding(padding: EdgeInsets.all(12),
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
                     child: CircularProgressIndicator(
                         color: Colors.white, strokeWidth: 2))
-                : const Icon(Icons.send_rounded,
-                    color: Colors.white, size: 20),
+                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
           ),
         ),
       ]),

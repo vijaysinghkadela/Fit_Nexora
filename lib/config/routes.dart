@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/app_config.dart';
-import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/user_model.dart';
 import '../providers/auth_provider.dart';
@@ -39,11 +38,23 @@ import '../screens/master/master_recovery_screen.dart';
 import '../screens/member/member_announcements_screen.dart';
 import '../screens/member/member_diet_screen.dart';
 import '../screens/member/member_home_screen.dart';
+import '../screens/member/member_profile_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
 import '../screens/member/member_workout_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
 import '../screens/nutrition/nutrition_screen.dart';
+import '../screens/notifications/notifications_screen.dart';
+import '../screens/health/steps_tracking_screen.dart';
+import '../screens/health/sleep_tracking_screen.dart';
+import '../screens/health/body_measurements_screen.dart';
+import '../screens/health/water_tracker_screen.dart';
+import '../screens/workouts/personal_records_screen.dart';
+import '../screens/achievements/achievements_screen.dart';
+import '../screens/tools/macro_calculator_screen.dart';
+import '../screens/tools/one_rep_max_screen.dart';
+import '../screens/gym/equipment_status_screen.dart';
+import '../screens/gym/qr_checkin_screen.dart';
 import '../screens/pro/pro_ai_screen.dart';
 import '../screens/pro/pro_home_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
@@ -51,14 +62,25 @@ import '../screens/pro/pro_nutrition_screen.dart';
 import '../screens/pro/pro_paywall_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/splash_screen.dart';
+import '../screens/support/support_screen.dart';
 import '../screens/subscription/pricing_screen.dart';
 import '../screens/todos/todos_screen.dart';
+import '../screens/trainer/trainer_assign_workout_screen.dart';
+import '../screens/trainer/trainer_clients_screen.dart';
 import '../screens/trainer/trainer_dashboard_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
+import '../screens/workouts/active_workout_screen.dart';
+import '../screens/workouts/rest_timer_screen.dart';
+import '../screens/workouts/workout_calendar_screen.dart';
+import '../screens/workouts/workout_completion_screen.dart';
+import '../screens/workouts/workout_history_screen.dart';
+import '../screens/master/master_perks_screen.dart';
+import '../screens/master/master_profile_screen.dart';
+import '../screens/master/master_transformation_screen.dart';
+import '../screens/clients/log_checkin_screen.dart';
 
-Page<void> _fadePage(GoRouterState state, Widget child) =>
-    CustomTransitionPage(
+Page<void> _fadePage(GoRouterState state, Widget child) => CustomTransitionPage(
       key: state.pageKey,
       child: child,
       transitionsBuilder: (_, animation, __, child) =>
@@ -140,7 +162,10 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!isAuth && !isPublic) return '/login';
 
-      if (isAuth && (location == '/' || location == '/login' || location == '/register')) {
+      if (isAuth &&
+          (location == '/' ||
+              location == '/login' ||
+              location == '/register')) {
         if (role == null) return location == '/' ? null : '/';
         return _homeRouteForRole(role);
       }
@@ -165,7 +190,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         name: 'register',
-        pageBuilder: (context, state) => _fadePage(state, const RegisterScreen()),
+        pageBuilder: (context, state) =>
+            _fadePage(state, const RegisterScreen()),
       ),
       GoRoute(
         path: '/forgot-password',
@@ -224,6 +250,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ClientsScreen(),
       ),
       GoRoute(
+        path: LogCheckinScreen.routePath,
+        name: 'clients-checkin',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const LogCheckinScreen()),
+      ),
+      GoRoute(
         path: '/memberships',
         name: 'memberships',
         builder: (context, state) => const MembershipsScreen(),
@@ -244,6 +276,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
+        path: '/trainer/settings',
+        name: 'trainer-settings',
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/trainer/clients',
+        name: 'trainer-clients',
+        builder: (context, state) => const TrainerClientsScreen(),
+      ),
+      GoRoute(
+        path: '/trainer/assign-workout',
+        name: 'trainer-assign-workout',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const TrainerAssignWorkoutScreen()),
+      ),
+      GoRoute(
         path: '/pricing',
         name: 'pricing',
         builder: (context, state) => const PricingScreen(),
@@ -252,6 +300,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/member',
         name: 'member',
         builder: (context, state) => const MemberHomeScreen(),
+      ),
+      GoRoute(
+        path: '/member/profile',
+        name: 'member-profile',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MemberProfileScreen()),
       ),
       GoRoute(
         path: '/member/workout',
@@ -277,6 +331,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/member/paywall',
         name: 'member-paywall',
         builder: (context, state) => const MemberPaywallScreen(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const NotificationsScreen()),
       ),
       GoRoute(
         path: '/pro',
@@ -369,6 +429,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MasterRecoveryScreen(),
       ),
       GoRoute(
+        path: MasterProfileScreen.routePath,
+        name: 'master-profile',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MasterProfileScreen()),
+      ),
+      GoRoute(
+        path: MasterTransformationScreen.routePath,
+        name: 'master-transformation',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MasterTransformationScreen()),
+      ),
+      GoRoute(
+        path: MasterPerksScreen.routePath,
+        name: 'master-perks',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MasterPerksScreen()),
+      ),
+      GoRoute(
         path: '/master/paywall',
         name: 'master-paywall',
         builder: (context, state) => const MasterPaywallScreen(),
@@ -384,23 +462,122 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const TodosScreen(),
       ),
       GoRoute(
+        path: '/support',
+        name: 'support',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const SupportScreen()),
+      ),
+      GoRoute(
         path: '/traffic',
         name: 'traffic',
-        pageBuilder: (context, state) => _fadePage(state, const GymTrafficScreen()),
+        pageBuilder: (context, state) =>
+            _fadePage(state, const GymTrafficScreen()),
       ),
       GoRoute(
         path: '/nutrition',
         name: 'nutrition',
-        pageBuilder: (context, state) => _fadePage(state, const NutritionScreen()),
+        pageBuilder: (context, state) =>
+            _fadePage(state, const NutritionScreen()),
+      ),
+      GoRoute(
+        path: '/workout/active',
+        name: 'workout-active',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const ActiveWorkoutScreen()),
+      ),
+      GoRoute(
+        path: '/workout/timer',
+        name: 'workout-timer',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const RestTimerScreen()),
+      ),
+      GoRoute(
+        path: '/workout/done',
+        name: 'workout-done',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const WorkoutCompletionScreen()),
+      ),
+      GoRoute(
+        path: '/workout/calendar',
+        name: 'workout-calendar',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const WorkoutCalendarScreen()),
+      ),
+      GoRoute(
+        path: '/workout/history',
+        name: 'workout-history',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const WorkoutHistoryScreen()),
+      ),
+      GoRoute(
+        path: '/health/steps',
+        name: 'health-steps',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const StepsTrackingScreen()),
+      ),
+      GoRoute(
+        path: '/health/sleep',
+        name: 'health-sleep',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const SleepTrackingScreen()),
+      ),
+      GoRoute(
+        path: '/health/body-measurements',
+        name: 'health-body-measurements',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const BodyMeasurementsScreen()),
+      ),
+      GoRoute(
+        path: '/health/water',
+        name: 'health-water',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const WaterTrackerScreen()),
+      ),
+      GoRoute(
+        path: '/workout/personal-records',
+        name: 'workout-personal-records',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const PersonalRecordsScreen()),
+      ),
+      GoRoute(
+        path: '/achievements',
+        name: 'achievements',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const AchievementsScreen()),
+      ),
+      GoRoute(
+        path: '/tools/macro-calculator',
+        name: 'tools-macro-calculator',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MacroCalculatorScreen()),
+      ),
+      GoRoute(
+        path: '/tools/one-rep-max',
+        name: 'tools-one-rep-max',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const OneRepMaxScreen()),
+      ),
+      GoRoute(
+        path: '/gym/equipment',
+        name: 'gym-equipment',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const EquipmentStatusScreen()),
+      ),
+      GoRoute(
+        path: '/gym/checkin',
+        name: 'gym-checkin-qr',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const QrCheckinScreen()),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            Icon(Icons.error_outline,
+                size: 64, color: Theme.of(context).colorScheme.error),
             const SizedBox(height: 16),
             Text(
               'Page not found',

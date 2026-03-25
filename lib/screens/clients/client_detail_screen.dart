@@ -36,6 +36,14 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
+    
+    // Watch the individual client provider to stay in sync with edits.
+    final clientAsync = ref.watch(clientByIdProvider(widget.client.id));
+    
+    // Use provider data if available, otherwise fallback to local/initial state.
+    final client = clientAsync.value ?? _client;
+    _client = client; // Update local state for child widgets if needed
+
     return Scaffold(
       backgroundColor: t.background,
       body: CustomScrollView(
@@ -50,7 +58,7 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
                   context.canPop() ? context.pop() : Navigator.of(context).pop(),
             ),
             title: Text(
-              _client.fullName ?? 'Client',
+              client.fullName ?? 'Client',
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -488,10 +496,11 @@ class _ClientDetailScreenState extends ConsumerState<ClientDetailScreen> {
       builder: (_) => AddClientScreen(existingClient: _client),
     );
     if (result == true) {
-      // Refresh client data
-      if (mounted) {
-        Navigator.of(context).pop(); // Go back to list to see refreshed data
-      }
+      // Refresh client data explicitly
+      ref.invalidate(clientByIdProvider(widget.client.id));
+      // Also refresh the main lists
+      ref.invalidate(gymClientsProvider);
+      ref.invalidate(pagedClientsControllerProvider);
     }
   }
 

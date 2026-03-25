@@ -36,18 +36,18 @@ class PlanLimits {
 
   // ─── AI TOKEN BUDGET (monthly) ─────────────────────────────────────
   // Basic: zero AI access
-  // Pro: Haiku only — ~100 plan generations/month
-  // Elite: Opus (50 calls) + Haiku (unlimited fallback)
+  // Pro: NVIDIA-hosted Kimi thinking model — ~100 plan generations/month
+  // Elite: Kimi thinking model with higher quota and fallback capacity
   static const Map<PlanTier, int> monthlyAiTokenLimit = {
     PlanTier.basic: 0,
-    PlanTier.pro: 500000, // ~100 Haiku plan generations
-    PlanTier.elite: 2000000, // ~50 Opus + overflow Haiku
+    PlanTier.pro: 500000, // ~100 Kimi plan generations
+    PlanTier.elite: 2000000, // higher quota for Elite AI workloads
   };
 
   static const Map<PlanTier, int> monthlyOpusCallLimit = {
     PlanTier.basic: 0,
-    PlanTier.pro: 0, // Pro = Haiku only
-    PlanTier.elite: 50, // Hard cap, then auto-downgrade to Haiku
+    PlanTier.pro: 0, // Pro = Kimi thinking only
+    PlanTier.elite: 50, // Hard cap, then auto-downgrade to standard Kimi
   };
 
   static const Map<PlanTier, int> monthlyHaikuCallLimit = {
@@ -57,7 +57,7 @@ class PlanLimits {
   };
 
   // ─── AI OVERAGE PRICING ────────────────────────────────────────────
-  /// Cost per extra Opus generation beyond the monthly limit.
+  /// Cost per extra Elite AI generation beyond the monthly limit.
   static const double opusOveragePerCall = 0.10;
 
   /// Whether the plan supports overage billing (vs hard cutoff).
@@ -93,8 +93,8 @@ class PlanLimits {
       'upi_razorpay',
       'hindi_language',
       'offline_mode',
-      // AI (Haiku only)
-      'ai_haiku_suggestions',
+      // AI (Kimi only)
+      'ai_kimi_suggestions',
       'indian_food_database',
       'supplement_advisor',
       'recovery_rest_day_ai',
@@ -132,7 +132,7 @@ class PlanLimits {
       'upi_razorpay',
       'hindi_language',
       'offline_mode',
-      'ai_haiku_suggestions',
+      'ai_kimi_suggestions',
       'indian_food_database',
       'supplement_advisor',
       'recovery_rest_day_ai',
@@ -154,7 +154,7 @@ class PlanLimits {
       'broadcast_messaging',
       'client_plan_requests',
       // Elite exclusives
-      'ai_opus_coaching',
+      'ai_kimi_coaching',
       'ai_chat',
       'agent_performance_scoring',
       'video_message_chat',
@@ -203,11 +203,11 @@ class PlanLimits {
       return AiCallDecision.denied('AI features require a Pro or Elite plan.');
     }
 
-    // Pro: Haiku only
+    // Pro: Kimi only
     if (tier == PlanTier.pro) {
       if (requestsOpus) {
         return AiCallDecision.denied(
-            'Claude Opus requires an Elite plan. Upgrade to unlock advanced AI.');
+            'Elite AI requires an Elite plan. Upgrade to unlock advanced Kimi features.');
       }
       final haikuLimit = monthlyHaikuCallLimit[PlanTier.pro]!;
       if (usedHaikuCalls >= haikuLimit) {
@@ -221,7 +221,7 @@ class PlanLimits {
       return AiCallDecision.allowed(model: 'haiku');
     }
 
-    // Elite: Opus with cap, then fallback to Haiku
+    // Elite: Kimi with cap, then fallback to standard Kimi mode
     if (requestsOpus) {
       final opusLimit = monthlyOpusCallLimit[PlanTier.elite]!;
       if (usedOpusCalls >= opusLimit) {
@@ -232,18 +232,18 @@ class PlanLimits {
             overageCost: opusOveragePerCall,
           );
         }
-        // Auto-downgrade to Haiku
+        // Auto-downgrade to standard Kimi mode
         return AiCallDecision.downgraded(
           originalModel: 'opus',
           actualModel: 'haiku',
-          reason: 'Monthly Opus limit reached ($opusLimit calls). '
-              'Using Haiku instead. Resets next month.',
+          reason: 'Monthly Elite AI limit reached ($opusLimit calls). '
+              'Using standard Kimi mode instead. Resets next month.',
         );
       }
       return AiCallDecision.allowed(model: 'opus');
     }
 
-    // Elite: Haiku is unlimited within token budget
+    // Elite: standard Kimi is unlimited within token budget
     if (usedTokens >= monthlyAiTokenLimit[PlanTier.elite]!) {
       return AiCallDecision.denied(
           'Monthly AI token budget exhausted. Contact support for enterprise pricing.');

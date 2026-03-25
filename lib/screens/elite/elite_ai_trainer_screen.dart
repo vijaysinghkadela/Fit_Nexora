@@ -6,11 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
 import '../../models/client_profile_model.dart';
+import '../../providers/ai_agent_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/member_provider.dart';
-import '../../services/claude_service.dart';
 
-/// Elite: Advanced AI Personal Trainer — powered by Claude Opus (elite plan).
+/// Elite: Advanced AI Personal Trainer — powered by NVIDIA-hosted Kimi.
 class EliteAiTrainerScreen extends ConsumerStatefulWidget {
   const EliteAiTrainerScreen({super.key});
   @override
@@ -56,24 +56,31 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [_elitePrimary, _eliteSecondary]),
+              gradient: const LinearGradient(
+                  colors: [_elitePrimary, _eliteSecondary]),
               borderRadius: BorderRadius.circular(6),
-              boxShadow: [BoxShadow(color: _elitePrimary.withOpacity(0.4), blurRadius: 8)],
+              boxShadow: [
+                BoxShadow(color: _elitePrimary.withOpacity(0.4), blurRadius: 8)
+              ],
             ),
-            child: Text('ELITE AI', style: GoogleFonts.inter(
-                fontSize: 10, fontWeight: FontWeight.w900,
-                color: Colors.white, letterSpacing: 1)),
+            child: Text('ELITE AI',
+                style: GoogleFonts.inter(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 1)),
           ),
           const SizedBox(width: 10),
-          Text('Personal Trainer', style: GoogleFonts.inter(
-              fontSize: 18, fontWeight: FontWeight.w800,
-              color: t.textPrimary)),
+          Text('Personal Trainer',
+              style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: t.textPrimary)),
         ]),
         actions: [
           if (_messages.isNotEmpty)
             IconButton(
-              icon: Icon(Icons.clear_all_rounded,
-                  color: t.textSecondary),
+              icon: Icon(Icons.clear_all_rounded, color: t.textSecondary),
               tooltip: 'Clear chat',
               onPressed: () => setState(() => _messages.clear()),
             ),
@@ -115,12 +122,12 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
                 Expanded(
                   child: TextField(
                     controller: _ctrl,
-                    style: GoogleFonts.inter(
-                        color: t.textPrimary, fontSize: 14),
+                    style:
+                        GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
                     decoration: InputDecoration(
                       hintText: 'Ask your AI trainer...',
-                      hintStyle: GoogleFonts.inter(
-                          color: t.textMuted, fontSize: 13),
+                      hintStyle:
+                          GoogleFonts.inter(color: t.textMuted, fontSize: 13),
                       filled: true,
                       fillColor: t.surfaceMuted,
                       contentPadding: const EdgeInsets.symmetric(
@@ -209,12 +216,12 @@ class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
         });
       }
 
-      final reply = await gymOSAI(
-        client: profile,
-        userRole: 'Elite Member',
-        userMessage: trimmed,
-        conversationHistory: history,
-      );
+      final reply = await ref.read(aiAgentServiceProvider).generateChatReply(
+            client: profile,
+            role: UserRole.client,
+            userMessage: trimmed,
+            conversationHistory: history,
+          );
 
       setState(() => _messages.add(_ChatMsg(text: reply, isUser: false)));
     } catch (e) {
@@ -245,7 +252,8 @@ class _ChatMsg {
   final String text;
   final bool isUser;
   final bool isError;
-  const _ChatMsg({required this.text, required this.isUser, this.isError = false});
+  const _ChatMsg(
+      {required this.text, required this.isUser, this.isError = false});
 }
 
 // ─── Widgets ──────────────────────────────────────────────────────────────────
@@ -282,7 +290,7 @@ class _WelcomeView extends StatelessWidget {
                   color: t.textPrimary)),
           const SizedBox(height: 6),
           Text(
-            'Powered by Claude Opus — your dedicated fitness intelligence',
+            'Powered by NVIDIA-hosted Kimi — your dedicated fitness intelligence',
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
                 fontSize: 13, color: t.textSecondary, height: 1.5),
@@ -302,8 +310,8 @@ class _WelcomeView extends StatelessWidget {
                 onTap: () => onTap(e.value),
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: t.surfaceAlt,
                     borderRadius: BorderRadius.circular(12),
@@ -316,8 +324,7 @@ class _WelcomeView extends StatelessWidget {
                     Expanded(
                       child: Text(e.value,
                           style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: t.textSecondary)),
+                              fontSize: 13, color: t.textSecondary)),
                     ),
                     Icon(Icons.play_arrow_rounded,
                         color: t.textMuted, size: 18),
@@ -344,8 +351,8 @@ class _ChatBubble extends StatelessWidget {
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.8),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
           gradient: isUser
@@ -359,9 +366,7 @@ class _ChatBubble extends StatelessWidget {
             bottomLeft: Radius.circular(isUser ? 16 : 4),
             bottomRight: Radius.circular(isUser ? 4 : 16),
           ),
-          border: isUser
-              ? null
-              : Border.all(color: t.border),
+          border: isUser ? null : Border.all(color: t.border),
         ),
         child: Text(msg.text,
             style: GoogleFonts.inter(
@@ -393,13 +398,13 @@ class _TypingIndicator extends StatelessWidget {
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           const SizedBox(
-              width: 18, height: 18,
+              width: 18,
+              height: 18,
               child: CircularProgressIndicator(
                   color: Color(0xFF9B5DE5), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('AI is thinking...',
-              style: GoogleFonts.inter(
-                  fontSize: 12, color: t.textMuted)),
+              style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
         ]),
       ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 1200.ms),
     );

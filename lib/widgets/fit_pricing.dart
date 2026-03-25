@@ -58,6 +58,7 @@ class FitPricingPlanData {
   final String title;
   final String price;
   final String period;
+  final String? billingNote;
   final String description;
   final String ctaLabel;
   final FitPlanPalette palette;
@@ -73,6 +74,7 @@ class FitPricingPlanData {
     required this.ctaLabel,
     required this.palette,
     required this.features,
+    this.billingNote,
     this.highlighted = false,
     this.badge,
   });
@@ -797,6 +799,17 @@ Widget _planCard(
                       ),
                     ],
                   ),
+                  if (plan.billingNote != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      plan.billingNote!,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   Text(
                     plan.description,
