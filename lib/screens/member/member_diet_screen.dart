@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 /// Full diet plan detail screen for members.
 class MemberDietScreen extends ConsumerWidget {
@@ -19,6 +20,7 @@ class MemberDietScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: t.background,
+      bottomNavigationBar: const MemberBottomNav(),
       appBar: AppBar(
         backgroundColor: t.background,
         leading: IconButton(

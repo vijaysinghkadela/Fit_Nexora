@@ -40,6 +40,7 @@ import '../screens/member/member_announcements_screen.dart';
 import '../screens/member/member_diet_screen.dart';
 import '../screens/member/member_home_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
+import '../screens/member/member_profile_screen.dart';
 import '../screens/member/member_progress_screen.dart';
 import '../screens/member/member_workout_screen.dart';
 import '../screens/memberships/memberships_screen.dart';
@@ -279,6 +280,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MemberPaywallScreen(),
       ),
       GoRoute(
+        path: '/member/profile',
+        name: 'member-profile',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const MemberProfileScreen()),
+      ),
+      GoRoute(
         path: '/pro',
         name: 'pro',
         builder: (context, state) => const ProHomeScreen(),
@@ -395,12 +402,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
-      backgroundColor: AppColors.bgDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               'Page not found',

@@ -12,6 +12,7 @@ import '../../providers/notifications_provider.dart';
 import '../../providers/traffic_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../widgets/loading_widgets.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 
 /// Entry point for the member-facing experience.
@@ -77,7 +78,9 @@ class _MemberDashboard extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: t.background,
+      bottomNavigationBar: const MemberBottomNav(),
       body: SafeArea(
+        bottom: false,
         child: RefreshIndicator(
           onRefresh: refreshAll,
           backgroundColor: t.surface,

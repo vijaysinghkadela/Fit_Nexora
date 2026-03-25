@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../config/theme.dart';
 import '../../config/theme_mode_provider.dart';
@@ -11,6 +12,7 @@ import '../../core/extensions.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/gym_model.dart';
 import '../../models/user_model.dart';
+import '../../providers/ai_agent_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/locale_provider.dart';
@@ -18,6 +20,7 @@ import '../../providers/performance_provider.dart';
 import '../../providers/unit_provider.dart';
 import '../../services/notification_service.dart';
 import '../../widgets/glassmorphic_card.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 class MemberProfileScreen extends ConsumerWidget {
   const MemberProfileScreen({super.key});
@@ -41,6 +44,7 @@ class MemberProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: colors.background,
+      bottomNavigationBar: const MemberBottomNav(),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -152,6 +156,23 @@ class MemberProfileScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  // ── BODY ────────────────────────────────────────────
+                  const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionTitle(label: 'BODY DIAGRAM'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _GenderSelector(
+                        userId: user?.id,
+                        gymId: gym?.id,
+                      ),
+                    ),
+                  ),
+
                   const SliverPadding(
                     padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
@@ -1086,6 +1107,144 @@ class _SupportTile extends StatelessWidget {
           ),
           Icon(Icons.chevron_right_rounded, size: 18, color: colors.textMuted),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Gender selector widget ───────────────────────────────────────────────────
+
+class _GenderSelector extends ConsumerWidget {
+  final String? userId;
+  final String? gymId;
+
+  const _GenderSelector({this.userId, this.gymId});
+
+  Future<void> _saveGender(WidgetRef ref, String val) async {
+    if (userId == null || gymId == null) return;
+    try {
+      await Supabase.instance.client.from('fitness_profiles').upsert({
+        'member_id': userId,
+        'gym_id': gymId,
+        'gender': val,
+      }).eq('member_id', userId!);
+      ref.invalidate(
+        fitnessProfileProvider((memberId: userId!, gymId: gymId!)),
+      );
+    } catch (_) {
+      // Fail silently — diagram falls back to inline picker
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.fitTheme;
+
+    String? currentGender;
+    if (userId != null && gymId != null) {
+      final profileAsync = ref.watch(
+        fitnessProfileProvider((memberId: userId!, gymId: gymId!)),
+      );
+      currentGender = profileAsync.valueOrNull?.gender;
+    }
+
+    return GlassmorphicCard(
+      borderRadius: 16,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Diagram body type',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: colors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Sets which anatomical diagram is shown on your Body Map tab.',
+              style: GoogleFonts.inter(
+                  fontSize: 11, color: colors.textMuted),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _GenderChipOption(
+                  label: '♂  Male',
+                  isSelected: currentGender == 'male',
+                  onTap: () => _saveGender(ref, 'male'),
+                  colors: colors,
+                ),
+                const SizedBox(width: 10),
+                _GenderChipOption(
+                  label: '♀  Female',
+                  isSelected: currentGender == 'female',
+                  onTap: () => _saveGender(ref, 'female'),
+                  colors: colors,
+                ),
+                if (currentGender == null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    '← tap to set',
+                    style: GoogleFonts.inter(
+                        fontSize: 10, color: colors.textMuted),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GenderChipOption extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final dynamic colors;
+
+  const _GenderChipOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? colors.brand.withOpacity(0.18)
+              : colors.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? colors.brand.withOpacity(0.70)
+                : colors.border,
+            width: isSelected ? 1.5 : 1.0,
+          ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight:
+                isSelected ? FontWeight.w700 : FontWeight.w500,
+            color:
+                isSelected ? colors.brand : colors.textSecondary,
+          ),
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/extensions.dart';
 import '../../providers/member_provider.dart';
+import '../../widgets/member_bottom_nav.dart';
 
 /// Full workout plan detail screen for members.
 class MemberWorkoutScreen extends ConsumerWidget {
@@ -18,6 +19,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: t.background,
+      bottomNavigationBar: const MemberBottomNav(),
       appBar: AppBar(
         backgroundColor: t.background,
         leading: IconButton(
