@@ -56,6 +56,12 @@ class DietPlan extends Equatable {
   /// Total actual protein from all meals.
   int get actualProtein => meals.fold(0, (sum, m) => sum + m.totalProtein);
 
+  /// True when this plan was assigned by a trainer.
+  bool get isTrainerAssigned => trainerId != null;
+
+  /// True when the member created this plan themselves.
+  bool get isSelfCreated => trainerId == null && !isTemplate;
+
   factory DietPlan.fromJson(Map<String, dynamic> json) {
     final mealsJson = json['meals'] as List<dynamic>? ?? [];
     return DietPlan(

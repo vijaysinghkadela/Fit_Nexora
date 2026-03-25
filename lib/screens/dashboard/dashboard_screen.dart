@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../config/plan_limits.dart';
 import '../../core/enums.dart';
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../config/theme.dart';
 import '../../models/client_profile_model.dart';
 import '../../models/membership_model.dart';
@@ -755,6 +756,7 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final activeMembers = stats['active_members'] as int? ?? 0;
     final subscription = subscriptionAsync.value;
     final tier = subscription?.planTier ?? PlanTier.basic;
@@ -770,7 +772,7 @@ class _StatsGrid extends StatelessWidget {
 
     final cards = [
       _StatCardData(
-        label: 'Active Members',
+        label: l.activeClients,
         value: '$activeMembers',
         footnote: '↑ 12%',
         footnoteColor: _FootnoteColor.success,
@@ -778,7 +780,7 @@ class _StatsGrid extends StatelessWidget {
         tone: _CardTone.brand,
       ),
       _StatCardData(
-        label: 'Monthly Revenue',
+        label: l.monthlyRevenue,
         value: _formatRevenue(estimatedRevenue),
         footnote: '↑ 8%',
         footnoteColor: _FootnoteColor.success,
@@ -2040,10 +2042,11 @@ class _DashboardQuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final cards = [
       _QuickActionData(
         icon: Icons.person_add_alt_1_rounded,
-        label: 'Add Client',
+        label: l.addClient,
         onTap: onAddClient,
       ),
       _QuickActionData(
@@ -2077,7 +2080,7 @@ class _DashboardQuickActions extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Quick Actions',
+          l.quickActions,
           style: GoogleFonts.inter(
             fontSize: 18,
             fontWeight: FontWeight.w800,

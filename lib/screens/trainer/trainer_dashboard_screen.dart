@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/client_profile_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
@@ -725,7 +726,7 @@ class _QuickActionRow extends StatelessWidget {
       children: [
         _ActionButton(
           icon: Icons.person_add_alt_1_rounded,
-          label: 'Add Client',
+          label: AppLocalizations.of(context)!.addClient,
           filled: true,
           onTap: onAddClient,
         ),
@@ -736,7 +737,7 @@ class _QuickActionRow extends StatelessWidget {
         ),
         _ActionButton(
           icon: Icons.edit_note_rounded,
-          label: 'Create Plan',
+          label: AppLocalizations.of(context)!.createPlan,
           onTap: () => context.go('/workouts'),
         ),
         _ActionButton(
@@ -844,7 +845,7 @@ class _ScheduleCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Today\'s Schedule',
+                  AppLocalizations.of(context)!.schedule,
                   style: GoogleFonts.inter(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,

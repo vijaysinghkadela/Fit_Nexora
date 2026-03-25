@@ -118,10 +118,10 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'ACCOUNT'),
+                      child: _SectionTitle(label: t.account.toUpperCase()),
                     ),
                   ),
                   SliverPadding(
@@ -131,7 +131,7 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           _SettingsRow(
                             icon: Icons.person_rounded,
-                            title: 'Personal Info',
+                            title: t.personalInfo,
                             subtitle: user?.email ?? 'Not signed in',
                             onTap: () {
                               _showEditProfileSheet(context, ref, user);
@@ -139,13 +139,13 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                           _SettingsRow(
                             icon: Icons.shield_rounded,
-                            title: 'Security & Password',
+                            title: t.security,
                             subtitle: 'Update login and recovery settings',
                             onTap: () => context.go('/change-password'),
                           ),
                           _SettingsRow(
                             icon: Icons.card_membership_rounded,
-                            title: 'Membership',
+                            title: t.membership,
                             subtitle: _membershipLabel(user, gym),
                             onTap: () => context.go('/pricing'),
                           ),
@@ -153,10 +153,10 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'PREFERENCES'),
+                      child: _SectionTitle(label: t.preferences.toUpperCase()),
                     ),
                   ),
                   SliverPadding(
@@ -166,14 +166,14 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           _SettingsRow(
                             icon: Icons.notifications_rounded,
-                            title: 'Notifications',
+                            title: t.notifications,
                             subtitle: 'Reminders and alerts',
                             onTap: () => _showNotificationSettings(context, ref),
                           ),
                           _SettingsRow(
                             icon: Icons.straighten_rounded,
-                            title: 'Units',
-                            subtitle: unitSystem == UnitSystem.metric ? 'Metric' : 'Imperial',
+                            title: t.units,
+                            subtitle: unitSystem == UnitSystem.metric ? t.metric : t.imperial,
                             onTap: () => _showUnitPicker(context, ref),
                           ),
                           _SettingsRow(
@@ -188,11 +188,12 @@ class SettingsScreen extends ConsumerWidget {
                                 : themeMode == ThemeMode.light
                                     ? Icons.light_mode_rounded
                                     : Icons.phone_android_rounded,
-                            title: 'Theme',
+                            title: t.theme,
                             subtitle: _themeLabel(themeMode),
                             onTap: () => _showThemePicker(context, ref),
                           ),
                           _PerformanceSwitch(
+                            label: t.lowPerformanceMode,
                             value: ref.watch(performanceProvider),
                             onChanged: (val) => ref
                                 .read(performanceProvider.notifier)
@@ -202,10 +203,10 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SliverPadding(
-                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                     sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: 'SUPPORT'),
+                      child: _SectionTitle(label: t.support.toUpperCase()),
                     ),
                   ),
                   SliverPadding(
@@ -215,22 +216,22 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           _SettingsRow(
                             icon: Icons.help_rounded,
-                            title: 'Help Center',
+                            title: t.helpCenter,
                             subtitle: 'Guides, FAQs, and setup support',
                             onTap: () => _showSupportSheet(context),
                           ),
                           _SettingsRow(
                             icon: Icons.policy_rounded,
-                            title: 'Privacy Policy',
+                            title: t.privacyPolicy,
                             subtitle: 'How FitNexora handles your data',
-                            onTap: () => _showLegalSheet(context, 'Privacy Policy',
+                            onTap: () => _showLegalSheet(context, t.privacyPolicy,
                                 'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
                           ),
                           _SettingsRow(
                             icon: Icons.description_rounded,
-                            title: 'Terms of Service',
+                            title: t.termsOfService,
                             subtitle: 'Platform usage and subscription terms',
-                            onTap: () => _showLegalSheet(context, 'Terms of Service',
+                            onTap: () => _showLegalSheet(context, t.termsOfService,
                                 'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
                           ),
                         ],
@@ -1143,10 +1144,12 @@ class _SettingsRow extends StatelessWidget {
 
 class _PerformanceSwitch extends StatelessWidget {
   const _PerformanceSwitch({
+    required this.label,
     required this.value,
     required this.onChanged,
   });
 
+  final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
 
@@ -1165,7 +1168,7 @@ class _PerformanceSwitch extends StatelessWidget {
         child: Icon(Icons.speed_rounded, color: colors.accent),
       ),
       title: Text(
-        'Low-End Device Mode',
+        label,
         style: GoogleFonts.inter(
           fontSize: 15,
           fontWeight: FontWeight.w700,

@@ -486,6 +486,372 @@ final _veganPerfMeals = [
 ];
 
 // ===========================================================================
+// 8 — Bodybuilding Hypertrophy  (3 200 kcal / P280 C320 F85)
+// ===========================================================================
+
+final _bodybuildingMeals = [
+  const Meal(
+    name: 'Early Morning',
+    timing: '06:00',
+    orderIndex: 0,
+    foods: [
+      FoodItem(name: 'Whey Protein Shake', quantity: '1 scoop',
+          protein: 30, carbs: 5, fat: 2, calories: 158),
+      FoodItem(name: 'Oats with Honey', quantity: '100g oats + 1 tbsp honey',
+          protein: 8, carbs: 55, fat: 5, calories: 297),
+      FoodItem(name: 'Banana', quantity: '1 medium',
+          protein: 1, carbs: 27, fat: 0, calories: 112),
+    ],
+  ),
+  const Meal(
+    name: 'Pre-Workout',
+    timing: '09:00',
+    orderIndex: 1,
+    foods: [
+      FoodItem(name: 'Chicken Breast', quantity: '200g',
+          protein: 46, carbs: 0, fat: 5, calories: 229),
+      FoodItem(name: 'Brown Rice', quantity: '1 cup cooked',
+          protein: 5, carbs: 45, fat: 2, calories: 218),
+      FoodItem(name: 'Broccoli', quantity: '100g',
+          protein: 3, carbs: 11, fat: 0, calories: 55),
+    ],
+  ),
+  const Meal(
+    name: 'Intra/Post Workout',
+    timing: '12:00',
+    orderIndex: 2,
+    foods: [
+      FoodItem(name: 'Whey Isolate Shake', quantity: '1 scoop',
+          protein: 35, carbs: 3, fat: 1, calories: 161),
+      FoodItem(name: 'White Rice', quantity: '1.5 cups cooked',
+          protein: 6, carbs: 67, fat: 1, calories: 303),
+    ],
+  ),
+  const Meal(
+    name: 'Afternoon Meal',
+    timing: '15:00',
+    orderIndex: 3,
+    foods: [
+      FoodItem(name: 'Salmon', quantity: '150g',
+          protein: 34, carbs: 0, fat: 13, calories: 259),
+      FoodItem(name: 'Sweet Potato', quantity: '1 medium',
+          protein: 2, carbs: 24, fat: 0, calories: 103),
+      FoodItem(name: 'Salad', quantity: '100g mixed greens',
+          protein: 2, carbs: 8, fat: 0, calories: 40),
+    ],
+  ),
+  const Meal(
+    name: 'Night Meal',
+    timing: '20:00',
+    orderIndex: 4,
+    foods: [
+      FoodItem(name: 'Cottage Cheese', quantity: '200g',
+          protein: 28, carbs: 6, fat: 4, calories: 172),
+      FoodItem(name: 'Casein Shake', quantity: '1 scoop',
+          protein: 24, carbs: 4, fat: 1, calories: 121),
+      FoodItem(name: 'Mixed Nuts', quantity: '30g',
+          protein: 5, carbs: 6, fat: 15, calories: 173),
+    ],
+  ),
+];
+
+// ===========================================================================
+// 9 — Powerlifting Strength Fuel  (3 500 kcal / P260 C400 F95)
+// ===========================================================================
+
+final _powerliftingMeals = [
+  const Meal(
+    name: 'Breakfast',
+    timing: '07:00',
+    orderIndex: 0,
+    foods: [
+      FoodItem(name: 'Whole Eggs', quantity: '4 large',
+          protein: 28, carbs: 2, fat: 20, calories: 312),
+      FoodItem(name: 'Whole Wheat Toast', quantity: '3 slices',
+          protein: 9, carbs: 42, fat: 3, calories: 231),
+      FoodItem(name: 'Orange Juice', quantity: '250ml',
+          protein: 2, carbs: 26, fat: 0, calories: 112),
+      FoodItem(name: 'Banana', quantity: '1 medium',
+          protein: 1, carbs: 27, fat: 0, calories: 112),
+    ],
+  ),
+  const Meal(
+    name: 'Mid Morning',
+    timing: '10:00',
+    orderIndex: 1,
+    foods: [
+      FoodItem(name: 'Greek Yogurt', quantity: '250g',
+          protein: 18, carbs: 12, fat: 5, calories: 165),
+      FoodItem(name: 'Granola', quantity: '60g',
+          protein: 5, carbs: 40, fat: 6, calories: 234),
+      FoodItem(name: 'Blueberries', quantity: '100g',
+          protein: 1, carbs: 21, fat: 0, calories: 84),
+    ],
+  ),
+  const Meal(
+    name: 'Lunch',
+    timing: '13:00',
+    orderIndex: 2,
+    foods: [
+      FoodItem(name: 'Ground Beef (lean)', quantity: '200g',
+          protein: 42, carbs: 0, fat: 18, calories: 322),
+      FoodItem(name: 'White Rice', quantity: '1.5 cups cooked',
+          protein: 6, carbs: 67, fat: 1, calories: 303),
+      FoodItem(name: 'Corn', quantity: '100g',
+          protein: 3, carbs: 19, fat: 1, calories: 96),
+    ],
+  ),
+  const Meal(
+    name: 'Pre-Workout',
+    timing: '16:00',
+    orderIndex: 3,
+    foods: [
+      FoodItem(name: 'Turkey Sandwich', quantity: '1 large',
+          protein: 35, carbs: 50, fat: 8, calories: 412),
+      FoodItem(name: 'Apple', quantity: '1 medium',
+          protein: 0, carbs: 25, fat: 0, calories: 95),
+      FoodItem(name: 'Peanut Butter', quantity: '2 tbsp',
+          protein: 7, carbs: 7, fat: 16, calories: 190),
+    ],
+  ),
+  const Meal(
+    name: 'Dinner',
+    timing: '20:00',
+    orderIndex: 4,
+    foods: [
+      FoodItem(name: 'Beef Steak', quantity: '250g',
+          protein: 56, carbs: 0, fat: 20, calories: 412),
+      FoodItem(name: 'Mashed Potato', quantity: '1 large serving',
+          protein: 7, carbs: 63, fat: 10, calories: 365),
+      FoodItem(name: 'Olive Oil Veggies', quantity: '150g',
+          protein: 2, carbs: 10, fat: 7, calories: 110),
+    ],
+  ),
+];
+
+// ===========================================================================
+// 10 — Arm Wrestling Power Plan  (2 800 kcal / P230 C290 F75)
+// ===========================================================================
+
+final _armWrestlingMeals = [
+  const Meal(
+    name: 'Breakfast',
+    timing: '07:00',
+    orderIndex: 0,
+    foods: [
+      FoodItem(name: 'Egg White Omelette', quantity: '8 whites',
+          protein: 28, carbs: 2, fat: 0, calories: 120),
+      FoodItem(name: 'Whole Egg', quantity: '2 large',
+          protein: 12, carbs: 1, fat: 10, calories: 143),
+      FoodItem(name: 'Multigrain Toast', quantity: '2 slices',
+          protein: 6, carbs: 28, fat: 2, calories: 154),
+      FoodItem(name: 'Avocado', quantity: 'half',
+          protein: 2, carbs: 9, fat: 12, calories: 160),
+    ],
+  ),
+  const Meal(
+    name: 'Mid Morning',
+    timing: '10:00',
+    orderIndex: 1,
+    foods: [
+      FoodItem(name: 'Chicken Breast', quantity: '150g',
+          protein: 35, carbs: 0, fat: 4, calories: 180),
+      FoodItem(name: 'Cottage Cheese', quantity: '100g',
+          protein: 11, carbs: 3, fat: 2, calories: 72),
+      FoodItem(name: 'Apple', quantity: '1 medium',
+          protein: 0, carbs: 25, fat: 0, calories: 95),
+    ],
+  ),
+  const Meal(
+    name: 'Lunch',
+    timing: '13:00',
+    orderIndex: 2,
+    foods: [
+      FoodItem(name: 'Tuna', quantity: '200g',
+          protein: 44, carbs: 0, fat: 2, calories: 194),
+      FoodItem(name: 'Brown Rice', quantity: '1 cup cooked',
+          protein: 5, carbs: 45, fat: 2, calories: 218),
+      FoodItem(name: 'Chickpea Salad', quantity: '150g',
+          protein: 8, carbs: 30, fat: 3, calories: 175, isIndian: true),
+    ],
+  ),
+  const Meal(
+    name: 'Afternoon',
+    timing: '16:30',
+    orderIndex: 3,
+    foods: [
+      FoodItem(name: 'Paneer', quantity: '100g',
+          protein: 18, carbs: 3, fat: 14, calories: 265, isIndian: true),
+      FoodItem(name: 'Daal', quantity: '1 cup cooked',
+          protein: 10, carbs: 30, fat: 2, calories: 178, isIndian: true),
+      FoodItem(name: 'Roti', quantity: '2 medium',
+          protein: 5, carbs: 30, fat: 2, calories: 158, isIndian: true),
+    ],
+  ),
+  const Meal(
+    name: 'Dinner',
+    timing: '20:00',
+    orderIndex: 4,
+    foods: [
+      FoodItem(name: 'Salmon', quantity: '180g',
+          protein: 40, carbs: 0, fat: 14, calories: 294),
+      FoodItem(name: 'Quinoa', quantity: '1 cup cooked',
+          protein: 8, carbs: 39, fat: 4, calories: 222),
+      FoodItem(name: 'Steamed Veggies', quantity: '150g',
+          protein: 3, carbs: 15, fat: 0, calories: 72),
+    ],
+  ),
+];
+
+// ===========================================================================
+// 11 — Olympic Weightlifting Performance  (3 000 kcal / P220 C360 F78)
+// ===========================================================================
+
+final _weightliftingMeals = [
+  const Meal(
+    name: 'Breakfast',
+    timing: '06:30',
+    orderIndex: 0,
+    foods: [
+      FoodItem(name: 'Oats', quantity: '100g',
+          protein: 13, carbs: 68, fat: 6, calories: 375),
+      FoodItem(name: 'Whey Protein', quantity: '30g scoop',
+          protein: 24, carbs: 3, fat: 1, calories: 117),
+      FoodItem(name: 'Banana', quantity: '1 medium',
+          protein: 1, carbs: 27, fat: 0, calories: 112),
+      FoodItem(name: 'Honey', quantity: '1 tbsp',
+          protein: 0, carbs: 17, fat: 0, calories: 64),
+    ],
+  ),
+  const Meal(
+    name: 'Pre-Workout',
+    timing: '09:30',
+    orderIndex: 1,
+    foods: [
+      FoodItem(name: 'Rice Cakes', quantity: '4 pieces',
+          protein: 2, carbs: 28, fat: 0, calories: 120),
+      FoodItem(name: 'Peanut Butter', quantity: '2 tbsp',
+          protein: 7, carbs: 7, fat: 16, calories: 190),
+      FoodItem(name: 'Whey Shake', quantity: '1 scoop',
+          protein: 24, carbs: 3, fat: 1, calories: 117),
+    ],
+  ),
+  const Meal(
+    name: 'Post-Workout Lunch',
+    timing: '13:00',
+    orderIndex: 2,
+    foods: [
+      FoodItem(name: 'Chicken Breast', quantity: '200g',
+          protein: 46, carbs: 0, fat: 5, calories: 229),
+      FoodItem(name: 'White Rice', quantity: '2 cups cooked',
+          protein: 8, carbs: 90, fat: 1, calories: 404),
+      FoodItem(name: 'Sweet Corn', quantity: '100g',
+          protein: 3, carbs: 19, fat: 1, calories: 96),
+    ],
+  ),
+  const Meal(
+    name: 'Afternoon',
+    timing: '16:00',
+    orderIndex: 3,
+    foods: [
+      FoodItem(name: 'Greek Yogurt', quantity: '200g',
+          protein: 14, carbs: 10, fat: 4, calories: 132),
+      FoodItem(name: 'Dates', quantity: '5 pieces',
+          protein: 1, carbs: 36, fat: 0, calories: 140),
+      FoodItem(name: 'Almonds', quantity: '25g',
+          protein: 5, carbs: 5, fat: 13, calories: 153),
+    ],
+  ),
+  const Meal(
+    name: 'Dinner',
+    timing: '20:00',
+    orderIndex: 4,
+    foods: [
+      FoodItem(name: 'Turkey Breast', quantity: '200g',
+          protein: 44, carbs: 0, fat: 4, calories: 212),
+      FoodItem(name: 'Pasta', quantity: '1.5 cups cooked',
+          protein: 9, carbs: 65, fat: 2, calories: 318),
+      FoodItem(name: 'Tomato Sauce', quantity: '100g',
+          protein: 2, carbs: 15, fat: 3, calories: 95),
+    ],
+  ),
+];
+
+// ===========================================================================
+// 12 — CrossFit Metabolic Fuel  (2 900 kcal / P210 C330 F80)
+// ===========================================================================
+
+final _crossfitMeals = [
+  const Meal(
+    name: 'Breakfast',
+    timing: '06:00',
+    orderIndex: 0,
+    foods: [
+      FoodItem(name: 'Egg Omelette', quantity: '3 eggs',
+          protein: 18, carbs: 2, fat: 15, calories: 215),
+      FoodItem(name: 'Whole Wheat Toast', quantity: '2 slices',
+          protein: 6, carbs: 28, fat: 2, calories: 154),
+      FoodItem(name: 'Spinach', quantity: '100g',
+          protein: 2, carbs: 4, fat: 0, calories: 23),
+      FoodItem(name: 'Orange', quantity: '1 medium',
+          protein: 1, carbs: 15, fat: 0, calories: 62),
+    ],
+  ),
+  const Meal(
+    name: 'Pre-WOD',
+    timing: '09:00',
+    orderIndex: 1,
+    foods: [
+      FoodItem(name: 'Banana', quantity: '1 medium',
+          protein: 1, carbs: 27, fat: 0, calories: 112),
+      FoodItem(name: 'Whey Shake', quantity: '1 scoop',
+          protein: 24, carbs: 3, fat: 1, calories: 117),
+      FoodItem(name: 'Rice Cakes', quantity: '3 pieces',
+          protein: 2, carbs: 21, fat: 0, calories: 90),
+    ],
+  ),
+  const Meal(
+    name: 'Post-WOD Lunch',
+    timing: '12:00',
+    orderIndex: 2,
+    foods: [
+      FoodItem(name: 'Grilled Chicken', quantity: '200g',
+          protein: 46, carbs: 0, fat: 5, calories: 229),
+      FoodItem(name: 'Sweet Potato', quantity: '1 large',
+          protein: 4, carbs: 37, fat: 0, calories: 164),
+      FoodItem(name: 'Mixed Salad', quantity: '100g',
+          protein: 2, carbs: 10, fat: 1, calories: 57),
+    ],
+  ),
+  const Meal(
+    name: 'Afternoon',
+    timing: '15:30',
+    orderIndex: 3,
+    foods: [
+      FoodItem(name: 'Tuna Can', quantity: '150g',
+          protein: 33, carbs: 0, fat: 2, calories: 146),
+      FoodItem(name: 'Brown Rice', quantity: '1 cup cooked',
+          protein: 5, carbs: 45, fat: 2, calories: 218),
+      FoodItem(name: 'Broccoli', quantity: '100g',
+          protein: 3, carbs: 11, fat: 0, calories: 55),
+    ],
+  ),
+  const Meal(
+    name: 'Dinner',
+    timing: '20:00',
+    orderIndex: 4,
+    foods: [
+      FoodItem(name: 'Salmon', quantity: '150g',
+          protein: 34, carbs: 0, fat: 13, calories: 259),
+      FoodItem(name: 'Quinoa', quantity: '1 cup cooked',
+          protein: 8, carbs: 39, fat: 4, calories: 222),
+      FoodItem(name: 'Roasted Veggies', quantity: '150g',
+          protein: 3, carbs: 20, fat: 5, calories: 133),
+    ],
+  ),
+];
+
+// ===========================================================================
 // Master list — exported for use throughout the app
 // ===========================================================================
 
@@ -635,5 +1001,120 @@ final List<DietPlan> kDietTemplates = [
     status: PlanStatus.active,
     createdAt: _kTemplateDate,
     updatedAt: _kTemplateDate,
+  ),
+
+  // 8 — Bodybuilding Hypertrophy
+  DietPlan(
+    id: 'template_bodybuilding',
+    gymId: '',
+    clientId: null,
+    trainerId: null,
+    name: 'Bodybuilding Hypertrophy',
+    description:
+        'High-protein plan for muscle hypertrophy and aesthetic development. '
+        'Periodized carb intake around training.',
+    goal: 'bodybuilding',
+    targetCalories: 3200,
+    targetProtein: 280,
+    targetCarbs: 320,
+    targetFat: 85,
+    hydrationLiters: 4.5,
+    meals: _bodybuildingMeals,
+    isTemplate: true,
+    status: PlanStatus.active,
+    createdAt: DateTime(2025),
+    updatedAt: DateTime(2025),
+  ),
+
+  // 9 — Powerlifting Strength Fuel
+  DietPlan(
+    id: 'template_powerlifting',
+    gymId: '',
+    clientId: null,
+    trainerId: null,
+    name: 'Powerlifting Strength Fuel',
+    description:
+        'Calorie-surplus plan designed for maximal strength gains in the Big '
+        'Three: Squat, Bench Press, Deadlift.',
+    goal: 'powerlifting',
+    targetCalories: 3500,
+    targetProtein: 260,
+    targetCarbs: 400,
+    targetFat: 95,
+    hydrationLiters: 4.5,
+    meals: _powerliftingMeals,
+    isTemplate: true,
+    status: PlanStatus.active,
+    createdAt: DateTime(2025),
+    updatedAt: DateTime(2025),
+  ),
+
+  // 10 — Arm Wrestling Power Plan
+  DietPlan(
+    id: 'template_arm_wrestling',
+    gymId: '',
+    clientId: null,
+    trainerId: null,
+    name: 'Arm Wrestling Power Plan',
+    description:
+        'Lean power plan targeting forearm, wrist and grip strength. High '
+        'protein, moderate carbs for explosive pulling power.',
+    goal: 'arm_wrestling',
+    targetCalories: 2800,
+    targetProtein: 230,
+    targetCarbs: 290,
+    targetFat: 75,
+    hydrationLiters: 4.0,
+    meals: _armWrestlingMeals,
+    isTemplate: true,
+    status: PlanStatus.active,
+    createdAt: DateTime(2025),
+    updatedAt: DateTime(2025),
+  ),
+
+  // 11 — Olympic Weightlifting Performance
+  DietPlan(
+    id: 'template_weightlifting',
+    gymId: '',
+    clientId: null,
+    trainerId: null,
+    name: 'Olympic Weightlifting Performance',
+    description:
+        'Explosive power and technique plan for Snatch and Clean & Jerk. '
+        'Carb-centric for high-intensity training sessions.',
+    goal: 'weightlifting',
+    targetCalories: 3000,
+    targetProtein: 220,
+    targetCarbs: 360,
+    targetFat: 78,
+    hydrationLiters: 4.0,
+    meals: _weightliftingMeals,
+    isTemplate: true,
+    status: PlanStatus.active,
+    createdAt: DateTime(2025),
+    updatedAt: DateTime(2025),
+  ),
+
+  // 12 — CrossFit Metabolic Fuel
+  DietPlan(
+    id: 'template_crossfit',
+    gymId: '',
+    clientId: null,
+    trainerId: null,
+    name: 'CrossFit Metabolic Fuel',
+    description:
+        'High-intensity functional fitness plan. Balanced macros with '
+        'strategic carb timing to power through WODs.',
+    goal: 'crossfit',
+    targetCalories: 2900,
+    targetProtein: 210,
+    targetCarbs: 330,
+    targetFat: 80,
+    hydrationLiters: 4.0,
+    meals: _crossfitMeals,
+    isTemplate: true,
+    status: PlanStatus.active,
+    createdAt: DateTime(2025),
+    updatedAt: DateTime(2025),
   ),
 ];

@@ -11,6 +11,7 @@ import '../models/food_log_model.dart';
 import '../models/membership_model.dart';
 import '../models/membership_counts.dart';
 import '../models/subscription_model.dart';
+import '../models/diet_plan_model.dart';
 import '../models/workout_plan_model.dart';
 
 /// Database service wrapping Supabase queries.
@@ -665,6 +666,37 @@ class DatabaseService {
         .limit(1);
     if (data.isEmpty) return null;
     return data.first;
+  }
+
+  /// Create a new diet plan and return the persisted record.
+  Future<DietPlan> createDietPlan(Map<String, dynamic> data) async {
+    final result = await _client
+        .from(AppConstants.dietPlansTable)
+        .insert(data)
+        .select()
+        .single();
+    return DietPlan.fromJson(result);
+  }
+
+  /// Fetch ALL non-cancelled diet plans for a client —
+  /// both trainer-assigned (trainer_id != null) and self-created (trainer_id == null).
+  Future<List<Map<String, dynamic>>> getAllDietPlansForClient(
+      String clientId) async {
+    final data = await _client
+        .from(AppConstants.dietPlansTable)
+        .select()
+        .eq('client_id', clientId)
+        .neq('status', DatabaseValues.cancelledStatus)
+        .order('updated_at', ascending: false);
+    return List<Map<String, dynamic>>.from(data);
+  }
+
+  /// Soft-delete a diet plan by setting its status to 'cancelled'.
+  Future<void> deleteDietPlan(String planId) async {
+    await _client
+        .from(AppConstants.dietPlansTable)
+        .update({'status': DatabaseValues.cancelledStatus})
+        .eq('id', planId);
   }
 
   /// Weight progress check-ins for a client (last 30 entries).

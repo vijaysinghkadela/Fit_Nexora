@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../core/responsive.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
@@ -39,6 +40,7 @@ class _MemberDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
+    final l = AppLocalizations.of(context)!;
     final user = ref.watch(currentUserProvider).value;
     final gym = ref.watch(selectedGymProvider);
     final membershipAsync = ref.watch(memberMembershipProvider);
@@ -367,7 +369,7 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Body Measurements',
+                          label: l.bodyMeasurements,
                           value: '📏',
                           sublabel: 'Full Progress',
                           icon: Icons.monitor_weight_rounded,
@@ -378,7 +380,7 @@ class _MemberDashboard extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Hydration',
+                          label: l.hydration,
                           value: '💧',
                           sublabel: 'Water Intake',
                           icon: Icons.water_drop_rounded,
@@ -393,7 +395,7 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Personal Records',
+                          label: l.personalRecords,
                           value: '🏆',
                           sublabel: 'Hall of Fame',
                           icon: Icons.emoji_events_rounded,
@@ -404,7 +406,7 @@ class _MemberDashboard extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Achievements',
+                          label: l.achievements,
                           value: '⚡',
                           sublabel: 'XP & Badges',
                           icon: Icons.bolt_rounded,
@@ -419,7 +421,7 @@ class _MemberDashboard extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: _QuickNavCard(
-                          label: 'Macro Calculator',
+                          label: l.macroCalculator,
                           value: '🥗',
                           sublabel: 'TDEE & Macros',
                           icon: Icons.restaurant_rounded,
@@ -430,7 +432,7 @@ class _MemberDashboard extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _QuickNavCard(
-                          label: '1RM Calculator',
+                          label: l.oneRepMax,
                           value: '💪',
                           sublabel: 'Max Strength',
                           icon: Icons.fitness_center_rounded,

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/theme.dart';
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/glassmorphic_card.dart';
 import '../../providers/member_provider.dart';
 
@@ -55,6 +56,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
+    final l = AppLocalizations.of(context)!;
     final historyAsync = ref.watch(workoutHistoryProvider);
 
     final now = DateTime.now();
@@ -72,7 +74,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
               onPressed: () => Navigator.maybePop(context),
             ),
             title: Text(
-              'Workout History',
+              l.workoutHistory,
               style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -177,7 +179,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
               delegate: SliverChildListDelegate([
                 // ── At a Glance Grid ────────────────────────────────────
                 Text(
-                  'At a Glance',
+                  l.workoutHistory,
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -196,7 +198,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                     _GlanceCard(
                       icon: Icons.fitness_center_rounded,
                       value: '12',
-                      label: 'Total Workouts',
+                      label: l.totalWorkouts,
                       color: t.brand,
                     ),
                     _GlanceCard(
@@ -214,7 +216,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                     _GlanceCard(
                       icon: Icons.local_fire_department_rounded,
                       value: '7 days',
-                      label: 'Streak',
+                      label: l.streak,
                       color: t.warning,
                     ),
                   ],
@@ -273,7 +275,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                                 style: GoogleFonts.inter(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: const Color(0xFFFF8A3D),
+                                  color: t.warning,
                                   letterSpacing: 0.3,
                                 ),
                               ),
@@ -308,7 +310,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Recent Sessions',
+                      l.recentActivity,
                       style: GoogleFonts.inter(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -318,7 +320,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                     TextButton(
                       onPressed: () {},
                       child: Text(
-                        'View All',
+                        l.viewAll,
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           color: t.brand,
@@ -519,20 +521,20 @@ class _SessionCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Row(
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 4,
                         children: [
                           _SessionChip(
                             icon: Icons.timer_outlined,
                             label: '${session.durationMinutes} min',
                             color: t.textSecondary,
                           ),
-                          const SizedBox(width: 12),
                           _SessionChip(
                             icon: Icons.layers_rounded,
                             label: '${session.exerciseCount} exercises',
                             color: t.textSecondary,
                           ),
-                          const SizedBox(width: 12),
                           _SessionChip(
                             icon: Icons.fitness_center_rounded,
                             label: '${(session.volumeKg / 1000).toStringAsFixed(1)}t',

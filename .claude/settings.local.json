@@ -27,7 +27,8 @@
       "Bash(dart analyze:*)",
       "Bash(flutter analyze:*)",
       "Bash(/mnt/c/flutter/bin/flutter analyze:*)",
-      "Bash(flutter pub:*)"
+      "Bash(flutter pub:*)",
+      "Bash(flutter gen-l10n:*)"
     ],
     "deny": [],
     "ask": []

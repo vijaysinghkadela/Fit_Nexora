@@ -37,6 +37,7 @@ import '../screens/master/master_paywall_screen.dart';
 import '../screens/master/master_recovery_screen.dart';
 import '../screens/member/member_announcements_screen.dart';
 import '../screens/member/member_diet_screen.dart';
+import '../screens/member/create_diet_plan_screen.dart';
 import '../screens/member/member_home_screen.dart';
 import '../screens/member/member_paywall_screen.dart';
 import '../screens/member/member_progress_screen.dart';
@@ -407,7 +408,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/member/diet',
             name: 'member-diet',
-            builder: (context, state) => const MemberDietScreen(),
+            pageBuilder: (c, s) => _pushPage(s, const MemberDietScreen()),
           ),
           GoRoute(
             path: '/member/progress',
@@ -435,6 +436,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => _pushPage(state, const NotesScreen()),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/member/diet/create',
+        name: 'member-diet-create',
+        pageBuilder: (c, s) => _pushPage(s, const CreateDietPlanScreen()),
       ),
       GoRoute(
         path: '/member/paywall',

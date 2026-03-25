@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/extensions.dart';
 import '../../config/theme.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widgets/glassmorphic_card.dart';
 
 /// Workout completion / summary screen.
@@ -14,6 +15,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: t.background,
@@ -68,7 +70,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                       .fadeIn(duration: 300.ms),
                   const SizedBox(height: 16),
                   Text(
-                    'Workout Complete!',
+                    l.workoutComplete,
                     style: GoogleFonts.inter(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
@@ -314,7 +316,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                         onPressed: () {},
                         icon: const Icon(Icons.save_rounded, size: 18),
                         label: Text(
-                          'Save Workout',
+                          l.saveWorkout,
                           style: GoogleFonts.inter(
                               fontSize: 15, fontWeight: FontWeight.w700),
                         ),
@@ -363,7 +365,7 @@ class WorkoutCompletionScreen extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         child: Text(
-                          'Finish',
+                          l.done,
                           style: GoogleFonts.inter(
                               fontSize: 15, fontWeight: FontWeight.w600),
                         ),

@@ -131,6 +131,21 @@ final memberDietPlanProvider =
   return DietPlan.fromJson(raw);
 });
 
+/// ALL diet plans for this member — both trainer-assigned AND self-created.
+/// Sorted by updated_at DESC so the latest plan is always first.
+final memberAllDietPlansProvider =
+    FutureProvider.autoDispose<List<DietPlan>>((ref) async {
+  final user = ref.watch(currentUserProvider).value;
+  if (user == null) return [];
+
+  // Developer bypass: return a single mock plan
+  if (isDevUser(user.email)) return [devDietPlan()];
+
+  final db = ref.watch(databaseServiceProvider);
+  final raws = await db.getAllDietPlansForClient(user.id);
+  return raws.map(DietPlan.fromJson).toList();
+});
+
 // ─── Workout History ──────────────────────────────────────────────────────────
 
 /// Returns the 30 most-recent completed workout sessions for the current user.

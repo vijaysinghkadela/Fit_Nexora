@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/member_provider.dart';
 
 /// Full workout plan detail screen for members.
@@ -14,6 +15,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
+    final l = AppLocalizations.of(context)!;
     final planAsync = ref.watch(memberWorkoutPlanProvider);
 
     return Scaffold(
@@ -32,7 +34,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
           },
         ),
         title: Text(
-          'My Workout Plan',
+          l.myWorkoutPlan,
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w800,
@@ -48,7 +50,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
             backgroundColor: t.accent,
             icon: const Icon(Icons.play_arrow_rounded, color: Colors.white),
             label: Text(
-              'START WORKOUT',
+              l.startWorkout.toUpperCase(),
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
@@ -76,7 +78,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
                       size: 56, color: t.textMuted),
                   const SizedBox(height: 16),
                   Text(
-                    'No workout plan assigned yet',
+                    l.noWorkoutPlan,
                     style: GoogleFonts.inter(
                         color: t.textSecondary, fontSize: 16),
                   ),
@@ -135,7 +137,7 @@ class MemberWorkoutScreen extends ConsumerWidget {
                   childCount: days.length,
                 ),
               ),
-              const SliverPadding(padding: EdgeInsets.only(bottom: 40)),
+              const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
             ],
           );
         },
@@ -209,12 +211,16 @@ class _DayCard extends StatelessWidget {
             ),
             title: Row(
               children: [
-                Text(
-                  day.dayName as String,
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: t.textPrimary,
+                Flexible(
+                  child: Text(
+                    day.dayName as String,
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: t.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (isToday) ...[

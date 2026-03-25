@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/extensions.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/workout_plan_model.dart';
 import '../../providers/member_provider.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -36,6 +37,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
   int _currentExerciseIndex = 0;
   int _completedSets = 0;
   int _currentSet = 1;
+  int _lastInitializedIndex = -1;
 
   // Live badge pulse
   late AnimationController _livePulseController;
@@ -144,8 +146,13 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
           }
           final ex = exercises[safeIndex];
 
-          if (_repsController.text == '0') {
-             _repsController.text = _extractReps(ex.reps);
+          if (_lastInitializedIndex != safeIndex) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted && _lastInitializedIndex != safeIndex) {
+                setState(() => _lastInitializedIndex = safeIndex);
+                _repsController.text = _extractReps(ex.reps);
+              }
+            });
           }
 
           return CustomScrollView(
@@ -294,6 +301,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
   }
 
   Widget _buildTracker(dynamic t, int totalSets) {
+    final l = AppLocalizations.of(context)!;
     return GlassmorphicCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -301,7 +309,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Sets',
+              l.sets,
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -311,11 +319,14 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
             const SizedBox(height: 10),
             Row(
               children: [
-                WorkoutSetTracker(
-                  totalSets: totalSets,
-                  completedSets: _completedSets,
-                  currentSet: _currentSet,
-                  dotSize: 14,
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: WorkoutSetTracker(
+                    totalSets: totalSets,
+                    completedSets: _completedSets,
+                    currentSet: _currentSet,
+                    dotSize: 14,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -371,6 +382,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
   }
 
   Widget _buildInputs(dynamic t) {
+    final l = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
@@ -381,7 +393,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Weight (kg)',
+                    l.weight,
                     style: GoogleFonts.inter(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -439,7 +451,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Reps',
+                    l.reps,
                     style: GoogleFonts.inter(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -493,6 +505,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
   }
 
   Widget _buildPreviousSet(dynamic t, Exercise ex) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -504,18 +517,21 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Target per Set',
+            l.targetPerSet,
             style: GoogleFonts.inter(
               fontSize: 12,
               color: t.textMuted,
             ),
           ),
-          Row(
-            children: [
-              _PrevSetChip(label: ex.reps, icon: Icons.repeat_rounded, color: t.accent),
-              const SizedBox(width: 8),
-              _PrevSetChip(label: '${ex.restSeconds}s rest', icon: Icons.timer_outlined, color: t.brand),
-            ],
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _PrevSetChip(label: ex.reps, icon: Icons.repeat_rounded, color: t.accent),
+                const SizedBox(width: 8),
+                _PrevSetChip(label: '${ex.restSeconds}s rest', icon: Icons.timer_outlined, color: t.brand),
+              ],
+            ),
           ),
         ],
       ),
@@ -523,6 +539,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
   }
 
   Widget _buildActionButtons(dynamic t, List<Exercise> exercises) {
+    final l = AppLocalizations.of(context)!;
     if (exercises.isEmpty) return const SizedBox.shrink();
     final safeIdx = _currentExerciseIndex.clamp(0, exercises.length - 1);
     final ex = exercises[safeIdx];
@@ -538,7 +555,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                 },
                 icon: const Icon(Icons.timer_outlined, size: 16),
                 label: Text(
-                  'START REST',
+                  l.startRest.toUpperCase(),
                   style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700),
                 ),
                 style: FilledButton.styleFrom(
@@ -560,7 +577,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                 },
                 icon: Icon(Icons.skip_next_rounded, size: 16, color: t.textPrimary),
                 label: Text(
-                  'NEXT',
+                  l.done.toUpperCase(),
                   style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: t.textPrimary),
                 ),
                 style: OutlinedButton.styleFrom(
@@ -587,7 +604,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                 },
                 icon: Icon(Icons.emoji_events_rounded, size: 16, color: t.warning),
                 label: Text(
-                  'LOG PR',
+                  l.logPR,
                   style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: t.warning),
                 ),
                 style: OutlinedButton.styleFrom(
@@ -615,7 +632,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen>
                   ),
                 ),
                 child: Text(
-                  'FINISH WORKOUT',
+                  l.finishWorkout.toUpperCase(),
                   style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700),
                 ),
               ),

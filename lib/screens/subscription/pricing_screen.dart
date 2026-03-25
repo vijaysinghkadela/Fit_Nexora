@@ -59,7 +59,8 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       FitPricingPlanData(
         title: 'Basic',
         price: _priceFor(PlanTier.basic),
-        period: _isAnnual ? '/mo • billed ₹7,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual ? 'billed ${PlanLimits.formatAnnual(PlanTier.basic)}' : null,
         description:
             'A focused starter plan for independent studios building a clean digital operation.',
         ctaLabel: 'Get Started',
@@ -76,7 +77,8 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       FitPricingPlanData(
         title: 'Pro',
         price: _priceFor(PlanTier.pro),
-        period: _isAnnual ? '/mo • billed ₹14,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual ? 'billed ${PlanLimits.formatAnnual(PlanTier.pro)}' : null,
         description:
             'Built for growing gyms that want better analytics and guided AI automation.',
         ctaLabel: 'Go Pro',
@@ -93,7 +95,8 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
       FitPricingPlanData(
         title: 'Elite',
         price: _priceFor(PlanTier.elite),
-        period: _isAnnual ? '/mo • billed ₹24,999/yr' : '/mo',
+        period: '/mo',
+        billingNote: _isAnnual ? 'billed ${PlanLimits.formatAnnual(PlanTier.elite)}' : null,
         description:
             'The premium command center for ambitious fitness brands and high-volume teams.',
         ctaLabel: 'Go Elite',
