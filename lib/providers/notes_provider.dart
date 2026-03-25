@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Note {
   final String id;
   final String title;
   final String body;
   final List<String> tags;
+  final String? color; // hex string e.g. '#FF5733'
+  final bool isPinned;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -13,6 +16,8 @@ class Note {
     required this.title,
     required this.body,
     required this.tags,
+    this.color,
+    this.isPinned = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -21,6 +26,8 @@ class Note {
     String? title,
     String? body,
     List<String>? tags,
+    String? color,
+    bool? isPinned,
     DateTime? updatedAt,
   }) =>
       Note(
@@ -28,77 +35,209 @@ class Note {
         title: title ?? this.title,
         body: body ?? this.body,
         tags: tags ?? this.tags,
+        color: color ?? this.color,
+        isPinned: isPinned ?? this.isPinned,
         createdAt: createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
+
+  factory Note.fromMap(Map<String, dynamic> map) {
+    return Note(
+      id: map['id'],
+      title: map['title'],
+      body: map['body'],
+      tags: List<String>.from(map['tags'] ?? []),
+      color: map['color'],
+      isPinned: map['is_pinned'] ?? false,
+      createdAt: DateTime.parse(map['created_at']),
+      updatedAt: DateTime.parse(map['updated_at']),
+    );
+  }
 }
 
-class NotesNotifier extends StateNotifier<List<Note>> {
-  NotesNotifier() : super(_seedNotes());
+class NotesState {
+  final List<Note> notes;
+  final bool isLoading;
 
-  static List<Note> _seedNotes() {
-    final now = DateTime.now();
-    return [
-      Note(
-        id: '1',
-        title: 'Leg Day Notes',
-        body: 'Focus on form for squats today. Keep back straight, knees tracking over toes. Try 4×8 at 80kg.',
-        tags: ['Workout'],
-        createdAt: now.subtract(const Duration(days: 3)),
-        updatedAt: now.subtract(const Duration(days: 3)),
-      ),
-      Note(
-        id: '2',
-        title: 'Weekly Nutrition Goal',
-        body: 'Target 160g protein daily. Prep meals on Sunday. Include more leafy greens and reduce processed carbs.',
-        tags: ['Diet'],
-        createdAt: now.subtract(const Duration(days: 7)),
-        updatedAt: now.subtract(const Duration(days: 1)),
-      ),
-      Note(
-        id: '3',
-        title: 'Q2 Fitness Goals',
-        body: 'Bench press 100kg, run 5km under 25 minutes, lose 3kg body fat by June. Track weekly progress.',
-        tags: ['Goals', 'Personal'],
-        createdAt: now.subtract(const Duration(days: 14)),
-        updatedAt: now.subtract(const Duration(days: 5)),
-      ),
-    ];
+  const NotesState({
+    required this.notes,
+    this.isLoading = false,
+  });
+
+  NotesState copyWith({List<Note>? notes, bool? isLoading}) {
+    return NotesState(
+      notes: notes ?? this.notes,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
+}
+
+class NotesNotifier extends StateNotifier<NotesState> {
+  final SupabaseClient _supabase;
+
+  NotesNotifier(this._supabase)
+      : super(const NotesState(notes: [], isLoading: true)) {
+    _loadNotes();
   }
 
-  void addNote(String title, String body, List<String> tags) {
+  Future<void> _loadNotes() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+
+      final response = await _supabase
+          .from('user_notes')
+          .select()
+          .eq('user_id', user.id)
+          .order('is_pinned', ascending: false)
+          .order('updated_at', ascending: false);
+
+      final notes = response.map((data) => Note.fromMap(data)).toList();
+      state = state.copyWith(notes: notes, isLoading: false);
+    } catch (e) {
+      // In case of error, just stop loading
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> addNote(String title, String body, List<String> tags,
+      {String? color, bool isPinned = false}) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return;
+
     final now = DateTime.now();
-    final note = Note(
-      id: now.millisecondsSinceEpoch.toString(),
+    // Temporary ID for optimistic update
+    final tempId = 'temp_${now.millisecondsSinceEpoch}';
+
+    final newNote = Note(
+      id: tempId,
       title: title,
       body: body,
       tags: tags,
+      color: color,
+      isPinned: isPinned,
       createdAt: now,
       updatedAt: now,
     );
-    state = [note, ...state];
-  }
 
-  void updateNote(String id, String title, String body, List<String> tags) {
-    state = state.map((n) {
-      if (n.id == id) {
-        return n.copyWith(
-            title: title, body: body, tags: tags, updatedAt: DateTime.now());
+    // Optimistic update
+    final currentNotes = List<Note>.from(state.notes);
+    currentNotes.insert(0, newNote);
+    _sortNotes(currentNotes);
+    state = state.copyWith(notes: currentNotes);
+
+    try {
+      final response = await _supabase
+          .from('user_notes')
+          .insert({
+            'user_id': user.id,
+            'title': title,
+            'body': body,
+            'tags': tags,
+            'color': color,
+            'is_pinned': isPinned,
+          })
+          .select()
+          .single();
+
+      final savedNote = Note.fromMap(response);
+
+      // Replace temp note with saved note
+      final index = state.notes.indexWhere((n) => n.id == tempId);
+      if (index != -1) {
+        final updatedNotes = List<Note>.from(state.notes);
+        updatedNotes[index] = savedNote;
+        _sortNotes(updatedNotes);
+        state = state.copyWith(notes: updatedNotes);
       }
-      return n;
-    }).toList();
+    } catch (e) {
+      // Revert optimistic update on failure
+      state = state.copyWith(
+          notes: state.notes.where((n) => n.id != tempId).toList());
+    }
   }
 
-  void deleteNote(String id) {
-    state = state.where((n) => n.id != id).toList();
+  Future<void> updateNote(
+      String id, String title, String body, List<String> tags,
+      {String? color, bool? isPinned}) async {
+    final existingIndex = state.notes.indexWhere((n) => n.id == id);
+    if (existingIndex == -1) return;
+
+    final existingNote = state.notes[existingIndex];
+    final updatedNote = existingNote.copyWith(
+      title: title,
+      body: body,
+      tags: tags,
+      color: color,
+      isPinned: isPinned,
+      updatedAt: DateTime.now(),
+    );
+
+    // Optimistic update
+    final updatedNotes = List<Note>.from(state.notes);
+    updatedNotes[existingIndex] = updatedNote;
+    _sortNotes(updatedNotes);
+    state = state.copyWith(notes: updatedNotes);
+
+    try {
+      await _supabase.from('user_notes').update({
+        'title': title,
+        'body': body,
+        'tags': tags,
+        'color': color,
+        'is_pinned': isPinned ?? existingNote.isPinned,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', id);
+    } catch (e) {
+      // Refresh to get actual server state on failure
+      _loadNotes();
+    }
+  }
+
+  Future<void> togglePin(String id) async {
+    final existingNote = state.notes.firstWhere((n) => n.id == id);
+    await updateNote(
+      id,
+      existingNote.title,
+      existingNote.body,
+      existingNote.tags,
+      color: existingNote.color,
+      isPinned: !existingNote.isPinned,
+    );
+  }
+
+  Future<void> deleteNote(String id) async {
+    // Optimistic update
+    final previousNotes = state.notes;
+    state =
+        state.copyWith(notes: state.notes.where((n) => n.id != id).toList());
+
+    try {
+      await _supabase.from('user_notes').delete().eq('id', id);
+    } catch (e) {
+      // Revert on failure
+      state = state.copyWith(notes: previousNotes);
+    }
+  }
+
+  void _sortNotes(List<Note> notes) {
+    notes.sort((a, b) {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return b.updatedAt.compareTo(a.updatedAt);
+    });
   }
 
   List<Note> filterByTag(String tag) {
-    if (tag == 'All') return state;
-    return state.where((n) => n.tags.contains(tag)).toList();
+    if (tag == 'All') return state.notes;
+    return state.notes.where((n) => n.tags.contains(tag)).toList();
   }
 }
 
-final notesProvider = StateNotifierProvider.autoDispose<NotesNotifier, List<Note>>(
-  (ref) => NotesNotifier(),
+final notesProvider =
+    StateNotifierProvider.autoDispose<NotesNotifier, NotesState>(
+  (ref) => NotesNotifier(Supabase.instance.client),
 );
