@@ -67,6 +67,8 @@ import '../screens/support/support_screen.dart';
 import '../screens/subscription/pricing_screen.dart';
 import '../screens/todos/todos_screen.dart';
 import '../screens/trainer/trainer_assign_workout_screen.dart';
+import '../screens/trainer/trainer_assign_diet_screen.dart';
+import '../screens/trainer/trainer_client_analysis_screen.dart';
 import '../screens/trainer/trainer_clients_screen.dart';
 import '../screens/trainer/trainer_dashboard_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
@@ -296,6 +298,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'trainer-assign-workout',
         pageBuilder: (context, state) =>
             _fadePage(state, const TrainerAssignWorkoutScreen()),
+      ),
+      GoRoute(
+        path: '/trainer/assign-diet',
+        name: 'trainer-assign-diet',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const TrainerAssignDietScreen()),
+      ),
+      GoRoute(
+        path: '/trainer/client/:clientId/analysis',
+        name: 'trainer-client-analysis',
+        pageBuilder: (context, state) {
+          final clientId = state.pathParameters['clientId']!;
+          return _fadePage(
+            state,
+            TrainerClientAnalysisScreen(clientId: clientId),
+          );
+        },
       ),
       GoRoute(
         path: '/pricing',

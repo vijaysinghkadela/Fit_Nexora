@@ -175,9 +175,8 @@ class _TrainerContent extends StatelessWidget {
                     .reduce((a, b) => a + b) /
                 clients.length)
             .round();
-    final pendingTasks = clients
-        .where((client) => (client.adherencePercent ?? 100) < 75)
-        .length;
+    final pendingTasks =
+        clients.where((client) => (client.adherencePercent ?? 100) < 75).length;
     final schedule = _scheduleForClients(clients);
     final weekBars = _weeklyGrowthData(clients);
     final lastWeekCount =
@@ -304,7 +303,8 @@ class _TrainerContent extends StatelessWidget {
                           children: [
                             _ScheduleCard(schedule: schedule),
                             const SizedBox(height: 20),
-                            _GrowthTrendCard(weekBars: weekBars, growthPct: growthPct),
+                            _GrowthTrendCard(
+                                weekBars: weekBars, growthPct: growthPct),
                           ],
                         ),
                       ),
@@ -393,8 +393,7 @@ class _TrainerContent extends StatelessWidget {
       final count = clients
           .where(
             (c) =>
-                c.createdAt.isAfter(weekStart) &&
-                c.createdAt.isBefore(weekEnd),
+                c.createdAt.isAfter(weekStart) && c.createdAt.isBefore(weekEnd),
           )
           .length;
       weeks.add(_WeekBar(label: 'W${7 - i}', count: count, normalizedValue: 0));
@@ -732,8 +731,18 @@ class _QuickActionRow extends StatelessWidget {
         ),
         _ActionButton(
           icon: Icons.assignment_ind_rounded,
-          label: 'Assign Plan',
+          label: 'Assign Workout',
           onTap: () => context.go('/trainer/assign-workout'),
+        ),
+        _ActionButton(
+          icon: Icons.restaurant_menu_rounded,
+          label: 'Assign Diet',
+          onTap: () => context.go('/trainer/assign-diet'),
+        ),
+        _ActionButton(
+          icon: Icons.auto_awesome_rounded,
+          label: 'AI Reports',
+          onTap: () => _showClientPickerForAnalysis(context),
         ),
         _ActionButton(
           icon: Icons.edit_note_rounded,
@@ -741,16 +750,20 @@ class _QuickActionRow extends StatelessWidget {
           onTap: () => context.go('/workouts'),
         ),
         _ActionButton(
-          icon: Icons.restaurant_menu_rounded,
-          label: 'Diet Plans',
-          onTap: () => context.go('/diet-plans'),
-        ),
-        _ActionButton(
           icon: Icons.campaign_rounded,
           label: 'Announce',
           onTap: () => context.go('/todos'),
         ),
       ],
+    );
+  }
+
+  void _showClientPickerForAnalysis(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _ClientPickerForAnalysis(),
     );
   }
 }
@@ -1060,9 +1073,8 @@ class _ClientManagementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.fitTheme;
-    final visibleClients = clients.isEmpty
-        ? _fallbackClients
-        : clients.take(4).toList();
+    final visibleClients =
+        clients.isEmpty ? _fallbackClients : clients.take(4).toList();
 
     return GlassmorphicCard(
       child: Padding(
@@ -1265,6 +1277,190 @@ class _ClientRow extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// Bottom sheet to pick a client for AI analysis
+class _ClientPickerForAnalysis extends ConsumerWidget {
+  const _ClientPickerForAnalysis();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.fitTheme;
+    final clientsAsync = ref.watch(trainerClientsProvider);
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: colors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Icon(Icons.auto_awesome_rounded, color: colors.brand, size: 22),
+                const SizedBox(width: 10),
+                Text(
+                  'Select Client for AI Analysis',
+                  style: GoogleFonts.inter(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: colors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Client list
+          Flexible(
+            child: clientsAsync.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(40),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (e, _) => Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Error loading clients: $e',
+                  style: TextStyle(color: colors.danger),
+                ),
+              ),
+              data: (clients) {
+                if (clients.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.people_outline_rounded,
+                          size: 48,
+                          color: colors.textMuted,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No clients yet',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Add clients to generate AI analysis reports.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            color: colors.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  itemCount: clients.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final client = clients[index];
+                    final name = (client.fullName ?? '').trim().isEmpty
+                        ? 'Client'
+                        : client.fullName!;
+                    final initials = name.isNotEmpty
+                        ? name
+                            .split(' ')
+                            .map((e) => e.isNotEmpty ? e[0] : '')
+                            .take(2)
+                            .join()
+                            .toUpperCase()
+                        : 'C';
+
+                    return GlassmorphicCard(
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.go('/trainer/client/${client.id}/analysis');
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 22,
+                              backgroundColor: colors.brand.withOpacity(0.2),
+                              child: Text(
+                                initials,
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: colors.brand,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    name,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: colors.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    client.email ?? 'No email',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: colors.textMuted,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.auto_awesome_rounded,
+                              color: colors.brand,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -6,6 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../config/ai_agent_prompts.dart';
 import '../config/app_config.dart';
+import '../config/trainer_analysis_prompts.dart';
+import '../models/trainer_analysis_model.dart';
+import '../models/diet_plan_model.dart';
 import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/ai_generated_plan_model.dart';
@@ -707,6 +710,130 @@ class AiAgentService {
   }
 
   // ─── DATA ACCESS ──────────────────────────────────────────────────────────
+
+  // ─── TRAINER ANALYSIS ─────────────────────────────────────────────────────
+
+  /// Generate a comprehensive AI analysis report for a trainer's client.
+  /// This aggregates workout plan, diet plan, and performance data to provide
+  /// actionable insights.
+  Future<Map<String, dynamic>> generateTrainerAnalysis({
+    required ClientProfile client,
+    required WorkoutPlan? workoutPlan,
+    required DietPlan? dietPlan,
+    required TrainerAnalysisData data,
+    required String trainerName,
+  }) async {
+    final prompt = TrainerAnalysisPrompts.buildClientAnalysisPrompt(
+      client: client,
+      workoutPlan: workoutPlan,
+      dietPlan: dietPlan,
+      data: data,
+      trainerName: trainerName,
+    );
+
+    debugPrint(
+        '[AiAgent] Generating trainer analysis for ${client.fullName}...');
+
+    final result = await _callNvidiaChat(
+      messages: [
+        {
+          'role': 'system',
+          'content':
+              'You are a senior fitness consultant providing comprehensive client analysis to trainers. '
+                  'Always respond with ONLY valid JSON matching the requested schema. '
+                  'Be specific, actionable, and data-driven in your assessments.'
+        },
+        {'role': 'user', 'content': prompt},
+      ],
+      maxTokens: 4096,
+      temperature: 0.7,
+    );
+
+    final parsed = decodeJsonObject(result.content);
+
+    debugPrint(
+      '[AiAgent] Trainer analysis complete. '
+      'Score: ${parsed['overall_score']} | Tokens: ${result.tokensUsed}',
+    );
+
+    return {
+      'parsed': parsed,
+      'tokens_used': result.tokensUsed,
+      'generation_ms': result.generationMs,
+      'reasoning_content': result.reasoningContent,
+    };
+  }
+
+  /// Save a trainer analysis report to Supabase
+  Future<TrainerAnalysisReport> saveTrainerAnalysisReport({
+    required String trainerId,
+    required String clientId,
+    required String gymId,
+    required String? workoutPlanId,
+    required String? dietPlanId,
+    required Map<String, dynamic> analysisResult,
+  }) async {
+    final parsed = analysisResult['parsed'] as Map<String, dynamic>;
+    final scoreBreakdown =
+        parsed['score_breakdown'] as Map<String, dynamic>? ?? {};
+
+    final data = {
+      'trainer_id': trainerId,
+      'client_id': clientId,
+      'gym_id': gymId,
+      'workout_plan_id': workoutPlanId,
+      'diet_plan_id': dietPlanId,
+      'overall_score': parsed['overall_score'] as int? ?? 0,
+      'workout_adherence_score':
+          scoreBreakdown['workout_adherence'] as int? ?? 0,
+      'diet_adherence_score': scoreBreakdown['diet_adherence'] as int? ?? 0,
+      'progress_score': scoreBreakdown['progress_rate'] as int? ?? 0,
+      'consistency_score': scoreBreakdown['consistency'] as int? ?? 0,
+      'analysis_json': parsed,
+      'summary': parsed['summary'] as String?,
+      'client_message': parsed['client_message'] as String?,
+      'tokens_used': analysisResult['tokens_used'] as int? ?? 0,
+      'generation_ms': analysisResult['generation_ms'] as int? ?? 0,
+    };
+
+    final result = await _supabase
+        .from('trainer_analysis_reports')
+        .insert(data)
+        .select()
+        .single();
+
+    return TrainerAnalysisReport.fromMap(result);
+  }
+
+  /// Get analysis reports for a specific client
+  Future<List<TrainerAnalysisReport>> getClientAnalysisReports(
+    String clientId, {
+    int limit = 10,
+  }) async {
+    final data = await _supabase
+        .from('trainer_analysis_reports')
+        .select()
+        .eq('client_id', clientId)
+        .order('created_at', ascending: false)
+        .limit(limit);
+
+    return data.map((json) => TrainerAnalysisReport.fromMap(json)).toList();
+  }
+
+  /// Get analysis reports created by a specific trainer
+  Future<List<TrainerAnalysisReport>> getTrainerAnalysisReports(
+    String trainerId, {
+    int limit = 20,
+  }) async {
+    final data = await _supabase
+        .from('trainer_analysis_reports')
+        .select()
+        .eq('trainer_id', trainerId)
+        .order('created_at', ascending: false)
+        .limit(limit);
+
+    return data.map((json) => TrainerAnalysisReport.fromMap(json)).toList();
+  }
 
   Future<FitnessProfile?> getFitnessProfile(
     String memberId,
