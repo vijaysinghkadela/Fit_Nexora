@@ -33,6 +33,11 @@ const trainerDestinations = [
     route: '/workouts',
   ),
   FitShellDestination(
+    icon: Icons.account_balance_wallet_rounded,
+    label: 'Earnings',
+    route: '/trainer/earnings',
+  ),
+  FitShellDestination(
     icon: Icons.person_rounded,
     label: 'Profile',
     route: '/trainer/settings',

@@ -56,6 +56,8 @@ import '../screens/tools/macro_calculator_screen.dart';
 import '../screens/tools/one_rep_max_screen.dart';
 import '../screens/gym/equipment_status_screen.dart';
 import '../screens/gym/qr_checkin_screen.dart';
+import '../screens/staff/manage_staff_screen.dart';
+import '../screens/staff/payroll_run_screen.dart';
 import '../screens/pro/pro_ai_screen.dart';
 import '../screens/pro/pro_home_screen.dart';
 import '../screens/pro/pro_measurements_screen.dart';
@@ -71,6 +73,7 @@ import '../screens/trainer/trainer_assign_diet_screen.dart';
 import '../screens/trainer/trainer_client_analysis_screen.dart';
 import '../screens/trainer/trainer_clients_screen.dart';
 import '../screens/trainer/trainer_dashboard_screen.dart';
+import '../screens/trainer/trainer_earnings_screen.dart';
 import '../screens/traffic/gym_traffic_screen.dart';
 import '../screens/workouts/workouts_screen.dart';
 import '../screens/workouts/active_workout_screen.dart';
@@ -243,6 +246,20 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
+        path: '/staff',
+        name: 'staff',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const ManageStaffScreen()),
+      ),
+      GoRoute(
+        path: '/staff/payroll/:id',
+        name: 'payroll-run',
+        pageBuilder: (context, state) {
+          final runId = state.pathParameters['id']!;
+          return _fadePage(state, PayrollRunScreen(runId: runId));
+        },
+      ),
+      GoRoute(
         path: '/trainer',
         name: 'trainer',
         builder: (context, state) => const TrainerDashboardScreen(),
@@ -292,6 +309,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/trainer/clients',
         name: 'trainer-clients',
         builder: (context, state) => const TrainerClientsScreen(),
+      ),
+      GoRoute(
+        path: '/trainer/earnings',
+        name: 'trainer-earnings',
+        pageBuilder: (context, state) =>
+            _fadePage(state, const TrainerEarningsScreen()),
       ),
       GoRoute(
         path: '/trainer/assign-workout',

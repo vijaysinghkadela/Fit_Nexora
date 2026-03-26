@@ -967,4 +967,173 @@ class DatabaseService {
       return [];
     }
   }
+
+  // ─── Payroll & Staff ──────────────────────────────────────────────────────
+
+  Future<List<Map<String, dynamic>>> getTrainerContracts(String gymId) async {
+    final res = await _client
+        .from('trainer_contracts')
+        .select('*, profiles(full_name, email)')
+        .eq('gym_id', gymId)
+        .order('created_at');
+    return List<Map<String, dynamic>>.from(res as List);
+  }
+
+  Future<void> upsertTrainerContract(Map<String, dynamic> data) async {
+    await _client
+        .from('trainer_contracts')
+        .upsert(data, onConflict: 'gym_id,trainer_id');
+  }
+
+  Future<List<Map<String, dynamic>>> getPayrollRuns(String gymId) async {
+    final res = await _client
+        .from('payroll_runs')
+        .select()
+        .eq('gym_id', gymId)
+        .order('year', ascending: false)
+        .order('month', ascending: false);
+    return List<Map<String, dynamic>>.from(res as List);
+  }
+
+  Future<Map<String, dynamic>> getPayrollRunDetails(String payrollRunId) async {
+    final runRes = await _client
+        .from('payroll_runs')
+        .select()
+        .eq('id', payrollRunId)
+        .single();
+
+    final slipsRes = await _client
+        .from('salary_slips')
+        .select('*, profiles(full_name)')
+        .eq('payroll_run_id', payrollRunId);
+
+    return {
+      'run': runRes,
+      'slips': List<Map<String, dynamic>>.from(slipsRes as List),
+    };
+  }
+
+  Future<Map<String, dynamic>> generateDraftPayrollRun(
+      String gymId, int month, int year) async {
+    // Check if run already exists
+    final existing = await _client
+        .from('payroll_runs')
+        .select()
+        .eq('gym_id', gymId)
+        .eq('month', month)
+        .eq('year', year)
+        .maybeSingle();
+
+    if (existing != null) {
+      return getPayrollRunDetails(existing['id'] as String);
+    }
+
+    // Get active contracts
+    final contracts = await _client
+        .from('trainer_contracts')
+        .select()
+        .eq('gym_id', gymId)
+        .eq('is_active', true);
+
+    if ((contracts as List).isEmpty) {
+      throw Exception('No active trainers found for this gym');
+    }
+
+    // Create run
+    final runData = {
+      'gym_id': gymId,
+      'month': month,
+      'year': year,
+      'status': 'draft',
+      'total_payout': 0.0,
+    };
+
+    final runRes =
+        await _client.from('payroll_runs').insert(runData).select().single();
+    final runId = runRes['id'] as String;
+
+    // Create slips
+    final List<Map<String, dynamic>> slipsToInsert = [];
+    double totalPayout = 0;
+
+    for (final contract in contracts) {
+      final base = (contract['base_salary'] as num).toDouble();
+      slipsToInsert.add({
+        'payroll_run_id': runId,
+        'trainer_id': contract['trainer_id'],
+        'gym_id': gymId,
+        'base_amount': base,
+        'status': 'pending'
+      });
+      totalPayout += base;
+    }
+
+    if (slipsToInsert.isNotEmpty) {
+      await _client.from('salary_slips').insert(slipsToInsert);
+    }
+
+    // Update total payout on run
+    await _client
+        .from('payroll_runs')
+        .update({'total_payout': totalPayout}).eq('id', runId);
+
+    return getPayrollRunDetails(runId);
+  }
+
+  Future<void> updateSalarySlip(
+      String slipId, Map<String, dynamic> updates) async {
+    await _client.from('salary_slips').update(updates).eq('id', slipId);
+
+    // Update run total
+    final slip = await _client
+        .from('salary_slips')
+        .select('payroll_run_id')
+        .eq('id', slipId)
+        .single();
+    final runId = slip['payroll_run_id'];
+
+    final allSlips = await _client
+        .from('salary_slips')
+        .select('net_payable')
+        .eq('payroll_run_id', runId);
+    double total = 0;
+    for (final s in allSlips as List) {
+      total += (s['net_payable'] as num? ?? 0).toDouble();
+    }
+
+    await _client
+        .from('payroll_runs')
+        .update({'total_payout': total}).eq('id', runId);
+  }
+
+  Future<void> markPayrollAsPaid(String runId) async {
+    await _client
+        .from('salary_slips')
+        .update({'status': 'paid'}).eq('payroll_run_id', runId);
+    await _client.from('payroll_runs').update({
+      'status': 'paid',
+      'processed_at': DateTime.now().toIso8601String()
+    }).eq('id', runId);
+  }
+
+  Future<List<Map<String, dynamic>>> getTrainerSalarySlips(
+      String trainerId) async {
+    final res = await _client
+        .from('salary_slips')
+        .select('*, payroll_runs(*)')
+        .eq('trainer_id', trainerId)
+        .order('created_at', ascending: false);
+    return List<Map<String, dynamic>>.from(res as List);
+  }
+
+  Future<Map<String, dynamic>?> getTrainerActiveContract(
+      String trainerId) async {
+    final res = await _client
+        .from('trainer_contracts')
+        .select('*, gyms(name)')
+        .eq('trainer_id', trainerId)
+        .eq('is_active', true)
+        .maybeSingle();
+    return res;
+  }
 }

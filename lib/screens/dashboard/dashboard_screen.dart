@@ -59,6 +59,11 @@ const managementDestinations = [
     route: '/workouts',
   ),
   FitShellDestination(
+    icon: Icons.badge_rounded,
+    label: 'Staff',
+    route: '/staff',
+  ),
+  FitShellDestination(
     icon: Icons.restaurant_menu_rounded,
     label: 'Diet Plans',
     route: '/diet-plans',
