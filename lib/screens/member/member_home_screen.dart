@@ -212,6 +212,14 @@ class _MemberDashboard extends ConsumerWidget {
                 ),
               ),
 
+              // ─── Live Gym Traffic ─────────────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _LiveTrafficCardMember(gym: gym),
+                ),
+              ),
+
               // ─── Quick Stats Row ─────────────────────────────────────────
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -1103,6 +1111,367 @@ class _QuickNavCard extends StatelessWidget {
           ],
         ),
       ).animate(delay: 80.ms).fadeIn().slideY(begin: 0.04),
+    );
+  }
+}
+
+// ─── Live Traffic (Member) ──────────────────────────────────────────────────
+
+class _LiveTrafficCardMember extends ConsumerWidget {
+  final dynamic gym;
+  const _LiveTrafficCardMember({required this.gym});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (gym == null) return const SizedBox.shrink();
+
+    final t = context.fitTheme;
+    final rs = ResponsiveSize.of(context);
+    final gymId = gym.id as String;
+    final maxCapacity = (gym.maxClients as int? ?? 50).clamp(1, 9999);
+    final trafficAsync = ref.watch(currentTrafficCountProvider(gymId));
+
+    (String label, Color color) statusForCount(int count) {
+      if (count <= 5) return ('Quiet', t.accent);
+      if (count <= 15) return ('Moderate', t.warning);
+      return ('Busy', t.danger);
+    }
+
+    void showDetailSheet(int count) {
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (_) {
+          final bestTimes = ref.watch(bestVisitTimesProvider(gymId));
+          final (label, color) = statusForCount(count);
+          final percent = ((count / maxCapacity) * 100).clamp(0, 999).round();
+
+          return Container(
+            decoration: BoxDecoration(
+              color: t.surface,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(24)),
+              border: Border.all(color: t.divider.withOpacity(0.6)),
+            ),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Live Gym Traffic',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: t.textPrimary,
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: color.withOpacity(0.35)),
+                        ),
+                        child: Text(
+                          label,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '$count',
+                        style: GoogleFonts.inter(
+                          fontSize: rs.sp(52),
+                          fontWeight: FontWeight.w900,
+                          color: t.textPrimary,
+                          height: 1,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          count == 1 ? 'person inside' : 'people inside',
+                          style: GoogleFonts.inter(
+                              fontSize: 14, color: t.textSecondary),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Approx. $percent% of capacity in use',
+                    style:
+                        GoogleFonts.inter(fontSize: 13, color: t.textSecondary),
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'Best times to visit',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: t.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  bestTimes.when(
+                    data: (hours) {
+                      final display = hours.isEmpty ? [6, 11, 14] : hours;
+                      return Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: display
+                            .map((h) =>
+                                _TimeSlotChipSmall(hour: h, accent: t.accent))
+                            .toList(),
+                      );
+                    },
+                    loading: () => const _ShimmerDotsRow(),
+                    error: (_, __) => Wrap(
+                      spacing: 10,
+                      children: [6, 11, 14]
+                          .map((h) =>
+                              _TimeSlotChipSmall(hour: h, accent: t.accent))
+                          .toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Live count is based on real-time check-ins over the last 12 hours.',
+                    style: GoogleFonts.inter(fontSize: 12, color: t.textMuted),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return GlassmorphicCard(
+      onTap: trafficAsync.maybeWhen(
+          data: (c) => () => showDetailSheet(c), orElse: () => null),
+      borderRadius: 18,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [t.brand, t.accent]),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.speed_rounded,
+                  color: Colors.white, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: trafficAsync.when(
+                data: (count) {
+                  final (label, color) = statusForCount(count);
+                  final percent =
+                      ((count / maxCapacity) * 100).clamp(0, 999).round();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Live Gym Traffic',
+                            style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: t.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: color.withOpacity(0.4)),
+                            ),
+                            child: Text(
+                              label,
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: color,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$count inside · ~${percent.clamp(0, 999)}% capacity',
+                        style: GoogleFonts.inter(
+                            fontSize: 12, color: t.textSecondary),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Tap for best time to visit',
+                        style:
+                            GoogleFonts.inter(fontSize: 11, color: t.textMuted),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: t.surfaceAlt,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: 100,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: t.surfaceAlt,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ],
+                ),
+                error: (_, __) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Live Gym Traffic',
+                      style: GoogleFonts.inter(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: t.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Unable to load right now',
+                      style: GoogleFonts.inter(
+                          fontSize: 12, color: t.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Icon(Icons.chevron_right_rounded, color: t.textMuted),
+          ],
+        ),
+      ),
+    ).animate(delay: 80.ms).fadeIn().slideY(begin: 0.04);
+  }
+}
+
+class _TimeSlotChipSmall extends StatelessWidget {
+  final int hour;
+  final Color accent;
+  const _TimeSlotChipSmall({required this.hour, required this.accent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: accent.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: accent.withOpacity(0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.access_time_rounded, color: accent, size: 14),
+          const SizedBox(width: 6),
+          Text(
+            _hourLabel(hour),
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: accent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _hourLabel(int h) {
+    final start = h == 0
+        ? '12 AM'
+        : h < 12
+            ? '$h AM'
+            : h == 12
+                ? '12 PM'
+                : '${h - 12} PM';
+    final endH = h + 1;
+    final end = endH == 0
+        ? '12 AM'
+        : endH < 12
+            ? '$endH AM'
+            : endH == 12
+                ? '12 PM'
+                : '${endH - 12} PM';
+    return '$start – $end';
+  }
+}
+
+class _ShimmerDotsRow extends StatelessWidget {
+  const _ShimmerDotsRow();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.fitTheme;
+    return Row(
+      children: List.generate(
+        3,
+        (i) => Padding(
+          padding: EdgeInsets.only(right: i == 2 ? 0 : 10),
+          child: Container(
+            width: 78,
+            height: 34,
+            decoration: BoxDecoration(
+              color: t.surfaceAlt,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          )
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .fade(begin: 0.4, end: 0.8, duration: 800.ms),
+        ),
+      ),
     );
   }
 }

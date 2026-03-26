@@ -19,6 +19,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/client_provider.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/traffic_provider.dart';
 import '../../widgets/ai_usage_meter.dart';
 import '../../widgets/fit_management_scaffold.dart';
 import '../../widgets/glassmorphic_card.dart';
@@ -282,6 +283,19 @@ class _DashboardBody extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               sliver: SliverToBoxAdapter(
                 child: _LiveSnapshotCards(gymId: gym.id),
+              ),
+            ),
+
+          // ── Live check-ins list (owner) ─────────────────────────────────
+          if (gym != null)
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              sliver: SliverToBoxAdapter(
+                child: _LiveCheckInsCard(
+                  gymId: gym.id,
+                  maxCapacity: gym.maxClients,
+                  clientsAsync: clientsAsync,
+                ),
               ),
             ),
 
@@ -1467,6 +1481,249 @@ class _LiveSnapshotCards extends ConsumerWidget {
         );
       },
     );
+  }
+}
+
+// ─── Live Check-ins (Owner view) ───────────────────────────────────────────
+
+class _LiveCheckInsCard extends ConsumerWidget {
+  final String gymId;
+  final int maxCapacity;
+  final AsyncValue<List<ClientProfile>> clientsAsync;
+
+  const _LiveCheckInsCard({
+    required this.gymId,
+    required this.maxCapacity,
+    required this.clientsAsync,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.fitTheme;
+    final checkinsStream = ref.watch(gymCheckInsStreamProvider(gymId));
+
+    (String label, Color color) statusForCount(int count) {
+      if (count <= 5) return ('Quiet', colors.accent);
+      if (count <= 15) return ('Moderate', colors.warning);
+      return ('Busy', colors.danger);
+    }
+
+    return GlassmorphicCard(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: colors.brand.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(Icons.people_outline_rounded,
+                      color: colors.brand, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Live Check-ins',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textPrimary,
+                  ),
+                ),
+                const Spacer(),
+                checkinsStream.when(
+                  data: (rows) {
+                    final active = _activeRows(rows);
+                    final (label, color) = statusForCount(active.length);
+                    final percent = ((active.length / maxCapacity) * 100)
+                        .clamp(0, 999)
+                        .round();
+                    return Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.14),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(color: color.withOpacity(0.4)),
+                          ),
+                          child: Text(
+                            '$label · $percent%',
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: color,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: colors.accent,
+                            shape: BoxShape.circle,
+                          ),
+                        )
+                            .animate(onPlay: (c) => c.repeat())
+                            .fadeOut(duration: 900.ms)
+                            .then()
+                            .fadeIn(duration: 900.ms),
+                      ],
+                    );
+                  },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Active members in the last 12 hours. Member details stay private to owners.',
+              style:
+                  GoogleFonts.inter(fontSize: 12, color: colors.textSecondary),
+            ),
+            const SizedBox(height: 14),
+            checkinsStream.when(
+              data: (rows) {
+                final active = _activeRows(rows);
+                if (active.isEmpty) {
+                  return const _EmptyState(
+                    icon: Icons.self_improvement_rounded,
+                    title: 'No one is checked in right now',
+                    subtitle: 'This updates instantly when members scan in.',
+                  );
+                }
+
+                final clientsMap = {
+                  for (final c in clientsAsync.valueOrNull ?? <ClientProfile>[])
+                    c.userId: c,
+                };
+
+                return Column(
+                  children: active.map((row) {
+                    final userId = row['user_id'] as String?;
+                    final client = userId != null ? clientsMap[userId] : null;
+                    final name = (client?.fullName ?? 'Member').trim();
+                    final initials = name.isEmpty
+                        ? 'FN'
+                        : name
+                            .split(' ')
+                            .where((part) => part.isNotEmpty)
+                            .take(2)
+                            .map((part) => part[0].toUpperCase())
+                            .join();
+                    final checkIn = DateTime.tryParse(
+                            row['checked_in_at']?.toString() ?? '')
+                        ?.toLocal();
+                    final duration = checkIn != null
+                        ? DateTime.now().difference(checkIn)
+                        : Duration.zero;
+                    final durationStr = duration.inMinutes < 60
+                        ? '${duration.inMinutes}m'
+                        : '${duration.inHours}h ${duration.inMinutes % 60}m';
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: colors.accent.withOpacity(0.15),
+                            child: Text(
+                              initials,
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: colors.accent,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name.isEmpty ? 'Member' : name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: colors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  checkIn != null
+                                      ? 'In since ${_fmt(checkIn)} · $durationStr'
+                                      : 'Checked in',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: colors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: colors.surfaceAlt,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: colors.border),
+                            ),
+                            child: Text(
+                              'Active',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: colors.accent,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+              loading: () => const _ListPlaceholder(),
+              error: (_, __) => const _EmptyState(
+                icon: Icons.error_outline_rounded,
+                title: 'Live check-ins unavailable',
+                subtitle: 'Unable to load the real-time feed right now.',
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animate(delay: 120.ms).fadeIn().slideY(begin: 0.04);
+  }
+
+  List<Map<String, dynamic>> _activeRows(List<Map<String, dynamic>> rows) {
+    final cutoff = DateTime.now().subtract(const Duration(hours: 12));
+    return rows.where((r) {
+      if (r['checked_out_at'] != null) return false;
+      final rawIn = r['checked_in_at']?.toString();
+      if (rawIn == null) return false;
+      final checkIn = DateTime.tryParse(rawIn);
+      return checkIn != null && checkIn.isAfter(cutoff);
+    }).toList();
+  }
+
+  String _fmt(DateTime dt) {
+    final hh = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final mm = dt.minute.toString().padLeft(2, '0');
+    final suffix = dt.hour >= 12 ? 'PM' : 'AM';
+    return '$hh:$mm $suffix';
   }
 }
 
