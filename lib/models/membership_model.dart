@@ -13,6 +13,8 @@ class Membership extends Equatable {
   final DateTime startDate;
   final DateTime endDate;
   final MembershipStatus status;
+  final String paymentStatus;
+  final String? cashfreeOrderId;
   final bool autoRenew;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -27,6 +29,8 @@ class Membership extends Equatable {
     required this.startDate,
     required this.endDate,
     this.status = MembershipStatus.active,
+    this.paymentStatus = 'paid',
+    this.cashfreeOrderId,
     this.autoRenew = false,
     required this.createdAt,
     required this.updatedAt,
@@ -39,12 +43,13 @@ class Membership extends Equatable {
       gymId: json['gym_id'] as String,
       planName: json['plan_name'] as String,
       amount: (json['amount'] as num?)?.toDouble(),
-      currency:
-          json['currency'] as String? ?? DatabaseValues.defaultCurrency,
+      currency: json['currency'] as String? ?? DatabaseValues.defaultCurrency,
       startDate: DateTime.parse(json['start_date'] as String),
       endDate: DateTime.parse(json['end_date'] as String),
       status:
           MembershipStatus.fromString(json['status'] as String? ?? 'active'),
+      paymentStatus: json['payment_status'] as String? ?? 'paid',
+      cashfreeOrderId: json['cashfree_order_id'] as String?,
       autoRenew: json['auto_renew'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
@@ -62,6 +67,8 @@ class Membership extends Equatable {
       'start_date': startDate.toIso8601String().split('T').first,
       'end_date': endDate.toIso8601String().split('T').first,
       'status': status.value,
+      'payment_status': paymentStatus,
+      'cashfree_order_id': cashfreeOrderId,
       'auto_renew': autoRenew,
     };
   }
@@ -71,7 +78,6 @@ class Membership extends Equatable {
 
   /// Whether this membership is expired.
   bool get isExpired => endDate.isBefore(DateTime.now());
-
 
   /// Days remaining before expiry. Negative if expired.
   int get daysRemaining => endDate.difference(DateTime.now()).inDays;

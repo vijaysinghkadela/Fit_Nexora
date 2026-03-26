@@ -358,7 +358,7 @@ class _CountChip extends StatelessWidget {
   }
 }
 
-class _MembershipCard extends StatelessWidget {
+class _MembershipCard extends ConsumerWidget {
   const _MembershipCard({
     required this.membership,
     required this.delay,
@@ -368,7 +368,7 @@ class _MembershipCard extends StatelessWidget {
   final int delay;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
     final statusColor = _getStatusColor(t);
     final progress = _getProgress();
@@ -437,26 +437,87 @@ class _MembershipCard extends StatelessWidget {
                       ),
                     ),
                   const SizedBox(height: 4),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      _getStatusLabel(),
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: statusColor,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (membership.paymentStatus == 'pending')
+                        Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: t.warning.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border:
+                                Border.all(color: t.warning.withOpacity(0.3)),
+                          ),
+                          child: Text(
+                            'Unpaid',
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: t.warning,
+                            ),
+                          ),
+                        ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          _getStatusLabel(),
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: statusColor,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
+          if (membership.paymentStatus == 'pending') ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  try {
+                    await ref
+                        .read(databaseServiceProvider)
+                        .updateMembershipPaymentStatus(membership.id, 'paid');
+                    ref.invalidate(pagedMembershipsControllerProvider);
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error updating status: $e')),
+                    );
+                  }
+                },
+                icon: Icon(Icons.check_circle_outline,
+                    size: 16, color: t.success),
+                label: Text(
+                  'Mark as Paid',
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w600,
+                    color: t.success,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: t.success.withOpacity(0.5)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
           if (!membership.isExpired && progress != null) ...[
             const SizedBox(height: 12),
             ClipRRect(

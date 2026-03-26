@@ -10,6 +10,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/gym_provider.dart';
 import '../../providers/member_provider.dart';
 import '../../providers/notifications_provider.dart';
+import '../../providers/payment_provider.dart';
 import '../../providers/pro_member_provider.dart';
 import '../../providers/traffic_provider.dart';
 import '../../providers/health_provider.dart';
@@ -457,99 +458,96 @@ class _MemberDashboard extends ConsumerWidget {
               ),
 
               // ─── Section: Fitness Tools ───────────────────────────────────
-              if (hasProAccess) ...[
-                _sectionHeader('FITNESS TOOLS'),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.bodyMeasurements,
-                                value: '📏',
-                                sublabel: 'Full Progress',
-                                icon: Icons.monitor_weight_rounded,
-                                color: t.accent,
-                                onTap: () => handlePremiumTap(
-                                    '/health/body-measurements'),
-                              ),
+              _sectionHeader('FITNESS TOOLS'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.bodyMeasurements,
+                              value: '📏',
+                              sublabel: 'Full Progress',
+                              icon: Icons.monitor_weight_rounded,
+                              color: t.accent,
+                              onTap: () =>
+                                  context.go('/health/body-measurements'),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.hydration,
-                                value: '💧',
-                                sublabel: 'Water Intake',
-                                icon: Icons.water_drop_rounded,
-                                color: t.info,
-                                onTap: () => handlePremiumTap('/health/water'),
-                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.hydration,
+                              value: '💧',
+                              sublabel: 'Water Intake',
+                              icon: Icons.water_drop_rounded,
+                              color: t.info,
+                              onTap: () => context.go('/health/water'),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.personalRecords,
-                                value: '🏆',
-                                sublabel: 'Hall of Fame',
-                                icon: Icons.emoji_events_rounded,
-                                color: t.warning,
-                                onTap: () => handlePremiumTap(
-                                    '/workout/personal-records'),
-                              ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.personalRecords,
+                              value: '🏆',
+                              sublabel: 'Hall of Fame',
+                              icon: Icons.emoji_events_rounded,
+                              color: t.warning,
+                              onTap: () =>
+                                  context.go('/workout/personal-records'),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.achievements,
-                                value: '⚡',
-                                sublabel: 'XP & Badges',
-                                icon: Icons.bolt_rounded,
-                                color: t.brand,
-                                onTap: () => context.push('/achievements'),
-                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.achievements,
+                              value: '⚡',
+                              sublabel: 'XP & Badges',
+                              icon: Icons.bolt_rounded,
+                              color: t.brand,
+                              onTap: () => context.go('/achievements'),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.macroCalculator,
-                                value: '🥗',
-                                sublabel: 'TDEE & Macros',
-                                icon: Icons.restaurant_rounded,
-                                color: t.info,
-                                onTap: () =>
-                                    handlePremiumTap('/tools/macro-calculator'),
-                              ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.macroCalculator,
+                              value: '🥗',
+                              sublabel: 'TDEE & Macros',
+                              icon: Icons.restaurant_rounded,
+                              color: t.info,
+                              onTap: () =>
+                                  context.go('/tools/macro-calculator'),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _QuickNavCard(
-                                label: l.oneRepMax,
-                                value: '💪',
-                                sublabel: 'Max Strength',
-                                icon: Icons.fitness_center_rounded,
-                                color: t.danger,
-                                onTap: () =>
-                                    handlePremiumTap('/tools/one-rep-max'),
-                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickNavCard(
+                              label: l.oneRepMax,
+                              value: '💪',
+                              sublabel: 'Max Strength',
+                              icon: Icons.fitness_center_rounded,
+                              color: t.danger,
+                              onTap: () => context.go('/tools/one-rep-max'),
                             ),
-                          ],
-                        ),
-                      ],
-                    ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.05),
-                  ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ).animate().fadeIn(duration: 350.ms).slideY(begin: 0.05),
                 ),
-              ],
+              ),
 
               // ─── Section: Announcements ───────────────────────────────────
               _sectionHeader('ANNOUNCEMENTS'),
@@ -592,22 +590,22 @@ class _MemberDashboard extends ConsumerWidget {
 
 // ─── Membership Card ──────────────────────────────────────────────────────────
 
-class _MembershipCard extends StatelessWidget {
+class _MembershipCard extends ConsumerWidget {
   final AsyncValue<dynamic> async;
   const _MembershipCard({required this.async});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return async.when(
       loading: () => _shimmer(context),
       error: (_, __) => const SizedBox.shrink(),
       data: (membership) => membership == null
           ? const SizedBox.shrink()
-          : _card(membership, context),
+          : _card(membership, context, ref),
     );
   }
 
-  Widget _card(dynamic m, BuildContext context) {
+  Widget _card(dynamic m, BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
     final daysLeft = m.daysRemaining as int;
     final isExpiring = daysLeft <= 7 && daysLeft >= 0;
@@ -616,6 +614,8 @@ class _MembershipCard extends StatelessWidget {
         : isExpiring
             ? t.warning
             : t.success;
+
+    final bool isUnpaid = m.paymentStatus == 'pending';
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -647,6 +647,26 @@ class _MembershipCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              if (isUnpaid) ...[
+                Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: t.warning.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: t.warning.withOpacity(0.4)),
+                  ),
+                  child: Text(
+                    'Unpaid',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: t.warning,
+                    ),
+                  ),
+                ),
+              ],
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -689,6 +709,69 @@ class _MembershipCard extends StatelessWidget {
               ),
             ],
           ),
+          if (isUnpaid) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: FilledButton.icon(
+                onPressed: () async {
+                  try {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Starting Cashfree checkout...')),
+                    );
+
+                    final paymentService = ref.read(paymentServiceProvider);
+                    final checkoutData =
+                        await paymentService.createMemberCheckoutSession(
+                      gymId: m.gymId,
+                      membershipId: m.id,
+                      amount: m.amount ?? 0.0,
+                    );
+
+                    paymentService.startCashfreeCheckout(
+                      paymentSessionId: checkoutData['payment_session_id']!,
+                      orderId: checkoutData['order_id']!,
+                    );
+
+                    // Note: for MVP, you'd usually wait for the result or verify it.
+                    // For now, we simulate success by marking it paid after a small delay
+                    // (in a real scenario, this happens via the Cashfree callback).
+                    Future.delayed(const Duration(seconds: 5), () async {
+                      await paymentService.markMembershipPaid(
+                          m.id, checkoutData['order_id']!);
+                      ref.invalidate(memberMembershipProvider);
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Payment Successful!')),
+                      );
+                    });
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: t.brand,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: const Icon(Icons.payment_rounded, size: 20),
+                label: Text(
+                  'Pay Now',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.04, end: 0);

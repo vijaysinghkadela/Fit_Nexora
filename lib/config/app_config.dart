@@ -15,10 +15,12 @@ class AppConfig {
 
   static String get stripeSecretKey => dotenv.env['STRIPE_SECRET_KEY'] ?? '';
 
-  static String get razorpayKeyId => dotenv.env['RAZORPAY_KEY_ID'] ?? '';
-
-  static String get razorpayKeySecret =>
-      dotenv.env['RAZORPAY_KEY_SECRET'] ?? '';
+  // Cashfree B2B (SaaS)
+  static String get cashfreeAppId => dotenv.env['CASHFREE_APP_ID'] ?? '';
+  static String get cashfreeSecretKey =>
+      dotenv.env['CASHFREE_SECRET_KEY'] ?? '';
+  static String get cashfreeEnv =>
+      dotenv.env['CASHFREE_ENV'] ?? 'SANDBOX'; // SANDBOX or PRODUCTION
 
   static String get sentryDsn => dotenv.env['SENTRY_DSN'] ?? '';
 
@@ -49,6 +51,6 @@ class AppConfig {
   /// Whether Stripe is configured.
   static bool get hasStripe => stripePublishableKey.isNotEmpty;
 
-  /// Whether Razorpay is configured (Indian market).
-  static bool get hasRazorpay => razorpayKeyId.isNotEmpty;
+  /// Whether Cashfree is configured (Indian market).
+  static bool get hasCashfree => cashfreeAppId.isNotEmpty;
 }

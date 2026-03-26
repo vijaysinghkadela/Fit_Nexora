@@ -48,12 +48,6 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
   BillingInterval get _interval =>
       _isAnnual ? BillingInterval.annual : BillingInterval.monthly;
 
-  double _checkoutAmount(PlanTier tier) {
-    return _isAnnual
-        ? PlanLimits.annualPrice[tier]!
-        : PlanLimits.monthlyPrice[tier]!;
-  }
-
   List<FitPricingPlanData> _buildPlans() {
     return [
       FitPricingPlanData(
@@ -216,53 +210,42 @@ class _PricingScreenState extends ConsumerState<PricingScreen> {
         }
 
         final paymentService = ref.read(paymentServiceProvider);
-        final amount = _checkoutAmount(tier);
 
-        // Initiate Razorpay
-        paymentService.startRazorpayCheckout(
-          options: {
-            'amount':
-                (amount * 100).toInt(), // Razorpay expects amount in paise
-            'name': 'FitNexora ${planData.title}',
-            'description': '${_interval.label} subscription for ${gym.name}',
-            'prefill': {
-              'contact': user.phone ?? '',
-              'email': user.email,
-            },
-            'external': {
-              'wallets': ['paytm']
-            }
-          },
-          onSuccess: (response) async {
-            context.showSnackBar('Payment successful! Upgrading your plan...');
-            try {
-              await paymentService.handleRazorpaySuccess(
-                gymId: gym.id,
-                plan: tier,
-                interval: _interval,
-                paymentId: response.paymentId ?? '',
-                signature: response.signature,
-                orderId: response.orderId,
-              );
-              // Refresh subscription state
-              ref.invalidate(gymSubscriptionProvider(gym.id));
-              if (context.mounted) {
-                context.showSnackBar('Plan upgraded to ${planData.title}!');
-              }
-            } catch (e) {
-              if (context.mounted) {
-                context.showSnackBar('Error updating subscription: $e');
-              }
-            }
-          },
-          onError: (response) {
-            context.showSnackBar('Payment failed: ${response.message}');
-          },
-          onExternalWallet: (response) {
-            context.showSnackBar(
-                'External wallet selected: ${response.walletName}');
-          },
+        // Initiate Cashfree checkout
+        // Note: For a real implementation, you MUST fetch the paymentSessionId
+        // and orderId from your backend server. We mock it here for the MVP.
+        final mockOrderId = 'order_${DateTime.now().millisecondsSinceEpoch}';
+        final mockSessionId =
+            'mock_session_${DateTime.now().millisecondsSinceEpoch}';
+
+        context.showSnackBar('Initializing Cashfree Checkout...');
+
+        paymentService.startCashfreeCheckout(
+          paymentSessionId: mockSessionId,
+          orderId: mockOrderId,
         );
+
+        // Simulate success for MVP (since we don't have a real backend webhook yet)
+        Future.delayed(const Duration(seconds: 3), () async {
+          if (!context.mounted) return;
+          context.showSnackBar('Payment successful! Upgrading your plan...');
+          try {
+            await paymentService.handleCashfreeSuccess(
+              gymId: gym.id,
+              plan: tier,
+              interval: _interval,
+              orderId: mockOrderId,
+            );
+            ref.invalidate(gymSubscriptionProvider(gym.id));
+            if (context.mounted) {
+              context.showSnackBar('Plan upgraded to ${planData.title}!');
+            }
+          } catch (e) {
+            if (context.mounted) {
+              context.showSnackBar('Error updating subscription: $e');
+            }
+          }
+        });
       },
     );
   }

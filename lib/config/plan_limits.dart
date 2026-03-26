@@ -78,7 +78,7 @@ class PlanLimits {
       'manual_workout_plans',
       // Indian market essentials (available to all)
       'gst_invoice_generator',
-      'upi_razorpay',
+      'upi_cashfree',
       'hindi_language',
       'offline_mode',
     },
@@ -90,7 +90,7 @@ class PlanLimits {
       'expiry_alerts',
       'manual_workout_plans',
       'gst_invoice_generator',
-      'upi_razorpay',
+      'upi_cashfree',
       'hindi_language',
       'offline_mode',
       // AI (Kimi only)
@@ -129,7 +129,7 @@ class PlanLimits {
       'expiry_alerts',
       'manual_workout_plans',
       'gst_invoice_generator',
-      'upi_razorpay',
+      'upi_cashfree',
       'hindi_language',
       'offline_mode',
       'ai_kimi_suggestions',

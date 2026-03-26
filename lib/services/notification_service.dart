@@ -1,101 +1,75 @@
-// lib/services/notification_service.dart
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-final _plugin = FlutterLocalNotificationsPlugin();
-
 class NotificationService {
-  static bool _initialized = false;
+  static final FlutterLocalNotificationsPlugin
+      _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  static bool _isInitialized = false;
 
   static Future<void> init() async {
-    if (_initialized) return;
-    _initialized = true;
+    if (_isInitialized) return;
 
     tz.initializeTimeZones();
+    try {
+      final String timeZoneName = DateTime.now().timeZoneName;
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+    } catch (e) {
+      debugPrint('Could not set local timezone: $e');
+    }
 
-    const androidSettings =
+    const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    const darwinSettings = DarwinInitializationSettings(
+
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
 
-    await _plugin.initialize(
-      settings: const InitializationSettings(
-        android: androidSettings,
-        iOS: darwinSettings,
-      ),
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
     );
 
-    await _requestPermissions();
+    await _flutterLocalNotificationsPlugin.initialize(
+      settings: initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        debugPrint('Notification clicked: ${response.payload}');
+      },
+    );
 
-    // Schedule static daily reminders
-    await scheduleDailyHydrationReminder();
-    await scheduleWorkoutReminder();
+    _isInitialized = true;
   }
 
-  static Future<void> _requestPermissions() async {
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-
-    await _plugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
-  }
-
-  /// Public method to request notification permissions on demand (e.g. from settings).
   static Future<bool> requestPermissions() async {
-    await _requestPermissions();
-    // Check if the permission was actually granted after requesting
-    final androidImpl = _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-    if (androidImpl != null) {
-      final granted = await androidImpl.areNotificationsEnabled();
-      return granted ?? false;
+    bool? result = false;
+    if (Platform.isIOS) {
+      result = await _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+    } else if (Platform.isAndroid) {
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>();
+
+      result = await androidImplementation?.requestNotificationsPermission();
+      await androidImplementation?.requestExactAlarmsPermission();
     }
-    // On iOS permissions are handled by the OS dialog; assume granted if no error
-    return true;
+    return result ?? false;
   }
 
-  // ─── Channels ──────────────────────────────────────────────────────────────
-
-  static const _membershipChannel = AndroidNotificationDetails(
-    'membership_expiry',
-    'Membership Expiry',
-    channelDescription: 'Alerts before membership expires',
-    importance: Importance.high,
-    priority: Priority.high,
-    icon: '@mipmap/ic_launcher',
-  );
-
-  static const _hydrationChannel = AndroidNotificationDetails(
-    'hydration_reminder',
-    'Hydration Reminder',
-    channelDescription: 'Daily water intake reminders',
-    importance: Importance.defaultImportance,
-    priority: Priority.defaultPriority,
-    icon: '@mipmap/ic_launcher',
-  );
-
-  static const _workoutChannel = AndroidNotificationDetails(
-    'workout_reminder',
-    'Workout Reminder',
-    channelDescription: 'Daily workout reminders',
-    importance: Importance.high,
-    priority: Priority.high,
-    icon: '@mipmap/ic_launcher',
-  );
-
-  // ─── Membership Expiry ─────────────────────────────────────────────────────
-
-  /// Schedules a membership expiry warning 7 days before [expiryDate].
   static Future<void> scheduleMembershipExpiryWarning({
     required DateTime expiryDate,
     required String gymName,
@@ -103,103 +77,116 @@ class NotificationService {
     final warningDate = expiryDate.subtract(const Duration(days: 7));
     if (warningDate.isBefore(DateTime.now())) return;
 
-    await _plugin.zonedSchedule(
-      id: 100,
+    await _scheduleNotification(
+      id: 1001,
       title: 'Membership Expiring Soon',
-      body: 'Your $gymName membership expires in 7 days. Renew now to keep access.',
-      scheduledDate: tz.TZDateTime.from(warningDate, tz.local),
-      notificationDetails: const NotificationDetails(android: _membershipChannel),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      body: 'Your gym membership at $gymName expires in 7 days. Renew now!',
+      scheduledDate: warningDate,
     );
-    debugPrint('[Notifications] Membership expiry scheduled for $warningDate');
   }
 
-  // ─── Daily Hydration Reminder ──────────────────────────────────────────────
-  
-  /// Schedules a daily water reminder at 10 AM.
-  /// If [conditionMet] is true, we cancel the reminder for today and schedule for tomorrow.
   static Future<void> scheduleDailyHydrationReminder({
-    bool conditionMet = false,
+    required bool conditionMet,
   }) async {
-    const reminderId = 200;
-    await _plugin.cancel(id: reminderId);
-
     if (conditionMet) {
-      debugPrint('[Notifications] Hydration goal met for today; suppressing 10 AM push.');
-      // Still schedule ahead for tomorrow (recurring daily)
-      // Actually, if it's recurring, it will fire tomorrow anyway. 
-      // But if we cancel it today, we should RE-SCHEDULE it starting tomorrow.
-      final tomorrow = tz.TZDateTime.now(tz.local).add(const Duration(days: 1));
-      final scheduled = tz.TZDateTime(tz.local, tomorrow.year, tomorrow.month, tomorrow.day, 10);
-      
-      await _plugin.zonedSchedule(
-        id: reminderId,
-        title: 'Stay Hydrated!',
-        body: "Don't forget to drink water. Keep your hydration goal on track!",
-        scheduledDate: scheduled,
-        notificationDetails: const NotificationDetails(android: _hydrationChannel),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.time,
-      );
+      await cancelHydrationReminder();
       return;
     }
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, 10);
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
-
-    await _plugin.zonedSchedule(
-      id: reminderId,
-      title: 'Stay Hydrated!',
-      body: "Don't forget to drink water. Your goal is still pending!",
-      scheduledDate: scheduled,
-      notificationDetails: const NotificationDetails(android: _hydrationChannel),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
+    await _scheduleDailyNotification(
+      id: 1002,
+      title: 'Hydration Check 💧',
+      body: 'Time to drink some water! Keep your hydration levels up.',
+      hour: 10,
+      minute: 0,
     );
-    debugPrint('[Notifications] Daily hydration reminder scheduled at 10 AM');
   }
 
-  // ─── Workout Reminder ──────────────────────────────────────────────────────
+  static Future<void> cancelHydrationReminder() async {
+    await _flutterLocalNotificationsPlugin.cancel(id: 1002);
+  }
 
-  /// Schedules a daily workout reminder at [hour]:[minute].
   static Future<void> scheduleWorkoutReminder({
-    int hour = 18,
-    int minute = 0,
+    required int hour,
+    required int minute,
     bool enabled = true,
   }) async {
-    const reminderId = 300;
-    await _plugin.cancel(id: reminderId);
-    
     if (!enabled) {
-      debugPrint('[Notifications] Workout reminders are disabled.');
+      await _flutterLocalNotificationsPlugin.cancel(id: 1003);
       return;
     }
+    await _scheduleDailyNotification(
+      id: 1003,
+      title: 'Workout Time 💪',
+      body: 'It\'s time for your daily workout. Let\'s crush those goals!',
+      hour: hour,
+      minute: minute,
+    );
+  }
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled =
+  static Future<void> _scheduleNotification({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledDate,
+  }) async {
+    final tz.TZDateTime tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
+
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: tzDate,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'gymos_ai_reminders',
+          'Reminders',
+          channelDescription: 'Important reminders',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
+
+  static Future<void> _scheduleDailyNotification({
+    required int id,
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,
+  }) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate =
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
+
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
-    await _plugin.zonedSchedule(
-      id: reminderId,
-      title: 'Time to Work Out!',
-      body: 'Your workout session is waiting. Stay consistent!',
-      scheduledDate: scheduled,
-      notificationDetails: const NotificationDetails(android: _workoutChannel),
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: scheduledDate,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'gymos_ai_daily_reminders',
+          'Daily Reminders',
+          channelDescription: 'Daily reminders',
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
-    debugPrint('[Notifications] Workout reminder scheduled at $hour:$minute');
   }
 
-  // ─── Cancel ────────────────────────────────────────────────────────────────
-  static Future<void> cancelAll() => _plugin.cancelAll();
-  static Future<void> cancelMembershipReminder() => _plugin.cancel(id: 100);
-  static Future<void> cancelHydrationReminder() => _plugin.cancel(id: 200);
-  static Future<void> cancelWorkoutReminder() => _plugin.cancel(id: 300);
+  static Future<void> cancelAllNotifications() async {
+    await _flutterLocalNotificationsPlugin.cancelAll();
+  }
 }

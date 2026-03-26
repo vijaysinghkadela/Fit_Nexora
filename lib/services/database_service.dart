@@ -390,6 +390,14 @@ class DatabaseService {
     );
   }
 
+  /// Update membership payment status.
+  Future<void> updateMembershipPaymentStatus(
+      String membershipId, String paymentStatus) async {
+    await _client
+        .from(AppConstants.membershipsTable)
+        .update({'payment_status': paymentStatus}).eq('id', membershipId);
+  }
+
   /// Fetch summary counts used by the memberships chip row without loading the
   /// full membership list into memory.
   Future<MembershipCounts> getMembershipCounts(String gymId) async {
@@ -921,6 +929,25 @@ class DatabaseService {
 
   /// Get equipment status summary for a gym.
   /// Returns counts grouped by status.
+  /// Get full list of equipment status for a gym.
+  Future<List<Map<String, dynamic>>> getEquipmentList(String gymId) async {
+    return await _client
+        .from(AppConstants.equipmentStatusTable)
+        .select()
+        .eq('gym_id', gymId)
+        .order('category', ascending: true)
+        .order('name', ascending: true);
+  }
+
+  /// Update equipment status counts.
+  Future<void> updateEquipmentStatus(String equipmentId, int inUse, int outOfService) async {
+    await _client.from(AppConstants.equipmentStatusTable).update({
+      'in_use': inUse,
+      'out_of_service': outOfService,
+      'updated_at': DateTime.now().toUtc().toIso8601String(),
+    }).eq('id', equipmentId);
+  }
+
   Future<Map<String, int>> getEquipmentStatusSummary(String gymId) async {
     final result = await _client
         .from(AppConstants.equipmentStatusTable)

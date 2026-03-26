@@ -1,19 +1,24 @@
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpayment/cfdropcheckoutpayment.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfpaymentgateway/cfpaymentgatewayservice.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cfsession/cfsession.dart';
+import 'package:flutter_cashfree_pg_sdk/api/cftheme/cftheme.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfenums.dart';
+import 'package:flutter_cashfree_pg_sdk/utils/cfexceptions.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 import '../config/app_config.dart';
 import '../config/plan_limits.dart';
 import '../core/constants.dart';
 import '../core/enums.dart';
 import '../models/subscription_model.dart';
 
-/// Abstraction over Stripe and Razorpay for subscription management.
+/// Abstraction over Stripe and Cashfree for subscription management.
 ///
 /// All payment-related operations go through this service. The frontend
-/// never talks to Stripe/Razorpay directly — it calls these methods,
+/// never talks to Stripe/Cashfree directly — it calls these methods,
 /// which handle the appropriate gateway based on the gym's configuration.
 class PaymentService {
   final SupabaseClient _client;
-  Razorpay? _razorpay;
 
   PaymentService(this._client);
 
@@ -92,14 +97,17 @@ class PaymentService {
       'trial_start': withTrial ? now.toIso8601String() : null,
       'trial_end': trialEnd?.toIso8601String(),
       'amount_paid': withTrial ? 0 : price,
-      'currency': gateway == PaymentGateway.razorpay ? 'INR' : 'USD',
+      'currency': gateway == PaymentGateway.cashfree ? 'INR' : 'USD',
       'gst_number': gstNumber,
       'created_at': now.toIso8601String(),
       'updated_at': now.toIso8601String(),
     };
 
-    final data =
-        await _client.from(AppConstants.subscriptionsTable).insert(subData).select().single();
+    final data = await _client
+        .from(AppConstants.subscriptionsTable)
+        .insert(subData)
+        .select()
+        .single();
 
     // Update gym's plan_tier
     await _client
@@ -160,7 +168,9 @@ class PaymentService {
     }).eq('id', current.id);
 
     // Downgrade gym to basic
-    await _client.from(AppConstants.gymsTable).update({'plan_tier': 'basic'}).eq('id', gymId);
+    await _client
+        .from(AppConstants.gymsTable)
+        .update({'plan_tier': 'basic'}).eq('id', gymId);
   }
 
   // ─── TRIAL MANAGEMENT ──────────────────────────────────────────────
@@ -239,8 +249,8 @@ class PaymentService {
 
   /// Determine which payment gateway to use based on config and currency.
   static PaymentGateway detectGateway({String currency = 'INR'}) {
-    if (currency == 'INR' && AppConfig.hasRazorpay) {
-      return PaymentGateway.razorpay;
+    if (currency == 'INR' && AppConfig.hasCashfree) {
+      return PaymentGateway.cashfree;
     }
     if (AppConfig.hasStripe) {
       return PaymentGateway.stripe;
@@ -248,68 +258,91 @@ class PaymentService {
     return PaymentGateway.none;
   }
 
-  // ─── RAZORPAY INTEGRATION ──────────────────────────────────────────
+  // ─── CASHFREE INTEGRATION ──────────────────────────────────────────
 
-  /// Initialize and open Razorpay checkout.
+  /// Initialize and open Cashfree checkout.
   ///
-  /// [options] should contain amount, name, description, etc.
-  /// [onSuccess], [onError], and [onExternalWallet] are callbacks for Razorpay events.
-  void startRazorpayCheckout({
-    required Map<String, dynamic> options,
-    required void Function(PaymentSuccessResponse) onSuccess,
-    required void Function(PaymentFailureResponse) onError,
-    required void Function(ExternalWalletResponse) onExternalWallet,
+  /// The [paymentSessionId] and [orderId] must be fetched from your backend
+  /// (which securely calls Cashfree's Order Creation API)
+  void startCashfreeCheckout({
+    required String paymentSessionId,
+    required String orderId,
   }) {
-    // Clear any previous instance to prevent listener leaks
-    _razorpay?.clear();
-    _razorpay = Razorpay();
+    try {
+      var session = CFSessionBuilder()
+          .setEnvironment(AppConfig.cashfreeEnv == 'PRODUCTION'
+              ? CFEnvironment.PRODUCTION
+              : CFEnvironment.SANDBOX)
+          .setOrderId(orderId)
+          .setPaymentSessionId(paymentSessionId)
+          .build();
 
-    _razorpay!.on(Razorpay.EVENT_PAYMENT_SUCCESS, (PaymentSuccessResponse response) {
-      onSuccess(response);
-      _razorpay?.clear();
-      _razorpay = null;
-    });
+      var theme = CFThemeBuilder()
+          .setNavigationBarBackgroundColorColor('#1e1e1e')
+          .setPrimaryFont('Inter')
+          .setSecondaryFont('Inter')
+          .build();
 
-    _razorpay!.on(Razorpay.EVENT_PAYMENT_ERROR, (PaymentFailureResponse response) {
-      onError(response);
-      _razorpay?.clear();
-      _razorpay = null;
-    });
+      var cfDropCheckoutPayment = CFDropCheckoutPaymentBuilder()
+          .setSession(session)
+          .setTheme(theme)
+          .build();
 
-    _razorpay!.on(Razorpay.EVENT_EXTERNAL_WALLET, (ExternalWalletResponse response) {
-      onExternalWallet(response);
-      _razorpay?.clear();
-      _razorpay = null;
-    });
-
-    // Add API Key from config
-    final fullOptions = {
-      ...options,
-      'key': AppConfig.razorpayKeyId,
-    };
-
-    _razorpay!.open(fullOptions);
+      CFPaymentGatewayService().doPayment(cfDropCheckoutPayment);
+    } on CFException catch (e) {
+      debugPrint(e.message);
+    }
   }
 
-  /// Process a successful Razorpay payment and update the subscription.
-  Future<Subscription> handleRazorpaySuccess({
+  /// Process a successful Cashfree payment and update the subscription.
+  Future<Subscription> handleCashfreeSuccess({
     required String gymId,
     required PlanTier plan,
     required BillingInterval interval,
-    required String paymentId,
-    String? signature,
-    String? orderId,
+    required String orderId,
   }) async {
-    // 1. In a real app, you'd verify the signature on the backend.
-    // 2. Here we'll trust the client for the mock/demo and update the DB.
+    // 1. In a real app, you'd verify the payment status via webhook on backend
+    // 2. Here we trust the client to update DB for MVP
 
     return createSubscription(
       gymId: gymId,
       plan: plan,
       interval: interval,
-      gateway: PaymentGateway.razorpay,
+      gateway: PaymentGateway.cashfree,
       withTrial: false,
     );
   }
-}
 
+  // ─── B2C MEMBER PAYMENTS (Gym Owner -> Member) ─────────────────────
+
+  /// Simulates generating a checkout session for a gym member paying for a membership.
+  ///
+  /// In a real app, this calls your backend, which uses the gym owner's `cashfree_app_id`
+  /// and `cashfree_secret_key` to create an order on Cashfree's servers.
+  Future<Map<String, String>> createMemberCheckoutSession({
+    required String gymId,
+    required String membershipId,
+    required double amount,
+  }) async {
+    // Mocking the backend call
+    await Future.delayed(const Duration(milliseconds: 800));
+    final mockOrderId =
+        'gym_${gymId}_mem_${membershipId}_${DateTime.now().millisecondsSinceEpoch}';
+    final mockSessionId = 'session_${DateTime.now().millisecondsSinceEpoch}';
+
+    return {
+      'order_id': mockOrderId,
+      'payment_session_id': mockSessionId,
+    };
+  }
+
+  /// Mark a membership as paid after a successful Cashfree B2C checkout.
+  Future<void> markMembershipPaid(String membershipId, String orderId) async {
+    await _client.from('memberships').update({
+      'payment_status': 'paid',
+      'cashfree_order_id': orderId,
+      'status': 'active', // Activate the membership
+      'updated_at': DateTime.now().toIso8601String(),
+    }).eq('id', membershipId);
+  }
+}

@@ -15,10 +15,9 @@ class Subscription extends Equatable {
   final String? stripeCustomerId;
   final String? stripeSubscriptionId;
 
-  // Razorpay fields (Indian market)
-  final String? razorpayCustomerId;
-  final String? razorpaySubscriptionId;
-  final String? razorpayPlanId;
+  // Cashfree fields (Indian market)
+  final String? cashfreeCustomerId;
+  final String? cashfreeSubscriptionId;
 
   // Payment gateway used
   final PaymentGateway paymentGateway;
@@ -52,9 +51,8 @@ class Subscription extends Equatable {
     this.planTier = PlanTier.basic,
     this.stripeCustomerId,
     this.stripeSubscriptionId,
-    this.razorpayCustomerId,
-    this.razorpaySubscriptionId,
-    this.razorpayPlanId,
+    this.cashfreeCustomerId,
+    this.cashfreeSubscriptionId,
     this.paymentGateway = PaymentGateway.none,
     this.status = SubscriptionStatus.active,
     this.billingInterval = BillingInterval.monthly,
@@ -106,9 +104,8 @@ class Subscription extends Equatable {
       planTier: PlanTier.fromString(json['plan_tier'] as String? ?? 'basic'),
       stripeCustomerId: json['stripe_customer_id'] as String?,
       stripeSubscriptionId: json['stripe_subscription_id'] as String?,
-      razorpayCustomerId: json['razorpay_customer_id'] as String?,
-      razorpaySubscriptionId: json['razorpay_subscription_id'] as String?,
-      razorpayPlanId: json['razorpay_plan_id'] as String?,
+      cashfreeCustomerId: json['cashfree_customer_id'] as String?,
+      cashfreeSubscriptionId: json['cashfree_subscription_id'] as String?,
       paymentGateway: PaymentGateway.fromString(
           json['payment_gateway'] as String? ?? 'none'),
       status:
@@ -143,9 +140,8 @@ class Subscription extends Equatable {
         'plan_tier': planTier.value,
         'stripe_customer_id': stripeCustomerId,
         'stripe_subscription_id': stripeSubscriptionId,
-        'razorpay_customer_id': razorpayCustomerId,
-        'razorpay_subscription_id': razorpaySubscriptionId,
-        'razorpay_plan_id': razorpayPlanId,
+        'cashfree_customer_id': cashfreeCustomerId,
+        'cashfree_subscription_id': cashfreeSubscriptionId,
         'payment_gateway': paymentGateway.value,
         'status': status.value,
         'billing_interval': billingInterval.value,
@@ -168,7 +164,7 @@ class Subscription extends Equatable {
 enum PaymentGateway {
   none('none', 'None'),
   stripe('stripe', 'Stripe'),
-  razorpay('razorpay', 'Razorpay');
+  cashfree('cashfree', 'Cashfree');
 
   const PaymentGateway(this.value, this.label);
   final String value;

@@ -1,4 +1,5 @@
 // lib/widgets/member_bottom_nav.dart
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,12 +7,22 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../core/extensions.dart';
+import '../providers/performance_provider.dart';
 
 const _tabs = [
   _Tab(label: 'Home', icon: Icons.home_rounded, route: '/member'),
-  _Tab(label: 'Workouts', icon: Icons.fitness_center_rounded, route: '/member/workout'),
-  _Tab(label: 'Nutrition', icon: Icons.restaurant_rounded, route: '/member/diet'),
-  _Tab(label: 'Progress', icon: Icons.bar_chart_rounded, route: '/member/progress'),
+  _Tab(
+      label: 'Workouts',
+      icon: Icons.fitness_center_rounded,
+      route: '/member/workout'),
+  _Tab(
+      label: 'Nutrition',
+      icon: Icons.restaurant_rounded,
+      route: '/member/diet'),
+  _Tab(
+      label: 'Progress',
+      icon: Icons.bar_chart_rounded,
+      route: '/member/progress'),
   _Tab(label: 'Profile', icon: Icons.person_rounded, route: '/member/profile'),
 ];
 
@@ -29,7 +40,9 @@ class MemberBottomNav extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.fitTheme;
-    final currentLocation = location ?? GoRouterState.of(context).matchedLocation;
+    final isLowPerf = ref.watch(performanceProvider);
+    final currentLocation =
+        location ?? GoRouterState.of(context).matchedLocation;
 
     int selectedIndex = 0;
     for (int i = 0; i < _tabs.length; i++) {
@@ -40,17 +53,19 @@ class MemberBottomNav extends ConsumerWidget {
       }
     }
 
-    return Container(
+    Widget content = Container(
       decoration: BoxDecoration(
-        color: t.surface,
+        color: isLowPerf ? t.surface : t.surface.withOpacity(0.85),
         border: Border(top: BorderSide(color: t.border, width: 0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: t.glow.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        boxShadow: isLowPerf
+            ? null
+            : [
+                BoxShadow(
+                  color: t.glow.withOpacity(0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, -4),
+                ),
+              ],
       ),
       child: SafeArea(
         top: false,
@@ -72,13 +87,17 @@ class MemberBottomNav extends ConsumerWidget {
                           context.go(tab.route);
                         },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 220),
                       curve: Curves.easeOutCubic,
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 5),
                       decoration: BoxDecoration(
-                        color: isActive ? t.brand.withOpacity(0.12) : Colors.transparent,
+                        color: isActive
+                            ? t.brand.withOpacity(0.12)
+                            : Colors.transparent,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -96,7 +115,8 @@ class MemberBottomNav extends ConsumerWidget {
                             duration: const Duration(milliseconds: 200),
                             style: GoogleFonts.inter(
                               fontSize: 10,
-                              fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                              fontWeight:
+                                  isActive ? FontWeight.w700 : FontWeight.w400,
                               color: color,
                             ),
                             child: Text(tab.label),
@@ -110,6 +130,15 @@ class MemberBottomNav extends ConsumerWidget {
             }),
           ),
         ),
+      ),
+    );
+
+    if (isLowPerf) return content;
+
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: content,
       ),
     );
   }
