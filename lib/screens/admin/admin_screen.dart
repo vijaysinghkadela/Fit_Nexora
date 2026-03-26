@@ -816,8 +816,9 @@ class _GrowthLineChart extends StatelessWidget {
                 reservedSize: 28,
                 getTitlesWidget: (value, meta) {
                   final idx = value.toInt();
-                  if (idx < 0 || idx >= labels.length)
+                  if (idx < 0 || idx >= labels.length) {
                     return const SizedBox.shrink();
+                  }
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(

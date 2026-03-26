@@ -10,8 +10,8 @@ class ProPaywallScreen extends ConsumerWidget {
   const ProPaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFF3AA8FF),
-    secondary: Color(0xFF0066FF),
+    primary: Color(0xFFE84F00),
+    secondary: Color(0xFFFF7A2E),
   );
 
   @override

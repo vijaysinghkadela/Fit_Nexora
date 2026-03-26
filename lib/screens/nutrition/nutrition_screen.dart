@@ -45,7 +45,12 @@ const _kFallbackSections = [
     icon: Icons.wb_sunny_rounded,
     totalKcal: 420,
     items: [
-      _FoodItem(name: 'Oatmeal with Berries', kcal: 280, protein: 8, carbs: 52, fat: 6),
+      _FoodItem(
+          name: 'Oatmeal with Berries',
+          kcal: 280,
+          protein: 8,
+          carbs: 52,
+          fat: 6),
       _FoodItem(name: 'Boiled Egg', kcal: 78, protein: 6, carbs: 1, fat: 5),
       _FoodItem(name: 'Orange Juice', kcal: 62, protein: 1, carbs: 14, fat: 0),
     ],
@@ -55,8 +60,14 @@ const _kFallbackSections = [
     icon: Icons.wb_cloudy_rounded,
     totalKcal: 680,
     items: [
-      _FoodItem(name: 'Grilled Chicken Salad', kcal: 380, protein: 42, carbs: 18, fat: 12),
-      _FoodItem(name: 'Brown Rice (150g)', kcal: 165, protein: 4, carbs: 35, fat: 1),
+      _FoodItem(
+          name: 'Grilled Chicken Salad',
+          kcal: 380,
+          protein: 42,
+          carbs: 18,
+          fat: 12),
+      _FoodItem(
+          name: 'Brown Rice (150g)', kcal: 165, protein: 4, carbs: 35, fat: 1),
       _FoodItem(name: 'Dal Tadka', kcal: 135, protein: 9, carbs: 22, fat: 3),
     ],
   ),
@@ -65,7 +76,8 @@ const _kFallbackSections = [
     icon: Icons.nights_stay_rounded,
     totalKcal: 620,
     items: [
-      _FoodItem(name: 'Paneer Bhurji', kcal: 280, protein: 18, carbs: 8, fat: 20),
+      _FoodItem(
+          name: 'Paneer Bhurji', kcal: 280, protein: 18, carbs: 8, fat: 20),
       _FoodItem(name: 'Chapati x2', kcal: 200, protein: 6, carbs: 40, fat: 2),
       _FoodItem(name: 'Mixed Salad', kcal: 140, protein: 4, carbs: 24, fat: 3),
     ],
@@ -76,7 +88,8 @@ const _kFallbackSections = [
     totalKcal: 120,
     items: [
       _FoodItem(name: 'Greek Yogurt', kcal: 80, protein: 10, carbs: 6, fat: 1),
-      _FoodItem(name: 'Mixed Nuts (25g)', kcal: 40, protein: 1, carbs: 2, fat: 3),
+      _FoodItem(
+          name: 'Mixed Nuts (25g)', kcal: 40, protein: 1, carbs: 2, fat: 3),
     ],
   ),
 ];
@@ -153,12 +166,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
         ? NutritionSummary.fromLogs(foodLogsAsync!.value!)
         : null;
 
-    final int kcalConsumed = summary != null
-        ? summary.calories.round()
-        : 1840; // static fallback
+    final int kcalConsumed =
+        summary != null ? summary.calories.round() : 1840; // static fallback
 
-    final int proteinCurrent =
-        summary != null ? summary.protein.round() : 142;
+    final int proteinCurrent = summary != null ? summary.protein.round() : 142;
     final int carbsCurrent = summary != null ? summary.carbs.round() : 220;
     final int fatCurrent = summary != null ? summary.fat.round() : 58;
 
@@ -181,7 +192,7 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/nutrition/log'),
         backgroundColor: t.accent,
-        foregroundColor: Colors.black,
+        foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
         label: Text(
           'Log Food',
@@ -200,7 +211,8 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             leading: BackButton(
-              onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/'),
             ),
             automaticallyImplyLeading: true,
             title: Text(
@@ -240,7 +252,10 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                   burned: _kcalBurned,
                   progress: gaugeProgress,
                   themeTokens: t,
-                ).animate().fadeIn(duration: 500.ms).slideY(begin: 0.06, end: 0),
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms)
+                    .slideY(begin: 0.06, end: 0),
 
                 const SizedBox(height: 20),
 
@@ -453,16 +468,17 @@ class _NutritionScreenState extends ConsumerState<NutritionScreen> {
                         ),
                         const SizedBox(width: 12),
                         GestureDetector(
-                          onTap: () =>
-                              ref.read(waterTrackerProvider.notifier).logWater(250),
+                          onTap: () => ref
+                              .read(waterTrackerProvider.notifier)
+                              .logWater(250),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: t.info.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: t.info.withOpacity(0.3)),
+                              border:
+                                  Border.all(color: t.info.withOpacity(0.3)),
                             ),
                             child: Text(
                               '+1',
@@ -822,8 +838,8 @@ class _MealSectionWidgetState extends State<_MealSectionWidget> {
             // Section header
             InkWell(
               onTap: () => setState(() => _expanded = !_expanded),
-              borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
                 child: Row(
@@ -911,7 +927,8 @@ class _MealSectionWidgetState extends State<_MealSectionWidget> {
             ),
           ],
         ),
-      ).animate(delay: Duration(milliseconds: widget.animDelay))
+      )
+          .animate(delay: Duration(milliseconds: widget.animDelay))
           .fadeIn()
           .slideY(begin: 0.06, end: 0),
     );

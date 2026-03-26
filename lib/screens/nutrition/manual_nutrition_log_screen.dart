@@ -128,14 +128,12 @@ class _ManualNutritionLogScreenState
             const SizedBox(height: 8),
             TextFormField(
               controller: _mealNameCtrl,
-              style: GoogleFonts.inter(
-                  color: t.textPrimary, fontSize: 15),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
               decoration: InputDecoration(
                 hintText: 'e.g., Chicken Rice Bowl',
-                hintStyle:
-                    GoogleFonts.inter(color: t.textMuted, fontSize: 14),
-                prefixIcon:
-                    Icon(Icons.restaurant_rounded, color: t.textMuted, size: 20),
+                hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 14),
+                prefixIcon: Icon(Icons.restaurant_rounded,
+                    color: t.textMuted, size: 20),
               ),
             ).animate().fadeIn(delay: 80.ms).slideY(begin: 0.06, end: 0),
 
@@ -216,8 +214,8 @@ class _ManualNutritionLogScreenState
             GestureDetector(
               onTap: _pickDate,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 18, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                 decoration: BoxDecoration(
                   color: t.surfaceAlt,
                   borderRadius: BorderRadius.circular(18),
@@ -251,14 +249,12 @@ class _ManualNutritionLogScreenState
             const SizedBox(height: 8),
             TextFormField(
               controller: _tagsCtrl,
-              style:
-                  GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
               decoration: InputDecoration(
                 hintText: 'e.g., high-protein, post-workout',
-                hintStyle:
-                    GoogleFonts.inter(color: t.textMuted, fontSize: 14),
-                prefixIcon:
-                    Icon(Icons.label_outline_rounded, color: t.textMuted, size: 20),
+                hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 14),
+                prefixIcon: Icon(Icons.label_outline_rounded,
+                    color: t.textMuted, size: 20),
               ),
             ).animate().fadeIn(delay: 280.ms),
 
@@ -270,12 +266,10 @@ class _ManualNutritionLogScreenState
             TextFormField(
               controller: _notesCtrl,
               maxLines: 3,
-              style:
-                  GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 15),
               decoration: InputDecoration(
                 hintText: 'How did this meal make you feel?',
-                hintStyle:
-                    GoogleFonts.inter(color: t.textMuted, fontSize: 14),
+                hintStyle: GoogleFonts.inter(color: t.textMuted, fontSize: 14),
                 alignLabelWithHint: true,
               ),
             ).animate().fadeIn(delay: 320.ms),
@@ -312,7 +306,7 @@ class _ManualNutritionLogScreenState
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          color: Colors.black,
+                          color: Colors.white,
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -378,12 +372,9 @@ class _MealTypeChips extends StatelessWidget {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: const EdgeInsets.only(right: 10),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? t.brand.withOpacity(0.15)
-                    : t.surfaceAlt,
+                color: isSelected ? t.brand.withOpacity(0.15) : t.surfaceAlt,
                 borderRadius: BorderRadius.circular(30),
                 border: Border.all(
                   color: isSelected ? t.brand : t.border,
@@ -394,8 +385,7 @@ class _MealTypeChips extends StatelessWidget {
                 type,
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  fontWeight:
-                      isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   color: isSelected ? t.brand : t.textSecondary,
                 ),
               ),
@@ -460,16 +450,15 @@ class _MacroInput extends StatelessWidget {
           ),
           child: TextFormField(
             controller: controller,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: t.textPrimary,
             ),
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 14),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,

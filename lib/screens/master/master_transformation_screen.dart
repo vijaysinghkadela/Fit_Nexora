@@ -62,10 +62,7 @@ class MasterTransformationScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   _BeforeAfterSection(t: t),
                 ],
-              )
-                  .animate()
-                  .fadeIn(duration: 400.ms)
-                  .slideY(begin: 0.1),
+              ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
             ),
           ),
 
@@ -174,10 +171,10 @@ class _BeforeAfterSection extends StatelessWidget {
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.55),
+                    color: t.surfaceAlt.withOpacity(0.85),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -239,8 +236,8 @@ class _BeforeAfterSection extends StatelessWidget {
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: t.brand.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(999),
@@ -260,8 +257,8 @@ class _BeforeAfterSection extends StatelessWidget {
                 top: 10,
                 right: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: t.accent,
                     borderRadius: BorderRadius.circular(999),
@@ -405,8 +402,8 @@ class _AiPredictorCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: t.brand.withOpacity(0.20),
                   borderRadius: BorderRadius.circular(999),
@@ -553,10 +550,22 @@ class _MilestonesTimeline extends StatelessWidget {
   const _MilestonesTimeline({required this.t});
 
   static const _milestones = [
-    _Milestone(month: 'Month 1', title: 'Foundation Built', status: _MilestoneStatus.completed),
-    _Milestone(month: 'Month 2', title: 'Strength Gains', status: _MilestoneStatus.completed),
-    _Milestone(month: 'Month 3', title: 'Body Recomp Phase', status: _MilestoneStatus.current),
-    _Milestone(month: 'Month 4', title: 'Peak Performance', status: _MilestoneStatus.locked),
+    _Milestone(
+        month: 'Month 1',
+        title: 'Foundation Built',
+        status: _MilestoneStatus.completed),
+    _Milestone(
+        month: 'Month 2',
+        title: 'Strength Gains',
+        status: _MilestoneStatus.completed),
+    _Milestone(
+        month: 'Month 3',
+        title: 'Body Recomp Phase',
+        status: _MilestoneStatus.current),
+    _Milestone(
+        month: 'Month 4',
+        title: 'Peak Performance',
+        status: _MilestoneStatus.locked),
   ];
 
   @override
@@ -626,7 +635,8 @@ class _MilestoneRowState extends State<_MilestoneRow>
     switch (m.status) {
       case _MilestoneStatus.completed:
         dotColor = t.accent;
-        dotWidget = const Icon(Icons.check_rounded, color: Colors.white, size: 12);
+        dotWidget =
+            const Icon(Icons.check_rounded, color: Colors.white, size: 12);
         break;
       case _MilestoneStatus.current:
         dotColor = t.brand;
@@ -644,8 +654,8 @@ class _MilestoneRowState extends State<_MilestoneRow>
         break;
       case _MilestoneStatus.locked:
         dotColor = t.surfaceMuted;
-        dotWidget = Icon(Icons.lock_outline_rounded,
-            color: t.textMuted, size: 12);
+        dotWidget =
+            Icon(Icons.lock_outline_rounded, color: t.textMuted, size: 12);
         break;
     }
 
@@ -715,8 +725,8 @@ class _MilestoneRowState extends State<_MilestoneRow>
                 if (m.status == _MilestoneStatus.current) ...[
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: t.brand.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(999),

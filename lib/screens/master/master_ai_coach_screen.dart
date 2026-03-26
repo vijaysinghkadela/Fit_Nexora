@@ -27,8 +27,8 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
   String? _dailyPlan;
   bool _planLoading = false;
 
-  static const _masterPrimary = Color(0xFFFF3D5E);
-  static const _masterSecondary = Color(0xFFFF8C00);
+  static const _masterPrimary = Color(0xFFE84F00);
+  static const _masterSecondary = Color(0xFFFF7A2E);
 
   final _quickStarts = [
     '🏆 Give me today\'s optimal workout based on my goals',
@@ -62,30 +62,36 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
         backgroundColor: t.background,
         leading: BackButton(color: t.textSecondary),
         title: Row(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                  colors: [_masterPrimary, _masterSecondary]),
-              borderRadius: BorderRadius.circular(6),
-              boxShadow: [
-                BoxShadow(
-                    color: _masterPrimary.withOpacity(0.5), blurRadius: 10)
-              ],
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                    colors: [_masterPrimary, _masterSecondary]),
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: [
+                  BoxShadow(
+                      color: _masterPrimary.withOpacity(0.5), blurRadius: 10)
+                ],
+              ),
+              child: Text('MASTER AI',
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 1.2)),
             ),
-            child: Text('MASTER AI',
-                style: GoogleFonts.inter(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: 1.2)),
           ),
           const SizedBox(width: 10),
-          Text('Fitness Coach',
-              style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: t.textPrimary)),
+          Flexible(
+            child: Text('Fitness Coach',
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: t.textPrimary)),
+          ),
         ]),
         bottom: TabBar(
           controller: _tabs,
@@ -201,11 +207,14 @@ class _MasterAiCoachState extends ConsumerState<MasterAiCoachScreen>
                                   color: Colors.white, size: 16),
                             ),
                             const SizedBox(width: 10),
-                            Text('Your Adaptive Plan',
-                                style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: t.textPrimary)),
+                            Expanded(
+                              child: Text('Your Adaptive Plan',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: t.textPrimary)),
+                            ),
                             const Spacer(),
                             TextButton(
                               onPressed: () =>
@@ -328,7 +337,7 @@ class _WelcomeView extends StatelessWidget {
   final List<String> prompts;
   final void Function(String) onTap;
   const _WelcomeView({required this.prompts, required this.onTap});
-  static const _masterPrimary = Color(0xFFFF3D5E);
+  static const _masterPrimary = Color(0xFFE84F00);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -340,9 +349,9 @@ class _WelcomeView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: const BoxDecoration(
               gradient: RadialGradient(colors: [
-                Color(0xFFFF3D5E),
-                Color(0xFFFF8C00),
-                Color(0xFFB71C1C)
+                Color(0xFFE84F00),
+                Color(0xFFFF7A2E),
+                Color(0xFFFFB830)
               ]),
               shape: BoxShape.circle),
           child: const Icon(Icons.smart_toy_rounded,
@@ -402,8 +411,8 @@ class _WelcomeView extends StatelessWidget {
 class _ChatBubble extends StatelessWidget {
   final _Msg msg;
   const _ChatBubble({required this.msg});
-  static const _masterPrimary = Color(0xFFFF3D5E);
-  static const _masterSecondary = Color(0xFFFF8C00);
+  static const _masterPrimary = Color(0xFFE84F00);
+  static const _masterSecondary = Color(0xFFFF7A2E);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -461,7 +470,7 @@ class _TypingBubble extends StatelessWidget {
               width: 18,
               height: 18,
               child: CircularProgressIndicator(
-                  color: Color(0xFFFF3D5E), strokeWidth: 2)),
+                  color: Color(0xFFE84F00), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('Coach is thinking...',
               style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
@@ -477,7 +486,7 @@ class _InputBar extends StatelessWidget {
   final void Function(String) onSend;
   const _InputBar(
       {required this.ctrl, required this.loading, required this.onSend});
-  static const _masterPrimary = Color(0xFFFF3D5E);
+  static const _masterPrimary = Color(0xFFE84F00);
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
@@ -514,7 +523,7 @@ class _InputBar extends StatelessWidget {
             height: 46,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                  colors: [_masterPrimary, Color(0xFFFF8C00)]),
+                  colors: [_masterPrimary, Color(0xFFFF7A2E)]),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(

@@ -10,8 +10,8 @@ class MasterPaywallScreen extends ConsumerWidget {
   const MasterPaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFFFF3D5E),
-    secondary: Color(0xFFFF8C00),
+    primary: Color(0xFFE84F00),
+    secondary: Color(0xFFFF7A2E),
   );
 
   @override
@@ -46,32 +46,37 @@ class MasterPaywallScreen extends ConsumerWidget {
         FitUpgradeFeatureItemData(
           icon: Icons.smart_toy_rounded,
           title: 'Full AI fitness coach',
-          subtitle: 'Get deeper day-to-day coaching, not just isolated recommendations, across your training cycle.',
+          subtitle:
+              'Get deeper day-to-day coaching, not just isolated recommendations, across your training cycle.',
           palette: _palette,
           accent: true,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.bolt_rounded,
           title: 'Adaptive daily programming',
-          subtitle: 'Plans shift with fatigue, energy, readiness, and your near-term performance trend.',
+          subtitle:
+              'Plans shift with fatigue, energy, readiness, and your near-term performance trend.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.restaurant_menu_rounded,
           title: 'AI nutrition coaching',
-          subtitle: 'Adjust meals, calories, and recovery nutrition with more active guidance from the system.',
+          subtitle:
+              'Adjust meals, calories, and recovery nutrition with more active guidance from the system.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.video_call_rounded,
           title: 'Live trainer sessions',
-          subtitle: 'Book direct sessions for a more human coaching loop when you need review or accountability.',
+          subtitle:
+              'Book direct sessions for a more human coaching loop when you need review or accountability.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.analytics_rounded,
           title: 'Recovery and analytics suite',
-          subtitle: 'Track readiness, performance shifts, and deeper insight signals that shape your next block.',
+          subtitle:
+              'Track readiness, performance shifts, and deeper insight signals that shape your next block.',
           palette: _palette,
         ),
       ],

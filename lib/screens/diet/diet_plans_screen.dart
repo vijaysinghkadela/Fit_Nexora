@@ -92,8 +92,7 @@ class _DietPlansScreenState extends ConsumerState<DietPlansScreen>
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final double gaugeProgress =
-        (_kcalConsumed / _kcalGoal).clamp(0.0, 1.0);
+    final double gaugeProgress = (_kcalConsumed / _kcalGoal).clamp(0.0, 1.0);
 
     return Scaffold(
       backgroundColor: t.background,
@@ -105,11 +104,12 @@ class _DietPlansScreenState extends ConsumerState<DietPlansScreen>
           return FloatingActionButton.extended(
             onPressed: _showAddMealSheet,
             backgroundColor: t.accent,
-            foregroundColor: Colors.black,
+            foregroundColor: Colors.white,
             icon: const Icon(Icons.add_rounded),
             label: Text(
               'Add Meal',
-              style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14),
+              style:
+                  GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14),
             ),
           );
         },
@@ -517,8 +517,8 @@ class _DietTemplateCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: goalColor.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(20),
@@ -587,8 +587,7 @@ class _DietTemplateCard extends StatelessWidget {
               // ── Hydration + meal count row ───────────────────────────
               Row(
                 children: [
-                  Icon(Icons.water_drop_rounded,
-                      size: 14, color: t.info),
+                  Icon(Icons.water_drop_rounded, size: 14, color: t.info),
                   const SizedBox(width: 4),
                   Text(
                     '${plan.hydrationLiters.toStringAsFixed(1)}L / day',
@@ -599,8 +598,7 @@ class _DietTemplateCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Icon(Icons.restaurant_rounded,
-                      size: 14, color: t.textMuted),
+                  Icon(Icons.restaurant_rounded, size: 14, color: t.textMuted),
                   const SizedBox(width: 4),
                   Text(
                     '${plan.meals.length} meal${plan.meals.length == 1 ? '' : 's'}',
@@ -635,8 +633,8 @@ class _DietTemplateCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                   child: Text(
                     'Use This Plan',
@@ -762,8 +760,7 @@ class _DietCalorieGauge extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: t.brand.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: t.brand.withOpacity(0.3)),
+                    border: Border.all(color: t.brand.withOpacity(0.3)),
                   ),
                   child: Text(
                     '${(progress * 100).round()}% achieved',
@@ -1047,9 +1044,7 @@ class _MealTimelineCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: completed
-                              ? t.textPrimary
-                              : t.textSecondary,
+                          color: completed ? t.textPrimary : t.textSecondary,
                         ),
                       ),
                     ],
@@ -1084,15 +1079,15 @@ class _MealTimelineCard extends StatelessWidget {
                       color: t.accent.withOpacity(0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.check_rounded,
-                        color: t.accent, size: 16),
+                    child: Icon(Icons.check_rounded, color: t.accent, size: 16),
                   ),
                 ],
               ],
             ),
           ),
         ),
-      ).animate(delay: Duration(milliseconds: animDelay))
+      )
+          .animate(delay: Duration(milliseconds: animDelay))
           .fadeIn()
           .slideX(begin: 0.04, end: 0),
     );
@@ -1169,8 +1164,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: ['Breakfast', 'Lunch', 'Dinner', 'Snack']
-                    .map((type) {
+                children: ['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((type) {
                   final selected = type == _mealType;
                   return GestureDetector(
                     onTap: () => setState(() => _mealType = type),
@@ -1180,9 +1174,8 @@ class _AddMealSheetState extends State<_AddMealSheet> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: selected
-                            ? t.brand.withOpacity(0.14)
-                            : t.surfaceAlt,
+                        color:
+                            selected ? t.brand.withOpacity(0.14) : t.surfaceAlt,
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(
                           color: selected ? t.brand : t.border,
@@ -1192,9 +1185,8 @@ class _AddMealSheetState extends State<_AddMealSheet> {
                         type,
                         style: GoogleFonts.inter(
                           fontSize: 13,
-                          fontWeight: selected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w500,
                           color: selected ? t.brand : t.textSecondary,
                         ),
                       ),
@@ -1206,8 +1198,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _nameCtrl,
-              style: GoogleFonts.inter(
-                  color: t.textPrimary, fontSize: 14),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Meal name',
                 prefixIcon: Icon(Icons.restaurant_rounded,
@@ -1218,8 +1209,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
             TextFormField(
               controller: _kcalCtrl,
               keyboardType: TextInputType.number,
-              style: GoogleFonts.inter(
-                  color: t.textPrimary, fontSize: 14),
+              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Calories (kcal)',
                 prefixIcon: Icon(Icons.local_fire_department_rounded,
@@ -1246,7 +1236,7 @@ class _AddMealSheetState extends State<_AddMealSheet> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: t.accent,
-                  foregroundColor: Colors.black,
+                  foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),

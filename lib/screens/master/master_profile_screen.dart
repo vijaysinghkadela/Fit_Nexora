@@ -228,20 +228,21 @@ class _ProfileHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFFFF3D5E),
-                        Color(0xFFFF8C00),
+                        Color(0xFFE84F00),
+                        Color(0xFFFF7A2E),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(999),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFFF3D5E).withOpacity(0.4),
+                        color: const Color(0xFFE84F00).withOpacity(0.4),
                         blurRadius: 10,
                       ),
                     ],
                   ),
                   child: Text(
                     'Master',
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.inter(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -329,8 +330,8 @@ class _MembershipCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: t.brand.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(999),
@@ -449,9 +450,21 @@ class _AchievementStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stats = [
-      _StatData(value: '248', label: 'Workouts', icon: Icons.fitness_center_rounded, color: t.brand),
-      _StatData(value: '67', label: 'Day Streak', icon: Icons.local_fire_department_rounded, color: t.accent),
-      const _StatData(value: '12', label: 'Wins', icon: Icons.emoji_events_rounded, color: Color(0xFFFF3D5E)),
+      _StatData(
+          value: '248',
+          label: 'Workouts',
+          icon: Icons.fitness_center_rounded,
+          color: t.brand),
+      _StatData(
+          value: '67',
+          label: 'Day Streak',
+          icon: Icons.local_fire_department_rounded,
+          color: t.accent),
+      const _StatData(
+          value: '12',
+          label: 'Wins',
+          icon: Icons.emoji_events_rounded,
+          color: Color(0xFFE84F00)),
     ];
 
     return Row(
@@ -466,7 +479,8 @@ class _AchievementStats extends StatelessWidget {
             ),
             child: GlassmorphicCard(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
                 child: Column(
                   children: [
                     Icon(s.icon, color: s.color, size: 22),
@@ -631,10 +645,16 @@ class _AccountSettingsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _SettingItem(icon: Icons.person_outline_rounded, label: 'Profile', color: t.brand),
-      _SettingItem(icon: Icons.notifications_outlined, label: 'Notifications', color: t.info),
-      _SettingItem(icon: Icons.lock_outlined, label: 'Privacy', color: t.warning),
-      _SettingItem(icon: Icons.credit_card_outlined, label: 'Billing', color: t.accent),
+      _SettingItem(
+          icon: Icons.person_outline_rounded, label: 'Profile', color: t.brand),
+      _SettingItem(
+          icon: Icons.notifications_outlined,
+          label: 'Notifications',
+          color: t.info),
+      _SettingItem(
+          icon: Icons.lock_outlined, label: 'Privacy', color: t.warning),
+      _SettingItem(
+          icon: Icons.credit_card_outlined, label: 'Billing', color: t.accent),
     ];
 
     return GlassmorphicCard(
@@ -647,8 +667,8 @@ class _AccountSettingsList extends StatelessWidget {
               InkWell(
                 onTap: () {},
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
                     children: [
                       Container(

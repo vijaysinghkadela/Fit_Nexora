@@ -40,9 +40,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
 
   Color? _getColorFromHex(String? hexColor) {
     if (hexColor == null || hexColor.isEmpty) return null;
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
     if (hexColor.length == 6) {
-      hexColor = "FF$hexColor";
+      hexColor = 'FF$hexColor';
     }
     return Color(int.parse(hexColor, radix: 16));
   }
@@ -576,8 +576,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                           final finalTitle =
                               title.isEmpty ? 'Untitled Note' : title;
 
-                          if (body.isEmpty && title.isEmpty)
+                          if (body.isEmpty && title.isEmpty) {
                             return; // Don't save empty notes
+                          }
 
                           if (note == null) {
                             ref.read(notesProvider.notifier).addNote(

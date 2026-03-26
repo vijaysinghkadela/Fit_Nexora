@@ -174,7 +174,8 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
               mainAxisExtent: 120,
             ),
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildTemplateCard(templates[index], index, t),
+              (context, index) =>
+                  _buildTemplateCard(templates[index], index, t),
               childCount: templates.length,
             ),
           ),
@@ -288,7 +289,8 @@ class _WorkoutsScreenState extends ConsumerState<WorkoutsScreen> {
     );
   }
 
-  Widget _buildTemplateCard(_PlanTemplate template, int index, FitNexoraThemeTokens t) {
+  Widget _buildTemplateCard(
+      _PlanTemplate template, int index, FitNexoraThemeTokens t) {
     final color = template.color;
     return GestureDetector(
       onTap: () => _showCreatePlanSheet(
@@ -527,7 +529,8 @@ class _AiGenerationBanner extends StatelessWidget {
 
 /// Bottom sheet for creating a new workout plan.
 class _CreatePlanSheet extends ConsumerStatefulWidget {
-  const _CreatePlanSheet({this.prefillName, this.prefillGoal, this.prefillDays});
+  const _CreatePlanSheet(
+      {this.prefillName, this.prefillGoal, this.prefillDays});
   final String? prefillName;
   final String? prefillGoal;
   final int? prefillDays;
@@ -574,8 +577,8 @@ class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
         'name': name,
         'goal': _goal.value,
         'duration_weeks': _durationWeeks,
-        'days': List.generate(
-            _daysPerWeek, (i) => {'day': i + 1, 'exercises': []}),
+        'days':
+            List.generate(_daysPerWeek, (i) => {'day': i + 1, 'exercises': []}),
         'status': 'active',
         'is_template': false,
       });
@@ -695,8 +698,7 @@ class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Duration',
-                    style: GoogleFonts.inter(
-                        fontSize: 12, color: t.textMuted)),
+                    style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
                 const SizedBox(height: 8),
                 Row(
                   children: [4, 6, 8, 12]
@@ -745,8 +747,7 @@ class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Training Days / Week',
-                    style: GoogleFonts.inter(
-                        fontSize: 12, color: t.textMuted)),
+                    style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),
                 const SizedBox(height: 8),
                 Row(
                   children: List.generate(6, (i) {
@@ -763,9 +764,7 @@ class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
                                 : t.surfaceMuted,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: _daysPerWeek == d
-                                  ? t.brand
-                                  : t.border,
+                              color: _daysPerWeek == d ? t.brand : t.border,
                             ),
                           ),
                           alignment: Alignment.center,
@@ -776,9 +775,8 @@ class _CreatePlanSheetState extends ConsumerState<_CreatePlanSheet> {
                               fontWeight: _daysPerWeek == d
                                   ? FontWeight.w700
                                   : FontWeight.w400,
-                              color: _daysPerWeek == d
-                                  ? t.brand
-                                  : t.textSecondary,
+                              color:
+                                  _daysPerWeek == d ? t.brand : t.textSecondary,
                             ),
                           ),
                         ),
@@ -868,8 +866,8 @@ class _PlanListTile extends StatelessWidget {
                 color: t.brand.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.fitness_center_rounded,
-                  color: t.brand, size: 20),
+              child:
+                  Icon(Icons.fitness_center_rounded, color: t.brand, size: 20),
             ),
             const SizedBox(width: 14),
             Expanded(

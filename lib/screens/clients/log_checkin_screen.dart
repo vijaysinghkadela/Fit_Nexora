@@ -37,7 +37,7 @@ Color _membershipColor(String type, FitNexoraThemeTokens t) {
   if (type == 'Expired' || type == 'Inactive') return t.danger;
   switch (type.toLowerCase()) {
     case 'master':
-      return const Color(0xFFFF3D5E);
+      return const Color(0xFFE84F00);
     case 'elite':
       return t.brand;
     case 'pro':

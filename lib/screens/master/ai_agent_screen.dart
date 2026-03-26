@@ -100,7 +100,8 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
           labelColor: t.brand,
           unselectedLabelColor: t.textMuted,
           indicatorColor: t.brand,
-          labelStyle: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+          labelStyle:
+              GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
           tabs: const [
             Tab(text: 'Body', icon: Icon(Icons.accessibility_new, size: 18)),
             Tab(text: 'Workout', icon: Icon(Icons.fitness_center, size: 18)),
@@ -117,7 +118,8 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
             loading: () => _buildLoadingState(),
             error: (error, _) => _buildErrorState(error),
             data: (plans) {
-              final plan = latestPlan ?? (plans.isNotEmpty ? plans.first : null);
+              final plan =
+                  latestPlan ?? (plans.isNotEmpty ? plans.first : null);
               if (plan == null) {
                 return _buildEmptyState();
               }
@@ -177,7 +179,7 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
+            Icon(Icons.error_outline, color: t.danger, size: 48),
             const SizedBox(height: 16),
             Text(
               error.toString().replaceAll('Exception: ', ''),
@@ -186,7 +188,8 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () => ref.read(aiReportGeneratorProvider.notifier).reset(),
+              onPressed: () =>
+                  ref.read(aiReportGeneratorProvider.notifier).reset(),
               icon: const Icon(Icons.refresh),
               label: const Text('Try Again'),
               style: ElevatedButton.styleFrom(
@@ -233,7 +236,8 @@ class _AiAgentScreenState extends ConsumerState<AiAgentScreen>
               style: ElevatedButton.styleFrom(
                 backgroundColor: t.brand,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                 textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
               ),
             ),
@@ -253,7 +257,9 @@ class _BodyAnalysisTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    if (analysis == null) return _emptyTab(context, 'No body analysis available');
+    if (analysis == null) {
+      return _emptyTab(context, 'No body analysis available');
+    }
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -262,8 +268,11 @@ class _BodyAnalysisTab extends StatelessWidget {
           icon: Icons.accessibility_new,
           children: [
             _KpiRow(label: 'Body Type', value: analysis!['somatotype'] ?? '—'),
-            _KpiRow(label: 'BMI Category', value: analysis!['bmi_category'] ?? '—'),
-            _KpiRow(label: 'Recommended Focus', value: analysis!['recommended_focus'] ?? '—'),
+            _KpiRow(
+                label: 'BMI Category', value: analysis!['bmi_category'] ?? '—'),
+            _KpiRow(
+                label: 'Recommended Focus',
+                value: analysis!['recommended_focus'] ?? '—'),
             const SizedBox(height: 8),
             Text(
               analysis!['somatotype_explanation'] ?? '',
@@ -281,9 +290,18 @@ class _BodyAnalysisTab extends StatelessWidget {
               style: GoogleFonts.inter(color: t.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 12),
-            _BulletList(title: 'Key Strengths', items: _toStringList(analysis!['key_strengths']), color: Colors.greenAccent),
-            _BulletList(title: 'Areas to Improve', items: _toStringList(analysis!['areas_to_improve']), color: Colors.orangeAccent),
-            _BulletList(title: 'Risk Flags', items: _toStringList(analysis!['risk_flags']), color: Colors.redAccent),
+            _BulletList(
+                title: 'Key Strengths',
+                items: _toStringList(analysis!['key_strengths']),
+                color: t.success),
+            _BulletList(
+                title: 'Areas to Improve',
+                items: _toStringList(analysis!['areas_to_improve']),
+                color: t.warning),
+            _BulletList(
+                title: 'Risk Flags',
+                items: _toStringList(analysis!['risk_flags']),
+                color: t.danger),
           ],
         ),
       ].animate(interval: 100.ms).fadeIn(duration: 300.ms).slideY(begin: 0.05),
@@ -300,7 +318,9 @@ class _WorkoutPlanTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    if (workoutPlan == null) return _emptyTab(context, 'No workout plan available');
+    if (workoutPlan == null) {
+      return _emptyTab(context, 'No workout plan available');
+    }
     final weeks = workoutPlan!['weeks'] as List<dynamic>? ?? [];
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -309,8 +329,12 @@ class _WorkoutPlanTab extends StatelessWidget {
           title: workoutPlan!['plan_name'] ?? 'Workout Plan',
           icon: Icons.fitness_center,
           children: [
-            _KpiRow(label: 'Structure', value: workoutPlan!['weekly_structure'] ?? '—'),
-            _KpiRow(label: 'Progression', value: workoutPlan!['progression_logic'] ?? '—'),
+            _KpiRow(
+                label: 'Structure',
+                value: workoutPlan!['weekly_structure'] ?? '—'),
+            _KpiRow(
+                label: 'Progression',
+                value: workoutPlan!['progression_logic'] ?? '—'),
           ],
         ),
         const SizedBox(height: 12),
@@ -346,7 +370,8 @@ class _WorkoutPlanTab extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 12, top: 4),
                             child: Text(
                               '• ${e['name']}: ${e['sets']}×${e['reps']} (rest ${e['rest_seconds']}s)',
-                              style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
+                              style: GoogleFonts.inter(
+                                  color: t.textMuted, fontSize: 12),
                             ),
                           );
                         }),
@@ -355,7 +380,8 @@ class _WorkoutPlanTab extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 12, top: 4),
                             child: Text(
                               '🏃 ${d['cardio']}',
-                              style: GoogleFonts.inter(color: t.textMuted, fontSize: 11),
+                              style: GoogleFonts.inter(
+                                  color: t.textMuted, fontSize: 11),
                             ),
                           ),
                       ],
@@ -370,7 +396,9 @@ class _WorkoutPlanTab extends StatelessWidget {
           title: 'Trainer Tips',
           icon: Icons.lightbulb_outline,
           children: [
-            _BulletList(items: _toStringList(workoutPlan!['trainer_tips']), color: t.brand),
+            _BulletList(
+                items: _toStringList(workoutPlan!['trainer_tips']),
+                color: t.brand),
           ],
         ),
       ].animate(interval: 80.ms).fadeIn(duration: 300.ms).slideY(begin: 0.05),
@@ -396,11 +424,16 @@ class _DietPlanTab extends StatelessWidget {
           title: 'Nutrition Targets',
           icon: Icons.restaurant,
           children: [
-            _KpiRow(label: 'Calories', value: '${dietPlan!['calorie_target'] ?? '—'} kcal'),
-            _KpiRow(label: 'Protein', value: '${dietPlan!['protein_g'] ?? '—'}g'),
+            _KpiRow(
+                label: 'Calories',
+                value: '${dietPlan!['calorie_target'] ?? '—'} kcal'),
+            _KpiRow(
+                label: 'Protein', value: '${dietPlan!['protein_g'] ?? '—'}g'),
             _KpiRow(label: 'Carbs', value: '${dietPlan!['carbs_g'] ?? '—'}g'),
             _KpiRow(label: 'Fats', value: '${dietPlan!['fats_g'] ?? '—'}g'),
-            _KpiRow(label: 'Hydration', value: '${dietPlan!['hydration_target_litres'] ?? '—'}L'),
+            _KpiRow(
+                label: 'Hydration',
+                value: '${dietPlan!['hydration_target_litres'] ?? '—'}L'),
           ],
         ),
         const SizedBox(height: 12),
@@ -413,14 +446,19 @@ class _DietPlanTab extends StatelessWidget {
               title: '${_formatMealName(meal.key)} — ${mealData['time'] ?? ''}',
               icon: Icons.fastfood,
               children: items.isEmpty
-                  ? [Text('No items', style: GoogleFonts.inter(color: t.textMuted, fontSize: 12))]
+                  ? [
+                      Text('No items',
+                          style: GoogleFonts.inter(
+                              color: t.textMuted, fontSize: 12))
+                    ]
                   : items.map((item) {
                       final i = item as Map<String, dynamic>;
                       return Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
                           '• ${i['food']} — ${i['quantity']} (${i['calories']} cal)',
-                          style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
+                          style: GoogleFonts.inter(
+                              color: t.textMuted, fontSize: 12),
                         ),
                       );
                     }).toList(),
@@ -432,7 +470,9 @@ class _DietPlanTab extends StatelessWidget {
           title: 'Nutritionist Tips',
           icon: Icons.lightbulb_outline,
           children: [
-            _BulletList(items: _toStringList(dietPlan!['nutritionist_tips']), color: t.brand),
+            _BulletList(
+                items: _toStringList(dietPlan!['nutritionist_tips']),
+                color: t.brand),
           ],
         ),
       ].animate(interval: 80.ms).fadeIn(duration: 300.ms).slideY(begin: 0.05),
@@ -440,7 +480,10 @@ class _DietPlanTab extends StatelessWidget {
   }
 
   String _formatMealName(String key) {
-    return key.split('_').map((w) => w[0].toUpperCase() + w.substring(1)).join(' ');
+    return key
+        .split('_')
+        .map((w) => w[0].toUpperCase() + w.substring(1))
+        .join(' ');
   }
 }
 
@@ -454,9 +497,13 @@ class _MonthlyReportTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    if (report == null) return _emptyTab(context, 'No monthly report available');
-    final attendance = report!['attendance_analysis'] as Map<String, dynamic>? ?? {};
-    final progress = report!['progress_assessment'] as Map<String, dynamic>? ?? {};
+    if (report == null) {
+      return _emptyTab(context, 'No monthly report available');
+    }
+    final attendance =
+        report!['attendance_analysis'] as Map<String, dynamic>? ?? {};
+    final progress =
+        report!['progress_assessment'] as Map<String, dynamic>? ?? {};
     final focuses = report!['next_month_focus'] as List<dynamic>? ?? [];
 
     return ListView(
@@ -477,7 +524,9 @@ class _MonthlyReportTab extends StatelessWidget {
           title: 'Attendance',
           icon: Icons.event_available,
           children: [
-            _KpiRow(label: 'Verdict', value: (attendance['verdict'] ?? '—').toString().toUpperCase()),
+            _KpiRow(
+                label: 'Verdict',
+                value: (attendance['verdict'] ?? '—').toString().toUpperCase()),
             Text(
               attendance['comment'] ?? '',
               style: GoogleFonts.inter(color: t.textMuted, fontSize: 12),
@@ -489,8 +538,14 @@ class _MonthlyReportTab extends StatelessWidget {
           title: 'Progress — ${progress['overall_rating'] ?? '?'}/10',
           icon: Icons.trending_up,
           children: [
-            _BulletList(title: 'Positive', items: _toStringList(progress['positive_indicators']), color: Colors.greenAccent),
-            _BulletList(title: 'Needs Attention', items: _toStringList(progress['areas_needing_attention']), color: Colors.orangeAccent),
+            _BulletList(
+                title: 'Positive',
+                items: _toStringList(progress['positive_indicators']),
+                color: t.success),
+            _BulletList(
+                title: 'Needs Attention',
+                items: _toStringList(progress['areas_needing_attention']),
+                color: t.warning),
           ],
         ),
         const SizedBox(height: 12),
@@ -509,7 +564,10 @@ class _MonthlyReportTab extends StatelessWidget {
                     backgroundColor: t.brand,
                     child: Text(
                       '${focus['priority']}',
-                      style: GoogleFonts.inter(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
+                      style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -517,8 +575,14 @@ class _MonthlyReportTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(focus['focus'] ?? '', style: GoogleFonts.inter(color: t.textPrimary, fontSize: 13, fontWeight: FontWeight.w600)),
-                        Text(focus['action'] ?? '', style: GoogleFonts.inter(color: t.textSecondary, fontSize: 12)),
+                        Text(focus['focus'] ?? '',
+                            style: GoogleFonts.inter(
+                                color: t.textPrimary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600)),
+                        Text(focus['action'] ?? '',
+                            style: GoogleFonts.inter(
+                                color: t.textSecondary, fontSize: 12)),
                       ],
                     ),
                   ),
@@ -562,7 +626,8 @@ class _SectionCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final List<Widget> children;
-  const _SectionCard({required this.title, required this.icon, required this.children});
+  const _SectionCard(
+      {required this.title, required this.icon, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -614,11 +679,15 @@ class _KpiRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.inter(color: t.textSecondary, fontSize: 12)),
+          Text(label,
+              style: GoogleFonts.inter(color: t.textSecondary, fontSize: 12)),
           Flexible(
             child: Text(
               _titleCase(value.replaceAll('_', ' ')),
-              style: GoogleFonts.inter(color: t.textPrimary, fontSize: 12, fontWeight: FontWeight.w500),
+              style: GoogleFonts.inter(
+                  color: t.textPrimary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500),
               textAlign: TextAlign.end,
             ),
           ),
@@ -632,7 +701,8 @@ class _BulletList extends StatelessWidget {
   final String? title;
   final List<String> items;
   final Color color;
-  const _BulletList({this.title, required this.items, this.color = Colors.white});
+  const _BulletList(
+      {this.title, required this.items, this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -642,7 +712,9 @@ class _BulletList extends StatelessWidget {
       children: [
         if (title != null) ...[
           const SizedBox(height: 8),
-          Text(title!, style: GoogleFonts.inter(color: color, fontSize: 12, fontWeight: FontWeight.w600)),
+          Text(title!,
+              style: GoogleFonts.inter(
+                  color: color, fontSize: 12, fontWeight: FontWeight.w600)),
         ],
         ...items.map((item) => Padding(
               padding: const EdgeInsets.only(top: 4, left: 8),
@@ -651,7 +723,9 @@ class _BulletList extends StatelessWidget {
                 children: [
                   Text('• ', style: TextStyle(color: color, fontSize: 12)),
                   Expanded(
-                    child: Text(item, style: GoogleFonts.inter(color: t.textMuted, fontSize: 12)),
+                    child: Text(item,
+                        style: GoogleFonts.inter(
+                            color: t.textMuted, fontSize: 12)),
                   ),
                 ],
               ),
@@ -678,12 +752,20 @@ class _MetadataCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Generation Metadata', style: GoogleFonts.inter(color: t.textMuted, fontSize: 10)),
+          Text('Generation Metadata',
+              style: GoogleFonts.inter(color: t.textMuted, fontSize: 10)),
           const SizedBox(height: 6),
           _KpiRow(label: 'Model', value: plan.modelUsed),
           _KpiRow(label: 'Tokens Used', value: '${plan.tokensUsed ?? '—'}'),
-          _KpiRow(label: 'Time', value: plan.generationMs != null ? '${(plan.generationMs! / 1000).toStringAsFixed(1)}s' : '—'),
-          _KpiRow(label: 'Generated', value: plan.createdAt?.toLocal().toString().split('.').first ?? '—'),
+          _KpiRow(
+              label: 'Time',
+              value: plan.generationMs != null
+                  ? '${(plan.generationMs! / 1000).toStringAsFixed(1)}s'
+                  : '—'),
+          _KpiRow(
+              label: 'Generated',
+              value:
+                  plan.createdAt?.toLocal().toString().split('.').first ?? '—'),
         ],
       ),
     );

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../../core/extensions.dart';
 import '../../core/pagination.dart';
 import '../../models/client_profile_model.dart';
@@ -47,7 +46,8 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
           SliverAppBar(
             floating: true,
             leading: BackButton(
-              onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/'),
             ),
             backgroundColor: t.background,
             toolbarHeight: 72,
@@ -71,7 +71,7 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
                   ),
                   style: FilledButton.styleFrom(
                     backgroundColor: t.accent,
-                    foregroundColor: Colors.black,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -206,8 +206,9 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
             hasScrollBody: false,
             child: ErrorStateWidget(
               message: 'Unable to load memberships right now.',
-              onRetry: () =>
-                  ref.read(pagedMembershipsControllerProvider.notifier).loadInitial(),
+              onRetry: () => ref
+                  .read(pagedMembershipsControllerProvider.notifier)
+                  .loadInitial(),
             ),
           )
         else if (membershipsState.items.isEmpty)
@@ -437,7 +438,8 @@ class _MembershipCard extends StatelessWidget {
                     ),
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: statusColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -592,7 +594,8 @@ class _ClientPickerSheet extends ConsumerWidget {
                   );
                 }
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   itemCount: clients.length,
                   itemBuilder: (context, index) {
                     final client = clients[index];

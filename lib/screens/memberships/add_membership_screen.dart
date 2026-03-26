@@ -140,7 +140,8 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Error: $e'), backgroundColor: context.fitTheme.danger),
+              content: Text('Error: $e'),
+              backgroundColor: context.fitTheme.danger),
         );
       }
     } finally {
@@ -208,8 +209,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                   ],
                 ),
                 IconButton(
-                  icon: Icon(Icons.close_rounded,
-                      color: t.textMuted),
+                  icon: Icon(Icons.close_rounded, color: t.textMuted),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
@@ -248,8 +248,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                              color: t.brand, width: 2),
+                          borderSide: BorderSide(color: t.brand, width: 2),
                         ),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty
@@ -281,8 +280,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(
-                              color: t.brand, width: 2),
+                          borderSide: BorderSide(color: t.brand, width: 2),
                         ),
                       ),
                     ),
@@ -318,9 +316,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                                   : t.surfaceMuted,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: isSelected
-                                    ? t.brand
-                                    : t.border,
+                                color: isSelected ? t.brand : t.border,
                               ),
                             ),
                             child: Text(
@@ -330,9 +326,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                                 fontWeight: isSelected
                                     ? FontWeight.w600
                                     : FontWeight.w400,
-                                color: isSelected
-                                    ? t.brand
-                                    : t.textSecondary,
+                                color: isSelected ? t.brand : t.textSecondary,
                               ),
                             ),
                           ),
@@ -410,7 +404,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                         onPressed: _isLoading ? null : _handleSubmit,
                         style: FilledButton.styleFrom(
                           backgroundColor: t.accent,
-                          foregroundColor: Colors.black,
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -421,7 +415,7 @@ class _AddMembershipScreenState extends ConsumerState<AddMembershipScreen> {
                                 height: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               )
                             : Text(

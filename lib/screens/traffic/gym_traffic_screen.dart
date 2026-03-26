@@ -77,7 +77,8 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
                           userId: userId,
                           loading: _checkInLoading,
                           onCheckIn: () => _handleCheckIn(gymId, userId),
-                          onCheckOut: (id) => _handleCheckOut(id, gymId, userId),
+                          onCheckOut: (id) =>
+                              _handleCheckOut(id, gymId, userId),
                         ),
                         const SizedBox(height: 16),
                         _BestTimesCard(gymId: gymId),
@@ -174,15 +175,13 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
           ),
           Text(
             gymName,
-            style:
-                GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
+            style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
           ),
         ],
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.refresh_rounded,
-              color: t.textSecondary, size: 22),
+          icon: Icon(Icons.refresh_rounded, color: t.textSecondary, size: 22),
           onPressed: () => _refreshTraffic(gymId, userId),
         ),
         const SizedBox(width: 8),
@@ -239,7 +238,6 @@ class _GymTrafficScreenState extends ConsumerState<GymTrafficScreen> {
     return 'Something went wrong. Please try again.';
   }
 }
-
 
 // ─── Live Traffic Card ────────────────────────────────────────────────────────
 
@@ -345,8 +343,7 @@ class _LiveTrafficCard extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               'Updates in real time',
-              style: GoogleFonts.inter(
-                  fontSize: 12, color: t.textMuted),
+              style: GoogleFonts.inter(fontSize: 12, color: t.textMuted),
             ),
           ],
         ),
@@ -406,8 +403,7 @@ class _CheckInCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeCheckIn =
-        ref.watch(activeCheckInProvider((gymId, userId)));
+    final activeCheckIn = ref.watch(activeCheckInProvider((gymId, userId)));
 
     return GlassmorphicCard(
       child: Padding(
@@ -424,7 +420,8 @@ class _CheckInCard extends ConsumerWidget {
           error: (_, __) => ErrorStateWidget(
             compact: true,
             message: 'Unable to load check-in status.',
-            onRetry: () => ref.invalidate(activeCheckInProvider((gymId, userId))),
+            onRetry: () =>
+                ref.invalidate(activeCheckInProvider((gymId, userId))),
           ),
         ),
       ),
@@ -464,15 +461,13 @@ class _CheckedInView extends StatelessWidget {
   final void Function(String) onCheckOut;
 
   const _CheckedInView(
-      {required this.checkin,
-      required this.loading,
-      required this.onCheckOut});
+      {required this.checkin, required this.loading, required this.onCheckOut});
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
-    final checkInTime = DateTime.tryParse(checkin['checked_in_at'] as String)
-        ?.toLocal();
+    final checkInTime =
+        DateTime.tryParse(checkin['checked_in_at'] as String)?.toLocal();
     final timeStr = checkInTime != null
         ? '${checkInTime.hour.toString().padLeft(2, '0')}:${checkInTime.minute.toString().padLeft(2, '0')}'
         : '--:--';
@@ -492,8 +487,7 @@ class _CheckedInView extends StatelessWidget {
             color: t.accent.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Icon(Icons.fitness_center_rounded,
-              color: t.accent, size: 24),
+          child: Icon(Icons.fitness_center_rounded, color: t.accent, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -511,8 +505,7 @@ class _CheckedInView extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 'Checked in at $timeStr · $durationStr',
-                style: GoogleFonts.inter(
-                    fontSize: 12, color: t.textSecondary),
+                style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
               ),
             ],
           ),
@@ -521,16 +514,14 @@ class _CheckedInView extends StatelessWidget {
         SizedBox(
           height: 38,
           child: ElevatedButton(
-            onPressed: loading
-                ? null
-                : () => onCheckOut(checkin['id'] as String),
+            onPressed:
+                loading ? null : () => onCheckOut(checkin['id'] as String),
             style: ElevatedButton.styleFrom(
               backgroundColor: t.danger.withOpacity(0.2),
               foregroundColor: t.danger,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
-                  side: BorderSide(
-                      color: t.danger.withOpacity(0.4))),
+                  side: BorderSide(color: t.danger.withOpacity(0.4))),
               elevation: 0,
             ),
             child: loading
@@ -566,8 +557,7 @@ class _CheckedOutView extends StatelessWidget {
             color: t.brand.withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Icon(Icons.login_rounded,
-              color: t.brand, size: 24),
+          child: Icon(Icons.login_rounded, color: t.brand, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -585,8 +575,7 @@ class _CheckedOutView extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 'Tap to mark your gym visit',
-                style: GoogleFonts.inter(
-                    fontSize: 12, color: t.textSecondary),
+                style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
               ),
             ],
           ),
@@ -598,7 +587,7 @@ class _CheckedOutView extends StatelessWidget {
             onPressed: loading ? null : onCheckIn,
             style: ElevatedButton.styleFrom(
               backgroundColor: t.accent,
-              foregroundColor: Colors.black,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
             ),
@@ -607,7 +596,7 @@ class _CheckedOutView extends StatelessWidget {
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.black))
+                        strokeWidth: 2, color: Colors.white))
                 : Text('Check In',
                     style: GoogleFonts.inter(
                         fontSize: 13, fontWeight: FontWeight.w700)),
@@ -637,8 +626,7 @@ class _BestTimesCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.star_rounded,
-                    color: t.warning, size: 20),
+                Icon(Icons.star_rounded, color: t.warning, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Best Times to Visit',
@@ -653,8 +641,7 @@ class _BestTimesCard extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(
               'Quietest hours based on historical visits',
-              style: GoogleFonts.inter(
-                  fontSize: 12, color: t.textSecondary),
+              style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
             ),
             const SizedBox(height: 16),
             bestTimes.when(
@@ -663,9 +650,8 @@ class _BestTimesCard extends ConsumerWidget {
                   : Wrap(
                       spacing: 10,
                       runSpacing: 10,
-                      children: hours
-                          .map((h) => _TimeSlotChip(hour: h))
-                          .toList(),
+                      children:
+                          hours.map((h) => _TimeSlotChip(hour: h)).toList(),
                     ),
               loading: () => const _ShimmerRow(),
               error: (_, __) => _defaultBestTimes(),
@@ -702,23 +688,20 @@ class _TimeSlotChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: t.accent.withOpacity(0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: t.accent.withOpacity(isDefault ? 0.2 : 0.4)),
+        border: Border.all(color: t.accent.withOpacity(isDefault ? 0.2 : 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.access_time_rounded,
-              color: t.accent.withOpacity(isDefault ? 0.5 : 1),
-              size: 15),
+              color: t.accent.withOpacity(isDefault ? 0.5 : 1), size: 15),
           const SizedBox(width: 6),
           Text(
             label,
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: t.accent
-                  .withOpacity(isDefault ? 0.5 : 1),
+              color: t.accent.withOpacity(isDefault ? 0.5 : 1),
             ),
           ),
         ],
@@ -765,8 +748,7 @@ class _HourlyChartCard extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.bar_chart_rounded,
-                    color: t.brand, size: 20),
+                Icon(Icons.bar_chart_rounded, color: t.brand, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Weekly Traffic Pattern',
@@ -781,8 +763,7 @@ class _HourlyChartCard extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(
               'Average visitors per hour (last 4 weeks)',
-              style: GoogleFonts.inter(
-                  fontSize: 12, color: t.textSecondary),
+              style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
             ),
             const SizedBox(height: 20),
             hourlyData.when(
@@ -812,127 +793,131 @@ class _TrafficBarChart extends StatelessWidget {
     const endHour = 22;
     return RepaintBoundary(
       child: LayoutBuilder(
-      builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < 360;
-        final buckets = bucketHourlyValues(
-          values: averages,
-          startHour: startHour,
-          endHour: endHour,
-          groupSize: isNarrow ? 2 : 1,
-          currentHour: DateTime.now().hour,
-        );
-        final values = buckets.map((bucket) => bucket.value).toList();
-        final maxVal = values.isEmpty
-            ? 1.0
-            : values.reduce((a, b) => a > b ? a : b).clamp(1.0, double.infinity);
-        final quietestValue = values.where((value) => value > 0).fold<double?>(
-          null,
-          (current, value) =>
-              current == null || value < current ? value : current,
-        );
-        final chartHeight = isNarrow ? 96.0 : 120.0;
-
-        if (buckets.every((bucket) => bucket.value == 0)) {
-          return SizedBox(
-            height: chartHeight,
-            child: Center(
-              child: Text(
-                'Not enough traffic history yet.',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: t.textMuted,
-                ),
-              ),
-            ),
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 360;
+          final buckets = bucketHourlyValues(
+            values: averages,
+            startHour: startHour,
+            endHour: endHour,
+            groupSize: isNarrow ? 2 : 1,
+            currentHour: DateTime.now().hour,
           );
-        }
+          final values = buckets.map((bucket) => bucket.value).toList();
+          final maxVal = values.isEmpty
+              ? 1.0
+              : values
+                  .reduce((a, b) => a > b ? a : b)
+                  .clamp(1.0, double.infinity);
+          final quietestValue =
+              values.where((value) => value > 0).fold<double?>(
+                    null,
+                    (current, value) =>
+                        current == null || value < current ? value : current,
+                  );
+          final chartHeight = isNarrow ? 96.0 : 120.0;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-        SizedBox(
-          height: chartHeight,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: buckets.asMap().entries.map((entry) {
-              final bucket = entry.value;
-              final frac = bucket.value / maxVal;
-              final isQuietest =
-                  quietestValue != null && bucket.value == quietestValue;
-              final color = bucket.containsCurrentHour
-                  ? t.warning
-                  : isQuietest
-                      ? t.accent
-                      : t.brand.withOpacity(0.45 + frac * 0.45);
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isNarrow ? 2 : 1.5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (bucket.containsCurrentHour)
-                        Container(
-                          width: 4,
-                          height: 4,
-                          margin: const EdgeInsets.only(bottom: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: t.warning,
-                          ),
-                        ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeOutExpo,
-                        height: bucket.value == 0
-                            ? 3
-                            : (frac * (chartHeight - 20))
-                                .clamp(3, chartHeight - 20),
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(4)),
-                        ),
-                      ),
-                    ],
+          if (buckets.every((bucket) => bucket.value == 0)) {
+            return SizedBox(
+              height: chartHeight,
+              child: Center(
+                child: Text(
+                  'Not enough traffic history yet.',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: t.textMuted,
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-        ),
-        const SizedBox(height: 8),
-        // X-axis labels — show every 3 hours
-        Row(
-          children: buckets.asMap().entries.map((entry) {
-            final index = entry.key;
-            final bucket = entry.value;
-            final showLabel = isNarrow || index == 0 || index.isEven;
-            return Expanded(
-              child: Text(
-                showLabel ? _bucketLabel(bucket) : '',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                    fontSize: isNarrow ? 8 : 9, color: t.textMuted),
               ),
             );
-          }).toList(),
-        ),
-        const SizedBox(height: 12),
-        // Legend
-        Wrap(
-          spacing: 16,
-          runSpacing: 8,
-          children: [
-            _LegendItem(color: t.accent, label: 'Quietest'),
-            _LegendItem(color: t.warning, label: 'Right now'),
-            _LegendItem(
-                color: t.brand.withOpacity(0.9),
-                label: isNarrow ? 'Busiest windows' : 'Busy hours'),
-          ],
-        ),
-          ],
-        );
-      },
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: chartHeight,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: buckets.asMap().entries.map((entry) {
+                    final bucket = entry.value;
+                    final frac = bucket.value / maxVal;
+                    final isQuietest =
+                        quietestValue != null && bucket.value == quietestValue;
+                    final color = bucket.containsCurrentHour
+                        ? t.warning
+                        : isQuietest
+                            ? t.accent
+                            : t.brand.withOpacity(0.45 + frac * 0.45);
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: isNarrow ? 2 : 1.5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (bucket.containsCurrentHour)
+                              Container(
+                                width: 4,
+                                height: 4,
+                                margin: const EdgeInsets.only(bottom: 4),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: t.warning,
+                                ),
+                              ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 600),
+                              curve: Curves.easeOutExpo,
+                              height: bucket.value == 0
+                                  ? 3
+                                  : (frac * (chartHeight - 20))
+                                      .clamp(3, chartHeight - 20),
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(4)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // X-axis labels — show every 3 hours
+              Row(
+                children: buckets.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final bucket = entry.value;
+                  final showLabel = isNarrow || index == 0 || index.isEven;
+                  return Expanded(
+                    child: Text(
+                      showLabel ? _bucketLabel(bucket) : '',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                          fontSize: isNarrow ? 8 : 9, color: t.textMuted),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 12),
+              // Legend
+              Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                children: [
+                  _LegendItem(color: t.accent, label: 'Quietest'),
+                  _LegendItem(color: t.warning, label: 'Right now'),
+                  _LegendItem(
+                      color: t.brand.withOpacity(0.9),
+                      label: isNarrow ? 'Busiest windows' : 'Busy hours'),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -971,8 +956,7 @@ class _LegendItem extends StatelessWidget {
         ),
         const SizedBox(width: 5),
         Text(label,
-            style: GoogleFonts.inter(
-                fontSize: 11, color: t.textSecondary)),
+            style: GoogleFonts.inter(fontSize: 11, color: t.textSecondary)),
       ],
     );
   }
@@ -1010,8 +994,7 @@ class _TrafficTipsCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.lightbulb_rounded,
-                    color: t.warning, size: 20),
+                Icon(Icons.lightbulb_rounded, color: t.warning, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Gym Traffic Tips',
@@ -1036,8 +1019,7 @@ class _TrafficTipsCard extends StatelessWidget {
                           color: t.surfaceAlt,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Icon(tip.$1,
-                            color: t.textSecondary, size: 18),
+                        child: Icon(tip.$1, color: t.textSecondary, size: 18),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -1056,8 +1038,7 @@ class _TrafficTipsCard extends StatelessWidget {
                             Text(
                               tip.$3,
                               style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  color: t.textSecondary),
+                                  fontSize: 12, color: t.textSecondary),
                             ),
                           ],
                         ),

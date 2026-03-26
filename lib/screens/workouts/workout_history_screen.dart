@@ -11,10 +11,10 @@ import '../../providers/member_provider.dart';
 // Accent colours cycled per session card.
 const _kAccentColors = [
   Color(0xFFFF5C00),
-  Color(0xFF10D88A),
-  Color(0xFFF6B546),
-  Color(0xFF4F8CFF),
-  Color(0xFFB54FFF),
+  Color(0xFF22D48A),
+  Color(0xFFFFB830),
+  Color(0xFF4A9FFF),
+  Color(0xFFFF7A2E),
 ];
 
 /// Converts a raw Supabase row into a [_WorkoutSession].
@@ -25,9 +25,8 @@ _WorkoutSession _sessionFromRow(Map<String, dynamic> row, int index) {
   final completedAt = row['completed_at'] != null
       ? DateTime.tryParse(row['completed_at'] as String)
       : null;
-  final durationMinutes = completedAt != null
-      ? completedAt.difference(startedAt).inMinutes
-      : 0;
+  final durationMinutes =
+      completedAt != null ? completedAt.difference(startedAt).inMinutes : 0;
   final totalSets = (row['total_sets'] as int?) ?? 0;
   final totalReps = (row['total_reps'] as int?) ?? 0;
   return _WorkoutSession(
@@ -83,12 +82,12 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.calendar_month_rounded, color: t.textSecondary),
+                icon:
+                    Icon(Icons.calendar_month_rounded, color: t.textSecondary),
                 onPressed: () {},
               ),
             ],
           ),
-
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -105,21 +104,17 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
 
                       return Expanded(
                         child: GestureDetector(
-                          onTap: () =>
-                              setState(() => _selectedDayIndex = idx),
+                          onTap: () => setState(() => _selectedDayIndex = idx),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             curve: Curves.easeInOut,
                             margin: const EdgeInsets.symmetric(horizontal: 2),
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
-                              color: isSelected
-                                  ? t.brand
-                                  : Colors.transparent,
+                              color: isSelected ? t.brand : Colors.transparent,
                               borderRadius: BorderRadius.circular(12),
                               border: isToday && !isSelected
-                                  ? Border.all(
-                                      color: t.brand.withOpacity(0.4))
+                                  ? Border.all(color: t.brand.withOpacity(0.4))
                                   : null,
                             ),
                             child: Column(
@@ -129,9 +124,8 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                                   style: GoogleFonts.inter(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
-                                    color: isSelected
-                                        ? Colors.white
-                                        : t.textMuted,
+                                    color:
+                                        isSelected ? Colors.white : t.textMuted,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -153,9 +147,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: [0, 2, 4, 6].contains(idx)
-                                        ? (isSelected
-                                            ? Colors.white
-                                            : t.accent)
+                                        ? (isSelected ? Colors.white : t.accent)
                                         : Colors.transparent,
                                   ),
                                 ),
@@ -172,7 +164,6 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
               ],
             ),
           ),
-
           SliverPadding(
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
@@ -220,7 +211,10 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                       color: t.warning,
                     ),
                   ],
-                ).animate(delay: 100.ms).fadeIn(duration: 400.ms).slideY(begin: 0.1),
+                )
+                    .animate(delay: 100.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.1),
 
                 const SizedBox(height: 20),
 
@@ -236,8 +230,7 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                         t.brandSecondary.withOpacity(0.15),
                       ],
                     ),
-                    border: Border.all(
-                        color: t.brand.withOpacity(0.4)),
+                    border: Border.all(color: t.brand.withOpacity(0.4)),
                     boxShadow: [
                       BoxShadow(
                         color: t.brand.withOpacity(0.15),
@@ -301,7 +294,10 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                       ],
                     ),
                   ),
-                ).animate(delay: 200.ms).fadeIn(duration: 400.ms).slideY(begin: 0.1),
+                )
+                    .animate(delay: 200.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.1),
 
                 const SizedBox(height: 20),
 
@@ -379,7 +375,9 @@ class _WorkoutHistoryScreenState extends ConsumerState<WorkoutHistoryScreen> {
                         ),
                       ];
                     }
-                    final sessions = rows.asMap().entries
+                    final sessions = rows
+                        .asMap()
+                        .entries
                         .map((e) => _sessionFromRow(e.value, e.key))
                         .toList();
                     return sessions
@@ -490,8 +488,8 @@ class _SessionCard extends StatelessWidget {
                 width: 4,
                 decoration: BoxDecoration(
                   color: session.accentColor,
-                  borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(20)),
+                  borderRadius:
+                      const BorderRadius.horizontal(left: Radius.circular(20)),
                 ),
               ),
               Expanded(
@@ -537,7 +535,8 @@ class _SessionCard extends StatelessWidget {
                           ),
                           _SessionChip(
                             icon: Icons.fitness_center_rounded,
-                            label: '${(session.volumeKg / 1000).toStringAsFixed(1)}t',
+                            label:
+                                '${(session.volumeKg / 1000).toStringAsFixed(1)}t',
                             color: session.accentColor,
                           ),
                         ],
@@ -548,7 +547,8 @@ class _SessionCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: Icon(Icons.chevron_right_rounded, color: t.textMuted, size: 20),
+                child: Icon(Icons.chevron_right_rounded,
+                    color: t.textMuted, size: 20),
               ),
             ],
           ),

@@ -43,264 +43,269 @@ class SettingsScreen extends ConsumerWidget {
     }
 
     return DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              colors.backgroundAlt.withOpacity(0.7),
-              colors.background,
-            ],
-          ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colors.backgroundAlt.withOpacity(0.7),
+            colors.background,
+          ],
         ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned(
-              top: -120,
-              right: -90,
-              child: _SettingsGlow(
-                color: colors.brand.withOpacity(0.12),
-                size: 240,
-              ),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned(
+            top: -120,
+            right: -90,
+            child: _SettingsGlow(
+              color: colors.brand.withOpacity(0.12),
+              size: 240,
             ),
-            Positioned(
-              bottom: -140,
-              left: -120,
-              child: _SettingsGlow(
-                color: colors.brandSecondary.withOpacity(0.1),
-                size: 300,
-              ),
+          ),
+          Positioned(
+            bottom: -140,
+            left: -120,
+            child: _SettingsGlow(
+              color: colors.brandSecondary.withOpacity(0.1),
+              size: 300,
             ),
-            SafeArea(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                      child: Row(
-                        children: [
-                          _RoundIconButton(
-                            icon: Icons.arrow_back_rounded,
-                            onTap: () {
-                              if (context.canPop()) {
-                                context.pop();
-                              } else {
-                                context.go(homeRoute);
-                              }
-                            },
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            t.settings,
-                            style: GoogleFonts.inter(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              color: colors.textPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => _showEditProfileSheet(context, ref, user),
-                        child: _ProfileCard(
-                          user: user,
-                          gym: gym,
-                          colors: colors,
+          ),
+          SafeArea(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    child: Row(
+                      children: [
+                        _RoundIconButton(
+                          icon: Icons.arrow_back_rounded,
+                          onTap: () {
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go(homeRoute);
+                            }
+                          },
                         ),
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: t.account.toUpperCase()),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.person_rounded,
-                            title: t.personalInfo,
-                            subtitle: user?.email ?? 'Not signed in',
-                            onTap: () {
-                              _showEditProfileSheet(context, ref, user);
-                            },
-                          ),
-                          _SettingsRow(
-                            icon: Icons.shield_rounded,
-                            title: t.security,
-                            subtitle: 'Update login and recovery settings',
-                            onTap: () => context.go('/change-password'),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.card_membership_rounded,
-                            title: t.membership,
-                            subtitle: _membershipLabel(user, gym),
-                            onTap: () => context.go('/pricing'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: t.preferences.toUpperCase()),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.notifications_rounded,
-                            title: t.notifications,
-                            subtitle: 'Reminders and alerts',
-                            onTap: () => _showNotificationSettings(context, ref),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.straighten_rounded,
-                            title: t.units,
-                            subtitle: unitSystem == UnitSystem.metric ? t.metric : t.imperial,
-                            onTap: () => _showUnitPicker(context, ref),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.language_rounded,
-                            title: t.language,
-                            subtitle: _languageLabel(locale.languageCode),
-                            onTap: () => _showLanguagePicker(context, ref),
-                          ),
-                          _SettingsRow(
-                            icon: themeMode == ThemeMode.dark
-                                ? Icons.dark_mode_rounded
-                                : themeMode == ThemeMode.light
-                                    ? Icons.light_mode_rounded
-                                    : Icons.phone_android_rounded,
-                            title: t.theme,
-                            subtitle: _themeLabel(themeMode),
-                            onTap: () => _showThemePicker(context, ref),
-                          ),
-                          _PerformanceSwitch(
-                            label: t.lowPerformanceMode,
-                            value: ref.watch(performanceProvider),
-                            onChanged: (val) => ref
-                                .read(performanceProvider.notifier)
-                                .setLowPerformanceMode(val),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SectionTitle(label: t.support.toUpperCase()),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _SettingsGroup(
-                        children: [
-                          _SettingsRow(
-                            icon: Icons.help_rounded,
-                            title: t.helpCenter,
-                            subtitle: 'Guides, FAQs, and setup support',
-                            onTap: () => _showSupportSheet(context),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.policy_rounded,
-                            title: t.privacyPolicy,
-                            subtitle: 'How FitNexora handles your data',
-                            onTap: () => _showLegalSheet(context, t.privacyPolicy,
-                                'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
-                          ),
-                          _SettingsRow(
-                            icon: Icons.description_rounded,
-                            title: t.termsOfService,
-                            subtitle: 'Platform usage and subscription terms',
-                            onTap: () => _showLegalSheet(context, t.termsOfService,
-                                'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (user?.globalRole == UserRole.superAdmin) ...[
-                    const SliverPadding(
-                      padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: _SectionTitle(label: 'PLATFORM'),
-                      ),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: _SettingsGroup(
-                          children: [
-                            _SettingsRow(
-                              icon: Icons.admin_panel_settings_rounded,
-                              title: 'Admin Panel',
-                              subtitle: 'Platform stats, activity, and registrations',
-                              onTap: () => context.go('/admin'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(56),
-                          side: BorderSide(
-                            color: colors.brand.withOpacity(0.2),
-                            width: 1.4,
-                          ),
-                          foregroundColor: colors.brand,
-                          backgroundColor: colors.surface.withOpacity(0.85),
-                        ),
-                        onPressed: signOut,
-                        icon: const Icon(Icons.logout_rounded),
-                        label: const Text('Log Out'),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
-                      child: Center(
-                        child: Text(
-                          'FITNEXORA V2.6.0 (${_buildFlavorLabel(user)})',
+                        const SizedBox(width: 12),
+                        Text(
+                          t.settings,
                           style: GoogleFonts.inter(
-                            fontSize: 10,
+                            fontSize: 24,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: 1.1,
-                            color: colors.textMuted,
+                            color: colors.textPrimary,
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _showEditProfileSheet(context, ref, user),
+                      child: _ProfileCard(
+                        user: user,
+                        gym: gym,
+                        colors: colors,
+                      ),
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: t.account.toUpperCase()),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.person_rounded,
+                          title: t.personalInfo,
+                          subtitle: user?.email ?? 'Not signed in',
+                          onTap: () {
+                            _showEditProfileSheet(context, ref, user);
+                          },
+                        ),
+                        _SettingsRow(
+                          icon: Icons.shield_rounded,
+                          title: t.security,
+                          subtitle: 'Update login and recovery settings',
+                          onTap: () => context.go('/change-password'),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.card_membership_rounded,
+                          title: t.membership,
+                          subtitle: _membershipLabel(user, gym),
+                          onTap: () => context.go('/pricing'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: t.preferences.toUpperCase()),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.notifications_rounded,
+                          title: t.notifications,
+                          subtitle: 'Reminders and alerts',
+                          onTap: () => _showNotificationSettings(context, ref),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.straighten_rounded,
+                          title: t.units,
+                          subtitle: unitSystem == UnitSystem.metric
+                              ? t.metric
+                              : t.imperial,
+                          onTap: () => _showUnitPicker(context, ref),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.language_rounded,
+                          title: t.language,
+                          subtitle: _languageLabel(locale.languageCode),
+                          onTap: () => _showLanguagePicker(context, ref),
+                        ),
+                        _SettingsRow(
+                          icon: themeMode == ThemeMode.dark
+                              ? Icons.dark_mode_rounded
+                              : themeMode == ThemeMode.light
+                                  ? Icons.light_mode_rounded
+                                  : Icons.phone_android_rounded,
+                          title: t.theme,
+                          subtitle: _themeLabel(themeMode),
+                          onTap: () => _showThemePicker(context, ref),
+                        ),
+                        _PerformanceSwitch(
+                          label: t.lowPerformanceMode,
+                          value: ref.watch(performanceProvider),
+                          onChanged: (val) => ref
+                              .read(performanceProvider.notifier)
+                              .setLowPerformanceMode(val),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SectionTitle(label: t.support.toUpperCase()),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: _SettingsGroup(
+                      children: [
+                        _SettingsRow(
+                          icon: Icons.help_rounded,
+                          title: t.helpCenter,
+                          subtitle: 'Guides, FAQs, and setup support',
+                          onTap: () => _showSupportSheet(context),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.policy_rounded,
+                          title: t.privacyPolicy,
+                          subtitle: 'How FitNexora handles your data',
+                          onTap: () => _showLegalSheet(context, t.privacyPolicy,
+                              'FitNexora collects only the data necessary to provide gym management and fitness tracking services. Your health and workout data is stored securely on Supabase and is never sold to third parties. You may request data deletion at any time by contacting support@fitnexora.com.'),
+                        ),
+                        _SettingsRow(
+                          icon: Icons.description_rounded,
+                          title: t.termsOfService,
+                          subtitle: 'Platform usage and subscription terms',
+                          onTap: () => _showLegalSheet(
+                              context,
+                              t.termsOfService,
+                              'By using FitNexora you agree to use the platform for lawful purposes only. Subscription fees are non-refundable after the billing period begins. FitNexora reserves the right to suspend accounts that violate community guidelines. For the full terms, contact support@fitnexora.com.'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (user?.globalRole == UserRole.superAdmin) ...[
+                  const SliverPadding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionTitle(label: 'PLATFORM'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: _SettingsGroup(
+                        children: [
+                          _SettingsRow(
+                            icon: Icons.admin_panel_settings_rounded,
+                            title: 'Admin Panel',
+                            subtitle:
+                                'Platform stats, activity, and registrations',
+                            onTap: () => context.go('/admin'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
-              ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                        side: BorderSide(
+                          color: colors.brand.withOpacity(0.2),
+                          width: 1.4,
+                        ),
+                        foregroundColor: colors.brand,
+                        backgroundColor: colors.surface.withOpacity(0.85),
+                      ),
+                      onPressed: signOut,
+                      icon: const Icon(Icons.logout_rounded),
+                      label: const Text('Log Out'),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 18, 16, 110),
+                    child: Center(
+                      child: Text(
+                        'FITNEXORA V2.6.0 (${_buildFlavorLabel(user)})',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.1,
+                          color: colors.textMuted,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -437,7 +442,8 @@ class SettingsScreen extends ConsumerWidget {
             final s = ref.watch(notificationSettingsProvider);
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,7 +583,9 @@ class SettingsScreen extends ConsumerWidget {
                   title: Text(option.value.$1),
                   onChanged: (value) async {
                     if (value == null) return;
-                    await ref.read(themeModeProvider.notifier).setThemeMode(value);
+                    await ref
+                        .read(themeModeProvider.notifier)
+                        .setThemeMode(value);
                     if (context.mounted) Navigator.of(context).pop();
                   },
                 ),
@@ -588,7 +596,8 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  static Future<void> _showUnitPicker(BuildContext context, WidgetRef ref) async {
+  static Future<void> _showUnitPicker(
+      BuildContext context, WidgetRef ref) async {
     final current = ref.read(unitProvider);
     final colors = context.fitTheme;
     await showModalBottomSheet<void>(
@@ -604,7 +613,9 @@ class SettingsScreen extends ConsumerWidget {
               RadioListTile<UnitSystem>(
                 value: unit,
                 groupValue: current,
-                title: Text(unit == UnitSystem.metric ? 'Metric (kg, cm)' : 'Imperial (lbs, ft)'),
+                title: Text(unit == UnitSystem.metric
+                    ? 'Metric (kg, cm)'
+                    : 'Imperial (lbs, ft)'),
                 onChanged: (value) async {
                   if (value == null) return;
                   await ref.read(unitProvider.notifier).setUnitSystem(value);
@@ -632,13 +643,28 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Help & Support',
-                  style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+                  style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: colors.textPrimary)),
               const SizedBox(height: 16),
-              _SupportTile(icon: Icons.email_rounded, label: 'Email Support', value: 'support@fitnexora.com', colors: colors),
+              _SupportTile(
+                  icon: Icons.email_rounded,
+                  label: 'Email Support',
+                  value: 'support@fitnexora.com',
+                  colors: colors),
               const SizedBox(height: 10),
-              _SupportTile(icon: Icons.chat_bubble_rounded, label: 'In-App Chat', value: 'Available Mon–Fri, 9AM–6PM IST', colors: colors),
+              _SupportTile(
+                  icon: Icons.chat_bubble_rounded,
+                  label: 'In-App Chat',
+                  value: 'Available Mon–Fri, 9AM–6PM IST',
+                  colors: colors),
               const SizedBox(height: 10),
-              _SupportTile(icon: Icons.menu_book_rounded, label: 'Documentation', value: 'Setup guides and FAQs', colors: colors),
+              _SupportTile(
+                  icon: Icons.menu_book_rounded,
+                  label: 'Documentation',
+                  value: 'Setup guides and FAQs',
+                  colors: colors),
               const SizedBox(height: 16),
             ],
           ),
@@ -664,13 +690,18 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
           children: [
             Text(title,
-                style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w800, color: colors.textPrimary)),
+                style: GoogleFonts.inter(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: colors.textPrimary)),
             const SizedBox(height: 16),
             Text(body,
-                style: GoogleFonts.inter(fontSize: 14, height: 1.65, color: colors.textSecondary)),
+                style: GoogleFonts.inter(
+                    fontSize: 14, height: 1.65, color: colors.textSecondary)),
             const SizedBox(height: 24),
             Text('Last updated: March 2026',
-                style: GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
+                style:
+                    GoogleFonts.inter(fontSize: 12, color: colors.textMuted)),
           ],
         ),
       ),
@@ -744,7 +775,8 @@ class SettingsScreen extends ConsumerWidget {
                                           const CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.person_rounded,
-                                              size: 50, color: colors.textMuted),
+                                              size: 50,
+                                              color: colors.textMuted),
                                     )
                                   : Icon(Icons.person_rounded,
                                       size: 50, color: colors.textMuted),
@@ -780,11 +812,11 @@ class SettingsScreen extends ConsumerWidget {
                                     });
                                   } catch (e) {
                                     if (sheetCtx.mounted) {
-                                      ScaffoldMessenger.of(sheetCtx).showSnackBar(
+                                      ScaffoldMessenger.of(sheetCtx)
+                                          .showSnackBar(
                                         SnackBar(
-                                            content:
-                                                Text('Upload failed: $e'),
-                                            backgroundColor: Colors.red),
+                                            content: Text('Upload failed: $e'),
+                                            backgroundColor: colors.danger),
                                       );
                                     }
                                   }
@@ -829,7 +861,8 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: colors.danger, width: 2),
+                          borderSide:
+                              BorderSide(color: colors.danger, width: 2),
                         ),
                         filled: true,
                         fillColor: colors.surfaceMuted,
@@ -884,11 +917,13 @@ class SettingsScreen extends ConsumerWidget {
                             await ref
                                 .read(authServiceProvider)
                                 .updateProfile(updated);
-                            ref.read(currentUserProvider.notifier).updateUser(updated);
+                            ref
+                                .read(currentUserProvider.notifier)
+                                .updateUser(updated);
                             if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
                             if (context.mounted) {
-                              context.showSnackBar(
-                                  'Profile updated successfully');
+                              context
+                                  .showSnackBar('Profile updated successfully');
                             }
                           } catch (e) {
                             if (context.mounted) {
@@ -972,15 +1007,15 @@ class _ProfileCard extends StatelessWidget {
                           ),
                         )
                       : Center(
-                           child: Text(
-                             initial,
-                             style: GoogleFonts.inter(
-                               fontSize: 28,
-                               fontWeight: FontWeight.w800,
-                               color: Colors.white,
-                             ),
-                           ),
-                         ),
+                          child: Text(
+                            initial,
+                            style: GoogleFonts.inter(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                 ),
                 Positioned(
                   bottom: 2,
@@ -1025,7 +1060,8 @@ class _ProfileCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: colors.brand.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(999),
@@ -1221,7 +1257,11 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 class _SupportTile extends StatelessWidget {
-  const _SupportTile({required this.icon, required this.label, required this.value, required this.colors});
+  const _SupportTile(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.colors});
   final IconData icon;
   final String label;
   final String value;
@@ -1244,8 +1284,14 @@ class _SupportTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: colors.textPrimary)),
-                Text(value, style: GoogleFonts.inter(fontSize: 12, color: colors.textSecondary)),
+                Text(label,
+                    style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textPrimary)),
+                Text(value,
+                    style: GoogleFonts.inter(
+                        fontSize: 12, color: colors.textSecondary)),
               ],
             ),
           ),

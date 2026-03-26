@@ -108,8 +108,8 @@ class _ExerciseProgressScreenState
                 ),
                 Text(
                   'Progress over time',
-                  style: GoogleFonts.inter(
-                      fontSize: 11, color: t.textSecondary),
+                  style:
+                      GoogleFonts.inter(fontSize: 11, color: t.textSecondary),
                 ),
               ],
             ),
@@ -117,7 +117,8 @@ class _ExerciseProgressScreenState
               // PR Badge
               Container(
                 margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -166,13 +167,13 @@ class _ExerciseProgressScreenState
                         final isSelected = _selectedPeriod == p;
                         return Expanded(
                           child: GestureDetector(
-                            onTap: () =>
-                                setState(() => _selectedPeriod = p),
+                            onTap: () => setState(() => _selectedPeriod = p),
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: isSelected ? t.brand : Colors.transparent,
+                                color:
+                                    isSelected ? t.brand : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               alignment: Alignment.center,
@@ -202,104 +203,107 @@ class _ExerciseProgressScreenState
                     padding: const EdgeInsets.fromLTRB(16, 20, 20, 12),
                     child: RepaintBoundary(
                       child: SizedBox(
-                      height: 220,
-                      child: LineChart(
-                        LineChartData(
-                          minY: _minY,
-                          maxY: _maxY,
-                          gridData: FlGridData(
-                            show: true,
-                            drawVerticalLine: false,
-                            horizontalInterval: 10,
-                            getDrawingHorizontalLine: (value) => FlLine(
-                              color: t.border.withOpacity(0.5),
-                              strokeWidth: 1,
-                              dashArray: [4, 4],
+                        height: 220,
+                        child: LineChart(
+                          LineChartData(
+                            minY: _minY,
+                            maxY: _maxY,
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: false,
+                              horizontalInterval: 10,
+                              getDrawingHorizontalLine: (value) => FlLine(
+                                color: t.border.withOpacity(0.5),
+                                strokeWidth: 1,
+                                dashArray: [4, 4],
+                              ),
                             ),
-                          ),
-                          borderData: FlBorderData(show: false),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 40,
-                                interval: 10,
-                                getTitlesWidget: (val, meta) => Text(
-                                  '${val.toInt()}kg',
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    color: t.textMuted,
+                            borderData: FlBorderData(show: false),
+                            titlesData: FlTitlesData(
+                              leftTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 40,
+                                  interval: 10,
+                                  getTitlesWidget: (val, meta) => Text(
+                                    '${val.toInt()}kg',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      color: t.textMuted,
+                                    ),
                                   ),
                                 ),
                               ),
+                              bottomTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              rightTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
                             ),
-                            bottomTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                          ),
-                          lineTouchData: LineTouchData(
-                            touchTooltipData: LineTouchTooltipData(
-                              getTooltipColor: (_) => t.surfaceAlt,
-                              getTooltipItems: (touchedSpots) {
-                                return touchedSpots
-                                    .map((s) => LineTooltipItem(
-                                          '${s.y} kg',
-                                          GoogleFonts.inter(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                            color: t.brand,
-                                          ),
-                                        ))
-                                    .toList();
-                              },
-                            ),
-                          ),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _currentData,
-                              isCurved: true,
-                              curveSmoothness: 0.3,
-                              color: t.brand,
-                              barWidth: 2.5,
-                              isStrokeCapRound: true,
-                              dotData: FlDotData(
-                                show: true,
-                                getDotPainter: (spot, percent, bar, index) {
-                                  final isLast =
-                                      index == _currentData.length - 1;
-                                  return FlDotCirclePainter(
-                                    radius: isLast ? 5 : 3,
-                                    color: isLast ? t.accent : t.brand,
-                                    strokeWidth: isLast ? 2 : 0,
-                                    strokeColor: Colors.white,
-                                  );
+                            lineTouchData: LineTouchData(
+                              touchTooltipData: LineTouchTooltipData(
+                                getTooltipColor: (_) => t.surfaceAlt,
+                                getTooltipItems: (touchedSpots) {
+                                  return touchedSpots
+                                      .map((s) => LineTooltipItem(
+                                            '${s.y} kg',
+                                            GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: t.brand,
+                                            ),
+                                          ))
+                                      .toList();
                                 },
                               ),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    t.brand.withOpacity(0.2),
-                                    t.brand.withOpacity(0.0),
-                                  ],
+                            ),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: _currentData,
+                                isCurved: true,
+                                curveSmoothness: 0.3,
+                                color: t.brand,
+                                barWidth: 2.5,
+                                isStrokeCapRound: true,
+                                dotData: FlDotData(
+                                  show: true,
+                                  getDotPainter: (spot, percent, bar, index) {
+                                    final isLast =
+                                        index == _currentData.length - 1;
+                                    return FlDotCirclePainter(
+                                      radius: isLast ? 5 : 3,
+                                      color: isLast ? t.accent : t.brand,
+                                      strokeWidth: isLast ? 2 : 0,
+                                      strokeColor: Colors.white,
+                                    );
+                                  },
+                                ),
+                                belowBarData: BarAreaData(
+                                  show: true,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      t.brand.withOpacity(0.2),
+                                      t.brand.withOpacity(0.0),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    ),
                   ),
-                ).animate(delay: 100.ms).fadeIn(duration: 400.ms).slideY(begin: 0.1),
+                )
+                    .animate(delay: 100.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.1),
 
                 const SizedBox(height: 16),
 
@@ -311,7 +315,7 @@ class _ExerciseProgressScreenState
                         label: 'Best Weight',
                         value: '82.5 kg',
                         icon: Icons.emoji_events_rounded,
-                        color: Color(0xFFFF5C00),
+                        color: Color(0xFFE84F00),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -342,7 +346,10 @@ class _ExerciseProgressScreenState
                       ),
                     ),
                   ],
-                ).animate(delay: 200.ms).fadeIn(duration: 400.ms).slideY(begin: 0.1),
+                )
+                    .animate(delay: 200.ms)
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.1),
 
                 const SizedBox(height: 32),
               ]),

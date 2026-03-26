@@ -48,19 +48,19 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
     final t = context.fitTheme;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: t.background,
       body: Stack(
         children: [
           // Simulated camera background
           Positioned.fill(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF0A0A12),
-                    Color(0xFF050508),
+                    t.backgroundAlt,
+                    t.background,
                   ],
                 ),
               ),
@@ -87,15 +87,17 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withOpacity(0.85),
+                      color: t.textPrimary.withOpacity(0.85),
                     ),
-                  ).animate(key: ValueKey(_isScanning)).fadeIn(duration: 300.ms),
+                  )
+                      .animate(key: ValueKey(_isScanning))
+                      .fadeIn(duration: 300.ms),
                   const SizedBox(height: 8),
                   Text(
                     'Align the barcode within the frame',
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: Colors.white.withOpacity(0.5),
+                      color: t.textSecondary.withOpacity(0.5),
                     ),
                   ),
                 ],
@@ -132,12 +134,15 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _CircleIconButton(
                     icon: Icons.close_rounded,
-                    onTap: () => context.canPop() ? context.pop() : context.go('/nutrition'),
-                    color: Colors.white,
-                    bgColor: Colors.white.withOpacity(0.12),
+                    onTap: () => context.canPop()
+                        ? context.pop()
+                        : context.go('/nutrition'),
+                    color: t.textPrimary,
+                    bgColor: t.surfaceAlt.withOpacity(0.4),
                   ),
                   const Spacer(),
                   Text(
@@ -145,15 +150,15 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                     style: GoogleFonts.inter(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: t.textPrimary,
                     ),
                   ),
                   const Spacer(),
                   _CircleIconButton(
                     icon: Icons.flashlight_on_rounded,
                     onTap: () {},
-                    color: Colors.white,
-                    bgColor: Colors.white.withOpacity(0.12),
+                    color: t.textPrimary,
+                    bgColor: t.surfaceAlt.withOpacity(0.4),
                   ),
                 ],
               ),
@@ -180,8 +185,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                           style: ElevatedButton.styleFrom(
                             backgroundColor: t.brand,
                             foregroundColor: Colors.white,
-                            disabledBackgroundColor:
-                                t.brand.withOpacity(0.5),
+                            disabledBackgroundColor: t.brand.withOpacity(0.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -207,7 +211,9 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen>
                       ),
                       const SizedBox(height: 12),
                       TextButton.icon(
-                        onPressed: () => context.canPop() ? context.pop() : context.go('/nutrition'),
+                        onPressed: () => context.canPop()
+                            ? context.pop()
+                            : context.go('/nutrition'),
                         icon: Icon(Icons.edit_rounded,
                             size: 16, color: t.textSecondary),
                         label: Text(
@@ -245,6 +251,7 @@ class _ViewfinderBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.fitTheme;
     const size = 260.0;
     return SizedBox(
       width: size,
@@ -257,7 +264,7 @@ class _ViewfinderBox extends StatelessWidget {
             height: size,
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.white.withOpacity(0.15),
+                color: t.surfaceAlt.withOpacity(0.15),
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(12),
@@ -268,8 +275,7 @@ class _ViewfinderBox extends StatelessWidget {
           ..._buildCorners(size, isScanning ? accentColor : brandColor),
 
           // Scan line
-          if (isScanning)
-            _ScanLine(color: accentColor, size: size),
+          if (isScanning) _ScanLine(color: accentColor, size: size),
         ],
       ),
     );
@@ -359,7 +365,8 @@ class _Corner extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(painter: _CornerPainter(
+      child: CustomPaint(
+          painter: _CornerPainter(
         color: color,
         thickness: thickness,
         radius: radius,
@@ -631,7 +638,7 @@ class _FoodResultCard extends StatelessWidget {
                         onPressed: onAddToLog,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: t.accent,
-                          foregroundColor: Colors.black,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -659,8 +666,7 @@ class _FoodResultCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Icon(Icons.info_outline_rounded,
-                    color: t.textMuted, size: 18),
+                Icon(Icons.info_outline_rounded, color: t.textMuted, size: 18),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -715,7 +721,8 @@ class _MacroChip extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: GoogleFonts.inter(fontSize: 11, color: color.withOpacity(0.8)),
+              style: GoogleFonts.inter(
+                  fontSize: 11, color: color.withOpacity(0.8)),
             ),
           ],
         ),

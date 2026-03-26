@@ -62,7 +62,9 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
 
       final db = ref.read(databaseServiceProvider);
       if (widget.isCheckOut) {
-        if (widget.checkInId == null) throw Exception('No active check-in ID found');
+        if (widget.checkInId == null) {
+          throw Exception('No active check-in ID found');
+        }
         await db.checkOutFromGym(widget.checkInId!);
       } else {
         await Supabase.instance.client.from('gym_checkins').insert({
@@ -79,7 +81,8 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
       if (mounted) {
         setState(() {
           _success = false;
-          _errorMessage = '${widget.isCheckOut ? 'Check-out' : 'Check-in'} failed. Try again.';
+          _errorMessage =
+              '${widget.isCheckOut ? 'Check-out' : 'Check-in'} failed. Try again.';
         });
       }
     }
@@ -98,7 +101,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
     final t = context.fitTheme;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: t.background,
       body: Stack(
         children: [
           // Camera view
@@ -118,26 +121,28 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
             right: 0,
             child: SafeArea(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
+                      icon: Icon(Icons.close, color: t.textPrimary),
                       onPressed: () => Navigator.of(context).maybePop(),
                     ),
-                    Text(
-                      widget.isCheckOut ? 'Gym Check-Out' : 'Gym Check-In',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                    Flexible(
+                      child: Text(
+                        widget.isCheckOut ? 'Gym Check-Out' : 'Gym Check-In',
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: t.textPrimary,
+                        ),
                       ),
                     ),
                     const Spacer(),
                     IconButton(
-                      icon: const Icon(Icons.flash_on_rounded,
-                          color: Colors.white),
+                      icon: Icon(Icons.flash_on_rounded, color: t.textPrimary),
                       onPressed: () => _controller.toggleTorch(),
                     ),
                   ],
@@ -237,7 +242,9 @@ class _SuccessView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          isCheckOut ? 'Workout complete. See you next time!' : 'Welcome to the gym. Have a great workout!',
+          isCheckOut
+              ? 'Workout complete. See you next time!'
+              : 'Welcome to the gym. Have a great workout!',
           style: GoogleFonts.inter(fontSize: 15, color: t.textSecondary),
           textAlign: TextAlign.center,
         ),
@@ -246,8 +253,7 @@ class _SuccessView extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: t.brand,
             foregroundColor: t.textPrimary,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
@@ -313,7 +319,8 @@ class _ErrorView extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: t.textSecondary,
                 side: BorderSide(color: t.border),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),

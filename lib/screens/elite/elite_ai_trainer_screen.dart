@@ -19,8 +19,8 @@ class EliteAiTrainerScreen extends ConsumerStatefulWidget {
 }
 
 class _EliteAiTrainerScreenState extends ConsumerState<EliteAiTrainerScreen> {
-  static const _elitePrimary = Color(0xFF9B5DE5);
-  static const _eliteSecondary = Color(0xFF6A3DFF);
+  static const _elitePrimary = Color(0xFFE84F00);
+  static const _eliteSecondary = Color(0xFFFF7A2E);
 
   // Chat history for multi-turn conversation
   final List<_ChatMsg> _messages = [];
@@ -275,7 +275,7 @@ class _WelcomeView extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF9B5DE5), Color(0xFF6A3DFF)],
+                colors: [Color(0xFFE84F00), Color(0xFFFF7A2E)],
               ),
               shape: BoxShape.circle,
             ),
@@ -319,7 +319,7 @@ class _WelcomeView extends StatelessWidget {
                   ),
                   child: Row(children: [
                     const Icon(Icons.bolt_rounded,
-                        color: Color(0xFF9B5DE5), size: 16),
+                        color: Color(0xFFE84F00), size: 16),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(e.value,
@@ -357,7 +357,7 @@ class _ChatBubble extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: isUser
               ? const LinearGradient(
-                  colors: [Color(0xFF9B5DE5), Color(0xFF6A3DFF)])
+                  colors: [Color(0xFFE84F00), Color(0xFFFF7A2E)])
               : null,
           color: isUser ? null : t.surfaceAlt,
           borderRadius: BorderRadius.only(
@@ -401,7 +401,7 @@ class _TypingIndicator extends StatelessWidget {
               width: 18,
               height: 18,
               child: CircularProgressIndicator(
-                  color: Color(0xFF9B5DE5), strokeWidth: 2)),
+                  color: Color(0xFFE84F00), strokeWidth: 2)),
           const SizedBox(width: 10),
           Text('AI is thinking...',
               style: GoogleFonts.inter(fontSize: 12, color: t.textMuted)),

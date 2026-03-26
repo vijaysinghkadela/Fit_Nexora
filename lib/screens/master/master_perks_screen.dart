@@ -100,37 +100,43 @@ class MasterPerksScreen extends ConsumerWidget {
         _PerkData(
           icon: Icons.headset_mic_rounded,
           title: 'Priority Support',
-          description: 'Skip the queue with dedicated 24/7 support from Master specialists.',
+          description:
+              'Skip the queue with dedicated 24/7 support from Master specialists.',
           color: t.brand,
         ),
         _PerkData(
           icon: Icons.psychology_alt_outlined,
           title: 'Exclusive AI Coach',
-          description: 'Your personal AI coach trained on elite-level biomechanics data.',
+          description:
+              'Your personal AI coach trained on elite-level biomechanics data.',
           color: t.accent,
         ),
         _PerkData(
           icon: Icons.bar_chart_rounded,
           title: 'Advanced Analytics',
-          description: 'Deep performance insights including CNS readiness and force curves.',
+          description:
+              'Deep performance insights including CNS readiness and force curves.',
           color: t.info,
         ),
         _PerkData(
           icon: Icons.video_call_rounded,
           title: 'Live Group Sessions',
-          description: 'Join unlimited live training sessions led by world-class coaches.',
+          description:
+              'Join unlimited live training sessions led by world-class coaches.',
           color: t.warning,
         ),
         _PerkData(
           icon: Icons.person_rounded,
           title: 'Monthly 1:1 Consultation',
-          description: 'One dedicated monthly session with a certified performance coach.',
+          description:
+              'One dedicated monthly session with a certified performance coach.',
           color: t.accent,
         ),
         _PerkData(
           icon: Icons.group_rounded,
           title: 'Exclusive Community Access',
-          description: 'Private Master-tier community with elite athletes and experts.',
+          description:
+              'Private Master-tier community with elite athletes and experts.',
           color: t.brand,
         ),
       ];
@@ -168,14 +174,14 @@ class _HeroSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFFFF3D5E), Color(0xFFFF8C00)],
+                colors: [Color(0xFFE84F00), Color(0xFFFF7A2E)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(999),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF3D5E).withOpacity(0.45),
+                  color: const Color(0xFFE84F00).withOpacity(0.45),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),

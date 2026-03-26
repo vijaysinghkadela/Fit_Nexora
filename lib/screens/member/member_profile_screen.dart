@@ -133,8 +133,10 @@ class MemberProfileScreen extends ConsumerWidget {
                                               width: 100,
                                               height: 100,
                                               placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(
-                                                      strokeWidth: 2),
+                                                  CircularProgressIndicator(
+                                                color: colors.brand,
+                                                strokeWidth: 2,
+                                              ),
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Center(
@@ -143,7 +145,7 @@ class MemberProfileScreen extends ConsumerWidget {
                                                   style: GoogleFonts.inter(
                                                     fontSize: 36,
                                                     fontWeight: FontWeight.w800,
-                                                    color: Colors.white,
+                                                    color: colors.textPrimary,
                                                   ),
                                                 ),
                                               ),
@@ -155,7 +157,7 @@ class MemberProfileScreen extends ConsumerWidget {
                                               style: GoogleFonts.inter(
                                                 fontSize: 36,
                                                 fontWeight: FontWeight.w800,
-                                                color: Colors.white,
+                                                color: colors.textPrimary,
                                               ),
                                             ),
                                           ),
@@ -172,10 +174,10 @@ class MemberProfileScreen extends ConsumerWidget {
                                         border: Border.all(
                                             color: colors.surface, width: 3),
                                       ),
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.edit_rounded,
                                         size: 16,
-                                        color: Colors.white,
+                                        color: colors.textPrimary,
                                       ),
                                     ),
                                   ),
@@ -842,7 +844,7 @@ class MemberProfileScreen extends ConsumerWidget {
                                           .showSnackBar(
                                         SnackBar(
                                             content: Text('Upload failed: $e'),
-                                            backgroundColor: Colors.red),
+                                            backgroundColor: colors.danger),
                                       );
                                     }
                                   }
@@ -856,8 +858,8 @@ class MemberProfileScreen extends ConsumerWidget {
                                   border: Border.all(
                                       color: colors.surface, width: 2),
                                 ),
-                                child: const Icon(Icons.camera_alt_rounded,
-                                    size: 18, color: Colors.white),
+                                child: Icon(Icons.camera_alt_rounded,
+                                    size: 18, color: colors.textPrimary),
                               ),
                             ),
                           ),

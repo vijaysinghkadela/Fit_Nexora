@@ -27,27 +27,27 @@ class EliteHomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(memberHasAccessProvider).when(
-      loading: () => const _LoadingScaffold(),
-      error: (_, __) => const MemberPaywallScreen(),
-      data: (hasBasic) {
-        if (!hasBasic) return const MemberPaywallScreen();
-        return ref.watch(memberHasProAccessProvider).when(
           loading: () => const _LoadingScaffold(),
-          error: (_, __) => const ProPaywallScreen(),
-          data: (hasPro) {
-            if (!hasPro) return const ProPaywallScreen();
-            return ref.watch(memberHasEliteAccessProvider).when(
-              loading: () => const _LoadingScaffold(),
-              error: (_, __) => const ElitePaywallScreen(),
-              data: (hasElite) {
-                if (!hasElite) return const ElitePaywallScreen();
-                return const _EliteDashboard();
-              },
-            );
+          error: (_, __) => const MemberPaywallScreen(),
+          data: (hasBasic) {
+            if (!hasBasic) return const MemberPaywallScreen();
+            return ref.watch(memberHasProAccessProvider).when(
+                  loading: () => const _LoadingScaffold(),
+                  error: (_, __) => const ProPaywallScreen(),
+                  data: (hasPro) {
+                    if (!hasPro) return const ProPaywallScreen();
+                    return ref.watch(memberHasEliteAccessProvider).when(
+                          loading: () => const _LoadingScaffold(),
+                          error: (_, __) => const ElitePaywallScreen(),
+                          data: (hasElite) {
+                            if (!hasElite) return const ElitePaywallScreen();
+                            return const _EliteDashboard();
+                          },
+                        );
+                  },
+                );
           },
         );
-      },
-    );
   }
 }
 
@@ -62,8 +62,8 @@ class _LoadingScaffold extends StatelessWidget {
 class _EliteDashboard extends ConsumerWidget {
   const _EliteDashboard();
 
-  static const _elitePrimary = Color(0xFF9B5DE5);
-  static const _eliteSecondary = Color(0xFF6A3DFF);
+  static const _elitePrimary = Color(0xFFE84F00);
+  static const _eliteSecondary = Color(0xFFFF7A2E);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,210 +93,215 @@ class _EliteDashboard extends ConsumerWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-          // ─── AppBar ────────────────────────────────────────────────
-          SliverAppBar(
-            floating: true,
-            backgroundColor: t.background,
-            toolbarHeight: 86,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  Text('Welcome, ',
-                      style: GoogleFonts.inter(
-                          fontSize: 13, color: t.textSecondary)),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                          colors: [_elitePrimary, _eliteSecondary]),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                            color: _elitePrimary.withOpacity(0.4),
-                            blurRadius: 10)
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.diamond_rounded,
-                            color: Colors.white, size: 11),
-                        const SizedBox(width: 4),
-                        Text('ELITE',
-                            style: GoogleFonts.inter(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                                letterSpacing: 1.2)),
-                      ],
-                    ),
-                  ),
-                ]),
-                Text(firstName,
-                    style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        color: t.textPrimary)),
-              ],
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.psychology_rounded, color: _elitePrimary),
-                tooltip: 'AI Trainer',
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (_) => const EliteAiTrainerScreen())),
-              ),
-              IconButton(
-                icon: chatAsync.when(
-                  data: (msgs) {
-                    final unread = msgs
-                        .where((m) =>
-                            m['sender_role'] ==
-                                DatabaseValues.trainerChatTrainerRole &&
-                            m['is_read'] == false)
-                        .length;
-                    return Badge(
-                      isLabelVisible: unread > 0,
-                      label: Text('$unread'),
-                      child: Icon(Icons.chat_rounded,
-                          color: t.accent),
-                    );
-                  },
-                  loading: () => Icon(Icons.chat_rounded,
-                      color: t.accent),
-                  error: (_, __) => Icon(Icons.chat_rounded,
-                      color: t.accent),
+              // ─── AppBar ────────────────────────────────────────────────
+              SliverAppBar(
+                floating: true,
+                backgroundColor: t.background,
+                toolbarHeight: 86,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Text('Welcome, ',
+                          style: GoogleFonts.inter(
+                              fontSize: 13, color: t.textSecondary)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                              colors: [_elitePrimary, _eliteSecondary]),
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                                color: _elitePrimary.withOpacity(0.4),
+                                blurRadius: 10)
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.diamond_rounded,
+                                color: Colors.white, size: 11),
+                            const SizedBox(width: 4),
+                            Text('ELITE',
+                                style: GoogleFonts.inter(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    letterSpacing: 1.2)),
+                          ],
+                        ),
+                      ),
+                    ]),
+                    Text(firstName,
+                        style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            color: t.textPrimary)),
+                  ],
                 ),
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (_) => const EliteChatScreen())),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.psychology_rounded,
+                        color: _elitePrimary),
+                    tooltip: 'AI Trainer',
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const EliteAiTrainerScreen())),
+                  ),
+                  IconButton(
+                    icon: chatAsync.when(
+                      data: (msgs) {
+                        final unread = msgs
+                            .where((m) =>
+                                m['sender_role'] ==
+                                    DatabaseValues.trainerChatTrainerRole &&
+                                m['is_read'] == false)
+                            .length;
+                        return Badge(
+                          isLabelVisible: unread > 0,
+                          label: Text('$unread'),
+                          child: Icon(Icons.chat_rounded, color: t.accent),
+                        );
+                      },
+                      loading: () => Icon(Icons.chat_rounded, color: t.accent),
+                      error: (_, __) =>
+                          Icon(Icons.chat_rounded, color: t.accent),
+                    ),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const EliteChatScreen())),
+                  ),
+                  const SizedBox(width: 8),
+                ],
               ),
-              const SizedBox(width: 8),
-            ],
-          ),
 
-          // ─── Membership banner ─────────────────────────────────────
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: membershipAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (m) => m == null
-                    ? const SizedBox.shrink()
-                    : _MembershipBanner(membership: m),
+              // ─── Membership banner ─────────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: membershipAsync.when(
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (m) => m == null
+                        ? const SizedBox.shrink()
+                        : _MembershipBanner(membership: m),
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          // ─── Quick Action Grid ─────────────────────────────────────
-          _sectionHeader('YOUR ELITE FEATURES'),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: _EliteFeatureGrid(context: context),
-            ),
-          ),
+              // ─── Quick Action Grid ─────────────────────────────────────
+              _sectionHeader('YOUR ELITE FEATURES'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _EliteFeatureGrid(context: context),
+                ),
+              ),
 
-          // ─── Supplements Today ─────────────────────────────────────
-          _sectionHeader("TODAY'S SUPPLEMENTS"),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            sliver: SliverToBoxAdapter(
-              child: supplementsAsync.when(
-                loading: () => _shimmer(80),
-                error: (_, __) => const SizedBox.shrink(),
-                data: (logs) => GlassmorphicCard(
-                  child: logs.isEmpty
-                      ? ListTile(
-                          leading: Icon(Icons.medication_rounded,
-                              color: t.accent),
-                          title: Text('No supplements logged today',
-                              style: GoogleFonts.inter(
-                                  color: t.textSecondary,
-                                  fontSize: 14)),
-                          trailing: TextButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const EliteSupplementScreen())),
-                            child: const Text('Log'),
+              // ─── Supplements Today ─────────────────────────────────────
+              _sectionHeader("TODAY'S SUPPLEMENTS"),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                sliver: SliverToBoxAdapter(
+                  child: supplementsAsync.when(
+                    loading: () => _shimmer(80),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (logs) => GlassmorphicCard(
+                      child: logs.isEmpty
+                          ? ListTile(
+                              leading: Icon(Icons.medication_rounded,
+                                  color: t.accent),
+                              title: Text('No supplements logged today',
+                                  style: GoogleFonts.inter(
+                                      color: t.textSecondary, fontSize: 14)),
+                              trailing: TextButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const EliteSupplementScreen())),
+                                child: const Text('Log'),
+                              ),
+                            )
+                          : Column(
+                              children: logs.take(3).map((s) {
+                                return ListTile(
+                                  leading: Icon(Icons.medication_rounded,
+                                      color: t.accent, size: 20),
+                                  title: Text(
+                                    s['supplement_name'] as String? ?? '',
+                                    style: GoogleFonts.inter(
+                                        fontSize: 14, color: t.textPrimary),
+                                  ),
+                                  subtitle: Text(
+                                    '${s['dose_mg'] ?? ''} mg · ${s['timing'] ?? ''}',
+                                    style: GoogleFonts.inter(
+                                        fontSize: 11, color: t.textSecondary),
+                                  ),
+                                  trailing: Icon(Icons.check_circle_rounded,
+                                      color: t.success, size: 20),
+                                );
+                              }).toList(),
+                            ),
+                    ).animate(delay: 100.ms).fadeIn(),
+                  ),
+                ),
+              ),
+
+              // ─── Trainer Chat Preview ──────────────────────────────────
+              _sectionHeader('TRAINER CHAT'),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+                sliver: SliverToBoxAdapter(
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const EliteChatScreen())),
+                    child: chatAsync
+                        .when(
+                          loading: () => _shimmer(80),
+                          error: (_, __) => const SizedBox.shrink(),
+                          data: (msgs) => GlassmorphicCard(
+                            child: msgs.isEmpty
+                                ? ListTile(
+                                    leading: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(colors: [
+                                          _elitePrimary,
+                                          _eliteSecondary
+                                        ]),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(Icons.chat_rounded,
+                                          color: Colors.white, size: 18),
+                                    ),
+                                    title: Text(
+                                        'Start chatting with your trainer',
+                                        style: GoogleFonts.inter(
+                                            color: t.textPrimary,
+                                            fontSize: 14)),
+                                    subtitle: Text('Real-time messaging → 24/7',
+                                        style: GoogleFonts.inter(
+                                            color: t.textSecondary,
+                                            fontSize: 12)),
+                                    trailing: Icon(Icons.chevron_right_rounded,
+                                        color: t.textMuted),
+                                  )
+                                : _ChatPreviewTile(
+                                    last: msgs.last, total: msgs.length),
                           ),
                         )
-                      : Column(
-                          children: logs.take(3).map((s) {
-                            return ListTile(
-                              leading: Icon(Icons.medication_rounded,
-                                  color: t.accent, size: 20),
-                              title: Text(
-                                s['supplement_name'] as String? ?? '',
-                                style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    color: t.textPrimary),
-                              ),
-                              subtitle: Text(
-                                '${s['dose_mg'] ?? ''} mg · ${s['timing'] ?? ''}',
-                                style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    color: t.textSecondary),
-                              ),
-                              trailing: Icon(Icons.check_circle_rounded,
-                                  color: t.success, size: 20),
-                            );
-                          }).toList(),
-                        ),
-                ).animate(delay: 100.ms).fadeIn(),
-              ),
-            ),
-          ),
-
-          // ─── Trainer Chat Preview ──────────────────────────────────
-          _sectionHeader('TRAINER CHAT'),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-            sliver: SliverToBoxAdapter(
-              child: GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (_) => const EliteChatScreen())),
-                child: chatAsync.when(
-                  loading: () => _shimmer(80),
-                  error: (_, __) => const SizedBox.shrink(),
-                  data: (msgs) => GlassmorphicCard(
-                    child: msgs.isEmpty
-                        ? ListTile(
-                            leading: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                    colors: [_elitePrimary, _eliteSecondary]),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(Icons.chat_rounded,
-                                  color: Colors.white, size: 18),
-                            ),
-                            title: Text('Start chatting with your trainer',
-                                style: GoogleFonts.inter(
-                                    color: t.textPrimary,
-                                    fontSize: 14)),
-                            subtitle: Text('Real-time messaging → 24/7',
-                                style: GoogleFonts.inter(
-                                    color: t.textSecondary,
-                                    fontSize: 12)),
-                            trailing: Icon(Icons.chevron_right_rounded,
-                                color: t.textMuted),
-                          )
-                        : _ChatPreviewTile(
-                            last: msgs.last, total: msgs.length),
+                        .animate(delay: 150.ms)
+                        .fadeIn(),
                   ),
-                ).animate(delay: 150.ms).fadeIn(),
+                ),
               ),
-            ),
-          ),
             ],
           ),
         ),
@@ -333,8 +338,9 @@ class _EliteDashboard extends ConsumerWidget {
           color: tt.surfaceAlt,
           borderRadius: BorderRadius.circular(16),
         ),
-      ).animate(onPlay: (c) => c.repeat()).shimmer(
-          duration: 1200.ms, color: tt.surface.withOpacity(0.5));
+      )
+          .animate(onPlay: (c) => c.repeat())
+          .shimmer(duration: 1200.ms, color: tt.surface.withOpacity(0.5));
     });
   }
 }
@@ -345,24 +351,44 @@ class _EliteFeatureGrid extends StatelessWidget {
   final BuildContext context;
   const _EliteFeatureGrid({required this.context});
 
-  static const _elitePrimary = Color(0xFF9B5DE5);
+  static const _elitePrimary = Color(0xFFE84F00);
 
   @override
   Widget build(BuildContext context) {
     final t = context.fitTheme;
     final items = [
-      (Icons.psychology_rounded, 'AI Trainer', _elitePrimary,
-          () => Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const EliteAiTrainerScreen()))),
-      (Icons.medication_rounded, 'Supplements', t.accent,
-          () => Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const EliteSupplementScreen()))),
-      (Icons.fitness_center_rounded, 'Muscle Progress', t.brand,
-          () => Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const EliteMuscleProgressScreen()))),
-      (Icons.compare_rounded, 'Transformation', t.warning,
-          () => Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const EliteTransformationScreen()))),
+      (
+        Icons.psychology_rounded,
+        'AI Trainer',
+        _elitePrimary,
+        () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const EliteAiTrainerScreen()))
+      ),
+      (
+        Icons.medication_rounded,
+        'Supplements',
+        t.accent,
+        () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const EliteSupplementScreen()))
+      ),
+      (
+        Icons.fitness_center_rounded,
+        'Muscle Progress',
+        t.brand,
+        () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const EliteMuscleProgressScreen()))
+      ),
+      (
+        Icons.compare_rounded,
+        'Transformation',
+        t.warning,
+        () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const EliteTransformationScreen()))
+      ),
     ];
 
     return GridView.count(
@@ -408,8 +434,8 @@ class _MembershipBanner extends StatelessWidget {
   final dynamic membership;
   const _MembershipBanner({required this.membership});
 
-  static const _elitePrimary = Color(0xFF9B5DE5);
-  static const _eliteSecondary = Color(0xFF6A3DFF);
+  static const _elitePrimary = Color(0xFFE84F00);
+  static const _eliteSecondary = Color(0xFFFF7A2E);
 
   @override
   Widget build(BuildContext context) {
@@ -418,9 +444,10 @@ class _MembershipBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [_elitePrimary.withOpacity(0.15),
-                _eliteSecondary.withOpacity(0.08)]),
+        gradient: LinearGradient(colors: [
+          _elitePrimary.withOpacity(0.15),
+          _eliteSecondary.withOpacity(0.08)
+        ]),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: _elitePrimary.withOpacity(0.3)),
       ),
@@ -448,8 +475,7 @@ class _MembershipBanner extends StatelessWidget {
             decoration: BoxDecoration(
               color: t.success.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                  color: t.success.withOpacity(0.3)),
+              border: Border.all(color: t.success.withOpacity(0.3)),
             ),
             child: Text('ACTIVE',
                 style: GoogleFonts.inter(
@@ -477,40 +503,34 @@ class _ChatPreviewTile extends StatelessWidget {
     final isTrainer =
         last['sender_role'] == DatabaseValues.trainerChatTrainerRole;
     return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       leading: CircleAvatar(
         backgroundColor: isTrainer
-            ? const Color(0xFF9B5DE5).withOpacity(0.2)
+            ? const Color(0xFFE84F00).withOpacity(0.2)
             : t.brand.withOpacity(0.2),
         child: Icon(
           isTrainer ? Icons.person_rounded : Icons.face_rounded,
-          color: isTrainer ? const Color(0xFF9B5DE5) : t.brand,
+          color: isTrainer ? const Color(0xFFE84F00) : t.brand,
           size: 20,
         ),
       ),
       title: Text(
         isTrainer ? 'Trainer' : 'You',
         style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: t.textPrimary),
+            fontSize: 13, fontWeight: FontWeight.w700, color: t.textPrimary),
       ),
       subtitle: Text(
         last['message'] as String? ?? '',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.inter(
-            fontSize: 12, color: t.textSecondary),
+        style: GoogleFonts.inter(fontSize: 12, color: t.textSecondary),
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('$total msgs',
-              style: GoogleFonts.inter(
-                  fontSize: 10, color: t.textMuted)),
-          Icon(Icons.chevron_right_rounded,
-              color: t.textMuted, size: 18),
+              style: GoogleFonts.inter(fontSize: 10, color: t.textMuted)),
+          Icon(Icons.chevron_right_rounded, color: t.textMuted, size: 18),
         ],
       ),
     );

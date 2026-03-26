@@ -110,8 +110,8 @@ class _ProDashboard extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                colors: [Color(0xFF3AA8FF), Color(0xFF0066FF)]),
+                            gradient: LinearGradient(
+                                colors: [t.brand, t.brandSecondary]),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -717,16 +717,15 @@ class _MiniMembershipCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              const Color(0xFF3AA8FF).withOpacity(0.12),
-              t.brand.withOpacity(0.06),
+              t.brand.withOpacity(0.12),
+              t.brandSecondary.withOpacity(0.06),
             ]),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF3AA8FF).withOpacity(0.3)),
+            border: Border.all(color: t.brand.withOpacity(0.3)),
           ),
           child: Row(
             children: [
-              const Icon(Icons.workspace_premium_rounded,
-                  color: Color(0xFF3AA8FF), size: 18),
+              Icon(Icons.workspace_premium_rounded, color: t.brand, size: 18),
               const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

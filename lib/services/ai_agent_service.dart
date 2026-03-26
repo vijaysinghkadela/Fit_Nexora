@@ -331,8 +331,9 @@ class AiAgentService {
 
     // Resolve profile: prefer request, then DB, else synthesize a default profile
     late final FitnessProfile profile;
-    if (request?.fitnessProfile != null) {
-      profile = request!.fitnessProfile!;
+    final requestProfile = request?.fitnessProfile;
+    if (requestProfile != null) {
+      profile = requestProfile;
     } else {
       final dbProfile = await getFitnessProfile(memberId, gymId);
       if (dbProfile != null) {

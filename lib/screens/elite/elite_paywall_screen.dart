@@ -10,8 +10,8 @@ class ElitePaywallScreen extends ConsumerWidget {
   const ElitePaywallScreen({super.key});
 
   static const _palette = FitPlanPalette(
-    primary: Color(0xFF9B5DE5),
-    secondary: Color(0xFF6A3DFF),
+    primary: Color(0xFFE84F00),
+    secondary: Color(0xFFFF7A2E),
   );
 
   @override
@@ -46,32 +46,37 @@ class ElitePaywallScreen extends ConsumerWidget {
         FitUpgradeFeatureItemData(
           icon: Icons.psychology_rounded,
           title: 'Advanced AI personal trainer',
-          subtitle: 'Receive deeper analysis, stronger coaching prompts, and more context-aware training support.',
+          subtitle:
+              'Receive deeper analysis, stronger coaching prompts, and more context-aware training support.',
           palette: _palette,
           accent: true,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.auto_awesome_rounded,
           title: 'Adaptive workout optimization',
-          subtitle: 'Your plan evolves with training performance, energy, and readiness instead of staying static.',
+          subtitle:
+              'Your plan evolves with training performance, energy, and readiness instead of staying static.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.medication_rounded,
           title: 'Supplement guidance',
-          subtitle: 'Log supplements and follow timing suggestions with a cleaner daily routine.',
+          subtitle:
+              'Log supplements and follow timing suggestions with a cleaner daily routine.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.percent_rounded,
           title: 'Body composition insight',
-          subtitle: 'Track body-fat direction, muscle-group performance, and transformation milestones in one tier.',
+          subtitle:
+              'Track body-fat direction, muscle-group performance, and transformation milestones in one tier.',
           palette: _palette,
         ),
         FitUpgradeFeatureItemData(
           icon: Icons.chat_rounded,
           title: 'Trainer chat support',
-          subtitle: 'Message your trainer directly inside the app when you need fast clarification or accountability.',
+          subtitle:
+              'Message your trainer directly inside the app when you need fast clarification or accountability.',
           palette: _palette,
         ),
       ],
