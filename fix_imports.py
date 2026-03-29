@@ -2,7 +2,7 @@ import os
 import re
 
 def fix_codebase():
-    base_dir = r"C:\Users\Vinay Pal\Documents\GYMOS_AI\GYMOS_AI\GymOS_AI-main\lib"
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
     
     for root, dirs, files in os.walk(base_dir):
         for filename in files:
